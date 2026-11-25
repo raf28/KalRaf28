@@ -138,6 +138,11 @@ details.food summary .kv{white-space:nowrap;color:var(--mute);font-size:14px}
 .btn.two small{font-size:11px;font-weight:500;opacity:.75}
 .btn:disabled{opacity:.4;cursor:default}
 .row.between{justify-content:space-between;margin-top:12px}
+.mstick{position:sticky;top:0;z-index:3;background:var(--bg);margin:0 -14px;padding:0 14px 2px}
+.mbar{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--brand2);color:#fff;border-radius:12px;padding:8px 10px 8px 14px;margin-bottom:10px;box-shadow:0 3px 10px rgba(0,0,0,.12)}
+.mbar b{font-size:17px}
+.mbar small{display:block;font-size:12px;opacity:.85}
+.mbar .mbtn{min-height:34px;padding:4px 12px;border-radius:10px;border:1.5px solid rgba(255,255,255,.7);color:#fff;font-size:13px;font-weight:600;background:rgba(255,255,255,.12)}
 .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 /* compositore */
 .comp{border-top:1px solid var(--line);background:var(--card);padding:8px 10px}
@@ -231,7 +236,8 @@ details.card summary::-webkit-details-marker{display:none}
         <div class="macros" id="dMacros"></div>
       </div></div>
       <div class="wrap">
-        <div class="seg" id="mealTabs"></div>
+        <div class="mstick"><div class="seg" id="mealTabs"></div>
+        <div class="mbar" id="mealBar" hidden></div></div>
         <div class="card" id="mealItems"></div>
         <div class="chat" id="mealChat"></div>
       </div>
@@ -354,6 +360,17 @@ const orderKeys=keys=>[...BASE.filter(k=>keys.includes(k)),...keys.filter(isSnac
 const snacksOf=d=>orderKeys(Object.keys(d.meals)).filter(isSnack).filter(k=>{const m=d.meals[k];return m.items.length||m.chat.length});
 const visibleMeals=()=>{const ks=[...BASE,...snacksOf(S.day)];if(!ks.includes(S.day.curSnack))ks.push(S.day.curSnack);return orderKeys(ks)};
 const isClosed=k=>!!(S.day.meals[k]&&S.day.meals[k].closed);
+function deleteSnack(k){
+  const keys=orderKeys(Object.keys(S.day.meals)).filter(isSnack),wasCur=k===S.day.curSnack,cur=S.day.curSnack;
+  const keep=keys.filter(x=>x!==k).map(x=>({old:x,m:S.day.meals[x]}));
+  keys.forEach(x=>delete S.day.meals[x]);
+  keep.forEach((o,i)=>{S.day.meals['spuntino'+(i+1)]=o.m});
+  if(wasCur||!keep.length){const n='spuntino'+(keep.length+1);S.day.meals[n]={items:[],chat:[]};S.day.curSnack=n;
+    if(keep.length){/* l'ultimo rimasto resta chiuso */}}
+  else{const idx=keep.findIndex(o=>o.old===cur);S.day.curSnack='spuntino'+(idx+1)}
+  /* se lo spuntino attivo è vuoto e c'è un precedente chiuso, resta così */
+  ui.meal=S.day.curSnack;
+}
 function ensureMeal(k){const m=S.day.meals[k]=S.day.meals[k]||{};m.items=m.items||[];m.chat=m.chat||[];return m}
 
 const newDay=()=>{const d={id:Date.now(),start:new Date().toISOString(),meals:{},curSnack:'spuntino1'};[...BASE,'spuntino1'].forEach(k=>d.meals[k]={items:[],chat:[]});return d};
@@ -511,7 +528,6 @@ function linkFood(i){
   return o;
 }
 async function sendMeal(text,photo){
-  if(isClosed(ui.meal)){toast(mealName(ui.meal)+' è chiuso: seleziona un pasto attivo');return}
   const key=ui.meal,meal=ensureMeal(key);
   const hist=histOf(meal.chat);
   meal.chat.push({role:'u',text,photo:!!photo});resetComposer();ui.busy=true;save();render();
@@ -558,8 +574,8 @@ function render(){
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===ui.view));
   const chatView=ui.view==='diario'||(ui.view==='ricette'&&ui.rec==='chat');
   $('#comp').hidden=!chatView;
-  $('#send').disabled=ui.busy||(ui.view==='diario'&&isClosed(ui.meal));
-  if(ui.view==='diario'){$('#msg').disabled=isClosed(ui.meal);$('#mic').disabled=$('#bCam').disabled=$('#bGal').disabled=isClosed(ui.meal)}else{$('#msg').disabled=$('#mic').disabled=$('#bCam').disabled=$('#bGal').disabled=false}
+  $('#send').disabled=ui.busy;
+  if(false){}else{$('#msg').disabled=$('#mic').disabled=$('#bCam').disabled=$('#bGal').disabled=false}
   $('#pills').hidden=ui.view!=='diario';$('#ctx').hidden=ui.view==='diario';
   if(ui.view==='diario'){ensureMeal(ui.meal);renderHead();renderMeal();renderPills();$('#msg').placeholder='Cosa hai mangiato?'}
   if(ui.view==='ricette'){renderRec();$('#ctx').textContent='Chat ricette · non viene contata nel diario';$('#msg').placeholder='Chiedi un\'idea o una ricetta'}
@@ -587,13 +603,15 @@ function renderMeal(){
   const started=orderKeys(Object.keys(S.day.meals)).filter(k=>{const m=S.day.meals[k];return m.items.length||m.chat.length});
   const m0=ensureMeal(ui.meal),isStarted=started.includes(ui.meal);
   $('#mealTabs').hidden=!started.length;
+  const bar=$('#mealBar');bar.hidden=!isStarted;
+  if(isStarted){const cl=isClosed(ui.meal),sn=isSnack(ui.meal);bar.innerHTML=`<div><b>${mealName(ui.meal)}</b>${cl?'<small>chiuso · stai modificando</small>':''}</div><button class="mbtn" id="mealDel">${sn?'Elimina spuntino':'Svuota pasto'}</button>`}
   if(!isStarted){
     $('#mealTabs').innerHTML=started.map(k=>`<button data-meal="${k}">${mealName(k)}<small>${f0(sum(S.day.meals[k].items).kcal)} kcal</small></button>`).join('');
     $('#mealItems').innerHTML=`<div class="empty">${started.length?'Stai per iniziare: <b>'+mealName(ui.meal)+'</b>. ':''}Scegli il pasto qui sotto e scrivi, detta o fotografa cosa hai mangiato: il conteggio si aggiorna da solo, e se correggi qualcosa in chat vale sempre l'ultima versione.</div>`;
     $('#mealChat').innerHTML=ui.busy?'<div class="typing">Sto calcolando<i></i><i></i><i></i></div>':'';return}
   $('#mealTabs').innerHTML=started.map(k=>`<button data-meal="${k}" class="${k===ui.meal?'on':''}">${mealName(k)}<small>${f0(sum(ensureMeal(k).items).kcal)} kcal</small></button>`).join('');
   const m=S.day.meals[ui.meal],t=sum(m.items);
-  $('#mealItems').innerHTML=`<h3>${mealName(ui.meal)}${isClosed(ui.meal)?' <span class="hm" style="font-weight:400">· chiuso, sola lettura</span>':''}</h3>`+(m.items.length?m.items.map((i,ix)=>`<div class="it"><div><div class="n">${esc(i.nome)}</div><div class="q">${esc(i.quantita)}${srcTag(i)}</div></div><div class="k">${f0(i.kcal)} kcal</div>${isClosed(ui.meal)?'<span></span>':`<button class="x" data-del="${ix}" aria-label="Elimina ${esc(i.nome)}">×</button>`}<div class="m">${mline(i)}</div></div>`).join('')+
+  $('#mealItems').innerHTML=(m.items.length?m.items.map((i,ix)=>`<div class="it"><div><div class="n">${esc(i.nome)}</div><div class="q">${esc(i.quantita)}${srcTag(i)}</div></div><div class="k">${f0(i.kcal)} kcal</div><button class="x" data-del="${ix}" aria-label="Elimina ${esc(i.nome)}">×</button><div class="m">${mline(i)}</div></div>`).join('')+
     `<div class="tot"><span>Totale ${mealName(ui.meal).toLowerCase()}</span><span>${f0(t.kcal)} kcal</span><small>${mline(t)}</small></div>`
     :`<div class="empty">Ancora niente. Scrivi cosa hai mangiato o allega una foto: il conteggio si aggiorna da solo, e se correggi qualcosa in chat vale sempre l'ultima versione.</div>`);
   $('#mealChat').innerHTML=m.chat.map(msgHtml).join('')+(ui.busy?'<div class="typing">Sto calcolando<i></i><i></i><i></i></div>':'');
@@ -655,6 +673,9 @@ document.addEventListener('click',e=>{
   if(b.dataset.delrec){S.recipes=S.recipes.filter(r=>r.id!==b.dataset.delrec);save();render();return}
   if(b.dataset.addrec){return addRecipe(b.dataset.addrec)}
   if(b.dataset.delhist!==undefined){const i=+b.dataset.delhist;sheet(`<h3>Eliminare questa giornata?</h3><p class="hm">Non si può annullare.</p><div class="row between"><button class="btn ghost" id="noSheet">Annulla</button><button class="btn bad" id="okDelH">Elimina</button></div>`);$('#okDelH').onclick=()=>{S.history.splice(i,1);save();closeSheet();render()};return}
+  if(b.id==='mealDel'){const k=ui.meal,sn=isSnack(k);
+    sheet(`<h3>${sn?'Eliminare '+mealName(k)+'?':'Svuotare '+mealName(k)+'?'}</h3><p class="hm">${sn?'Lo spuntino e la sua chat verranno eliminati; gli altri spuntini vengono rinumerati.':'Tutti gli alimenti e la chat di questo pasto verranno cancellati.'} Non si può annullare.</p><div class="row between"><button class="btn ghost" id="noSheet">Annulla</button><button class="btn bad" id="okMealDel">${sn?'Elimina':'Svuota'}</button></div>`);
+    $('#okMealDel').onclick=()=>{if(sn)deleteSnack(k);else{S.day.meals[k]={items:[],chat:[]}}save();closeSheet();render();toast(sn?'Spuntino eliminato':'Pasto svuotato')};return}
   if(b.id==='noSheet'){closeSheet();return}
   if(b.id==='impRec'){return importRecipes()}
   if(b.id==='addFood'){return addFoodStart()}
