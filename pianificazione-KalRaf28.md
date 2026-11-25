@@ -172,19 +172,23 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`.
    - Come si aggiunge a un pasto, per esempio con le porzioni come per le ricette.
    - La fonte `preimpostato` ("valore sicuro – Preimpostati") è già prevista nel codice.
    - Va incluso nel backup su Drive tra i dati salvati subito.
-3. **APK Android (TWA con PWABuilder):** con la v40 sono stati aggiunti `manifest.webmanifest` (icone "Kcal", schermo intero) e `sw.js` (prima la rete, copia offline come riserva); anche l'icona nella scheda del browser ora è "Kcal". Prossimi passi: generare l'APK su pwabuilder.com, conservare `.keystore` e password, installare il file .apk sul Pixel e collaudarla. L'APK carica l'app da GitHub, quindi il repository e GitHub Pages devono restare come sono. Facoltativo: repository `raf28.github.io` con `.well-known/assetlinks.json` per togliere la barra dell'indirizzo.
+3. **APK Android (TWA con PWABuilder):** con la v40 sono stati aggiunti `manifest.webmanifest` (icone "Kcal", schermo intero) e `sw.js` (prima la rete, copia offline come riserva); anche l'icona nella scheda del browser ora è "Kcal". APK generata il 25/11/2026 su pwabuilder.com (package `io.github.raf28.kalraf28`, nome KalRaf28). Prossimi passi: installare il file .apk sul Pixel e collaudarla. L'APK carica l'app da GitHub, quindi il repository e GitHub Pages devono restare come sono. Facoltativo: repository `raf28.github.io` con `.well-known/assetlinks.json` per togliere la barra dell'indirizzo.
+
+4. **Mettere al sicuro le chiavi** (in un posto solo, per esempio una cartella privata su Drive), senza mai scriverle in questo documento né nel repository:
+   - `signing.keystore` e il file di testo con le sue password, presi dallo zip di PWABuilder: servono per rifare l'APK in futuro (stesso package `io.github.raf28.kalraf28`);
+   - la **chiave API di Gemini** (Google AI Studio), da tenere insieme alle altre.
 
 ### Da verificare durante il collaudo
-4. Sezione **Alimenti** (era "fatta, da testare"): creazione con dettatura e con foto, collegamento nel diario con i grammi o i pezzi, ricalcolo dei valori.
-5. Regola v39 "macro mancanti = 0": controllare che non dia valori falsi quando l'etichetta è incompleta.
-6. Modelli di riserva: provarli nelle ore in cui Google è sovraccarico.
-7. **Costi API:** controllare in Google AI Studio / Google Cloud che il progetto della chiave **non abbia la fatturazione attiva**, così si resta solo nel livello gratuito e non si paga mai.
-8. **Schermata di consenso OAuth:** se è in modalità "test", controllare la durata dell'accesso e gli utenti di prova. Valutare se pubblicarla.
+5. Sezione **Alimenti** (era "fatta, da testare"): creazione con dettatura e con foto, collegamento nel diario con i grammi o i pezzi, ricalcolo dei valori.
+6. Regola v39 "macro mancanti = 0": controllare che non dia valori falsi quando l'etichetta è incompleta.
+7. Modelli di riserva: provarli nelle ore in cui Google è sovraccarico.
+8. **Costi API:** controllare in Google AI Studio / Google Cloud che il progetto della chiave **non abbia la fatturazione attiva**, così si resta solo nel livello gratuito e non si paga mai.
+9. **Schermata di consenso OAuth:** se è in modalità "test", controllare la durata dell'accesso e gli utenti di prova. Valutare se pubblicarla.
 
 ### Piccole cose notate rileggendo il codice
-9. Il "Backup su file" non contiene le foto degli alimenti (stanno in IndexedDB), e la descrizione nomina solo "diario, storico e ricettario", anche se esporta pure alimenti e impostazioni. Va aggiornato il testo oppure incluse le foto.
-10. Il README del repository è vuoto: si potrebbe aggiungere una breve descrizione e un link a questo documento.
-11. Tenere aggiornato questo documento (è salvato nel repository) alla fine di ogni sessione di lavoro.
+10. Il "Backup su file" non contiene le foto degli alimenti (stanno in IndexedDB), e la descrizione nomina solo "diario, storico e ricettario", anche se esporta pure alimenti e impostazioni. Va aggiornato il testo oppure incluse le foto.
+11. Il README del repository è vuoto: si potrebbe aggiungere una breve descrizione e un link a questo documento.
+12. Tenere aggiornato questo documento (è salvato nel repository) alla fine di ogni sessione di lavoro.
 
 ### Futuro
-12. Eventuale APK "autonoma" con tutto il codice dentro (Capacitor o simili): servirebbe solo per il Play Store o per non dipendere da GitHub. Richiede di rifare il login Google per Drive e la dettatura.
+13. Eventuale APK "autonoma" con tutto il codice dentro (Capacitor o simili): servirebbe solo per il Play Store o per non dipendere da GitHub. Richiede di rifare il login Google per Drive e la dettatura.
