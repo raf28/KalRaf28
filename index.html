@@ -110,6 +110,15 @@ details.food summary .kv{white-space:nowrap;color:var(--mute);font-size:14px}
 .src.ok{color:light-dark(#2a7a4b,#5cc58a)}
 .src.gen{color:light-dark(#a8740a,#e2b43c)}
 .src.nf{color:var(--bad)}
+.ph.frow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,.5fr);gap:8px;margin:6px 0 10px}
+.ph.frow .slot{width:auto}
+.micbig{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:4px;height:100%;min-height:120px;border-radius:12px!important}
+.micbig svg{width:26px;height:26px}
+.micbig.rec{background:var(--bad)!important;color:#fff!important;animation:pulse 1.2s infinite}
+.btn.two{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}
+.btn.two small{font-size:11px;font-weight:500;opacity:.75}
+.btn:disabled{opacity:.4;cursor:default}
+.row.between{justify-content:space-between;margin-top:12px}
 .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 /* compositore */
 .comp{border-top:1px solid var(--line);background:var(--card);padding:8px 10px}
@@ -363,7 +372,7 @@ function md(s){return esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/^\s*
 
 function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}
 function sheet(html){$('#sheet').innerHTML=html;$('#modal').hidden=false}
-function closeSheet(){$('#modal').hidden=true;$('#sheet').innerHTML=''}
+function closeSheet(){if(typeof rec!=='undefined'&&rec)rec.stop();$('#modal').hidden=true;$('#sheet').innerHTML=''}
 $('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeSheet()});
 
 /* ---------- Gemini ---------- */
@@ -673,42 +682,41 @@ async function loadFoodPhotos(id){
 }
 async function compress(file,max,q){const url=URL.createObjectURL(file);const img=new Image();img.src=url;await img.decode();const s=Math.min(1,max/Math.max(img.naturalWidth,img.naturalHeight));const c=document.createElement('canvas');c.width=Math.round(img.naturalWidth*s);c.height=Math.round(img.naturalHeight*s);c.getContext('2d').drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);return c.toDataURL('image/jpeg',q)}
 function pickImage(cam){return new Promise(res=>{const i=document.createElement('input');i.type='file';i.accept='image/*';if(cam)i.setAttribute('capture','environment');i.onchange=async()=>{const f=i.files[0];if(!f)return res(null);try{res(await compress(f,1100,.72))}catch(e){toast('Impossibile leggere la foto');res(null)}};i.click()})}
-function slotsHtml(ph){return`<div class="ph">${[['tabella','Foto tabella'],['confezione','Foto confezione']].map(([k,l])=>`<div class="slot">${ph[k]?`<img alt="${l}" src="${esc(ph[k])}">`:''}<div>${l}</div><div class="sb"><button class="btn sm" data-slot="${k}" data-cam="1">Scatta foto</button><button class="btn sm ghost" data-slot="${k}">Scegli file</button>${ph[k]?`<button class="btn sm ghost" data-unslot="${k}">Rimuovi</button>`:''}</div></div>`).join('')}</div>`}
+function slotsHtml(ph,extra){return`<div class="ph frow">${[['tabella','Foto tabella'],['confezione','Foto confezione']].map(([k,l])=>`<div class="slot">${ph[k]?`<img alt="${l}" src="${esc(ph[k])}">`:''}<div>${l}</div><div class="sb"><button class="btn sm ghost" data-slot="${k}" data-cam="1">Scatta foto</button><button class="btn sm ghost" data-slot="${k}">Scegli file</button>${ph[k]?`<button class="btn sm ghost" data-unslot="${k}">Rimuovi</button>`:''}</div></div>`).join('')}${extra||''}</div>`}
 function bindSlots(ph,redraw){document.querySelectorAll('[data-slot]').forEach(b=>b.onclick=async()=>{const d=await pickImage(!!b.dataset.cam);if(d){ph[b.dataset.slot]=d;redraw()}});document.querySelectorAll('[data-unslot]').forEach(b=>b.onclick=()=>{ph[b.dataset.unslot]=null;redraw()})}
-function addFoodStart(){
-  const ph={tabella:null,confezione:null};let txt='';
-  const draw=()=>{sheet(`<h3>Aggiungi alimento</h3><p class="hm" style="margin-top:0">Scrivi o detta (microfono della tastiera) nome, marca e valori, ad esempio «Yogurt greco Fage zero per cento, per 100 grammi: 54 kcal, proteine 10…». Oppure fotografa la tabella nutrizionale e la confezione.</p>
-    <textarea id="fTxt" class="ta" rows="5" placeholder="Nome, marca, valori, precisazioni…">${esc(txt)}</textarea>
-    ${slotsHtml(ph)}<p class="hm">Le foto vengono salvate con l'alimento (compresse).</p><p class="hm" id="fSt"></p>
-    <div class="row"><button class="btn" id="fGo">Prepara scheda</button><button class="btn ghost" id="fMan">Compila a mano</button><button class="btn ghost" id="noSheet">Annulla</button></div>`);
-    $('#fTxt').oninput=e=>txt=e.target.value;bindSlots(ph,draw);
-    $('#fMan').onclick=()=>foodForm({id:'',nome:'',riferimento:'100 g',note:'',_ph:ph},true);
-    $('#fGo').onclick=async()=>{
-      txt=$('#fTxt').value.trim();if(!txt&&!ph.tabella&&!ph.confezione){$('#fSt').textContent='Scrivi qualcosa o aggiungi una foto.';return}
-      $('#fGo').disabled=true;$('#fSt').textContent='Preparo la scheda…';
-      const parts=[{text:txt||'(vedi foto)'}];for(const k of ['tabella','confezione'])if(ph[k])parts.push({text:'Foto '+k+':'},{inlineData:{mimeType:'image/jpeg',data:ph[k].split(',')[1]}});
-      try{const o=await gemini(SYS_FOOD,[{role:'user',parts}],SCHEMA_FOOD);const f={id:'',nome:String(o.nome||''),riferimento:String(o.riferimento||'100 g'),note:String(o.note||''),_ph:ph};FKEYS.forEach(([k])=>f[k]=nn(o[k]));foodForm(f,true)}
-      catch(e){$('#fSt').textContent=e.message;$('#fGo').disabled=false}
-    };};
-  draw();
-}
-async function foodForm(f,isNew){
-  const ph=f._ph||{tabella:null,confezione:null};
-  if(!f._ph&&f.foto){for(const k of ['tabella','confezione'])if(f.foto[k])ph[k]=await IDB.get(f.foto[k])}
-  const v={...f};
-  const draw=()=>{sheet(`<h3>${isNew?'Controlla e salva':'Modifica alimento'}</h3>${isNew?'<p class="hm" style="margin-top:0">Controlla i valori: puoi correggere qualsiasi campo prima di salvare.</p>':''}
-    <div class="f"><label for="ffN">Nome</label><input type="text" id="ffN" value="${esc(v.nome)}"></div>
-    <div class="f"><label for="ffR">Valori riferiti a</label><input type="text" id="ffR" value="${esc(v.riferimento)}" placeholder="100 g"></div>
-    <div class="fgrid">${FKEYS.map(([k,l,u])=>`<div><label for="ff_${k}">${l} (${u})</label><input type="number" inputmode="decimal" step="any" id="ff_${k}" value="${v[k]===null||v[k]===undefined?'':v[k]}"></div>`).join('')}</div>
-    <div class="f" style="margin-top:12px"><label for="ffNote">Note</label><textarea id="ffNote" class="ta" rows="2">${esc(v.note||'')}</textarea></div>
-    ${slotsHtml(ph)}<p class="hm" id="ffSt"></p>
-    <div class="row"><button class="btn" id="ffSave">Salva</button><button class="btn ghost" id="noSheet">Annulla</button></div>`);
-    const grab=()=>{v.nome=$('#ffN').value;v.riferimento=$('#ffR').value;v.note=$('#ffNote').value;FKEYS.forEach(([k])=>v[k]=$('#ff_'+k).value)};
+function addFoodStart(){foodSheet(null)}
+function foodForm(f){foodSheet(f)}
+async function foodSheet(f){
+  const ph={tabella:null,confezione:null};
+  if(f&&f.foto){for(const k of ['tabella','confezione'])if(f.foto[k])ph[k]=await IDB.get(f.foto[k])}
+  let txt='',card=f?{...f}:null,busy=false,st='';
+  const MIC='<button class="btn sm ghost micbig" id="fMic" aria-label="Detta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg><span>Parla</span></button>';
+  const grab=()=>{const t=$('#fTxt');if(t)txt=t.value;if(card&&$('#ffN')){card.nome=$('#ffN').value;card.riferimento=$('#ffR').value;card.note=$('#ffNote').value;FKEYS.forEach(([k])=>card[k]=$('#ff_'+k).value)}};
+  const cardHtml=()=>!card?'':`<div class="card" style="margin-top:6px"><h3 style="font-size:16px">Scheda alimento</h3>
+    <div class="f"><label for="ffN">Nome</label><input type="text" id="ffN" value="${esc(card.nome||'')}"></div>
+    <div class="f"><label for="ffR">Valori riferiti a</label><input type="text" id="ffR" value="${esc(card.riferimento||'100 g')}" placeholder="100 g"></div>
+    <div class="fgrid">${FKEYS.map(([k,l,u])=>`<div><label for="ff_${k}">${l} (${u})</label><input type="number" inputmode="decimal" step="any" id="ff_${k}" value="${card[k]===null||card[k]===undefined?'':esc(card[k])}"></div>`).join('')}</div>
+    <div class="f" style="margin:12px 0 0"><label for="ffNote">Note</label><textarea id="ffNote" class="ta" rows="2">${esc(card.note||'')}</textarea></div></div>`;
+  const draw=()=>{sheet(`<h3>${f?'Modifica alimento':'Aggiungi alimento'}</h3>
+    ${slotsHtml(ph,MIC)}
+    <textarea id="fTxt" class="ta" rows="10" placeholder="Scrivi o detta nome, marca, valori e precisazioni. Es. «Prosciutto cotto Rovagnati, per 100 grammi: 135 kcal, proteine 20…»">${esc(txt)}</textarea>
+    <div class="row"><button class="btn sm ghost two" id="fGo" ${busy?'disabled':''}>Prepara scheda<small>(automatico)</small></button><button class="btn sm ghost two" id="fMan">Compila a mano</button></div>
+    <p class="hm" id="fSt">${esc(st)}</p>
+    ${cardHtml()}
+    <div class="row between"><button class="btn sm ghost" id="noSheet">Annulla</button><button class="btn" id="ffSave" ${card?'':'disabled'}>Salva</button></div>`);
     bindSlots(ph,()=>{grab();draw()});
-    $('#ffSave').onclick=async()=>{grab();const nome=v.nome.trim();if(!nome){$('#ffSt').textContent='Il nome è obbligatorio.';return}
-      const id=f.id||('f'+Date.now());const old=S.foods.find(x=>x.id===id);const foto={...(old&&old.foto||{})};
+    dictate($('#fTxt'),$('#fMic'));
+    $('#fMan').onclick=()=>{grab();if(!card)card={nome:'',riferimento:'100 g',note:''};draw();$('#ffN').focus()};
+    $('#fGo').onclick=async()=>{grab();if(!txt.trim()&&!ph.tabella&&!ph.confezione){st='Scrivi, detta qualcosa o aggiungi una foto.';draw();return}
+      busy=true;st='Preparo la scheda…';draw();
+      const parts=[{text:txt.trim()||'(vedi foto)'}];for(const k of ['tabella','confezione'])if(ph[k])parts.push({text:'Foto '+k+':'},{inlineData:{mimeType:'image/jpeg',data:ph[k].split(',')[1]}});
+      try{const o=await gemini(SYS_FOOD,[{role:'user',parts}],SCHEMA_FOOD);card={...(card||{}),nome:String(o.nome||''),riferimento:String(o.riferimento||'100 g'),note:String(o.note||'')};FKEYS.forEach(([k])=>card[k]=nn(o[k]));st='Scheda pronta: controlla i valori e premi Salva.'}
+      catch(e){st=e.message}
+      busy=false;draw();};
+    $('#ffSave').onclick=async()=>{grab();if(!card)return;const nome=(card.nome||'').trim();if(!nome){st='Il nome è obbligatorio.';draw();return}
+      const id=(f&&f.id)||('f'+Date.now());const old=S.foods.find(x=>x.id===id);const foto={...(old&&old.foto||{})};
       for(const k of ['tabella','confezione']){const key=id+'_'+k;if(ph[k]){await IDB.put(key,ph[k]);foto[k]=key}else if(foto[k]){await IDB.del(foto[k]);delete foto[k]}}
-      const rec={id,nome,riferimento:v.riferimento.trim()||'100 g',note:v.note.trim(),foto};FKEYS.forEach(([k])=>rec[k]=nn(v[k]));
+      const rec={id,nome,riferimento:String(card.riferimento||'').trim()||'100 g',note:String(card.note||'').trim(),foto};FKEYS.forEach(([k])=>rec[k]=nn(card[k]));
       if(old)Object.assign(old,rec);else S.foods.push(rec);save();closeSheet();ui.view='alimenti';render();toast(old?'Alimento aggiornato':'Alimento salvato')};
   };
   draw();
@@ -737,17 +745,18 @@ $('#pills').addEventListener('click',e=>{const b=e.target.closest('[data-pill]')
   S.day.meals[cs].closed=true;const nx='spuntino'+(snackN(cs)+1);S.day.curSnack=nx;ensureMeal(nx);ui.meal=nx;save();render();toast(mealName(cs)+' chiuso · ora '+mealName(nx));
 });
 /* dettatura */
-const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null,recBase='';
-$('#mic').onclick=()=>{
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null;
+function dictate(ta,btn){if(!ta||!btn)return;btn.onclick=e=>{e.preventDefault();e.stopPropagation();
   if(!SR){toast('Dettatura non supportata da questo browser: usa il microfono della tastiera');return}
   if(rec){rec.stop();return}
-  rec=new SR();rec.lang='it-IT';rec.interimResults=true;rec.continuous=true;
-  recBase=$('#msg').value?$('#msg').value.replace(/\s*$/,' '):'';
-  rec.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;$('#msg').value=recBase+t;autoH()};
-  rec.onerror=e=>{if(e.error==='not-allowed')toast('Consenti l\'uso del microfono a Chrome per dettare')};
-  rec.onend=()=>{rec=null;$('#mic').classList.remove('rec')};
-  try{rec.start();$('#mic').classList.add('rec')}catch(err){rec=null;toast('Impossibile avviare il microfono')}
-};
+  const r=new SR();rec=r;r.lang='it-IT';r.interimResults=true;r.continuous=true;
+  const base=ta.value?ta.value.replace(/\s*$/,' '):'';
+  r.onresult=ev=>{let t='';for(let i=0;i<ev.results.length;i++)t+=ev.results[i][0].transcript;ta.value=base+t;ta.dispatchEvent(new Event('input'))};
+  r.onerror=ev=>{if(ev.error==='not-allowed')toast('Consenti l\'uso del microfono a Chrome per dettare')};
+  r.onend=()=>{if(rec===r)rec=null;btn.classList.remove('rec')};
+  try{r.start();btn.classList.add('rec')}catch(err){rec=null;toast('Impossibile avviare il microfono')}
+}}
+dictate($('#msg'),$('#mic'));
 $('#send').onclick=()=>{if(rec)rec.stop();send()};
 $('#msg').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&window.matchMedia('(pointer:fine)').matches){e.preventDefault();send()}});
 function autoH(){const t=$('#msg');t.style.height='auto';t.style.height=Math.min(120,t.scrollHeight)+'px'}
