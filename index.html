@@ -105,7 +105,10 @@ details.food summary .kv{white-space:nowrap;color:var(--mute);font-size:14px}
 .fgrid label{font-weight:500;font-size:14px}
 .fgrid input{width:100%;min-height:44px;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:6px 10px;font-size:16px}
 .ta{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:10px;font-size:16px}
-.est{color:#b7791f;font-weight:600}
+.src{font-size:12.5px;font-weight:600;white-space:normal}
+.src.ok{color:light-dark(#2a7a4b,#5cc58a)}
+.src.gen{color:light-dark(#a8740a,#e2b43c)}
+.src.nf{color:var(--bad)}
 .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 /* compositore */
 .comp{border-top:1px solid var(--line);background:var(--card);padding:8px 10px}
@@ -308,7 +311,10 @@ const sum=items=>{const t={miss:{},has:{}};KEYS.forEach(k=>t[k]=0);(items||[]).f
 const fv=(t,k,u)=>{const v=t[k];if(v===null||v===undefined)return'—';if(t.miss&&t.miss[k])return t.has&&t.has[k]?'≥'+f1(v)+u:'—';return f1(v)+u};
 const dayItems=d=>MEALS.flatMap(([k])=>d.meals[k]?d.meals[k].items:[]);
 const mline=t=>NUTR.slice(1).map(([k,l,u])=>`${l} ${fv(t,k,u)}`+(SUB[k]?` (di cui ${SUB[k][1]} ${fv(t,SUB[k][0],u)})`:'')).join(' · ');
-const clean=i=>{const o={nome:String(i.nome||'Alimento'),quantita:String(i.quantita||'')};o.kcal=num(i.kcal);KEYS.slice(1).forEach(k=>o[k]=nn(i[k]));if(i.imposto)o.imposto=true;if(i.alimento_id){o.alimento_id=String(i.alimento_id);o.grammi=nn(i.grammi);o.fattore=nn(i.fattore)}if(i.dalAlimenti)o.dalAlimenti=true;if(i.stima&&!i.imposto&&!i.alimento_id)o.stima=true;return o};
+const clean=i=>{const o={nome:String(i.nome||'Alimento'),quantita:String(i.quantita||'')};o.kcal=num(i.kcal);KEYS.slice(1).forEach(k=>o[k]=nn(i[k]));if(i.imposto)o.imposto=true;if(i.alimento_id){o.alimento_id=String(i.alimento_id);o.grammi=nn(i.grammi);o.fattore=nn(i.fattore)}if(i.dalAlimenti)o.dalAlimenti=true;const F=['utente','etichetta','generico','foto','non_trovato','alimenti','ricetta','preimpostato'];o.fonte=F.includes(i.fonte)?i.fonte:(i.dalAlimenti?'alimenti':i.imposto?'utente':i.stima?'generico':'generico');if(i.imposto)o.fonte='utente';
+  if(o.fonte==='non_trovato'){o.kcal=0;KEYS.slice(1).forEach(k=>o[k]=null)}return o};
+const SRC={alimenti:['ok','valore sicuro – Alimenti'],ricetta:['ok','valore sicuro – Ricette'],preimpostato:['ok','valore sicuro – Preimpostati'],utente:['ok','valore tuo'],etichetta:['ok','da etichetta'],generico:['gen','valore generico'],foto:['gen','stima da foto'],non_trovato:['nf','non trovato – cercare manualmente l\'alimento']};
+function srcTag(i){const f=i.fonte||(i.dalAlimenti?'alimenti':i.imposto?'utente':i.stima?'generico':'');const s=SRC[f];return s?` <span class="src ${s[0]}">(${s[1]})</span>`:''}
 function md(s){return esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/^\s*[-*•]\s+/gm,'• ').replace(/\n/g,'<br>')}
 
 function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}
@@ -318,7 +324,7 @@ $('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeSheet()})
 
 /* ---------- Gemini ---------- */
 const NUMN={type:'NUMBER',nullable:true};
-const ITEM={type:'OBJECT',properties:{nome:{type:'STRING'},quantita:{type:'STRING'},kcal:{type:'NUMBER'},proteine:NUMN,carboidrati:NUMN,zuccheri:NUMN,grassi:NUMN,saturi:NUMN,fibre:NUMN,sale:NUMN,imposto:{type:'BOOLEAN'},alimento_id:{type:'STRING',nullable:true},grammi:NUMN,fattore:NUMN,stima:{type:'BOOLEAN'}},required:['nome','quantita','kcal','proteine','carboidrati','zuccheri','grassi','saturi','fibre','sale']};
+const ITEM={type:'OBJECT',properties:{nome:{type:'STRING'},quantita:{type:'STRING'},kcal:{type:'NUMBER'},proteine:NUMN,carboidrati:NUMN,zuccheri:NUMN,grassi:NUMN,saturi:NUMN,fibre:NUMN,sale:NUMN,imposto:{type:'BOOLEAN'},alimento_id:{type:'STRING',nullable:true},grammi:NUMN,fattore:NUMN,fonte:{type:'STRING',enum:['utente','etichetta','generico','foto','non_trovato','alimenti']}},required:['nome','quantita','kcal','proteine','carboidrati','zuccheri','grassi','saturi','fibre','sale']};
 const SCHEMA_MEAL={type:'OBJECT',properties:{reply:{type:'STRING'},items:{type:'ARRAY',items:ITEM}},required:['reply','items']};
 const SCHEMA_REC={type:'OBJECT',properties:{reply:{type:'STRING'},ricetta:{type:'OBJECT',nullable:true,properties:{nome:{type:'STRING'},porzioni:{type:'NUMBER'},ingredienti:{type:'ARRAY',items:ITEM}},required:['nome','porzioni','ingredienti']}},required:['reply']};
 const SYS_MEAL=`Sei l'assistente di un diario alimentare per il conteggio di kcal e macronutrienti. L'utente ti descrive o fotografa gli alimenti di UN pasto (anche etichette nutrizionali).
@@ -329,7 +335,13 @@ In ogni messaggio ricevi la LISTA ATTUALE degli alimenti del pasto in JSON. Devi
 - le voci con "imposto": true le ha decise l'utente: non modificarle mai, salvo sua richiesta esplicita;
 - se il messaggio non riguarda il cibo, lascia la lista invariata.
 ALIMENTI SALVATI: se ricevi l'elenco "Alimenti salvati dall'utente" e un alimento citato corrisponde a uno di questi (anche con nome abbreviato), per quella voce compila "alimento_id" con il suo id e indica la quantità consumata in "grammi" (grammi o ml); usa le note (es. "1 vasetto = 170 g") per convertire pezzi in grammi. Se non è convertibile in grammi, metti grammi a null e compila "fattore" = quante volte il riferimento è stato consumato (es. riferimento "1 galletta", ne ha mangiate 3 → 3). I valori numerici di queste voci li ricalcola l'app con precisione: tu metti pure una stima. Se è ambiguo quale alimento salvato intende, scegli il più probabile e dillo nel reply. Per tutte le altre voci lascia alimento_id a null.
-ORDINE DI PRIORITÀ per ogni alimento: 1) valori imposti dall'utente; 2) alimenti salvati; 3) etichetta fotografata o valori letti dall'utente; 4) solo se nessuna di queste fonti è disponibile, valori generici dalle tabelle di composizione o stima da foto: in questo caso metti "stima": true. Se l'utente cita una marca precisa che non è tra gli alimenti salvati, usa i valori generici di quell'alimento, metti "stima": true e scrivi nel reply che hai usato un valore generico perché quella marca non è salvata (suggerendo di aggiungerla in Alimenti).
+NON INVENTARE MAI valori nutrizionali. Per ogni voce indica in "fonte" da dove vengono i valori, con questo ordine di priorità:
+1) "utente": valori imposti dall'utente (in quel caso anche "imposto": true);
+2) "alimenti": alimento salvato (vedi sopra, con alimento_id);
+3) "etichetta": valori letti da un'etichetta fotografata o dettati dall'utente da un'etichetta;
+4) "generico": valori standard delle tabelle di composizione che conosci con buona sicurezza (alimenti comuni, anche se l'utente cita una marca non salvata: in quel caso scrivi nel reply che hai usato il valore generico e suggerisci di salvare la marca in Alimenti);
+5) "foto": stima di porzione/composizione da foto di un piatto;
+6) "non_trovato": se NON conosci l'alimento o non hai valori affidabili, NON stimare: metti "fonte": "non_trovato", kcal 0 e tutti i macro null, e nel reply chiedi all'utente i valori o una foto dell'etichetta.
 CALCOLO NORMALE: per ogni alimento indica nome (con marca e formato se noti), quantita (es. "120 g", "2 gallette"), kcal, proteine, carboidrati, zuccheri (di cui zuccheri, g), grassi, saturi (di cui grassi saturi, g), fibre (fibre alimentari, g) e sale (g di sale, non sodio), riferiti alla quantità consumata, non a 100 g. Da una foto di un'etichetta leggi i valori per 100 g o per porzione e fai la proporzione. Usa i valori di etichetta della marca indicata se li conosci, altrimenti tabelle affidabili (es. CREA). Per le foto di piatti stima porzioni realistiche e dichiara le ipotesi.
 VALORI IMPOSTI DALL'UTENTE (hanno sempre la precedenza, mai ricalcolarli o "correggerli"; metti "imposto": true):
 - se l'utente dà kcal e/o macro per un alimento, usa ESATTAMENTE quei numeri;
@@ -395,7 +407,7 @@ function linkFood(i){
   const ref=refAmount(f.riferimento);let k=null;
   if(i.grammi&&ref)k=i.grammi/ref;else if(i.fattore)k=i.fattore;
   if(!k)return i;
-  const o={nome:f.nome,quantita:i.grammi?(f1(i.grammi)+(/ml/i.test(f.riferimento)?' ml':' g')):(i.quantita||f1(k)+' × '+f.riferimento),alimento_id:f.id,grammi:i.grammi,fattore:i.fattore,dalAlimenti:true};
+  const o={nome:f.nome,quantita:i.grammi?(f1(i.grammi)+(/ml/i.test(f.riferimento)?' ml':' g')):(i.quantita||f1(k)+' × '+f.riferimento),alimento_id:f.id,grammi:i.grammi,fattore:i.fattore,dalAlimenti:true,fonte:'alimenti'};
   KEYS.forEach(key=>{const v=f[key];o[key]=(v===null||v===undefined)?(key==='kcal'?0:null):Math.round(v*k*100)/100});
   return o;
 }
@@ -471,7 +483,7 @@ function renderHead(){
 function renderMeal(){
   $('#mealTabs').innerHTML=MEALS.map(([k,l])=>`<button data-meal="${k}" class="${k===ui.meal?'on':''}">${l}<small>${f0(sum(S.day.meals[k].items).kcal)} kcal</small></button>`).join('');
   const m=S.day.meals[ui.meal],t=sum(m.items);
-  $('#mealItems').innerHTML=`<h3>${mealName(ui.meal)}</h3>`+(m.items.length?m.items.map((i,ix)=>`<div class="it"><div><div class="n">${esc(i.nome)}</div><div class="q">${esc(i.quantita)}${i.imposto?' · valore tuo':''}${i.dalAlimenti?' · dai tuoi alimenti':''}${i.stima?' · <span class="est">stima generica</span>':''}</div></div><div class="k">${f0(i.kcal)} kcal</div><button class="x" data-del="${ix}" aria-label="Elimina ${esc(i.nome)}">×</button><div class="m">${mline(i)}</div></div>`).join('')+
+  $('#mealItems').innerHTML=`<h3>${mealName(ui.meal)}</h3>`+(m.items.length?m.items.map((i,ix)=>`<div class="it"><div><div class="n">${esc(i.nome)}</div><div class="q">${esc(i.quantita)}${srcTag(i)}</div></div><div class="k">${f0(i.kcal)} kcal</div><button class="x" data-del="${ix}" aria-label="Elimina ${esc(i.nome)}">×</button><div class="m">${mline(i)}</div></div>`).join('')+
     `<div class="tot"><span>Totale ${mealName(ui.meal).toLowerCase()}</span><span>${f0(t.kcal)} kcal</span><small>${mline(t)}</small></div>`
     :`<div class="empty">Ancora niente. Scrivi cosa hai mangiato o allega una foto: il conteggio si aggiorna da solo, e se correggi qualcosa in chat vale sempre l'ultima versione.</div>`);
   $('#mealChat').innerHTML=m.chat.map(msgHtml).join('')+(ui.busy?'<div class="typing">Sto calcolando<i></i><i></i><i></i></div>':'');
@@ -537,7 +549,7 @@ function addRecipe(id){
     <div class="row"><button class="btn" id="okAdd">Aggiungi</button><button class="btn ghost" id="noSheet">Annulla</button></div>`);
     document.querySelectorAll('[data-pm]').forEach(x=>x.onclick=()=>{meal=x.dataset.pm;draw()});
     $('#pm').onclick=()=>{p=Math.max(.5,p-.5);draw()};$('#pp').onclick=()=>{p=Math.min(10,p+.5);draw()};
-    $('#okAdd').onclick=()=>{const t=sum(r.ingredienti);const it={nome:'Ricetta: '+r.nome,quantita:f1(p)+(p===1?' porzione':' porzioni')};KEYS.forEach(k=>it[k]=(t.miss[k]&&!t.has[k])?null:t[k]*p);
+    $('#okAdd').onclick=()=>{const t=sum(r.ingredienti);const it={nome:'Ricetta: '+r.nome,quantita:f1(p)+(p===1?' porzione':' porzioni'),fonte:'ricetta'};KEYS.forEach(k=>it[k]=(t.miss[k]&&!t.has[k])?null:t[k]*p);
       const m=S.day.meals[meal];m.items.push(it);m.chat.push({role:'u',text:`(Aggiunta dal ricettario: ${r.nome}, ${it.quantita})`});save();closeSheet();ui.view='diario';ui.meal=meal;render();toast('Aggiunta a '+mealName(meal))}};
   draw();
 }
