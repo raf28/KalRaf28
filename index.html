@@ -31,6 +31,13 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 .head{background:var(--brand);color:#fff;padding:calc(env(safe-area-inset-top) + 14px) 16px 16px}
 .head .in{max-width:720px;margin:0 auto}
 .dayline{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;opacity:.9}
+.dnav{display:flex;align-items:center;gap:6px;min-width:0}
+.arw{width:30px;height:30px;flex:none;border-radius:50%;border:1px solid rgba(255,255,255,.45);color:#fff;font-size:20px;line-height:1;display:grid;place-items:center;padding:0 0 2px}
+.arw:disabled{opacity:.25}
+.histbar{background:#7a5c12!important;flex-wrap:wrap}
+.histbar b{font-size:15px}
+.histbar .mbtn{white-space:nowrap}
+.histbar>div{flex:1 1 150px}
 .pill{border:1px solid rgba(255,255,255,.45);border-radius:99px;padding:8px 14px;color:#fff;font-size:14px;min-height:40px}
 .kc{display:flex;align-items:baseline;gap:8px;margin:10px 0 8px;flex-wrap:wrap}
 .kc b{font-size:46px;line-height:1;font-weight:700}
@@ -232,7 +239,7 @@ details.card summary::-webkit-details-marker{display:none}
   <main id="main">
     <section id="v-diario">
       <div class="head"><div class="in">
-        <div class="dayline"><span id="dayLabel"></span><button class="pill" id="closeDay">Chiudi giornata</button></div>
+        <div class="dayline"><span class="dnav"><button class="arw" id="dPrev" aria-label="Giornata precedente">‹</button><span id="dayLabel"></span><button class="arw" id="dNext" aria-label="Giornata successiva">›</button></span><button class="pill" id="closeDay">Chiudi giornata</button></div>
         <div class="kc"><b id="kNow">0</b><span class="of">/ <span id="kTarget"></span> kcal<span class="bon" id="kBon"></span></span><span class="left" id="kLeft"></span></div>
         <div class="bar"><div class="zone" id="bZone"></div><div class="fill" id="bFill"></div><div class="mk" id="bMk"></div></div>
         <div class="legend"><span>0</span><span id="lgMax"></span></div>
@@ -397,7 +404,7 @@ normalize();prune();
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Impossibile salvare: esporta un backup')}}
 
 function guessMeal(){const h=new Date().getHours();if(h>=4&&h<11)return'colazione';if(h>=11&&h<15)return'pranzo';if(h>=15&&h<18){return S.day&&S.day.curSnack||'spuntino1'}return'cena'}
-const ui={view:'diario',meal:null,rec:'chat',photo:null,busy:false};
+const ui={view:'diario',meal:null,dv:null,hmeal:null,rec:'chat',photo:null,busy:false};
 
 const nn=v=>(v===null||v===undefined||v==='')?null:num(v);
 const sum=items=>{const t={miss:{},has:{}};KEYS.forEach(k=>t[k]=0);(items||[]).forEach(i=>KEYS.forEach(k=>{const v=nn(i[k]);if(v===null)t.miss[k]=true;else{t[k]+=v;t.has[k]=true}}));return t};
@@ -584,15 +591,24 @@ function render(){
   $('#send').disabled=ui.busy;
   if(false){}else{$('#msg').disabled=$('#mic').disabled=$('#bCam').disabled=$('#bGal').disabled=false}
   $('#pills').hidden=ui.view!=='diario';$('#ctx').hidden=ui.view==='diario';
-  if(ui.view==='diario'){if(ui.meal)ensureMeal(ui.meal);renderHead();renderMeal();renderPills();$('#msg').placeholder=ui.meal?'Cosa hai mangiato?':'Scegli prima un pasto ↑'}
+  if(ui.view==='diario'&&ui.dv!==null){$('#comp').hidden=true;renderHead();renderHistDay();}
+  else if(ui.view==='diario'){if(ui.meal)ensureMeal(ui.meal);renderHead();renderMeal();renderPills();$('#msg').placeholder=ui.meal?'Cosa hai mangiato?':'Scegli prima un pasto ↑'}
   if(ui.view==='ricette'){renderRec();$('#ctx').textContent='Chat ricette · non viene contata nel diario';$('#msg').placeholder='Chiedi un\'idea o una ricetta'}
   if(ui.view==='storico')renderHist();
   if(ui.view==='alimenti')renderFoods();
   if(ui.view==='impost')renderSet();
   if(chatView)requestAnimationFrame(()=>{const m=$('#main');m.scrollTop=m.scrollHeight});
 }
+function histDay(i){const h=S.history[i];if(!h)return null;const meals={};
+  if(h.full)Object.keys(h.full).forEach(k=>{meals[k]={items:h.full[k].items||[],chat:h.full[k].chat||[],closed:h.full[k].closed}});
+  else Object.keys(h.meals||{}).forEach(k=>{meals[k==='spuntino'?'spuntino1':k]={items:h.meals[k]||[],chat:[]}});
+  return{start:h.start,end:h.end,meals,target:h.target,margin:h.margin}}
+function viewDay(){return ui.dv===null?S.day:histDay(ui.dv)}
 function renderHead(){
-  const t=sum(dayItems(S.day)),{target,margin}=S.settings,max=target+margin;
+  const D=viewDay()||S.day,H=ui.dv!==null;
+  const t=sum(dayItems(D)),target=H?D.target:S.settings.target,margin=H?D.margin:S.settings.margin,max=target+margin;
+  $('#dPrev').disabled=ui.dv===null?!S.history.length:ui.dv>=S.history.length-1;$('#dNext').disabled=ui.dv===null;
+  $('#closeDay').hidden=H;
   const scale=Math.max(max*1.12,t.kcal*1.02);
   const st=t.kcal<=target?'ok':t.kcal<=max?'warn':'bad';
   $('#kNow').textContent=f0(t.kcal);$('#kTarget').textContent=f0(target);
@@ -603,10 +619,32 @@ function renderHead(){
   $('#kBon').textContent=margin?` (+${f0(margin)})`:'';
   $('#lgMax').textContent=margin?`obiettivo ${f0(target)} · bonus fino a ${f0(max)}`:`obiettivo ${f0(target)}`;
   $('#dMacros').innerHTML=NUTR.slice(1).map(([k,l,u])=>`<div><b>${fv(t,k,u)}</b><span>${l==='Carboidrati'?'Carbo':l}</span>${SUB[k]?`<small>${SUB[k][1]} ${fv(t,SUB[k][0],u)}</small>`:''}</div>`).join('');
-  const d=new Date(S.day.start);
+  const d=new Date(D.start);
   $('#dayLabel').textContent=(window.innerWidth<600?'':'Giornata iniziata ')+d.toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'})+' alle '+d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
 }
+function renderHistDay(){
+  const D=histDay(ui.dv);if(!D){ui.dv=null;render();return}
+  const keys=orderKeys(Object.keys(D.meals)).filter(k=>D.meals[k].items.length);
+  if(!keys.includes(ui.hmeal))ui.hmeal=keys[0]||null;
+  $('#mealTabs').hidden=!keys.length;
+  $('#mealTabs').innerHTML=keys.map(k=>`<button data-hmeal="${k}" class="${k===ui.hmeal?'on':''}">${mealName(k)}<small>${f0(sum(D.meals[k].items).kcal)} kcal</small></button>`).join('');
+  const bar=$('#mealBar');bar.hidden=false;bar.classList.add('histbar');
+  bar.innerHTML=`<div><b>Giornata archiviata</b><small>${ui.dv===0?'puoi riaprirla per modificarla':'sola consultazione'}</small></div>${ui.dv===0?'<button class="mbtn" id="reopenDay">Riapri giornata</button>':''}<button class="mbtn" id="backToday">Oggi ›</button>`;
+  if(!ui.hmeal){$('#mealItems').innerHTML='<div class="empty">Nessun alimento in questa giornata.</div>';$('#mealChat').innerHTML='';return}
+  const m=D.meals[ui.hmeal],t=sum(m.items);
+  $('#mealItems').innerHTML=m.items.map(i=>`<div class="it"><div><div class="n">${esc(i.nome)}</div><div class="q">${esc(i.quantita)}${srcTag(i)}</div></div><div class="k">${f0(i.kcal)} kcal</div><span></span><div class="m">${mline(i)}</div></div>`).join('')+`<div class="tot"><span>Totale ${mealName(ui.hmeal).toLowerCase()}</span><span>${f0(t.kcal)} kcal</span><small>${mline(t)}</small></div>`;
+  $('#mealChat').innerHTML=m.chat.map(msgHtml).join('');
+}
+function reopenDay(){
+  const h=S.history[0];if(!h)return;
+  if(dayItems(S.day).length){sheet(`<h3>Non posso riaprirla</h3><p class="hm">La giornata attuale contiene già degli alimenti. Riaprire la giornata archiviata li sovrascriverebbe. Svuota prima i pasti della giornata attuale, oppure continua così.</p><div class="row between"><button class="btn ghost" id="noSheet">Annulla</button></div>`);return}
+  const D=histDay(0);S.day={id:h.id,start:h.start,meals:D.meals,curSnack:h.curSnack};S.history.shift();normalize();
+  ui.dv=null;ui.meal=null;save();render();toast('Giornata riaperta: puoi modificarla');
+}
+$('#dPrev').onclick=()=>{ui.dv=ui.dv===null?0:Math.min(S.history.length-1,ui.dv+1);ui.hmeal=null;render();$('#main').scrollTop=0};
+$('#dNext').onclick=()=>{ui.dv=ui.dv>0?ui.dv-1:null;ui.hmeal=null;render();$('#main').scrollTop=0};
 function renderMeal(){
+  $('#mealBar').classList.remove('histbar');
   const started=orderKeys(Object.keys(S.day.meals)).filter(k=>{const m=S.day.meals[k];return m.items.length||m.chat.length});
   if(!ui.meal){$('#mealTabs').hidden=!started.length;$('#mealBar').hidden=true;
     $('#mealTabs').innerHTML=started.map(k=>`<button data-meal="${k}">${mealName(k)}<small>${f0(sum(S.day.meals[k].items).kcal)} kcal</small></button>`).join('');
@@ -679,6 +717,9 @@ document.addEventListener('click',e=>{
   if(b.hasAttribute('data-collapse')){const d=b.closest('details');if(d){d.open=false;d.scrollIntoView({block:'nearest'})}return}
   if(b.dataset.v){go(b.dataset.v);return}
   if(b.dataset.meal){ui.meal=b.dataset.meal;render();return}
+  if(b.dataset.hmeal){ui.hmeal=b.dataset.hmeal;render();return}
+  if(b.id==='reopenDay'){reopenDay();return}
+  if(b.id==='backToday'){ui.dv=null;render();return}
   if(b.dataset.rtab){ui.rec=b.dataset.rtab;render();return}
   if(b.dataset.del!==undefined){const m=S.day.meals[ui.meal];const it=m.items[+b.dataset.del];m.items.splice(+b.dataset.del,1);m.chat.push({role:'u',text:`(Ho eliminato a mano: ${it?it.nome:'una voce'})`});save();render();return}
   if(b.dataset.saverec!==undefined){const m=S.recChat[+b.dataset.saverec];if(m&&m.ricetta){S.recipes.unshift({id:'r'+Date.now(),src:m.ts,...m.ricetta});save();toast('Ricetta salvata');render()}return}
@@ -825,9 +866,9 @@ $('#closeDay').onclick=()=>{
   <p class="hm">La giornata va nello storico e se ne apre una nuova, vuota.</p><div class="row between"><button class="btn ghost" id="noSheet">Annulla</button><button class="btn" id="okClose">Chiudi e apri nuova</button></div>`);
   $('#okClose').onclick=()=>{
     const meals={};orderKeys(Object.keys(S.day.meals)).forEach(k=>{if(S.day.meals[k].items.length)meals[k]=S.day.meals[k].items});
-    if(dayItems(S.day).length)S.history.unshift({id:S.day.id,start:S.day.start,end:new Date().toISOString(),meals,tot:t,target,margin});
+    if(dayItems(S.day).length)S.history.unshift({id:S.day.id,start:S.day.start,end:new Date().toISOString(),meals,tot:t,target,margin,curSnack:S.day.curSnack,full:JSON.parse(JSON.stringify(S.day.meals))});
     if(S.history.length>400)S.history.length=400;prune();
-    S.day=newDay();ui.meal=null;save();closeSheet();render();toast('Nuova giornata aperta');
+    S.day=newDay();ui.meal=null;ui.dv=null;save();closeSheet();render();toast('Nuova giornata aperta');
   };
 };
 function showMealBar(){requestAnimationFrame(()=>{const st=document.querySelector('.mstick'),mn=$('#main');if(!st)return;const top=st.offsetTop;if(mn.scrollTop<top)mn.scrollTo({top,behavior:'smooth'})})}
