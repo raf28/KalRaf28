@@ -41,6 +41,7 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .macros div{background:rgba(255,255,255,.1);border-radius:10px;padding:6px 4px;text-align:center}
 .macros b{display:block;font-size:16px}
 .macros span{font-size:13px;opacity:.85}
+.macros small{display:block;font-size:11.5px;opacity:.75;line-height:1.2;margin-top:2px}
 /* pasti */
 .seg{display:flex;gap:6px;overflow-x:auto;padding:14px 0 10px;scrollbar-width:none}
 .seg button{flex:none;min-height:44px;padding:6px 14px;border-radius:12px;background:var(--card);border:1px solid var(--line);text-align:left;line-height:1.2}
@@ -238,6 +239,8 @@ const PIN_HASH='9693c64e8d38b6080f44b36a26529bbcf06ef282d073a8d7ebe30adc29f55786
 const API='https://generativelanguage.googleapis.com/v1beta/';
 const MEALS=[['colazione','Colazione'],['pranzo','Pranzo'],['cena','Cena'],['spuntino','Spuntino']];
 const NUTR=[['kcal','kcal',''],['proteine','Proteine','g'],['carboidrati','Carboidrati','g'],['grassi','Grassi','g'],['fibre','Fibre','g'],['sale','Sale','g']];
+const SUB={carboidrati:['zuccheri','zuccheri'],grassi:['saturi','saturi']};
+const KEYS=['kcal','proteine','carboidrati','zuccheri','grassi','saturi','fibre','sale'];
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const num=v=>{const n=Number(String(v).replace(',','.'));return isFinite(n)&&n>0?n:0};
@@ -263,11 +266,11 @@ function guessMeal(){const h=new Date().getHours();if(h>=4&&h<11)return'colazion
 const ui={view:'diario',meal:guessMeal(),rec:'chat',photo:null,busy:false};
 
 const nn=v=>(v===null||v===undefined||v==='')?null:num(v);
-const sum=items=>{const t={miss:{},has:{}};NUTR.forEach(([k])=>t[k]=0);(items||[]).forEach(i=>NUTR.forEach(([k])=>{const v=nn(i[k]);if(v===null)t.miss[k]=true;else{t[k]+=v;t.has[k]=true}}));return t};
+const sum=items=>{const t={miss:{},has:{}};KEYS.forEach(k=>t[k]=0);(items||[]).forEach(i=>KEYS.forEach(k=>{const v=nn(i[k]);if(v===null)t.miss[k]=true;else{t[k]+=v;t.has[k]=true}}));return t};
 const fv=(t,k,u)=>{const v=t[k];if(v===null||v===undefined)return'—';if(t.miss&&t.miss[k])return t.has&&t.has[k]?'≥'+f1(v)+u:'—';return f1(v)+u};
 const dayItems=d=>MEALS.flatMap(([k])=>d.meals[k]?d.meals[k].items:[]);
-const mline=t=>NUTR.slice(1).map(([k,l,u])=>`${l} ${fv(t,k,u)}`).join(' · ');
-const clean=i=>{const o={nome:String(i.nome||'Alimento'),quantita:String(i.quantita||'')};o.kcal=num(i.kcal);NUTR.slice(1).forEach(([k])=>o[k]=nn(i[k]));if(i.imposto)o.imposto=true;return o};
+const mline=t=>NUTR.slice(1).map(([k,l,u])=>`${l} ${fv(t,k,u)}`+(SUB[k]?` (di cui ${SUB[k][1]} ${fv(t,SUB[k][0],u)})`:'')).join(' · ');
+const clean=i=>{const o={nome:String(i.nome||'Alimento'),quantita:String(i.quantita||'')};o.kcal=num(i.kcal);KEYS.slice(1).forEach(k=>o[k]=nn(i[k]));if(i.imposto)o.imposto=true;return o};
 function md(s){return esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/^\s*[-*•]\s+/gm,'• ').replace(/\n/g,'<br>')}
 
 function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}
@@ -277,7 +280,7 @@ $('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeSheet()})
 
 /* ---------- Gemini ---------- */
 const NUMN={type:'NUMBER',nullable:true};
-const ITEM={type:'OBJECT',properties:{nome:{type:'STRING'},quantita:{type:'STRING'},kcal:{type:'NUMBER'},proteine:NUMN,carboidrati:NUMN,grassi:NUMN,fibre:NUMN,sale:NUMN,imposto:{type:'BOOLEAN'}},required:['nome','quantita','kcal','proteine','carboidrati','grassi','fibre','sale']};
+const ITEM={type:'OBJECT',properties:{nome:{type:'STRING'},quantita:{type:'STRING'},kcal:{type:'NUMBER'},proteine:NUMN,carboidrati:NUMN,zuccheri:NUMN,grassi:NUMN,saturi:NUMN,fibre:NUMN,sale:NUMN,imposto:{type:'BOOLEAN'}},required:['nome','quantita','kcal','proteine','carboidrati','zuccheri','grassi','saturi','fibre','sale']};
 const SCHEMA_MEAL={type:'OBJECT',properties:{reply:{type:'STRING'},items:{type:'ARRAY',items:ITEM}},required:['reply','items']};
 const SCHEMA_REC={type:'OBJECT',properties:{reply:{type:'STRING'},ricetta:{type:'OBJECT',nullable:true,properties:{nome:{type:'STRING'},porzioni:{type:'NUMBER'},ingredienti:{type:'ARRAY',items:ITEM}},required:['nome','porzioni','ingredienti']}},required:['reply']};
 const SYS_MEAL=`Sei l'assistente di un diario alimentare per il conteggio di kcal e macronutrienti. L'utente ti descrive o fotografa gli alimenti di UN pasto (anche etichette nutrizionali).
@@ -287,14 +290,14 @@ In ogni messaggio ricevi la LISTA ATTUALE degli alimenti del pasto in JSON. Devi
 - se l'utente dice di togliere qualcosa, rimuovilo;
 - le voci con "imposto": true le ha decise l'utente: non modificarle mai, salvo sua richiesta esplicita;
 - se il messaggio non riguarda il cibo, lascia la lista invariata.
-CALCOLO NORMALE: per ogni alimento indica nome (con marca e formato se noti), quantita (es. "120 g", "2 gallette"), kcal, proteine, carboidrati, grassi, fibre (fibre alimentari, g) e sale (g di sale, non sodio), riferiti alla quantità consumata, non a 100 g. Da una foto di un'etichetta leggi i valori per 100 g o per porzione e fai la proporzione. Usa i valori di etichetta della marca indicata se li conosci, altrimenti tabelle affidabili (es. CREA). Per le foto di piatti stima porzioni realistiche e dichiara le ipotesi.
+CALCOLO NORMALE: per ogni alimento indica nome (con marca e formato se noti), quantita (es. "120 g", "2 gallette"), kcal, proteine, carboidrati, zuccheri (di cui zuccheri, g), grassi, saturi (di cui grassi saturi, g), fibre (fibre alimentari, g) e sale (g di sale, non sodio), riferiti alla quantità consumata, non a 100 g. Da una foto di un'etichetta leggi i valori per 100 g o per porzione e fai la proporzione. Usa i valori di etichetta della marca indicata se li conosci, altrimenti tabelle affidabili (es. CREA). Per le foto di piatti stima porzioni realistiche e dichiara le ipotesi.
 VALORI IMPOSTI DALL'UTENTE (hanno sempre la precedenza, mai ricalcolarli o "correggerli"; metti "imposto": true):
 - se l'utente dà kcal e/o macro per un alimento, usa ESATTAMENTE quei numeri;
 - se dà solo le kcal, metti quelle kcal e lascia i macro a null (non stimarli), a meno che chieda esplicitamente di stimarli: allora stimali coerenti con le kcal date;
 - se dà il totale dell'intero pasto (es. "il pranzo completo era 700 kcal"), la lista diventa UNA sola voce con quel totale (nome tipo "Pranzo completo"), sostituendo le voci precedenti; macro a null se non dati.
 In "reply" scrivi in italiano, breve: cosa hai aggiunto o cambiato e le ipotesi fatte. Non scrivere i totali: li calcola l'app.`;
 const SYS_REC=`Sei un cuoco e consulente nutrizionale che aiuta una persona che segue una dieta. Rispondi in italiano, in modo pratico e conciso: idee, ricette, varianti più leggere, sostituzioni.
-Quando proponi UNA ricetta concreta, compila "ricetta" con nome, porzioni e la lista degli ingredienti con quantità e valori nutrizionali (kcal, proteine, carboidrati, grassi, fibre, sale in g) PER UNA PORZIONE. Altrimenti lascia "ricetta" a null.
+Quando proponi UNA ricetta concreta, compila "ricetta" con nome, porzioni e la lista degli ingredienti con quantità e valori nutrizionali (kcal, proteine, carboidrati, grassi, fibre, sale in g) (compresi zuccheri e grassi saturi) PER UNA PORZIONE. Altrimenti lascia "ricetta" a null.
 Nel testo di "reply" indica sempre per la ricetta proposta kcal e macro per porzione, comprese fibre e sale.`;
 
 const SCHEMA_IMP={type:'OBJECT',properties:{ricette:{type:'ARRAY',items:{type:'OBJECT',properties:{nome:{type:'STRING'},porzioni:{type:'NUMBER'},ingredienti:{type:'ARRAY',items:ITEM}},required:['nome','porzioni','ingredienti']}}},required:['ricette']};
@@ -409,7 +412,7 @@ function renderHead(){
   $('#bZone').style.left=target/scale*100+'%';$('#bZone').style.width=margin/scale*100+'%';
   $('#bMk').style.left=target/scale*100+'%';
   $('#lgMax').textContent=margin?`obiettivo ${f0(target)} · bonus fino a ${f0(max)}`:`obiettivo ${f0(target)}`;
-  $('#dMacros').innerHTML=NUTR.slice(1).map(([k,l,u])=>`<div><b>${fv(t,k,u)}</b><span>${l==='Carboidrati'?'Carbo':l}</span></div>`).join('');
+  $('#dMacros').innerHTML=NUTR.slice(1).map(([k,l,u])=>`<div><b>${fv(t,k,u)}</b><span>${l==='Carboidrati'?'Carbo':l}</span>${SUB[k]?`<small>${SUB[k][1]} ${fv(t,SUB[k][0],u)}</small>`:''}</div>`).join('');
   const d=new Date(S.day.start);
   $('#dayLabel').textContent='Giornata iniziata '+d.toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'})+' alle '+d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
 }
@@ -479,7 +482,7 @@ function addRecipe(id){
     <div class="row"><button class="btn" id="okAdd">Aggiungi</button><button class="btn ghost" id="noSheet">Annulla</button></div>`);
     document.querySelectorAll('[data-pm]').forEach(x=>x.onclick=()=>{meal=x.dataset.pm;draw()});
     $('#pm').onclick=()=>{p=Math.max(.5,p-.5);draw()};$('#pp').onclick=()=>{p=Math.min(10,p+.5);draw()};
-    $('#okAdd').onclick=()=>{const t=sum(r.ingredienti);const it={nome:'Ricetta: '+r.nome,quantita:f1(p)+(p===1?' porzione':' porzioni')};NUTR.forEach(([k])=>it[k]=(t.miss[k]&&!t.has[k])?null:t[k]*p);
+    $('#okAdd').onclick=()=>{const t=sum(r.ingredienti);const it={nome:'Ricetta: '+r.nome,quantita:f1(p)+(p===1?' porzione':' porzioni')};KEYS.forEach(k=>it[k]=(t.miss[k]&&!t.has[k])?null:t[k]*p);
       const m=S.day.meals[meal];m.items.push(it);m.chat.push({role:'u',text:`(Aggiunta dal ricettario: ${r.nome}, ${it.quantita})`});save();closeSheet();ui.view='diario';ui.meal=meal;render();toast('Aggiunta a '+mealName(meal))}};
   draw();
 }
