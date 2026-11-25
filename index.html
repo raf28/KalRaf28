@@ -161,7 +161,25 @@ details.card summary::-webkit-details-marker{display:none}
 .lock .err{min-height:22px;color:#ffd7cc}
 .shake{animation:sh .35s}
 @keyframes sh{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
-@media(max-width:380px){nav button{font-size:10px}.kc b{font-size:38px}.macros span{font-size:12px}}
+.kc .bon{font-size:.85em;opacity:.8}
+@media(max-width:600px){
+  .head{padding:calc(env(safe-area-inset-top) + 8px) 12px 10px}
+  .dayline{font-size:12.5px}
+  .pill{min-height:30px;padding:3px 10px;font-size:12.5px}
+  .kc{margin:4px 0 6px;gap:6px}
+  .kc b{font-size:30px}
+  .kc .of{font-size:14px}
+  .kc .left{font-size:12.5px;padding:2px 8px}
+  .bar{height:9px}
+  .legend{display:none}
+  .macros{margin-top:7px;gap:4px}
+  .macros div{padding:3px 2px;border-radius:8px}
+  .macros b{font-size:13px}
+  .macros span{font-size:10.5px}
+  .macros small{font-size:9.5px;margin-top:0}
+  .seg{padding:10px 0 8px}
+}
+@media(max-width:380px){nav button{font-size:10px}.kc b{font-size:28px}.macros span{font-size:12px}}
 </style>
 </head>
 <body>
@@ -178,7 +196,7 @@ details.card summary::-webkit-details-marker{display:none}
     <section id="v-diario">
       <div class="head"><div class="in">
         <div class="dayline"><span id="dayLabel"></span><button class="pill" id="closeDay">Chiudi giornata</button></div>
-        <div class="kc"><b id="kNow">0</b><span class="of">/ <span id="kTarget"></span> kcal</span><span class="left" id="kLeft"></span></div>
+        <div class="kc"><b id="kNow">0</b><span class="of">/ <span id="kTarget"></span> kcal<span class="bon" id="kBon"></span></span><span class="left" id="kLeft"></span></div>
         <div class="bar"><div class="zone" id="bZone"></div><div class="fill" id="bFill"></div><div class="mk" id="bMk"></div></div>
         <div class="legend"><span>0</span><span id="lgMax"></span></div>
         <div class="macros" id="dMacros"></div>
@@ -502,13 +520,21 @@ function renderHead(){
   const fill=$('#bFill');fill.style.width=Math.min(100,t.kcal/scale*100)+'%';fill.style.background=`var(--${st})`;
   $('#bZone').style.left=target/scale*100+'%';$('#bZone').style.width=margin/scale*100+'%';
   $('#bMk').style.left=target/scale*100+'%';
+  $('#kBon').textContent=margin?` (+${f0(margin)})`:'';
   $('#lgMax').textContent=margin?`obiettivo ${f0(target)} · bonus fino a ${f0(max)}`:`obiettivo ${f0(target)}`;
   $('#dMacros').innerHTML=NUTR.slice(1).map(([k,l,u])=>`<div><b>${fv(t,k,u)}</b><span>${l==='Carboidrati'?'Carbo':l}</span>${SUB[k]?`<small>${SUB[k][1]} ${fv(t,SUB[k][0],u)}</small>`:''}</div>`).join('');
   const d=new Date(S.day.start);
-  $('#dayLabel').textContent='Giornata iniziata '+d.toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'})+' alle '+d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+  $('#dayLabel').textContent=(window.innerWidth<600?'':'Giornata iniziata ')+d.toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'})+' alle '+d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
 }
 function renderMeal(){
-  $('#mealTabs').innerHTML=visibleMeals().map(k=>`<button data-meal="${k}" class="${k===ui.meal?'on':''}">${mealName(k)}<small>${f0(sum(ensureMeal(k).items).kcal)} kcal</small></button>`).join('');
+  const started=orderKeys(Object.keys(S.day.meals)).filter(k=>{const m=S.day.meals[k];return m.items.length||m.chat.length});
+  const m0=ensureMeal(ui.meal),isStarted=started.includes(ui.meal);
+  $('#mealTabs').hidden=!started.length;
+  if(!isStarted){
+    $('#mealTabs').innerHTML=started.map(k=>`<button data-meal="${k}">${mealName(k)}<small>${f0(sum(S.day.meals[k].items).kcal)} kcal</small></button>`).join('');
+    $('#mealItems').innerHTML=`<div class="empty">${started.length?'Stai per iniziare: <b>'+mealName(ui.meal)+'</b>. ':''}Scegli il pasto qui sotto e scrivi, detta o fotografa cosa hai mangiato: il conteggio si aggiorna da solo, e se correggi qualcosa in chat vale sempre l'ultima versione.</div>`;
+    $('#mealChat').innerHTML=ui.busy?'<div class="typing">Sto calcolando<i></i><i></i><i></i></div>':'';return}
+  $('#mealTabs').innerHTML=started.map(k=>`<button data-meal="${k}" class="${k===ui.meal?'on':''}">${mealName(k)}<small>${f0(sum(ensureMeal(k).items).kcal)} kcal</small></button>`).join('');
   const m=S.day.meals[ui.meal],t=sum(m.items);
   $('#mealItems').innerHTML=`<h3>${mealName(ui.meal)}${isClosed(ui.meal)?' <span class="hm" style="font-weight:400">· chiuso, sola lettura</span>':''}</h3>`+(m.items.length?m.items.map((i,ix)=>`<div class="it"><div><div class="n">${esc(i.nome)}</div><div class="q">${esc(i.quantita)}${srcTag(i)}</div></div><div class="k">${f0(i.kcal)} kcal</div>${isClosed(ui.meal)?'<span></span>':`<button class="x" data-del="${ix}" aria-label="Elimina ${esc(i.nome)}">×</button>`}<div class="m">${mline(i)}</div></div>`).join('')+
     `<div class="tot"><span>Totale ${mealName(ui.meal).toLowerCase()}</span><span>${f0(t.kcal)} kcal</span><small>${mline(t)}</small></div>`
