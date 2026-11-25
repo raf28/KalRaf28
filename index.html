@@ -331,7 +331,7 @@ details.card summary::-webkit-details-marker{display:none}
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 38 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 39 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -836,8 +836,13 @@ const SYS_FOOD=`Crea la scheda di un alimento (di solito un prodotto confezionat
 Riscrivi tutto in italiano corretto e ordinato:
 - nome: iniziale maiuscola, formato "Prodotto – Marca" con eventuali varianti o formato (es. "Yogurt greco 0% – Fage", "Gallette di farro – Marca X");
 - riferimento: la base dei valori, es. "100 g", "100 ml", "1 vasetto (170 g)";
-- valori: ESATTAMENTE quelli indicati dall'utente o letti in etichetta, senza modificarli. Se l'utente dà valori e c'è anche una foto, prevalgono quelli dell'utente. Sale in grammi (se l'etichetta riporta solo il sodio, sale = sodio × 2,5). Valori assenti: null, non inventarli; solo se mancano del tutto le kcal puoi stimarle e devi scriverlo nelle note;
+- valori: ESATTAMENTE quelli indicati dall'utente o letti in etichetta, senza modificarli. Se l'utente dà valori e c'è anche una foto, prevalgono quelli dell'utente. Sale in grammi (se l'etichetta riporta solo il sodio, sale = sodio × 2,5). Se ci sono i valori nutrizionali (etichetta o elenco dell'utente) e alcuni macro non compaiono, quei macro valgono 0 (scrivi 0, senza note). Se invece l'utente dà solo le kcal, senza nessun macro e senza foto della tabella, lascia tutti i macro a null. Solo se mancano del tutto le kcal puoi stimarle e devi scriverlo nelle note;
 - note: le precisazioni dell'utente riscritte pulite e brevi (es. "1 galletta = 8 g", "da conservare in frigo"); stringa vuota se non ce ne sono.`;
+const MKEYS=FKEYS.filter(([k])=>k!=='kcal').map(([k])=>k);
+const isNil=v=>v===null||v===undefined||v==='';
+function fixMacros(o){if(!o)return false;const has=MKEYS.some(k=>!isNil(o[k]));if(!has)return false;let ch=false;MKEYS.forEach(k=>{if(isNil(o[k])){o[k]=0;ch=true}});return ch}
+function macroNote(f){const miss=FKEYS.filter(([k])=>k!=='kcal'&&isNil(f[k]));if(!miss.length)return'';if(miss.length===MKEYS.length)return'Macro non presenti: per questo alimento sono indicate solo le kcal.';return'Macro non specificati: '+miss.map(([,l])=>l.replace('di cui ','')).join(', ')+'.'}
+if(S.foods.filter(f=>fixMacros(f)).length){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 function foodsCtx(){if(!S.foods.length)return'';return'\nAlimenti salvati dall\'utente (JSON, valori riferiti a "riferimento"): '+JSON.stringify(S.foods.map(f=>{const o={id:f.id,nome:f.nome,riferimento:f.riferimento};FKEYS.forEach(([k])=>{if(f[k]!==null&&f[k]!==undefined)o[k]=f[k]});if(f.note)o.note=f.note;return o}))}
 const letterOf=n=>{const c=String(n||'').normalize('NFD').replace(/[̀-ͯ]/g,'').trim().charAt(0).toUpperCase();return/[A-Z]/.test(c)?c:'#'};
 const fval=(v,u,k)=>v===null||v===undefined||v===''?'—':(u==='kcal'?f0(v)+' kcal':fk(k,v)+' '+u);
@@ -850,7 +855,7 @@ function renderFoods(){
   list.forEach(f=>{const L=letterOf(f.nome);if(L!==cur){cur=L;h+=`<div class="letter">${L}</div>`}
     h+=`<details class="card food" data-fid="${esc(f.id)}"><summary><span class="nm">${esc(f.nome)}</span><span class="kv">${fval(f.kcal,'kcal')} / ${esc(f.riferimento||'100 g')}</span></summary>
     <table class="vt"><tbody><tr><td>Riferimento</td><td>${esc(f.riferimento||'100 g')}</td></tr>${FKEYS.map(([k,l,u])=>`<tr class="${l.startsWith('di cui')?'sub':''}"><td>${l}</td><td>${fval(f[k],u,k)}</td></tr>`).join('')}</tbody></table>
-    ${f.note?`<p style="margin:10px 0 0"><b>Note:</b> ${esc(f.note)}</p>`:''}
+    ${f.note?`<p style="margin:10px 0 0"><b>Note:</b> ${esc(f.note)}</p>`:''}${macroNote(f)?`<p class="hm" style="margin:8px 0 0">${esc(macroNote(f))}</p>`:''}
     <div class="ph" data-ph="${esc(f.id)}"></div>
     <div class="row between"><button class="btn sm ghost" data-collapse>Annulla</button><span class="row" style="margin:0"><button class="btn sm ghost" data-editfood="${esc(f.id)}">Modifica</button><button class="btn sm ghost" data-delfood="${esc(f.id)}">Elimina</button></span></div></details>`});
   $('#foodList').innerHTML=h;
@@ -897,14 +902,14 @@ async function foodSheet(f){
       if(busy){pend=true;return}
       busy=true;stErr=false;st='Preparo la scheda…';const se=$('#fSt');if(se)se.textContent=st;
       const parts=[{text:txt.trim()||'(vedi foto)'}];for(const k of ['tabella','confezione'])if(ph[k])parts.push({text:'Foto '+k+':'},{inlineData:{mimeType:'image/jpeg',data:ph[k].split(',')[1]}});
-      try{const o=await gemini(SYS_FOOD,[{role:'user',parts}],SCHEMA_FOOD);card={...(card||{}),nome:String(o.nome||''),riferimento:String(o.riferimento||'100 g'),note:String(o.note||'')};FKEYS.forEach(([k])=>card[k]=nn(o[k]));st='Scheda pronta: controlla i valori e premi Salva.'}
+      try{const o=await gemini(SYS_FOOD,[{role:'user',parts}],SCHEMA_FOOD);card={...(card||{}),nome:String(o.nome||''),riferimento:String(o.riferimento||'100 g'),note:String(o.note||'')};FKEYS.forEach(([k])=>card[k]=nn(o[k]));fixMacros(card);st='Scheda pronta: controlla i valori e premi Salva.'}
       catch(e){st=e.message;stErr=true}
       busy=false;if(!$('#fTxt'))return;draw();if(pend){pend=false;prepare()}};
   const bindSave=()=>{
     $('#ffSave').onclick=async()=>{grab();if(!card)return;const nome=(card.nome||'').trim();if(!nome){st='Il nome è obbligatorio.';draw();return}
       const id=(f&&f.id)||('f'+Date.now());const old=S.foods.find(x=>x.id===id);const foto={...(old&&old.foto||{})};
       for(const k of ['tabella','confezione']){const key=id+'_'+k;if(ph[k]){await IDB.put(key,ph[k]);foto[k]=key}else if(foto[k]){await IDB.del(foto[k]);delete foto[k]}}
-      const rec={id,nome,riferimento:String(card.riferimento||'').trim()||'100 g',note:String(card.note||'').trim(),foto};FKEYS.forEach(([k])=>rec[k]=nn(card[k]));
+      const rec={id,nome,riferimento:String(card.riferimento||'').trim()||'100 g',note:String(card.note||'').trim(),foto};FKEYS.forEach(([k])=>rec[k]=nn(card[k]));fixMacros(rec);
       if(old)Object.assign(old,rec);else S.foods.push(rec);save();closeSheet();go('alimenti');toast(old?'Alimento aggiornato':'Alimento salvato')};
   };
   const draw0=draw;draw=()=>{const ae=document.activeElement,id=ae&&ae.id,ss=ae&&ae.selectionStart,se=ae&&ae.selectionEnd,sc=$('#sheet').scrollTop;draw0();bindSave();$('#sheet').scrollTop=sc;if(id&&$('#'+id)&&$('#sheet').contains($('#'+id))){const el=$('#'+id);el.focus({preventScroll:true});try{if(ss!=null)el.setSelectionRange(ss,se)}catch(e){}}};
