@@ -210,6 +210,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`.
 
 ### Da sistemare alla prossima rigenerazione dell'APK (non urgente)
 - **Blocco in verticale:** il manifest (v40) ha `"orientation": "portrait"` e PWABuilder l'ha messo dentro l'APK. Effetti: l'app **non ruota in orizzontale** e **non si può usare a schermo diviso** su Android (probabilmente per il blocco; le app TWA a volte sono comunque capricciose con lo schermo diviso). Soluzione: togliere `orientation` dal manifest (o metterlo `"any"`), poi rigenerare l'APK con PWABuilder (stesso keystore, version code 3) e reinstallarla sopra. Effetto collaterale: ruoterà anche in orizzontale, layout un po' largo.
+  - **Idea dell'utente:** aggiungere nelle Impostazioni un interruttore **"Blocca in verticale" sì/no**, per scegliere se l'app ruota o no. Come farlo: togliere il blocco dall'APK (una sola rigenerazione), poi gestire la rotazione dentro l'app con `screen.orientation.lock('portrait')` / `unlock()` in base all'interruttore (da verificare che funzioni nella TWA). Dopo quella rigenerazione, l'interruttore e le sue eventuali modifiche arrivano da GitHub senza rifare l'APK.
 - **Barra in basso tagliata (visto una volta, 25/11):** alla prima apertura dopo l'aggiornamento dell'APK mancava la barra di navigazione in basso (Diario… Impostazioni); riaprendo l'app è tornata a posto. Se si ripresenta: far ricalcolare l'altezza dello schermo quando la finestra cambia dimensione o torna in primo piano (oggi il layout usa `100dvh`).
 
 ### Futuro
