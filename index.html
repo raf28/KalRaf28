@@ -22,6 +22,9 @@ button{cursor:pointer;border:0;background:none}
 [hidden]{display:none!important}
 #app{display:flex;flex-direction:column;height:100%}
 main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain}
+.jmp{position:fixed;right:12px;z-index:15;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.jmp button{pointer-events:auto;width:42px;height:42px;border-radius:50%;background:var(--card);color:var(--brand2);border:1.5px solid var(--brand2);box-shadow:0 3px 10px rgba(0,0,0,.18);display:grid;place-items:center}
+.jmp button svg{width:22px;height:22px}
 .ptr{position:fixed;left:50%;top:0;transform:translate(-50%,-60px);z-index:25;background:var(--card);color:var(--brand2);border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:13.5px;font-weight:600;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.15);pointer-events:none;transition:opacity .2s}
 .wrap{max-width:720px;margin:0 auto;padding:0 14px 18px}
 /* testata */
@@ -335,6 +338,7 @@ details.card summary::-webkit-details-marker{display:none}
   </nav>
 </div>
 
+<div class="jmp" id="jmp"><button id="jUp" aria-label="Vai in cima" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></button><button id="jDn" aria-label="Vai in fondo" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
 <div class="ptr" id="ptr">↓ Trascina per aggiornare</div>
 <div class="modal" id="modal" hidden><div class="sheet" id="sheet"></div></div>
 
@@ -939,6 +943,14 @@ function boot(){
  mn.addEventListener('touchend',()=>{if(y0!==null&&dy>TH&&mn.scrollTop<=0){ptr.textContent='Aggiornamento…';ptr.style.transform='translate(-50%,20px)';setTimeout(()=>location.reload(),150)}else ptr.style.transform='translate(-50%,-60px)';y0=null;dy=0});
 }
 try{history.replaceState({v:'diario'},'')}catch(e){}
+/* frecce su/giù */
+{const mn=$('#main'),J=$('#jmp'),U=$('#jUp'),D=$('#jDn');
+ function upd(){if($('#app').hidden){U.hidden=D.hidden=true;return}const r=mn.getBoundingClientRect();J.style.top='';J.style.bottom=(window.innerHeight-r.bottom+12)+'px';
+   const can=mn.scrollHeight-mn.clientHeight>40;U.hidden=!can||mn.scrollTop<30;D.hidden=!can||mn.scrollHeight-mn.scrollTop-mn.clientHeight<30}
+ mn.addEventListener('scroll',upd,{passive:true});window.addEventListener('resize',upd);
+ new MutationObserver(()=>requestAnimationFrame(upd)).observe(mn,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden','open']});
+ U.onclick=()=>mn.scrollTo({top:0,behavior:'smooth'});D.onclick=()=>mn.scrollTo({top:mn.scrollHeight,behavior:'smooth'});
+ window.updJump=upd;setTimeout(upd,300);}
 boot();
 }
 </script>
