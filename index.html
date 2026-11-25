@@ -331,7 +331,7 @@ details.card summary::-webkit-details-marker{display:none}
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 34 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 35 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -826,7 +826,7 @@ function importRecipes(){
 const IDB={db:null,
   open(){return this.db?Promise.resolve(this.db):new Promise((res,rej)=>{try{const r=indexedDB.open('diario_kcal_foto',1);r.onupgradeneeded=()=>r.result.createObjectStore('foto');r.onsuccess=()=>{this.db=r.result;res(this.db)};r.onerror=()=>rej(r.error)}catch(e){rej(e)}})},
   async op(mode,fn){const db=await this.open();return new Promise((res,rej)=>{const tx=db.transaction('foto',mode);const st=tx.objectStore('foto');const r=fn(st);tx.oncomplete=()=>res(r&&r.result);tx.onerror=()=>rej(tx.error)})},
-  put(k,v){return this.op('readwrite',st=>st.put(v,k)).catch(()=>{toast('Impossibile salvare la foto')})},
+  put(k,v){try{if(typeof gdWant==='function')gdWant('quick')}catch(e){}return this.op('readwrite',st=>st.put(v,k)).catch(()=>{toast('Impossibile salvare la foto')})},
   get(k){return this.op('readonly',st=>st.get(k)).catch(()=>null)},
   del(k){return this.op('readwrite',st=>st.delete(k)).catch(()=>{})}
 };
@@ -1076,6 +1076,38 @@ async function gdUpload(){
     await gdApi('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',{method:'POST',headers:{'Content-Type':'multipart/related; boundary='+b},body:mp});
     const all=await gdList();for(const x of all.slice(GD_KEEP)){try{await gdApi('https://www.googleapis.com/drive/v3/files/'+x.id,{method:'DELETE'})}catch(e){}}}
 }
+const gdHash=t=>{let h=2166136261;for(let i=0;i<t.length;i+=7)h=Math.imul(h^t.charCodeAt(i),16777619);return(h>>>0).toString(36)+'-'+t.length};
+const gdPhKeys=()=>{const o=new Set();S.foods.forEach(f=>Object.values(f.foto||{}).forEach(k=>{if(typeof k==='string')o.add(k)}));return o};
+async function gdPhFolder(){
+  if(GD.phf)return GD.phf;const f=await gdFolder();
+  const q=encodeURIComponent(`name='Foto' and '${f}' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false`);
+  const l=await gdApi('https://www.googleapis.com/drive/v3/files?q='+q+'&fields=files(id)');let id=l.files&&l.files[0]&&l.files[0].id;
+  if(!id){const c=await gdApi('https://www.googleapis.com/drive/v3/files?fields=id',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:'Foto',mimeType:'application/vnd.google-apps.folder',parents:[f]})});id=c.id}
+  GD.phf=id;gdSave();return id;
+}
+async function gdPhList(){const f=await gdPhFolder();let out={},tok='';
+  do{const q=encodeURIComponent(`'${f}' in parents and trashed=false`);const l=await gdApi('https://www.googleapis.com/drive/v3/files?q='+q+'&pageSize=1000&fields=nextPageToken,files(id,name,appProperties)'+(tok?'&pageToken='+tok:''));
+    (l.files||[]).forEach(x=>{out[x.name.replace(/\.jpg$/,'')]={id:x.id,h:x.appProperties&&x.appProperties.h||''}});tok=l.nextPageToken||''}while(tok);return out}
+const dataToBlob=d=>{const [m,b]=d.split(',');const bin=atob(b),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return new Blob([u],{type:(m.match(/:(.*?);/)||[])[1]||'image/jpeg'})};
+const blobToData=b=>new Promise((ok,ko)=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=ko;r.readAsDataURL(b)});
+async function gdPhotos(){
+  const keys=gdPhKeys(),remote=await gdPhList(),f=GD.phf;GD.gone=GD.gone||{};
+  for(const k of keys){delete GD.gone[k];const d=await IDB.get(k);if(!d)continue;const h=gdHash(d),r=remote[k];if(r&&r.h===h)continue;
+    const blob=dataToBlob(d);
+    if(r){await gdApi('https://www.googleapis.com/upload/drive/v3/files/'+r.id+'?uploadType=media',{method:'PATCH',headers:{'Content-Type':blob.type},body:blob});await gdApi('https://www.googleapis.com/drive/v3/files/'+r.id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({appProperties:{h}})})}
+    else{const meta=new Blob([JSON.stringify({name:k+'.jpg',parents:[f],appProperties:{h}})],{type:'application/json'});const fd=new FormData();fd.append('metadata',meta);fd.append('file',blob);
+      await gdApi('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',{method:'POST',body:fd})}}
+  const now=Date.now();
+  for(const k of Object.keys(remote)){if(keys.has(k))continue;if(!GD.gone[k]){GD.gone[k]=now;continue}
+    if(now-GD.gone[k]>GD_KEEP*864e5){try{await gdApi('https://www.googleapis.com/drive/v3/files/'+remote[k].id,{method:'DELETE'})}catch(e){}delete GD.gone[k]}}
+  gdSave();
+}
+async function gdPhRestore(){
+  const keys=gdPhKeys();if(!keys.size)return 0;const remote=await gdPhList();let n=0;
+  for(const k of keys){const r=remote[k];if(!r)continue;try{const b=await(await fetch('https://www.googleapis.com/drive/v3/files/'+r.id+'?alt=media',{headers:{Authorization:'Bearer '+GD.tok}})).blob();
+    const d=await blobToData(b);await IDB.op('readwrite',st=>st.put(d,k));n++}catch(e){}}
+  return n;
+}
 function gdWant(kind){if(!GD.on)return;gdNeed=gdNeed==='full'||kind==='full'?'full':'quick';GD.pending=true;gdSave()}
 function gdOnSave(){if(!GD.on)return;const fp=gdFp();if(fp!==GD.fp){gdWant('quick')}if(GD.pending)gdKick(4000)}
 function gdKick(ms){if(!GD.on||!GD.pending)return;clearTimeout(gdTimer);gdTimer=setTimeout(gdSync,ms);if(!gdTokOk()&&!ms)gdRender()}
@@ -1084,7 +1116,7 @@ async function gdSync(manual){
   if(!navigator.onLine){GD.pending=true;gdSave();gdRender();if(manual)toast('Sei offline: riprovo appena torna la rete');return}
   if(!gdTokOk()){GD.pending=true;gdSave();gdRender();if(manual)gdAsk('');return}
   gdBusy=true;gdRender();const fp=gdFp();
-  try{await gdUpload();GD.fp=fp;GD.last=Date.now();GD.lastDay=gdToday();GD.pending=false;GD.err='';gdNeed=null;gdSave();if(manual)toast('Backup su Drive completato')}
+  try{await gdUpload();await gdPhotos();GD.fp=fp;GD.last=Date.now();GD.lastDay=gdToday();GD.pending=false;GD.err='';gdNeed=null;gdSave();if(manual)toast('Backup su Drive completato')}
   catch(e){GD.pending=true;GD.err=e.message==='token'?'':'Ultimo tentativo non riuscito, riprovo';gdSave();if(manual&&e.message!=='token')toast('Backup non riuscito, riprova tra poco');if(e.message==='token'&&manual)gdAsk('')}
   finally{gdBusy=false;gdRender()}
 }
@@ -1099,7 +1131,8 @@ async function gdRestore(){
     document.querySelectorAll('[data-gdv]').forEach(b=>b.onclick=async()=>{const x=l[+b.dataset.gdv];
       try{const d=JSON.parse(await gdApi('https://www.googleapis.com/drive/v3/files/'+x.id+'?alt=media',{raw:true}));if(!d||!d.day||!d.settings)throw 0;
         delete d.app;delete d.backup;S=d;S.unlocked=true;normalize();prune();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
-        GD.fp=gdFp();GD.pending=false;gdSave();ui.models=null;ui.meal=null;ui.dv=null;closeSheet();render();toast('Dati ripristinati da Drive');
+        GD.fp=gdFp();GD.pending=false;gdSave();ui.models=null;ui.meal=null;ui.dv=null;closeSheet();render();toast('Dati ripristinati, scarico le foto…');
+        gdPhRestore().then(n=>{toast(n?'Ripristinate anche '+n+' foto':'Dati ripristinati da Drive');if(ui.view==='alimenti')renderFoods()}).catch(()=>toast('Foto non ripristinate: riprova più tardi'));
         if(S.settings.apiKey)listModels().then(m=>{ui.models=m;if(ui.view==='impost')renderSet()}).catch(()=>{});
       }catch(e){toast('Ripristino non riuscito')}});
   }catch(e){if(e.message==='token')gdAsk('');else toast('Drive non raggiungibile')}
@@ -1110,7 +1143,7 @@ function gdDisconnect(silent){
 }
 function gdRender(){
   if(!$('#gdBtns'))return;
-  if(!GD.on){$('#gdInfo').textContent='Accedi con il tuo account Google: l\'app salva una copia di tutto (impostazioni e chiave, alimenti, ricette, diario e storico) in una cartella «'+GD_FOLDER+'» del tuo Drive. L\'app vede solo quella cartella.';
+  if(!GD.on){$('#gdInfo').textContent='Accedi con il tuo account Google: l\'app salva una copia di tutto (impostazioni e chiave, alimenti con foto, ricette, diario e storico) in una cartella «'+GD_FOLDER+'» del tuo Drive. L\'app vede solo quella cartella.';
     $('#gdBtns').innerHTML='<button class="btn sm" id="gdIn">Accedi con Google</button>';$('#gdStat').textContent='';return}
   $('#gdInfo').innerHTML='Collegato'+(GD.email?' come <b>'+esc(GD.email)+'</b>':'')+'. Alimenti, ricette e impostazioni si salvano subito; il diario alla chiusura della giornata e una volta al giorno.';
   $('#gdBtns').innerHTML='<button class="btn sm ghost" id="gdOut">Scollega</button><button class="btn sm" id="gdNow"'+(gdBusy?' disabled':'')+'>'+(gdBusy?'Sincronizzo…':'Sincronizza')+'</button><button class="btn sm ghost" id="gdRes">Ripristina da Drive</button>';
