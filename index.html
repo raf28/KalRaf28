@@ -374,7 +374,8 @@ const ui={view:'diario',meal:guessMeal(),rec:'chat',photo:null,busy:false};
 
 const nn=v=>(v===null||v===undefined||v==='')?null:num(v);
 const sum=items=>{const t={miss:{},has:{}};KEYS.forEach(k=>t[k]=0);(items||[]).forEach(i=>KEYS.forEach(k=>{const v=nn(i[k]);if(v===null)t.miss[k]=true;else{t[k]+=v;t.has[k]=true}}));return t};
-const fv=(t,k,u)=>{const v=t[k];if(v===null||v===undefined)return'—';if(t.miss&&t.miss[k])return t.has&&t.has[k]?'≥'+f1(v)+u:'—';return f1(v)+u};
+const fk=(k,v)=>k==='sale'?(Math.round(v*100)/100).toLocaleString('it-IT'):f1(v);
+const fv=(t,k,u)=>{const v=t[k];if(v===null||v===undefined)return'—';if(t.miss&&t.miss[k])return t.has&&t.has[k]?'≥'+fk(k,v)+u:'—';return fk(k,v)+u};
 const dayItems=d=>Object.values(d.meals).flatMap(m=>m.items||[]);
 const mline=t=>NUTR.slice(1).map(([k,l,u])=>`${l} ${fv(t,k,u)}`+(SUB[k]?` (di cui ${SUB[k][1]} ${fv(t,SUB[k][0],u)})`:'')).join(' · ');
 const clean=i=>{const o={nome:String(i.nome||'Alimento'),quantita:String(i.quantita||'')};o.kcal=num(i.kcal);KEYS.slice(1).forEach(k=>o[k]=nn(i[k]));if(i.imposto)o.imposto=true;if(i.alimento_id){o.alimento_id=String(i.alimento_id);o.grammi=nn(i.grammi);o.fattore=nn(i.fattore)}if(i.dalAlimenti)o.dalAlimenti=true;const F=['utente','etichetta','generico','foto','non_trovato','alimenti','ricetta','preimpostato'];o.fonte=F.includes(i.fonte)?i.fonte:(i.dalAlimenti?'alimenti':i.imposto?'utente':i.stima?'generico':'generico');if(i.imposto)o.fonte='utente';
@@ -401,7 +402,7 @@ $('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeSheet()})
 /* ---------- Gemini ---------- */
 const NUMN={type:'NUMBER',nullable:true};
 const ITEM={type:'OBJECT',properties:{nome:{type:'STRING'},quantita:{type:'STRING'},kcal:{type:'NUMBER'},proteine:NUMN,carboidrati:NUMN,zuccheri:NUMN,grassi:NUMN,saturi:NUMN,fibre:NUMN,sale:NUMN,imposto:{type:'BOOLEAN'},alimento_id:{type:'STRING',nullable:true},grammi:NUMN,fattore:NUMN,fonte:{type:'STRING',enum:['utente','etichetta','generico','foto','non_trovato','alimenti']}},required:['nome','quantita','kcal','proteine','carboidrati','zuccheri','grassi','saturi','fibre','sale']};
-const SCHEMA_MEAL={type:'OBJECT',properties:{reply:{type:'STRING'},items:{type:'ARRAY',items:ITEM}},required:['reply','items']};
+const SCHEMA_MEAL={type:'OBJECT',properties:{reply:{type:'STRING'},domanda:{type:'BOOLEAN'},items:{type:'ARRAY',items:ITEM}},required:['reply','domanda','items']};
 const SCHEMA_REC={type:'OBJECT',properties:{reply:{type:'STRING'},ricetta:{type:'OBJECT',nullable:true,properties:{nome:{type:'STRING'},porzioni:{type:'NUMBER'},ingredienti:{type:'ARRAY',items:ITEM}},required:['nome','porzioni','ingredienti']}},required:['reply']};
 const SYS_MEAL=`Sei l'assistente di un diario alimentare per il conteggio di kcal e macronutrienti. L'utente ti descrive o fotografa gli alimenti di UN pasto (anche etichette nutrizionali).
 In ogni messaggio ricevi la LISTA ATTUALE degli alimenti del pasto in JSON. Devi restituire in "items" SEMPRE la lista COMPLETA e aggiornata del pasto, non solo le novità:
@@ -423,7 +424,8 @@ VALORI IMPOSTI DALL'UTENTE (hanno sempre la precedenza, mai ricalcolarli o "corr
 - se l'utente dà kcal e/o macro per un alimento, usa ESATTAMENTE quei numeri;
 - se dà solo le kcal, metti quelle kcal e lascia i macro a null (non stimarli), a meno che chieda esplicitamente di stimarli: allora stimali coerenti con le kcal date;
 - se dà il totale dell'intero pasto (es. "il pranzo completo era 700 kcal"), la lista diventa UNA sola voce con quel totale (nome tipo "Pranzo completo"), sostituendo le voci precedenti; macro a null se non dati.
-In "reply" scrivi in italiano, breve: cosa hai aggiunto o cambiato e le ipotesi fatte. Non scrivere i totali: li calcola l'app.`;
+DOMANDE: se il messaggio dell'utente è una domanda o una richiesta di spiegazione (es. "sei sicuro del sale?", "perché così tante calorie?", "quanto sale ha il parmigiano?") e non chiede di aggiungere/togliere/correggere alimenti, metti "domanda": true, lascia la lista invariata e rispondi in "reply" in modo completo e chiaro, usando i dati della lista attuale e della conversazione: spiega da dove vengono i valori (fonte, valori per 100 g, proporzione sulla quantità), voce per voce se serve, e se ti accorgi di un errore dillo e proponi la correzione chiedendo conferma. Altrimenti "domanda": false.
+Per gli aggiornamenti, in "reply" scrivi in italiano, breve: cosa hai aggiunto o cambiato e le ipotesi fatte. Non scrivere i totali: li calcola l'app.`;
 const SYS_REC=`Sei un cuoco e consulente nutrizionale che aiuta una persona che segue una dieta. Rispondi in italiano, in modo pratico e conciso: idee, ricette, varianti più leggere, sostituzioni.
 Quando proponi UNA ricetta concreta, compila "ricetta" con nome, porzioni e la lista degli ingredienti con quantità e valori nutrizionali (kcal, proteine, carboidrati, grassi, fibre, sale in g) (compresi zuccheri e grassi saturi) PER UNA PORZIONE. Altrimenti lascia "ricetta" a null.
 Nel testo di "reply" indica sempre per la ricetta proposta kcal e macro per porzione, comprese fibre e sale.`;
@@ -481,7 +483,7 @@ function toContents(hist,cur){
   while(out.length&&out[0].role!=='user')out.shift();
   return out;
 }
-const histOf=chat=>chat.filter(m=>!m.err).slice(-10).map(m=>({role:m.role==='u'?'user':'model',parts:[{text:(m.photo?'[foto allegata] ':'')+(m.text||'')}]}));
+const histOf=chat=>chat.filter(m=>!m.err).slice(-10).map(m=>({role:m.role==='u'?'user':'model',parts:[{text:(m.photo?'[foto allegata] ':'')+(m.text||'')+(m.list?'\n[Lista pasto: '+m.list.map(i=>i.n+' '+i.q+' '+Math.round(i.k)+' kcal').join('; ')+']':'')}]}));
 
 /* ---------- invio ---------- */
 async function send(){
@@ -511,8 +513,9 @@ async function sendMeal(text,photo){
   if(photo)cur.parts.push({inlineData:{mimeType:'image/jpeg',data:photo.b64}});
   try{
     const out=await gemini(SYS_MEAL,toContents(hist,cur),SCHEMA_MEAL);
-    meal.items=(Array.isArray(out.items)?out.items:[]).map(clean).map(linkFood);
-    meal.chat.push({role:'a',text:out.reply||'',tot:sum(meal.items),list:meal.items.map(i=>({n:i.nome,q:i.quantita,k:i.kcal}))});
+    if(!out.domanda)meal.items=(Array.isArray(out.items)?out.items:[]).map(clean).map(linkFood);
+    if(out.domanda)meal.chat.push({role:'a',text:out.reply||'',ans:true});
+    else meal.chat.push({role:'a',text:out.reply||'',tot:sum(meal.items),list:meal.items.map(i=>({n:i.nome,q:i.quantita,k:i.kcal}))});
   }catch(e){meal.chat.push({role:'a',text:e.message,err:true})}
   ui.busy=false;save();render();
 }
