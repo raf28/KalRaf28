@@ -490,7 +490,7 @@ async function send(){
   if(ui.view==='diario')return sendMeal(text,photo);
   if(ui.view==='ricette'){ui.rec='chat';return sendRec(text,photo)}
 }
-function resetComposer(){$('#msg').value='';autoH();ui.photo=null;renderPhoto()}
+function resetComposer(){if(typeof stopDictation==='function')stopDictation();$('#msg').value='';autoH();ui.photo=null;renderPhoto()}
 function refAmount(r){const t=String(r||'');const m=t.match(/\(([\d.,]+)\s*(g|ml)\b/i)||t.match(/([\d.,]+)\s*(g|ml)\b/i);return m?num(m[1]):0}
 function linkFood(i){
   if(!i.alimento_id||i.imposto)return i;
@@ -808,7 +808,8 @@ function dictate(ta,btn,onEnd){if(!ta||!btn)return;btn.onclick=e=>{e.preventDefa
   try{r.start();btn.classList.add('rec')}catch(err){rec=null;toast('Impossibile avviare il microfono')}
 }}
 dictate($('#msg'),$('#mic'));
-$('#send').onclick=()=>{if(rec)rec.stop();send()};
+function stopDictation(){if(rec){const r=rec;rec=null;r.onresult=null;r.onend=null;try{r.abort()}catch(e){}document.querySelectorAll('.rec').forEach(x=>x.classList.remove('rec'))}}
+$('#send').onclick=()=>{stopDictation();send()};
 $('#msg').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&window.matchMedia('(pointer:fine)').matches){e.preventDefault();send()}});
 function autoH(){const t=$('#msg');t.style.height='auto';t.style.height=Math.min(120,t.scrollHeight)+'px'}
 $('#msg').addEventListener('input',autoH);
