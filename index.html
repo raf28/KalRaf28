@@ -331,7 +331,7 @@ details.card summary::-webkit-details-marker{display:none}
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 36 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 37 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1025,7 +1025,7 @@ $('#relock').onclick=()=>{S.unlocked=false;save();boot()};
 /* ---------- Backup su Google Drive ---------- */
 const GD_CLIENT='720047141236-n358a03sg1pi0p26qfp7fa99378apb1a.apps.googleusercontent.com';
 const GD_SCOPE='https://www.googleapis.com/auth/drive.file';
-const GD_KEY='kalraf28_drive',GD_FOLDER='KalRaf28 Backup',GD_KEEP=3;
+const GD_KEY='kalraf28_drive',GD_FOLDER='KalRaf28 Backup',GD_KEEP=1,GD_FILE='kalraf28-backup.json',GD_FORMAT=1;
 let GD={};try{GD=JSON.parse(localStorage.getItem(GD_KEY))||{}}catch(e){GD={}}
 const gdSave=()=>{try{localStorage.setItem(GD_KEY,JSON.stringify(GD))}catch(e){}};
 let gdTC=null,gdTimer=null,gdBusy=false,gdAsking=false,gdLastAsk=0,gdNeed=null;
@@ -1066,15 +1066,17 @@ async function gdFolder(){
 async function gdList(){const f=await gdFolder();const q=encodeURIComponent(`'${f}' in parents and trashed=false and mimeType='application/json'`);
   const l=await gdApi('https://www.googleapis.com/drive/v3/files?q='+q+'&orderBy=name desc&pageSize=100&fields=files(id,name,modifiedTime,size)');return l.files||[]}
 async function gdCount(){return(await gdList()).length}
-function gdPayload(){const d=JSON.parse(JSON.stringify(S));delete d.unlocked;d.app='kalraf28';d.backup=new Date().toISOString();return JSON.stringify(d)}
+function gdPayload(){const d=JSON.parse(JSON.stringify(S));delete d.unlocked;d.app='kalraf28';d.formato=GD_FORMAT;d.backup=new Date().toISOString();return JSON.stringify(d)}
 async function gdUpload(){
-  const f=await gdFolder(),name='kalraf28-'+gdToday()+'.json',body=gdPayload();
+  const f=await gdFolder(),name=GD_FILE,body=gdPayload();
   const q=encodeURIComponent(`name='${name}' and '${f}' in parents and trashed=false`);
   const ex=(await gdApi('https://www.googleapis.com/drive/v3/files?q='+q+'&fields=files(id)')).files||[];
   if(ex.length){await gdApi('https://www.googleapis.com/upload/drive/v3/files/'+ex[0].id+'?uploadType=media',{method:'PATCH',headers:{'Content-Type':'application/json'},body})}
   else{const b='kr28'+Date.now(),mp=`--${b}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify({name,parents:[f],mimeType:'application/json'})}\r\n--${b}\r\nContent-Type: application/json\r\n\r\n${body}\r\n--${b}--`;
     await gdApi('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',{method:'POST',headers:{'Content-Type':'multipart/related; boundary='+b},body:mp});
-    const all=await gdList();for(const x of all.slice(GD_KEEP)){try{await gdApi('https://www.googleapis.com/drive/v3/files/'+x.id,{method:'DELETE'})}catch(e){}}}
+  }
+  /* un solo backup: elimina tutti gli altri file (anche i vecchi giornalieri) */
+  const all=await gdList();for(const x of all){if(x.name===name)continue;try{await gdApi('https://www.googleapis.com/drive/v3/files/'+x.id,{method:'DELETE'})}catch(e){}}
 }
 const gdHash=t=>{let h=2166136261;for(let i=0;i<t.length;i+=7)h=Math.imul(h^t.charCodeAt(i),16777619);return(h>>>0).toString(36)+'-'+t.length};
 const gdPhKeys=()=>{const o=new Set();S.foods.forEach(f=>Object.values(f.foto||{}).forEach(k=>{if(typeof k==='string')o.add(k)}));return o};
@@ -1098,8 +1100,7 @@ async function gdPhotos(){
     else{const meta=new Blob([JSON.stringify({name:k+'.jpg',parents:[f],appProperties:{h}})],{type:'application/json'});const fd=new FormData();fd.append('metadata',meta);fd.append('file',blob);
       await gdApi('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',{method:'POST',body:fd})}}
   const now=Date.now();
-  for(const k of Object.keys(remote)){if(keys.has(k))continue;if(!GD.gone[k]){GD.gone[k]=now;continue}
-    if(now-GD.gone[k]>GD_KEEP*864e5){try{await gdApi('https://www.googleapis.com/drive/v3/files/'+remote[k].id,{method:'DELETE'})}catch(e){}delete GD.gone[k]}}
+  for(const k of Object.keys(remote)){if(keys.has(k))continue;try{await gdApi('https://www.googleapis.com/drive/v3/files/'+remote[k].id,{method:'DELETE'})}catch(e){}delete GD.gone[k]}
   gdSave();
 }
 async function gdPhRestore(){
@@ -1127,10 +1128,10 @@ function gdOfferRestore(n){
 async function gdRestore(){
   if(!gdTokOk()){gdAsk('');toast('Accedi e poi tocca di nuovo «Ripristina»');return}
   try{const l=await gdList();if(!l.length){toast('Nessun backup su Drive');return}
-    sheet(`<h3>Ripristina da Drive</h3><p class="hm">Scegli la versione. Sostituisce tutti i dati di questo telefono (diario, storico, alimenti, ricette, impostazioni e chiave).</p>${l.map((x,i)=>`<button class="btn ghost" style="width:100%;margin:4px 0;text-align:left" data-gdv="${i}">${esc(x.name.replace('kalraf28-','').replace('.json',''))}${i===0?' · più recente':''}<br><small class="hm">aggiornato ${new Date(x.modifiedTime).toLocaleString('it-IT',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</small></button>`).join('')}<div class="row"><button class="btn ghost" id="noSheet">Annulla</button></div>`);
+    sheet(`<h3>Ripristina da Drive</h3><p class="hm">Tocca il backup per ripristinarlo. Sostituisce tutti i dati di questo telefono (diario, storico, alimenti, ricette, impostazioni e chiave).</p>${l.map((x,i)=>`<button class="btn ghost" style="width:100%;margin:4px 0;text-align:left" data-gdv="${i}">${x.name===GD_FILE?'Backup':esc(x.name)}<br><small class="hm">aggiornato ${new Date(x.modifiedTime).toLocaleString('it-IT',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</small></button>`).join('')}<div class="row"><button class="btn ghost" id="noSheet">Annulla</button></div>`);
     document.querySelectorAll('[data-gdv]').forEach(b=>b.onclick=async()=>{const x=l[+b.dataset.gdv];
-      try{const d=JSON.parse(await gdApi('https://www.googleapis.com/drive/v3/files/'+x.id+'?alt=media',{raw:true}));if(!d||!d.day||!d.settings)throw 0;
-        delete d.app;delete d.backup;S=d;S.unlocked=true;normalize();prune();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+      try{const d=JSON.parse(await gdApi('https://www.googleapis.com/drive/v3/files/'+x.id+'?alt=media',{raw:true}));if(!d||!d.day||!d.settings)throw 0;if((d.formato||1)>GD_FORMAT){toast('Backup creato da una versione più nuova dell\'app: aggiorna l\'app');return}
+        delete d.app;delete d.backup;delete d.formato;S=d;S.unlocked=true;normalize();prune();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
         GD.fp=gdFp();GD.pending=false;gdSave();ui.models=null;ui.meal=null;ui.dv=null;closeSheet();render();toast('Dati ripristinati, scarico le foto…');
         gdPhRestore().then(n=>{toast(n?'Ripristinate anche '+n+' foto':'Dati ripristinati da Drive');if(ui.view==='alimenti')renderFoods()}).catch(()=>toast('Foto non ripristinate: riprova più tardi'));
         if(S.settings.apiKey)listModels().then(m=>{ui.models=m;if(ui.view==='impost')renderSet()}).catch(()=>{});
