@@ -118,7 +118,9 @@ details.food summary .kv{white-space:nowrap;color:var(--mute);font-size:14px}
 .ib svg{width:24px;height:24px}
 .ib.send{background:var(--brand2);color:#fff}
 .ib:disabled{opacity:.4}
-.pills{max-width:720px;margin:0 auto 8px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.pills{max-width:720px;margin:0 auto 8px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;align-items:center}
+.pills .newsn{grid-column:4;min-height:28px;font-size:11.5px;letter-spacing:-.2px;text-overflow:clip;padding:2px 0 !important;border-style:dashed;color:var(--brand2);border-color:var(--brand2);padding:2px 4px}
+.pills .newsn:disabled{opacity:.35}
 .pills button{min-height:40px;border-radius:999px;border:1.5px solid var(--line);background:var(--bg);font-size:14px;font-weight:500;padding:4px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pills button.on{background:var(--brand2);border-color:var(--brand2);color:#fff;font-weight:600}
 .ib.mic{margin-right:8px}
@@ -301,10 +303,11 @@ const snackN=k=>Number(k.replace('spuntino',''))||1;
 const mealName=k=>isSnack(k)?'Spuntino '+snackN(k):k==='spuntino'?'Spuntino':(MEALS.find(m=>m[0]===k)||[k,k])[1];
 const orderKeys=keys=>[...BASE.filter(k=>keys.includes(k)),...keys.filter(isSnack).sort((a,b)=>snackN(a)-snackN(b))];
 const snacksOf=d=>orderKeys(Object.keys(d.meals)).filter(isSnack).filter(k=>{const m=d.meals[k];return m.items.length||m.chat.length});
-const visibleMeals=()=>{const ks=[...BASE,...snacksOf(S.day)];if(isSnack(ui.meal)&&!ks.includes(ui.meal))ks.push(ui.meal);return orderKeys(ks)};
+const visibleMeals=()=>{const ks=[...BASE,...snacksOf(S.day)];if(!ks.includes(S.day.curSnack))ks.push(S.day.curSnack);return orderKeys(ks)};
+const isClosed=k=>!!(S.day.meals[k]&&S.day.meals[k].closed);
 function ensureMeal(k){const m=S.day.meals[k]=S.day.meals[k]||{};m.items=m.items||[];m.chat=m.chat||[];return m}
 
-const newDay=()=>{const d={id:Date.now(),start:new Date().toISOString(),meals:{}};BASE.forEach(k=>d.meals[k]={items:[],chat:[]});return d};
+const newDay=()=>{const d={id:Date.now(),start:new Date().toISOString(),meals:{},curSnack:'spuntino1'};[...BASE,'spuntino1'].forEach(k=>d.meals[k]={items:[],chat:[]});return d};
 const defaults=()=>({settings:{apiKey:'',model:'',target:2000,margin:300,keepDays:7},day:newDay(),history:[],recipes:[],recChat:[],foods:[],unlocked:false});
 let S=null;
 try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
@@ -315,12 +318,15 @@ function normalize(){
   S.day.meals=S.day.meals||{};BASE.forEach(k=>ensureMeal(k));
   if(S.day.meals.spuntino){const o=S.day.meals.spuntino;delete S.day.meals.spuntino;if((o.items||[]).length||(o.chat||[]).length&&!S.day.meals.spuntino1)S.day.meals.spuntino1=o}
   Object.keys(S.day.meals).forEach(k=>ensureMeal(k));
+  const sk=orderKeys(Object.keys(S.day.meals)).filter(isSnack);
+  if(!S.day.curSnack||!isSnack(S.day.curSnack))S.day.curSnack=sk.length?sk[sk.length-1]:'spuntino1';
+  sk.forEach(k=>{if(k!==S.day.curSnack)S.day.meals[k].closed=true});ensureMeal(S.day.curSnack);
 }
 function prune(){const d=Number(S.settings.keepDays)||0;if(d<=0)return;const lim=Date.now()-d*864e5;S.history=S.history.filter(h=>new Date(h.end||h.start).getTime()>=lim)}
 normalize();prune();
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Impossibile salvare: esporta un backup')}}
 
-function guessMeal(){const h=new Date().getHours();if(h>=4&&h<11)return'colazione';if(h>=11&&h<15)return'pranzo';if(h>=15&&h<18){const sn=S.day?snacksOf(S.day):[];return sn.length?sn[sn.length-1]:'spuntino1'}return'cena'}
+function guessMeal(){const h=new Date().getHours();if(h>=4&&h<11)return'colazione';if(h>=11&&h<15)return'pranzo';if(h>=15&&h<18){return S.day&&S.day.curSnack||'spuntino1'}return'cena'}
 const ui={view:'diario',meal:guessMeal(),rec:'chat',photo:null,busy:false};
 
 const nn=v=>(v===null||v===undefined||v==='')?null:num(v);
@@ -429,6 +435,7 @@ function linkFood(i){
   return o;
 }
 async function sendMeal(text,photo){
+  if(isClosed(ui.meal)){toast(mealName(ui.meal)+' è chiuso: seleziona un pasto attivo');return}
   const key=ui.meal,meal=ensureMeal(key);
   const hist=histOf(meal.chat);
   meal.chat.push({role:'u',text,photo:!!photo});resetComposer();ui.busy=true;save();render();
@@ -475,7 +482,8 @@ function render(){
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===ui.view));
   const chatView=ui.view==='diario'||(ui.view==='ricette'&&ui.rec==='chat');
   $('#comp').hidden=!chatView;
-  $('#send').disabled=ui.busy;
+  $('#send').disabled=ui.busy||(ui.view==='diario'&&isClosed(ui.meal));
+  if(ui.view==='diario'){$('#msg').disabled=isClosed(ui.meal);$('#mic').disabled=$('#bCam').disabled=$('#bGal').disabled=isClosed(ui.meal)}else{$('#msg').disabled=$('#mic').disabled=$('#bCam').disabled=$('#bGal').disabled=false}
   $('#pills').hidden=ui.view!=='diario';$('#ctx').hidden=ui.view==='diario';
   if(ui.view==='diario'){ensureMeal(ui.meal);renderHead();renderMeal();renderPills();$('#msg').placeholder='Cosa hai mangiato?'}
   if(ui.view==='ricette'){renderRec();$('#ctx').textContent='Chat ricette · non viene contata nel diario';$('#msg').placeholder='Chiedi un\'idea o una ricetta'}
@@ -501,7 +509,7 @@ function renderHead(){
 function renderMeal(){
   $('#mealTabs').innerHTML=visibleMeals().map(k=>`<button data-meal="${k}" class="${k===ui.meal?'on':''}">${mealName(k)}<small>${f0(sum(ensureMeal(k).items).kcal)} kcal</small></button>`).join('');
   const m=S.day.meals[ui.meal],t=sum(m.items);
-  $('#mealItems').innerHTML=`<h3>${mealName(ui.meal)}</h3>`+(m.items.length?m.items.map((i,ix)=>`<div class="it"><div><div class="n">${esc(i.nome)}</div><div class="q">${esc(i.quantita)}${srcTag(i)}</div></div><div class="k">${f0(i.kcal)} kcal</div><button class="x" data-del="${ix}" aria-label="Elimina ${esc(i.nome)}">×</button><div class="m">${mline(i)}</div></div>`).join('')+
+  $('#mealItems').innerHTML=`<h3>${mealName(ui.meal)}${isClosed(ui.meal)?' <span class="hm" style="font-weight:400">· chiuso, sola lettura</span>':''}</h3>`+(m.items.length?m.items.map((i,ix)=>`<div class="it"><div><div class="n">${esc(i.nome)}</div><div class="q">${esc(i.quantita)}${srcTag(i)}</div></div><div class="k">${f0(i.kcal)} kcal</div>${isClosed(ui.meal)?'<span></span>':`<button class="x" data-del="${ix}" aria-label="Elimina ${esc(i.nome)}">×</button>`}<div class="m">${mline(i)}</div></div>`).join('')+
     `<div class="tot"><span>Totale ${mealName(ui.meal).toLowerCase()}</span><span>${f0(t.kcal)} kcal</span><small>${mline(t)}</small></div>`
     :`<div class="empty">Ancora niente. Scrivi cosa hai mangiato o allega una foto: il conteggio si aggiorna da solo, e se correggi qualcosa in chat vale sempre l'ultima versione.</div>`);
   $('#mealChat').innerHTML=m.chat.map(msgHtml).join('')+(ui.busy?'<div class="typing">Sto calcolando<i></i><i></i><i></i></div>':'');
@@ -562,7 +570,8 @@ document.addEventListener('click',e=>{
 });
 function addRecipe(id){
   const r=S.recipes.find(x=>x.id===id);if(!r)return;let p=1,meal=ui.meal;
-  const draw=()=>{const t=sum(r.ingredienti);sheet(`<h3>${esc(r.nome)}</h3><div class="f"><label>Pasto</label><div class="seg" style="padding:0">${[...visibleMeals(),'spuntino'+(snacksOf(S.day).length+1)].filter((k,i,a)=>a.indexOf(k)===i).map(k=>`<button class="${k===meal?'on':''}" data-pm="${k}">${(!S.day.meals[k]||!(S.day.meals[k].items.length||S.day.meals[k].chat.length))&&isSnack(k)&&snacksOf(S.day).length?'Nuovo spuntino ('+snackN(k)+')':mealName(k)}</button>`).join('')}</div></div>
+  if(isClosed(meal))meal=S.day.curSnack;
+  const draw=()=>{const t=sum(r.ingredienti);sheet(`<h3>${esc(r.nome)}</h3><div class="f"><label>Pasto</label><div class="seg" style="padding:0">${[...BASE,S.day.curSnack].map(k=>`<button class="${k===meal?'on':''}" data-pm="${k}">${mealName(k)}</button>`).join('')}</div></div>
     <div class="f"><label>Porzioni</label><div class="row" style="align-items:center"><button class="btn ghost sm" id="pm">−</button><b style="min-width:50px;text-align:center">${f1(p)}</b><button class="btn ghost sm" id="pp">+</button></div><p>${f0(t.kcal*p)} kcal · ${mline(Object.fromEntries(Object.entries(t).map(([k,v])=>[k,v*p])))}</p></div>
     <div class="row"><button class="btn" id="okAdd">Aggiungi</button><button class="btn ghost" id="noSheet">Annulla</button></div>`);
     document.querySelectorAll('[data-pm]').forEach(x=>x.onclick=()=>{meal=x.dataset.pm;draw()});
@@ -689,16 +698,14 @@ $('#closeDay').onclick=()=>{
   };
 };
 function renderPills(){
-  const cur=ui.meal;
-  $('#pills').innerHTML=[['colazione','Colazione'],['pranzo','Pranzo'],['cena','Cena'],['__snack',isSnack(cur)?mealName(cur):'Spuntino']].map(([k,l])=>`<button data-pill="${k}" class="${(k===cur||(k==='__snack'&&isSnack(cur)))?'on':''}">${l}</button>`).join('');
+  const cur=ui.meal,cs=S.day.curSnack,empty=!ensureMeal(cs).items.length;
+  $('#pills').innerHTML=[['colazione','Colazione'],['pranzo','Pranzo'],['cena','Cena'],[cs,mealName(cs)]].map(([k,l])=>`<button data-pill="${k}" class="${k===cur?'on':''}">${l}</button>`).join('')
+    +`<button data-pill="__new" class="newsn" ${empty?'disabled':''} title="${empty?mealName(cs)+' è ancora vuoto':'Chiude '+mealName(cs)+' e ne apre uno nuovo'}">Nuovo spuntino</button>`;
 }
-$('#pills').addEventListener('click',e=>{const b=e.target.closest('[data-pill]');if(!b)return;e.stopPropagation();const k=b.dataset.pill;
-  if(k!=='__snack'){ui.meal=k;render();return}
-  const sn=snacksOf(S.day);
-  if(!sn.length){ui.meal='spuntino1';render();return}
-  const next='spuntino'+(snackN(sn[sn.length-1])+1);
-  sheet(`<h3>Spuntino</h3><div class="row" style="flex-direction:column;align-items:stretch">${[...sn].reverse().map(x=>`<button class="btn ghost" data-snk="${x}">Aggiungi a ${mealName(x)} · ${f0(sum(S.day.meals[x].items).kcal)} kcal</button>`).join('')}<button class="btn" data-snk="${next}">Nuovo spuntino (${snackN(next)})</button><button class="btn ghost" id="noSheet">Annulla</button></div>`);
-  document.querySelectorAll('[data-snk]').forEach(x=>x.onclick=()=>{ui.meal=x.dataset.snk;closeSheet();render()});
+$('#pills').addEventListener('click',e=>{const b=e.target.closest('[data-pill]');if(!b||b.disabled)return;e.stopPropagation();const k=b.dataset.pill;
+  if(k!=='__new'){ui.meal=k;render();return}
+  const cs=S.day.curSnack;if(!ensureMeal(cs).items.length){toast(mealName(cs)+' è ancora vuoto');return}
+  S.day.meals[cs].closed=true;const nx='spuntino'+(snackN(cs)+1);S.day.curSnack=nx;ensureMeal(nx);ui.meal=nx;save();render();toast(mealName(cs)+' chiuso · ora '+mealName(nx));
 });
 /* dettatura */
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null,recBase='';
