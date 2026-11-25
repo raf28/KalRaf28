@@ -118,11 +118,12 @@ details.food summary .kv{white-space:nowrap;color:var(--mute);font-size:14px}
 .ib svg{width:24px;height:24px}
 .ib.send{background:var(--brand2);color:#fff}
 .ib:disabled{opacity:.4}
-.pills{max-width:720px;margin:0 auto 8px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;align-items:center}
-.pills .newsn{grid-column:4;min-height:28px;font-size:11.5px;letter-spacing:-.2px;text-overflow:clip;padding:2px 0 !important;border-style:dashed;color:var(--brand2);border-color:var(--brand2);padding:2px 4px}
-.pills .newsn:disabled{opacity:.35}
-.pills button{min-height:40px;border-radius:999px;border:1.5px solid var(--line);background:var(--bg);font-size:14px;font-weight:500;padding:4px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pills{max-width:720px;margin:0 auto 8px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) 58px;gap:4px;align-items:stretch}
+.pills button{min-height:40px;border-radius:999px;border:1.5px solid var(--line);background:var(--bg);font-size:12.5px;letter-spacing:-.2px;font-weight:500;padding:2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pills button.on{background:var(--brand2);border-color:var(--brand2);color:#fff;font-weight:600}
+.pills .newsn{border-radius:8px;background:#f4c430;border-color:#e0ad12;color:#3a2c00;font-size:11px;font-weight:700;line-height:1.1;white-space:normal;text-overflow:clip;padding:2px 0}
+.pills .newsn:disabled{opacity:.4}
+@media(min-width:600px){.pills{grid-template-columns:repeat(4,minmax(0,1fr)) 110px}.pills button{font-size:14px}}
 .ib.mic{margin-right:8px}
 .ib.mic.rec{background:var(--bad);color:#fff;animation:pulse 1.2s infinite}
 @keyframes pulse{50%{opacity:.6}}
@@ -700,7 +701,7 @@ $('#closeDay').onclick=()=>{
 function renderPills(){
   const cur=ui.meal,cs=S.day.curSnack,empty=!ensureMeal(cs).items.length;
   $('#pills').innerHTML=[['colazione','Colazione'],['pranzo','Pranzo'],['cena','Cena'],[cs,mealName(cs)]].map(([k,l])=>`<button data-pill="${k}" class="${k===cur?'on':''}">${l}</button>`).join('')
-    +`<button data-pill="__new" class="newsn" ${empty?'disabled':''} title="${empty?mealName(cs)+' è ancora vuoto':'Chiude '+mealName(cs)+' e ne apre uno nuovo'}">Nuovo spuntino</button>`;
+    +`<button data-pill="__new" class="newsn" ${empty?'disabled':''} title="${empty?mealName(cs)+' è ancora vuoto':'Chiude '+mealName(cs)+' e ne apre uno nuovo'}">Nuovo<br>spuntino</button>`;
 }
 $('#pills').addEventListener('click',e=>{const b=e.target.closest('[data-pill]');if(!b||b.disabled)return;e.stopPropagation();const k=b.dataset.pill;
   if(k!=='__new'){ui.meal=k;render();return}
