@@ -429,7 +429,7 @@ $('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeSheet()})
 /* ---------- Gemini ---------- */
 const NUMN={type:'NUMBER',nullable:true};
 const ITEM={type:'OBJECT',properties:{nome:{type:'STRING'},quantita:{type:'STRING'},kcal:{type:'NUMBER'},proteine:NUMN,carboidrati:NUMN,zuccheri:NUMN,grassi:NUMN,saturi:NUMN,fibre:NUMN,sale:NUMN,imposto:{type:'BOOLEAN'},alimento_id:{type:'STRING',nullable:true},grammi:NUMN,fattore:NUMN,fonte:{type:'STRING',enum:['utente','etichetta','generico','foto','non_trovato','alimenti']}},required:['nome','quantita','kcal','proteine','carboidrati','zuccheri','grassi','saturi','fibre','sale']};
-const SCHEMA_MEAL={type:'OBJECT',properties:{reply:{type:'STRING'},domanda:{type:'BOOLEAN'},items:{type:'ARRAY',items:ITEM}},required:['reply','domanda','items']};
+const SCHEMA_MEAL={type:'OBJECT',properties:{reply:{type:'STRING'},domanda:{type:'BOOLEAN'},riepilogo:{type:'BOOLEAN'},items:{type:'ARRAY',items:ITEM}},required:['reply','domanda','riepilogo','items']};
 const SCHEMA_REC={type:'OBJECT',properties:{reply:{type:'STRING'},ricetta:{type:'OBJECT',nullable:true,properties:{nome:{type:'STRING'},porzioni:{type:'NUMBER'},ingredienti:{type:'ARRAY',items:ITEM}},required:['nome','porzioni','ingredienti']}},required:['reply']};
 const SYS_MEAL=`Sei l'assistente di un diario alimentare per il conteggio di kcal e macronutrienti. L'utente ti descrive o fotografa gli alimenti di UN pasto (anche etichette nutrizionali).
 In ogni messaggio ricevi la LISTA ATTUALE degli alimenti del pasto in JSON. Devi restituire in "items" SEMPRE la lista COMPLETA e aggiornata del pasto, non solo le novità:
@@ -452,7 +452,8 @@ VALORI IMPOSTI DALL'UTENTE (hanno sempre la precedenza, mai ricalcolarli o "corr
 - se dà solo le kcal, metti quelle kcal e lascia i macro a null (non stimarli), a meno che chieda esplicitamente di stimarli: allora stimali coerenti con le kcal date;
 - se dà il totale dell'intero pasto (es. "il pranzo completo era 700 kcal"), la lista diventa UNA sola voce con quel totale (nome tipo "Pranzo completo"), sostituendo le voci precedenti; macro a null se non dati.
 DOMANDE: se il messaggio dell'utente è una domanda o una richiesta di spiegazione (es. "sei sicuro del sale?", "perché così tante calorie?", "quanto sale ha il parmigiano?") e non chiede di aggiungere/togliere/correggere alimenti, metti "domanda": true, lascia la lista invariata e rispondi in "reply" in modo completo e chiaro, usando i dati della lista attuale e della conversazione: spiega da dove vengono i valori (fonte, valori per 100 g, proporzione sulla quantità), voce per voce se serve, e se ti accorgi di un errore dillo e proponi la correzione chiedendo conferma. Altrimenti "domanda": false.
-Per gli aggiornamenti, in "reply" scrivi in italiano, breve: cosa hai aggiunto o cambiato e le ipotesi fatte. Non scrivere i totali: li calcola l'app.`;
+RIEPILOGO: metti "riepilogo": true SOLO se l'utente chiede esplicitamente il totale, il riepilogo o i macro del pasto (es. "dammi il totale", "riepilogo", "quanto fa in tutto?", "quanti macro?"); in quel caso l'app mostra il riepilogo completo. Altrimenti "riepilogo": false.
+Per gli aggiornamenti, in "reply" scrivi in italiano, breve: cosa hai aggiunto o cambiato, con quantità e kcal della singola voce (es. "Aggiunto: pasta integrale 70 g, 245 kcal"), ed eventuali ipotesi. Non scrivere i totali del pasto: li mostra l'app solo su richiesta.`;
 const SYS_REC=`Sei un cuoco e consulente nutrizionale che aiuta una persona che segue una dieta. Rispondi in italiano, in modo pratico e conciso: idee, ricette, varianti più leggere, sostituzioni.
 Quando proponi UNA ricetta concreta, compila "ricetta" con nome, porzioni e la lista degli ingredienti con quantità e valori nutrizionali (kcal, proteine, carboidrati, grassi, fibre, sale in g) (compresi zuccheri e grassi saturi) PER UNA PORZIONE. Altrimenti lascia "ricetta" a null.
 Nel testo di "reply" indica sempre per la ricetta proposta kcal e macro per porzione, comprese fibre e sale.`;
@@ -540,7 +541,8 @@ async function sendMeal(text,photo){
   try{
     const out=await gemini(SYS_MEAL,toContents(hist,cur),SCHEMA_MEAL);
     if(!out.domanda)meal.items=(Array.isArray(out.items)?out.items:[]).map(clean).map(linkFood);
-    meal.chat.push({role:'a',text:out.reply||'',ans:!!out.domanda,tot:sum(meal.items),list:meal.items.map(i=>({n:i.nome,q:i.quantita,k:i.kcal,miss:KEYS.slice(1).filter(k=>i[k]===null||i[k]===undefined)}))});
+    if(!out.riepilogo)meal.chat.push({role:'a',text:out.reply||'Fatto.'});
+    else meal.chat.push({role:'a',text:out.reply||'',ans:!!out.domanda,tot:sum(meal.items),list:meal.items.map(i=>({n:i.nome,q:i.quantita,k:i.kcal,miss:KEYS.slice(1).filter(k=>i[k]===null||i[k]===undefined)}))});
   }catch(e){meal.chat.push({role:'a',text:e.message,err:true})}
   ui.busy=false;save();render();
 }
