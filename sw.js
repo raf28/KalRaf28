@@ -3,7 +3,7 @@
    Regola: prima la rete, così ogni aggiornamento caricato su GitHub arriva subito;
    la copia salvata si usa solo se la rete non c'è.
    Le chiamate a Gemini, Google e Drive non passano mai di qui (altri domini). */
-const CACHE = 'kalraf28-v40';
+const CACHE = 'kalraf28-v40b';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icone/icona-kcal-192.png', './icone/icona-kcal-512.png', './icone/icona-kcal.svg'];
 
 self.addEventListener('install', e => {
