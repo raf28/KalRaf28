@@ -312,7 +312,13 @@ details.card summary::-webkit-details-marker{display:none}
             <p>Ultimo tentativo, con un altro motore, se anche la riserva 1 non risponde.</p></div>
         </div>
         <div class="card">
-          <h3>Backup</h3>
+          <h3>Backup su Google Drive</h3>
+          <p class="hm" style="margin-top:0" id="gdInfo"></p>
+          <div class="row" id="gdBtns"></div>
+          <p class="hm" id="gdStat" style="margin-bottom:0"></p>
+        </div>
+        <div class="card">
+          <h3>Backup su file</h3>
           <p class="hm" style="margin-top:0">Esporta diario, storico e ricettario in un file (la chiave API non viene inclusa).</p>
           <div class="row"><button class="btn sm ghost" id="exp">Esporta backup</button><button class="btn sm ghost" id="imp">Importa backup</button></div>
           <input type="file" id="impF" accept="application/json,.json" hidden>
@@ -321,7 +327,11 @@ details.card summary::-webkit-details-marker{display:none}
           <h3>Sicurezza</h3>
           <div class="row"><button class="btn sm ghost" id="relock">Blocca con PIN su questo dispositivo</button></div>
         </div>
-        <p class="hm">Versione 1 · i valori nutrizionali sono stime del modello.</p>
+        <div class="card">
+          <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
+          <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
+        </div>
+        <p class="hm">Versione 34 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -408,7 +418,7 @@ function normalize(){
 }
 function prune(){const d=Number(S.settings.keepDays)||0;if(d<=0)return;const lim=Date.now()-d*864e5;S.history=S.history.filter(h=>new Date(h.end||h.start).getTime()>=lim)}
 normalize();prune();
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Impossibile salvare: esporta un backup')}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Impossibile salvare: esporta un backup')}try{if(typeof gdOnSave==='function')gdOnSave()}catch(e){}}
 
 function guessMeal(){const h=new Date().getHours();if(h>=4&&h<11)return'colazione';if(h>=11&&h<15)return'pranzo';if(h>=15&&h<18){return S.day&&S.day.curSnack||'spuntino1'}return'cena'}
 const ui={retry:{},view:'diario',meal:null,dv:null,hmeal:null,rec:'chat',photo:null,busy:false};
@@ -621,7 +631,7 @@ function render(){
   if(ui.view==='ricette'){renderRec();$('#ctx').textContent='Chat ricette · non viene contata nel diario';$('#msg').placeholder='Chiedi un\'idea o una ricetta'}
   if(ui.view==='storico')renderHist();
   if(ui.view==='alimenti')renderFoods();
-  if(ui.view==='impost')renderSet();
+  if(ui.view==='impost'){renderSet();gdRender()}
   if(chatView)requestAnimationFrame(()=>{const m=$('#main');m.scrollTop=m.scrollHeight});
 }
 function histDay(i){const h=S.history[i];if(!h)return null;const meals={};
@@ -671,7 +681,7 @@ function reopenDay(){
 function finishEdit(){
   if(!S.parked)return;
   const rec=packDay(S.day);S.history.splice(Math.min(S.editPos||0,S.history.length),0,rec);
-  S.day=S.parked;delete S.parked;delete S.editPos;normalize();ui.dv=null;ui.meal=null;save();render();toast('Modifiche salvate · sei tornato alla giornata attuale');
+  S.day=S.parked;delete S.parked;delete S.editPos;normalize();ui.dv=null;ui.meal=null;gdWant('full');save();render();toast('Modifiche salvate · sei tornato alla giornata attuale');
 }
 $('#dPrev').onclick=()=>{if(S.parked)return;ui.dv=ui.dv===null?0:Math.min(S.history.length-1,ui.dv+1);ui.hmeal=null;render();$('#main').scrollTop=0};
 $('#dNext').onclick=()=>{if(S.parked){finishEdit();return}ui.dv=ui.dv>0?ui.dv-1:null;ui.hmeal=null;render();$('#main').scrollTop=0};
@@ -910,7 +920,7 @@ $('#closeDay').onclick=()=>{if(S.parked){finishEdit();return}
     const meals={};orderKeys(Object.keys(S.day.meals)).forEach(k=>{if(S.day.meals[k].items.length)meals[k]=S.day.meals[k].items});
     if(dayItems(S.day).length)S.history.unshift({id:S.day.id,start:S.day.start,end:new Date().toISOString(),meals,tot:t,target,margin,curSnack:S.day.curSnack,full:JSON.parse(JSON.stringify(S.day.meals))});
     if(S.history.length>400)S.history.length=400;prune();
-    S.day=newDay();ui.meal=null;ui.dv=null;save();closeSheet();render();toast('Nuova giornata aperta');
+    S.day=newDay();ui.meal=null;ui.dv=null;gdWant('full');save();closeSheet();render();toast('Nuova giornata aperta');
   };
 };
 function showMealBar(){requestAnimationFrame(()=>{const st=document.querySelector('.mstick'),mn=$('#main');if(!st)return;const top=st.offsetTop;if(mn.scrollTop<top)mn.scrollTo({top,behavior:'smooth'})})}
@@ -1011,6 +1021,116 @@ $('#impF').onchange=async e=>{
   }catch(err){toast('File di backup non valido')}
 };
 $('#relock').onclick=()=>{S.unlocked=false;save();boot()};
+
+/* ---------- Backup su Google Drive ---------- */
+const GD_CLIENT='720047141236-n358a03sg1pi0p26qfp7fa99378apb1a.apps.googleusercontent.com';
+const GD_SCOPE='https://www.googleapis.com/auth/drive.file';
+const GD_KEY='kalraf28_drive',GD_FOLDER='KalRaf28 Backup',GD_KEEP=10;
+let GD={};try{GD=JSON.parse(localStorage.getItem(GD_KEY))||{}}catch(e){GD={}}
+const gdSave=()=>{try{localStorage.setItem(GD_KEY,JSON.stringify(GD))}catch(e){}};
+let gdTC=null,gdTimer=null,gdBusy=false,gdAsking=false,gdLastAsk=0,gdNeed=null;
+const gdToday=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const gdTokOk=()=>GD.tok&&GD.exp>Date.now()+60000;
+function gdFp(){const o={};Object.keys(S).forEach(k=>{if(!['day','history','parked','editPos','recChat','unlocked'].includes(k))o[k]=S[k]});return JSON.stringify(o)}
+function gdLoadLib(){return window.google&&google.accounts&&google.accounts.oauth2?Promise.resolve():new Promise((ok,ko)=>{const x=document.createElement('script');x.src='https://accounts.google.com/gsi/client';x.async=true;x.onload=()=>ok();x.onerror=()=>ko(new Error('Impossibile caricare Google'));document.head.appendChild(x)})}
+function gdAsk(prompt){/* deve partire da un tocco dell'utente */
+  if(!window.google||!google.accounts){gdLoadLib().catch(()=>{});return}
+  if(gdAsking&&Date.now()-gdLastAsk<20000)return;gdAsking=true;gdLastAsk=Date.now();
+  if(!gdTC)gdTC=google.accounts.oauth2.initTokenClient({client_id:GD_CLIENT,scope:GD_SCOPE,callback:gdGotToken,error_callback:e=>{gdAsking=false;if(e&&e.type!=='popup_closed')toast('Accesso Google non riuscito');gdRender()}});
+  gdTC.requestAccessToken({prompt:prompt||'',login_hint:GD.email||undefined});
+}
+async function gdGotToken(r){
+  gdAsking=false;
+  if(!r||r.error||!r.access_token){toast('Accesso Google annullato');gdRender();return}
+  if(!google.accounts.oauth2.hasGrantedAllScopes(r,GD_SCOPE)){toast('Serve il permesso per Google Drive');gdRender();return}
+  const first=!GD.on;GD.tok=r.access_token;GD.exp=Date.now()+(Number(r.expires_in)||3600)*1000;GD.on=true;gdSave();
+  try{if(!GD.email){const a=await gdApi('https://www.googleapis.com/drive/v3/about?fields=user(emailAddress)');GD.email=a.user&&a.user.emailAddress||'';gdSave()}}catch(e){}
+  if(first){toast('Collegato a Google Drive');GD.fp='';gdWant('full');const n=await gdCount().catch(()=>0);if(n){gdRender();gdOfferRestore(n);return}}
+  gdRender();gdKick(0);
+}
+async function gdApi(url,opt={}){
+  if(!gdTokOk())throw new Error('token');
+  const r=await fetch(url,Object.assign({},opt,{headers:Object.assign({Authorization:'Bearer '+GD.tok},opt.headers||{})}));
+  if(r.status===401){GD.exp=0;gdSave();throw new Error('token')}
+  if(!r.ok)throw new Error('Drive '+r.status);
+  return r.status===204?null:(opt.raw?r.text():r.json());
+}
+async function gdFolder(){
+  if(GD.folder){try{const f=await gdApi('https://www.googleapis.com/drive/v3/files/'+GD.folder+'?fields=id,trashed');if(f&&!f.trashed)return GD.folder}catch(e){if(e.message==='token')throw e}}
+  const q=encodeURIComponent(`name='${GD_FOLDER}' and mimeType='application/vnd.google-apps.folder' and trashed=false`);
+  const l=await gdApi('https://www.googleapis.com/drive/v3/files?q='+q+'&fields=files(id)&spaces=drive');
+  let id=l.files&&l.files[0]&&l.files[0].id;
+  if(!id){const c=await gdApi('https://www.googleapis.com/drive/v3/files?fields=id',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:GD_FOLDER,mimeType:'application/vnd.google-apps.folder'})});id=c.id}
+  GD.folder=id;gdSave();return id;
+}
+async function gdList(){const f=await gdFolder();const q=encodeURIComponent(`'${f}' in parents and trashed=false and mimeType='application/json'`);
+  const l=await gdApi('https://www.googleapis.com/drive/v3/files?q='+q+'&orderBy=name desc&pageSize=100&fields=files(id,name,modifiedTime,size)');return l.files||[]}
+async function gdCount(){return(await gdList()).length}
+function gdPayload(){const d=JSON.parse(JSON.stringify(S));delete d.unlocked;d.app='kalraf28';d.backup=new Date().toISOString();return JSON.stringify(d)}
+async function gdUpload(){
+  const f=await gdFolder(),name='kalraf28-'+gdToday()+'.json',body=gdPayload();
+  const q=encodeURIComponent(`name='${name}' and '${f}' in parents and trashed=false`);
+  const ex=(await gdApi('https://www.googleapis.com/drive/v3/files?q='+q+'&fields=files(id)')).files||[];
+  if(ex.length){await gdApi('https://www.googleapis.com/upload/drive/v3/files/'+ex[0].id+'?uploadType=media',{method:'PATCH',headers:{'Content-Type':'application/json'},body})}
+  else{const b='kr28'+Date.now(),mp=`--${b}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify({name,parents:[f],mimeType:'application/json'})}\r\n--${b}\r\nContent-Type: application/json\r\n\r\n${body}\r\n--${b}--`;
+    await gdApi('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',{method:'POST',headers:{'Content-Type':'multipart/related; boundary='+b},body:mp});
+    const all=await gdList();for(const x of all.slice(GD_KEEP)){try{await gdApi('https://www.googleapis.com/drive/v3/files/'+x.id,{method:'DELETE'})}catch(e){}}}
+}
+function gdWant(kind){if(!GD.on)return;gdNeed=gdNeed==='full'||kind==='full'?'full':'quick';GD.pending=true;gdSave()}
+function gdOnSave(){if(!GD.on)return;const fp=gdFp();if(fp!==GD.fp){gdWant('quick')}if(GD.pending)gdKick(4000)}
+function gdKick(ms){if(!GD.on||!GD.pending)return;clearTimeout(gdTimer);gdTimer=setTimeout(gdSync,ms);if(!gdTokOk()&&!ms)gdRender()}
+async function gdSync(manual){
+  if(!GD.on||gdBusy)return;
+  if(!navigator.onLine){GD.pending=true;gdSave();gdRender();if(manual)toast('Sei offline: riprovo appena torna la rete');return}
+  if(!gdTokOk()){GD.pending=true;gdSave();gdRender();if(manual)gdAsk('');return}
+  gdBusy=true;gdRender();const fp=gdFp();
+  try{await gdUpload();GD.fp=fp;GD.last=Date.now();GD.lastDay=gdToday();GD.pending=false;GD.err='';gdNeed=null;gdSave();if(manual)toast('Backup su Drive completato')}
+  catch(e){GD.pending=true;GD.err=e.message==='token'?'':'Ultimo tentativo non riuscito, riprovo';gdSave();if(manual&&e.message!=='token')toast('Backup non riuscito, riprova tra poco');if(e.message==='token'&&manual)gdAsk('')}
+  finally{gdBusy=false;gdRender()}
+}
+function gdOfferRestore(n){
+  sheet(`<h3>Backup trovati su Drive</h3><p class="hm">Nella cartella «${GD_FOLDER}» ci sono ${n} backup. Vuoi ripristinare l'ultimo su questo telefono?</p><div class="row between"><button class="btn ghost" id="gdNo">No, tengo i dati attuali</button><button class="btn" id="gdYes">Ripristina</button></div>`);
+  $('#gdNo').onclick=()=>{closeSheet();gdKick(0)};$('#gdYes').onclick=()=>{closeSheet();gdRestore()};
+}
+async function gdRestore(){
+  if(!gdTokOk()){gdAsk('');toast('Accedi e poi tocca di nuovo «Ripristina»');return}
+  try{const l=await gdList();if(!l.length){toast('Nessun backup su Drive');return}
+    sheet(`<h3>Ripristina da Drive</h3><p class="hm">Scegli la versione. Sostituisce tutti i dati di questo telefono (diario, storico, alimenti, ricette, impostazioni e chiave).</p>${l.map((x,i)=>`<button class="btn ghost" style="width:100%;margin:4px 0;text-align:left" data-gdv="${i}">${esc(x.name.replace('kalraf28-','').replace('.json',''))}${i===0?' · più recente':''}<br><small class="hm">aggiornato ${new Date(x.modifiedTime).toLocaleString('it-IT',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</small></button>`).join('')}<div class="row"><button class="btn ghost" id="noSheet">Annulla</button></div>`);
+    document.querySelectorAll('[data-gdv]').forEach(b=>b.onclick=async()=>{const x=l[+b.dataset.gdv];
+      try{const d=JSON.parse(await gdApi('https://www.googleapis.com/drive/v3/files/'+x.id+'?alt=media',{raw:true}));if(!d||!d.day||!d.settings)throw 0;
+        delete d.app;delete d.backup;S=d;S.unlocked=true;normalize();prune();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+        GD.fp=gdFp();GD.pending=false;gdSave();ui.models=null;ui.meal=null;ui.dv=null;closeSheet();render();toast('Dati ripristinati da Drive');
+        if(S.settings.apiKey)listModels().then(m=>{ui.models=m;if(ui.view==='impost')renderSet()}).catch(()=>{});
+      }catch(e){toast('Ripristino non riuscito')}});
+  }catch(e){if(e.message==='token')gdAsk('');else toast('Drive non raggiungibile')}
+}
+function gdDisconnect(silent){
+  try{if(GD.tok&&window.google&&google.accounts)google.accounts.oauth2.revoke(GD.tok,()=>{})}catch(e){}
+  clearTimeout(gdTimer);GD={};try{localStorage.removeItem(GD_KEY)}catch(e){}gdRender();if(!silent)toast('Account Google scollegato · i backup su Drive restano');
+}
+function gdRender(){
+  if(!$('#gdBtns'))return;
+  if(!GD.on){$('#gdInfo').textContent='Accedi con il tuo account Google: l\'app salva una copia di tutto (impostazioni e chiave, alimenti, ricette, diario e storico) in una cartella «'+GD_FOLDER+'» del tuo Drive. L\'app vede solo quella cartella.';
+    $('#gdBtns').innerHTML='<button class="btn sm" id="gdIn">Accedi con Google</button>';$('#gdStat').textContent='';return}
+  $('#gdInfo').innerHTML='Collegato'+(GD.email?' come <b>'+esc(GD.email)+'</b>':'')+'. Alimenti, ricette e impostazioni si salvano subito; il diario alla chiusura della giornata e una volta al giorno.';
+  $('#gdBtns').innerHTML='<button class="btn sm ghost" id="gdOut">Scollega</button><button class="btn sm" id="gdNow"'+(gdBusy?' disabled':'')+'>'+(gdBusy?'Sincronizzo…':'Sincronizza')+'</button><button class="btn sm ghost" id="gdRes">Ripristina da Drive</button>';
+  const last=GD.last?new Date(GD.last).toLocaleString('it-IT',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'mai';
+  $('#gdStat').innerHTML='Ultimo backup: <b>'+last+'</b>'+(GD.pending&&!gdBusy?'<br>⏳ Modifiche in attesa'+(navigator.onLine?(gdTokOk()?'':' · tocca un punto qualsiasi dell\'app per riconnetterti'):' · in attesa della rete'):'')+(GD.err?'<br>'+esc(GD.err):'');
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button');const id=b&&b.id;
+  if(id==='gdIn'){gdLoadLib().then(()=>gdAsk('consent')).catch(()=>toast('Google non raggiungibile'));return}
+  if(id==='gdOut'){sheet(`<h3>Scollegare Google?</h3><p class="hm">Il backup automatico si ferma. I backup già su Drive restano dove sono e i dati sul telefono non cambiano.</p><div class="row between"><button class="btn ghost" id="noSheet">Annulla</button><button class="btn" id="gdOutOk">Scollega</button></div>`);return}
+  if(id==='gdOutOk'){closeSheet();gdDisconnect();return}
+  if(id==='gdNow'){gdWant('full');gdSync(true);return}
+  if(id==='gdRes'){gdRestore();return}
+  if(id==='resetApp'){sheet(`<h3 style="color:var(--bad)">Reset App?</h3><p>Scollega l'account Google e cancella <b>tutti i dati su questo telefono</b>: diario, storico, alimenti con foto, ricette, impostazioni e chiave API.</p><p class="hm">I backup su Google Drive <b>non</b> vengono toccati: potrai ripristinarli dopo aver fatto di nuovo l'accesso. Al riavvio ti verrà chiesto il PIN.</p><div class="row between"><button class="btn ghost" id="noSheet">Annulla</button><button class="btn bad" id="resetOk">Cancella tutto</button></div>`);return}
+  if(id==='resetOk'){gdDisconnect(true);try{localStorage.removeItem(KEY)}catch(e){}try{indexedDB.deleteDatabase('diario_kcal_foto')}catch(e){}setTimeout(()=>location.replace(location.pathname),400);return}
+  /* token scaduto e backup in attesa: il tocco permette di rinnovarlo */
+  if(GD.on&&GD.pending&&navigator.onLine&&!gdTokOk()&&!gdBusy&&window.google&&google.accounts&&Date.now()-gdLastAsk>120000)gdAsk('');
+},true);
+window.addEventListener('online',()=>{if(GD.on&&GD.pending)gdKick(1000)});
+if(GD.on){gdLoadLib().catch(()=>{});if(GD.lastDay!==gdToday())gdWant('full');if(GD.pending)gdKick(2500)}
 
 /* ---------- PIN ---------- */
 async function sha(s){if(!window.crypto||!crypto.subtle)return null;const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
