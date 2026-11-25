@@ -331,7 +331,7 @@ details.card summary::-webkit-details-marker{display:none}
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 37 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 38 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1028,7 +1028,7 @@ const GD_SCOPE='https://www.googleapis.com/auth/drive.file';
 const GD_KEY='kalraf28_drive',GD_FOLDER='KalRaf28 Backup',GD_KEEP=1,GD_FILE='kalraf28-backup.json',GD_FORMAT=1;
 let GD={};try{GD=JSON.parse(localStorage.getItem(GD_KEY))||{}}catch(e){GD={}}
 const gdSave=()=>{try{localStorage.setItem(GD_KEY,JSON.stringify(GD))}catch(e){}};
-let gdTC=null,gdTimer=null,gdBusy=false,gdAsking=false,gdLastAsk=0,gdNeed=null;
+let gdNotify=false,gdTC=null,gdTimer=null,gdBusy=false,gdAsking=false,gdLastAsk=0,gdNeed=null;
 const gdToday=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 const gdTokOk=()=>GD.tok&&GD.exp>Date.now()+60000;
 function gdFp(){const o={};Object.keys(S).forEach(k=>{if(!['day','history','parked','editPos','recChat','unlocked'].includes(k))o[k]=S[k]});return JSON.stringify(o)}
@@ -1109,7 +1109,7 @@ async function gdPhRestore(){
     const d=await blobToData(b);await IDB.op('readwrite',st=>st.put(d,k));n++}catch(e){}}
   return n;
 }
-function gdWant(kind){if(!GD.on)return;gdNeed=gdNeed==='full'||kind==='full'?'full':'quick';GD.pending=true;gdSave()}
+function gdWant(kind,quiet){if(!GD.on)return;if(!quiet)gdNotify=true;gdNeed=gdNeed==='full'||kind==='full'?'full':'quick';GD.pending=true;gdSave()}
 function gdOnSave(){if(!GD.on)return;const fp=gdFp();if(fp!==GD.fp){gdWant('quick')}if(GD.pending)gdKick(4000)}
 function gdKick(ms){if(!GD.on||!GD.pending)return;clearTimeout(gdTimer);gdTimer=setTimeout(gdSync,ms);if(!gdTokOk()&&!ms)gdRender()}
 async function gdSync(manual){
@@ -1117,7 +1117,7 @@ async function gdSync(manual){
   if(!navigator.onLine){GD.pending=true;gdSave();gdRender();if(manual)toast('Sei offline: riprovo appena torna la rete');return}
   if(!gdTokOk()){GD.pending=true;gdSave();gdRender();if(manual)gdAsk('');return}
   gdBusy=true;gdRender();const fp=gdFp();
-  try{await gdUpload();await gdPhotos();GD.fp=fp;GD.last=Date.now();GD.lastDay=gdToday();GD.pending=false;GD.err='';gdNeed=null;gdSave();if(manual)toast('Backup su Drive completato')}
+  try{await gdUpload();await gdPhotos();GD.fp=fp;GD.last=Date.now();GD.lastDay=gdToday();GD.pending=false;GD.err='';gdNeed=null;gdSave();if(manual)toast('Backup su Drive completato');else if(gdNotify)toast('☁ Sincronizzato su Google Drive');gdNotify=false}
   catch(e){GD.pending=true;GD.err=e.message==='token'?'':'Ultimo tentativo non riuscito, riprovo';gdSave();if(manual&&e.message!=='token')toast('Backup non riuscito, riprova tra poco');if(e.message==='token'&&manual)gdAsk('')}
   finally{gdBusy=false;gdRender()}
 }
@@ -1164,7 +1164,7 @@ document.addEventListener('click',e=>{
   if(GD.on&&GD.pending&&navigator.onLine&&!gdTokOk()&&!gdBusy&&window.google&&google.accounts&&Date.now()-gdLastAsk>120000)gdAsk('');
 },true);
 window.addEventListener('online',()=>{if(GD.on&&GD.pending)gdKick(1000)});
-if(GD.on){gdLoadLib().catch(()=>{});if(GD.lastDay!==gdToday())gdWant('full');if(GD.pending)gdKick(2500)}
+if(GD.on){gdLoadLib().catch(()=>{});if(GD.lastDay!==gdToday())gdWant('full',true);if(GD.pending)gdKick(2500)}
 
 /* ---------- PIN ---------- */
 async function sha(s){if(!window.crypto||!crypto.subtle)return null;const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
