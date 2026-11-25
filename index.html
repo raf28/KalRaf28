@@ -185,7 +185,7 @@ details.card summary::-webkit-details-marker{display:none}
           <div class="row" style="margin:-6px 0 14px"><button class="btn sm" id="keySave">Salva e carica modelli</button><button class="btn sm ghost" id="keyShow">Mostra</button></div>
           <div class="f"><label for="model">Modello</label>
             <select id="model"></select>
-            <p id="modelInfo">Consigliato un modello Flash: veloce ed economico.</p></div>
+            <p id="modelInfo">Consigliato Flash-Lite: tante richieste gratuite al giorno.</p></div>
         </div>
         <div class="card">
           <h3>Backup</h3>
@@ -255,10 +255,12 @@ function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('
 function guessMeal(){const h=new Date().getHours();if(h>=4&&h<11)return'colazione';if(h>=11&&h<15)return'pranzo';if(h>=15&&h<18)return'spuntino';return'cena'}
 const ui={view:'diario',meal:guessMeal(),rec:'chat',photo:null,busy:false};
 
-const sum=items=>{const t={};NUTR.forEach(([k])=>t[k]=0);(items||[]).forEach(i=>NUTR.forEach(([k])=>t[k]+=num(i[k])));return t};
+const nn=v=>(v===null||v===undefined||v==='')?null:num(v);
+const sum=items=>{const t={miss:{},has:{}};NUTR.forEach(([k])=>t[k]=0);(items||[]).forEach(i=>NUTR.forEach(([k])=>{const v=nn(i[k]);if(v===null)t.miss[k]=true;else{t[k]+=v;t.has[k]=true}}));return t};
+const fv=(t,k,u)=>{const v=t[k];if(v===null||v===undefined)return'—';if(t.miss&&t.miss[k])return t.has&&t.has[k]?'≥'+f1(v)+u:'—';return f1(v)+u};
 const dayItems=d=>MEALS.flatMap(([k])=>d.meals[k]?d.meals[k].items:[]);
-const mline=t=>NUTR.slice(1).map(([k,l,u])=>`${l} ${f1(t[k])}${u}`).join(' · ');
-const clean=i=>{const o={nome:String(i.nome||'Alimento'),quantita:String(i.quantita||'')};NUTR.forEach(([k])=>o[k]=num(i[k]));return o};
+const mline=t=>NUTR.slice(1).map(([k,l,u])=>`${l} ${fv(t,k,u)}`).join(' · ');
+const clean=i=>{const o={nome:String(i.nome||'Alimento'),quantita:String(i.quantita||'')};o.kcal=num(i.kcal);NUTR.slice(1).forEach(([k])=>o[k]=nn(i[k]));if(i.imposto)o.imposto=true;return o};
 function md(s){return esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/^\s*[-*•]\s+/gm,'• ').replace(/\n/g,'<br>')}
 
 function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}
@@ -267,22 +269,34 @@ function closeSheet(){$('#modal').hidden=true;$('#sheet').innerHTML=''}
 $('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeSheet()});
 
 /* ---------- Gemini ---------- */
-const ITEM={type:'OBJECT',properties:{nome:{type:'STRING'},quantita:{type:'STRING'},kcal:{type:'NUMBER'},proteine:{type:'NUMBER'},carboidrati:{type:'NUMBER'},grassi:{type:'NUMBER'},fibre:{type:'NUMBER'},sale:{type:'NUMBER'}},required:['nome','quantita','kcal','proteine','carboidrati','grassi','fibre','sale']};
+const NUMN={type:'NUMBER',nullable:true};
+const ITEM={type:'OBJECT',properties:{nome:{type:'STRING'},quantita:{type:'STRING'},kcal:{type:'NUMBER'},proteine:NUMN,carboidrati:NUMN,grassi:NUMN,fibre:NUMN,sale:NUMN,imposto:{type:'BOOLEAN'}},required:['nome','quantita','kcal','proteine','carboidrati','grassi','fibre','sale']};
 const SCHEMA_MEAL={type:'OBJECT',properties:{reply:{type:'STRING'},items:{type:'ARRAY',items:ITEM}},required:['reply','items']};
 const SCHEMA_REC={type:'OBJECT',properties:{reply:{type:'STRING'},ricetta:{type:'OBJECT',nullable:true,properties:{nome:{type:'STRING'},porzioni:{type:'NUMBER'},ingredienti:{type:'ARRAY',items:ITEM}},required:['nome','porzioni','ingredienti']}},required:['reply']};
-const SYS_MEAL=`Sei l'assistente di un diario alimentare per il conteggio di kcal e macronutrienti. L'utente ti descrive o fotografa gli alimenti di UN pasto.
+const SYS_MEAL=`Sei l'assistente di un diario alimentare per il conteggio di kcal e macronutrienti. L'utente ti descrive o fotografa gli alimenti di UN pasto (anche etichette nutrizionali).
 In ogni messaggio ricevi la LISTA ATTUALE degli alimenti del pasto in JSON. Devi restituire in "items" SEMPRE la lista COMPLETA e aggiornata del pasto, non solo le novità:
 - aggiungi gli alimenti nuovi;
 - se l'utente corregge un alimento (quantità, marca, formato, tipo, cottura), SOSTITUISCI la voce precedente, senza lasciare doppioni;
 - se l'utente dice di togliere qualcosa, rimuovilo;
+- le voci con "imposto": true le ha decise l'utente: non modificarle mai, salvo sua richiesta esplicita;
 - se il messaggio non riguarda il cibo, lascia la lista invariata.
-Per ogni alimento: nome (con marca e formato se noti), quantita (es. "120 g", "2 gallette", "1 cucchiaio"), kcal, proteine, carboidrati, grassi, fibre (fibre alimentari, g) e sale (g di sale, non sodio). I valori si riferiscono alla quantità indicata, non a 100 g.
-Usa i valori di etichetta della marca indicata se li conosci, altrimenti tabelle di composizione affidabili (es. CREA). Per le foto stima porzioni realistiche e dichiara le ipotesi.
+CALCOLO NORMALE: per ogni alimento indica nome (con marca e formato se noti), quantita (es. "120 g", "2 gallette"), kcal, proteine, carboidrati, grassi, fibre (fibre alimentari, g) e sale (g di sale, non sodio), riferiti alla quantità consumata, non a 100 g. Da una foto di un'etichetta leggi i valori per 100 g o per porzione e fai la proporzione. Usa i valori di etichetta della marca indicata se li conosci, altrimenti tabelle affidabili (es. CREA). Per le foto di piatti stima porzioni realistiche e dichiara le ipotesi.
+VALORI IMPOSTI DALL'UTENTE (hanno sempre la precedenza, mai ricalcolarli o "correggerli"; metti "imposto": true):
+- se l'utente dà kcal e/o macro per un alimento, usa ESATTAMENTE quei numeri;
+- se dà solo le kcal, metti quelle kcal e lascia i macro a null (non stimarli), a meno che chieda esplicitamente di stimarli: allora stimali coerenti con le kcal date;
+- se dà il totale dell'intero pasto (es. "il pranzo completo era 700 kcal"), la lista diventa UNA sola voce con quel totale (nome tipo "Pranzo completo"), sostituendo le voci precedenti; macro a null se non dati.
 In "reply" scrivi in italiano, breve: cosa hai aggiunto o cambiato e le ipotesi fatte. Non scrivere i totali: li calcola l'app.`;
 const SYS_REC=`Sei un cuoco e consulente nutrizionale che aiuta una persona che segue una dieta. Rispondi in italiano, in modo pratico e conciso: idee, ricette, varianti più leggere, sostituzioni.
 Quando proponi UNA ricetta concreta, compila "ricetta" con nome, porzioni e la lista degli ingredienti con quantità e valori nutrizionali (kcal, proteine, carboidrati, grassi, fibre, sale in g) PER UNA PORZIONE. Altrimenti lascia "ricetta" a null.
 Nel testo di "reply" indica sempre per la ricetta proposta kcal e macro per porzione, comprese fibre e sale.`;
 
+const SCHEMA_IMP={type:'OBJECT',properties:{ricette:{type:'ARRAY',items:{type:'OBJECT',properties:{nome:{type:'STRING'},porzioni:{type:'NUMBER'},ingredienti:{type:'ARRAY',items:ITEM}},required:['nome','porzioni','ingredienti']}}},required:['ricette']};
+const SYS_IMP=`Converti in ricette strutturate il testo (o l'immagine) che l'utente incolla, preso dalle sue note di dieta. Può contenere più ricette.
+Per ogni ricetta: nome, porzioni e ingredienti con valori PER UNA PORZIONE.
+- Se il testo riporta già kcal e/o macro, usa ESATTAMENTE quei numeri ("imposto": true), dividendo per il numero di porzioni se sono riferiti all'intera ricetta.
+- Se il testo dà solo i totali (non per ingrediente), crea un solo ingrediente chiamato "Porzione" con quei totali.
+- Macro non indicati nel testo: null (non inventarli). Se mancano anche le kcal, stimale dagli ingredienti.
+Non aggiungere ricette che non sono nel testo.`;
 async function listModels(){
   const r=await fetch(API+'models?pageSize=200',{headers:{'x-goog-api-key':S.settings.apiKey}});
   const j=await r.json().catch(()=>({}));
@@ -291,7 +305,7 @@ async function listModels(){
     .map(m=>({id:m.name.replace(/^models\//,''),label:m.displayName||m.name}));
 }
 function pickDefault(list){
-  let p=list.filter(m=>/flash/i.test(m.id)&&!/lite/i.test(m.id));if(!p.length)p=list;
+  let p=list.filter(m=>/flash/i.test(m.id)&&/lite/i.test(m.id));if(!p.length)p=list.filter(m=>/flash/i.test(m.id));if(!p.length)p=list;
   const st=p.filter(m=>!/(preview|exp)/i.test(m.id));if(st.length)p=st;
   return [...p].sort((a,b)=>b.id.localeCompare(a.id,undefined,{numeric:true}))[0]?.id||'';
 }
@@ -388,14 +402,14 @@ function renderHead(){
   $('#bZone').style.left=target/scale*100+'%';$('#bZone').style.width=margin/scale*100+'%';
   $('#bMk').style.left=target/scale*100+'%';
   $('#lgMax').textContent=margin?`obiettivo ${f0(target)} · bonus fino a ${f0(max)}`:`obiettivo ${f0(target)}`;
-  $('#dMacros').innerHTML=NUTR.slice(1).map(([k,l,u])=>`<div><b>${f1(t[k])}${u}</b><span>${l==='Carboidrati'?'Carbo':l}</span></div>`).join('');
+  $('#dMacros').innerHTML=NUTR.slice(1).map(([k,l,u])=>`<div><b>${fv(t,k,u)}</b><span>${l==='Carboidrati'?'Carbo':l}</span></div>`).join('');
   const d=new Date(S.day.start);
   $('#dayLabel').textContent='Giornata iniziata '+d.toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'})+' alle '+d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
 }
 function renderMeal(){
   $('#mealTabs').innerHTML=MEALS.map(([k,l])=>`<button data-meal="${k}" class="${k===ui.meal?'on':''}">${l}<small>${f0(sum(S.day.meals[k].items).kcal)} kcal</small></button>`).join('');
   const m=S.day.meals[ui.meal],t=sum(m.items);
-  $('#mealItems').innerHTML=`<h3>${mealName(ui.meal)}</h3>`+(m.items.length?m.items.map((i,ix)=>`<div class="it"><div><div class="n">${esc(i.nome)}</div><div class="q">${esc(i.quantita)}</div></div><div class="k">${f0(i.kcal)} kcal</div><button class="x" data-del="${ix}" aria-label="Elimina ${esc(i.nome)}">×</button><div class="m">${mline(i)}</div></div>`).join('')+
+  $('#mealItems').innerHTML=`<h3>${mealName(ui.meal)}</h3>`+(m.items.length?m.items.map((i,ix)=>`<div class="it"><div><div class="n">${esc(i.nome)}</div><div class="q">${esc(i.quantita)}${i.imposto?' · valore tuo':''}</div></div><div class="k">${f0(i.kcal)} kcal</div><button class="x" data-del="${ix}" aria-label="Elimina ${esc(i.nome)}">×</button><div class="m">${mline(i)}</div></div>`).join('')+
     `<div class="tot"><span>Totale ${mealName(ui.meal).toLowerCase()}</span><span>${f0(t.kcal)} kcal</span><small>${mline(t)}</small></div>`
     :`<div class="empty">Ancora niente. Scrivi cosa hai mangiato o allega una foto: il conteggio si aggiorna da solo, e se correggi qualcosa in chat vale sempre l'ultima versione.</div>`);
   $('#mealChat').innerHTML=m.chat.map(msgHtml).join('')+(ui.busy?'<div class="typing">Sto calcolando<i></i><i></i><i></i></div>':'');
@@ -415,8 +429,8 @@ function renderRec(){
   $('#recChat').innerHTML=(S.recChat.length?'':'<div class="empty">Chiedi idee per un pasto, varianti più leggere o come usare quello che hai in frigo. Questa chat non entra nel conteggio; le ricette che ti piacciono puoi salvarle e aggiungerle a un pasto.</div>')
     +S.recChat.map(msgHtml).join('')+(ui.busy?'<div class="typing">Sto pensando<i></i><i></i><i></i></div>':'')
     +(S.recChat.length?'<div class="row" style="justify-content:center"><button class="btn sm ghost" id="recClear">Nuova conversazione</button></div>':'');
-  $('#recBook').innerHTML=S.recipes.length?S.recipes.map(r=>{const t=sum(r.ingredienti);return`<div class="card"><h3>${esc(r.nome)}</h3><div class="hm">Per porzione: <b>${f0(t.kcal)} kcal</b> · ${mline(t)}</div><details style="margin-top:6px"><summary class="hm">Ingredienti</summary>${r.ingredienti.map(i=>`<div class="hm">• ${esc(i.nome)} ${esc(i.quantita)} — ${f0(i.kcal)} kcal</div>`).join('')}</details><div class="row"><button class="btn sm" data-addrec="${esc(r.id)}">Aggiungi a un pasto</button><button class="btn sm ghost" data-delrec="${esc(r.id)}">Elimina</button></div></div>`}).join('')
-    :'<div class="empty">Nessuna ricetta salvata. Dalla chat, tocca «Salva nel ricettario» sotto una ricetta proposta.</div>';
+  $('#recBook').innerHTML='<div class="row" style="margin:0 0 12px"><button class="btn sm" id="impRec">Importa ricette</button></div>'+(S.recipes.length?S.recipes.map(r=>{const t=sum(r.ingredienti);return`<div class="card"><h3>${esc(r.nome)}</h3><div class="hm">Per porzione: <b>${f0(t.kcal)} kcal</b> · ${mline(t)}</div><details style="margin-top:6px"><summary class="hm">Ingredienti</summary>${r.ingredienti.map(i=>`<div class="hm">• ${esc(i.nome)} ${esc(i.quantita)} — ${f0(i.kcal)} kcal</div>`).join('')}</details><div class="row"><button class="btn sm" data-addrec="${esc(r.id)}">Aggiungi a un pasto</button><button class="btn sm ghost" data-delrec="${esc(r.id)}">Elimina</button></div></div>`}).join('')
+    :'<div class="empty">Nessuna ricetta salvata. Dalla chat, tocca «Salva nel ricettario» sotto una ricetta proposta, oppure usa «Importa ricette» per incollare quelle che hai già con i tuoi valori.</div>');
 }
 function renderHist(){
   $('#histList').innerHTML=S.history.length?S.history.map((h,ix)=>{const t=h.tot,max=h.target+h.margin,st=t.kcal<=h.target?'ok':t.kcal<=max?'warn':'bad';const d=new Date(h.start);
@@ -447,6 +461,7 @@ document.addEventListener('click',e=>{
   if(b.dataset.addrec){return addRecipe(b.dataset.addrec)}
   if(b.dataset.delhist!==undefined){const i=+b.dataset.delhist;sheet(`<h3>Eliminare questa giornata?</h3><p class="hm">Non si può annullare.</p><div class="row"><button class="btn bad" id="okDelH">Elimina</button><button class="btn ghost" id="noSheet">Annulla</button></div>`);$('#okDelH').onclick=()=>{S.history.splice(i,1);save();closeSheet();render()};return}
   if(b.id==='noSheet'){closeSheet();return}
+  if(b.id==='impRec'){return importRecipes()}
   if(b.id==='recClear'){S.recChat=[];save();render();return}
 });
 function addRecipe(id){
@@ -456,9 +471,32 @@ function addRecipe(id){
     <div class="row"><button class="btn" id="okAdd">Aggiungi</button><button class="btn ghost" id="noSheet">Annulla</button></div>`);
     document.querySelectorAll('[data-pm]').forEach(x=>x.onclick=()=>{meal=x.dataset.pm;draw()});
     $('#pm').onclick=()=>{p=Math.max(.5,p-.5);draw()};$('#pp').onclick=()=>{p=Math.min(10,p+.5);draw()};
-    $('#okAdd').onclick=()=>{const t=sum(r.ingredienti);const it={nome:'Ricetta: '+r.nome,quantita:f1(p)+(p===1?' porzione':' porzioni')};NUTR.forEach(([k])=>it[k]=t[k]*p);
+    $('#okAdd').onclick=()=>{const t=sum(r.ingredienti);const it={nome:'Ricetta: '+r.nome,quantita:f1(p)+(p===1?' porzione':' porzioni')};NUTR.forEach(([k])=>it[k]=(t.miss[k]&&!t.has[k])?null:t[k]*p);
       const m=S.day.meals[meal];m.items.push(it);m.chat.push({role:'u',text:`(Aggiunta dal ricettario: ${r.nome}, ${it.quantita})`});save();closeSheet();ui.view='diario';ui.meal=meal;render();toast('Aggiunta a '+mealName(meal))}};
   draw();
+}
+function importRecipes(){
+  let img=null;
+  sheet(`<h3>Importa ricette</h3><p class="hm" style="margin-top:0">Incolla il testo delle tue ricette (anche più di una) o allega uno screenshot. I valori che contengono vengono usati così come sono.</p>
+  <div class="f"><textarea id="impT" rows="8" style="width:100%;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:10px;font-size:16px" placeholder="Es. Pollo al limone – 1 porzione: 320 kcal, P 35 g, C 5 g, G 15 g…"></textarea></div>
+  <div class="row" style="margin-top:-6px;align-items:center"><button class="btn sm ghost" id="impImgB">Allega screenshot</button><span class="hm" id="impImgL"></span></div>
+  <input type="file" id="impImgF" accept="image/*" hidden>
+  <p class="hm" id="impSt"></p>
+  <div class="row"><button class="btn" id="impGo">Importa</button><button class="btn ghost" id="noSheet">Annulla</button></div>`);
+  $('#impImgB').onclick=()=>$('#impImgF').click();
+  $('#impImgF').onchange=async e=>{const f=e.target.files[0];if(!f)return;const keep=ui.photo;await loadPhoto(f);img=ui.photo;ui.photo=keep;renderPhoto();$('#impImgL').textContent=img?'Screenshot allegato':''};
+  $('#impGo').onclick=async()=>{
+    const txt=$('#impT').value.trim();if(!txt&&!img){$('#impSt').textContent='Incolla del testo o allega uno screenshot.';return}
+    $('#impGo').disabled=true;$('#impSt').textContent='Leggo le ricette…';
+    const parts=[{text:txt||'(vedi immagine)'}];if(img)parts.push({inlineData:{mimeType:'image/jpeg',data:img.b64}});
+    try{
+      const out=await gemini(SYS_IMP,[{role:'user',parts}],SCHEMA_IMP);
+      const list=(out.ricette||[]).filter(r=>r&&Array.isArray(r.ingredienti)&&r.ingredienti.length);
+      if(!list.length)throw new Error('Non ho trovato ricette nel testo.');
+      list.forEach((r,i)=>S.recipes.unshift({id:'r'+Date.now()+'-'+i,nome:String(r.nome||'Ricetta'),porzioni:num(r.porzioni)||1,ingredienti:r.ingredienti.map(clean)}));
+      save();closeSheet();ui.rec='book';render();toast(list.length===1?'1 ricetta importata':list.length+' ricette importate');
+    }catch(e){$('#impSt').textContent=e.message;$('#impGo').disabled=false}
+  };
 }
 $('#closeDay').onclick=()=>{
   const t=sum(dayItems(S.day)),{target,margin}=S.settings;
@@ -493,7 +531,7 @@ $('#keySave').onclick=async()=>{
   if(!S.settings.apiKey){toast('Chiave rimossa');return}
   $('#modelInfo').textContent='Verifico la chiave…';
   try{ui.models=await listModels();if(!ui.models.some(m=>m.id===S.settings.model))S.settings.model=pickDefault(ui.models);save();renderSet();
-    $('#modelInfo').textContent=`Chiave valida · ${ui.models.length} modelli disponibili. Consigliato un modello Flash.`;toast('Chiave salvata')}
+    $('#modelInfo').textContent=`Chiave valida · ${ui.models.length} modelli disponibili. Consigliato Flash-Lite.`;toast('Chiave salvata')}
   catch(e){$('#modelInfo').textContent=e.message}
 };
 $('#model').onchange=e=>{S.settings.model=e.target.value;save();toast('Modello: '+e.target.value)};
