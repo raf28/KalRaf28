@@ -331,7 +331,7 @@ details.card summary::-webkit-details-marker{display:none}
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 35 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 36 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1025,7 +1025,7 @@ $('#relock').onclick=()=>{S.unlocked=false;save();boot()};
 /* ---------- Backup su Google Drive ---------- */
 const GD_CLIENT='720047141236-n358a03sg1pi0p26qfp7fa99378apb1a.apps.googleusercontent.com';
 const GD_SCOPE='https://www.googleapis.com/auth/drive.file';
-const GD_KEY='kalraf28_drive',GD_FOLDER='KalRaf28 Backup',GD_KEEP=10;
+const GD_KEY='kalraf28_drive',GD_FOLDER='KalRaf28 Backup',GD_KEEP=3;
 let GD={};try{GD=JSON.parse(localStorage.getItem(GD_KEY))||{}}catch(e){GD={}}
 const gdSave=()=>{try{localStorage.setItem(GD_KEY,JSON.stringify(GD))}catch(e){}};
 let gdTC=null,gdTimer=null,gdBusy=false,gdAsking=false,gdLastAsk=0,gdNeed=null;
