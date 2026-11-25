@@ -602,12 +602,13 @@ function renderHead(){
 function renderMeal(){
   const started=orderKeys(Object.keys(S.day.meals)).filter(k=>{const m=S.day.meals[k];return m.items.length||m.chat.length});
   const m0=ensureMeal(ui.meal),isStarted=started.includes(ui.meal);
-  $('#mealTabs').hidden=!started.length;
-  const bar=$('#mealBar');bar.hidden=!isStarted;
-  if(isStarted){const cl=isClosed(ui.meal),sn=isSnack(ui.meal);bar.innerHTML=`<div><b>${mealName(ui.meal)}</b>${cl?'<small>chiuso · stai modificando</small>':''}</div><button class="mbtn" id="mealDel">${sn?'Elimina spuntino':'Svuota pasto'}</button>`}
+  const tabsK=orderKeys([...new Set([...started,ui.meal])]);
+  $('#mealTabs').hidden=false;
+  const bar=$('#mealBar');bar.hidden=false;
+  {const cl=isClosed(ui.meal),sn=isSnack(ui.meal);bar.innerHTML=`<div><b>${mealName(ui.meal)}</b>${cl?'<small>chiuso · stai modificando</small>':''}</div>${isStarted?`<button class="mbtn" id="mealDel">${sn?'Elimina spuntino':'Svuota pasto'}</button>`:'<small>nuovo</small>'}`}
   if(!isStarted){
-    $('#mealTabs').innerHTML=started.map(k=>`<button data-meal="${k}">${mealName(k)}<small>${f0(sum(S.day.meals[k].items).kcal)} kcal</small></button>`).join('');
-    $('#mealItems').innerHTML=`<div class="empty">${started.length?'Stai per iniziare: <b>'+mealName(ui.meal)+'</b>. ':''}Scegli il pasto qui sotto e scrivi, detta o fotografa cosa hai mangiato: il conteggio si aggiorna da solo, e se correggi qualcosa in chat vale sempre l'ultima versione.</div>`;
+    $('#mealTabs').innerHTML=tabsK.map(k=>`<button data-meal="${k}" class="${k===ui.meal?'on':''}">${mealName(k)}<small>${f0(sum(ensureMeal(k).items).kcal)} kcal</small></button>`).join('');
+    $('#mealItems').innerHTML=`<div class="empty">Scrivi, detta o fotografa cosa hai mangiato a <b>${mealName(ui.meal).toLowerCase()}</b>: il conteggio si aggiorna da solo, e se correggi qualcosa in chat vale sempre l'ultima versione.</div>`;
     $('#mealChat').innerHTML=ui.busy?'<div class="typing">Sto calcolando<i></i><i></i><i></i></div>':'';return}
   $('#mealTabs').innerHTML=started.map(k=>`<button data-meal="${k}" class="${k===ui.meal?'on':''}">${mealName(k)}<small>${f0(sum(ensureMeal(k).items).kcal)} kcal</small></button>`).join('');
   const m=S.day.meals[ui.meal],t=sum(m.items);
@@ -818,15 +819,16 @@ $('#closeDay').onclick=()=>{
     S.day=newDay();ui.meal=guessMeal();save();closeSheet();render();toast('Nuova giornata aperta');
   };
 };
+function showMealBar(){requestAnimationFrame(()=>{const st=document.querySelector('.mstick'),mn=$('#main');if(!st)return;const top=st.offsetTop;if(mn.scrollTop<top)mn.scrollTo({top,behavior:'smooth'})})}
 function renderPills(){
   const cur=ui.meal,cs=S.day.curSnack,empty=!ensureMeal(cs).items.length;
   $('#pills').innerHTML=[['colazione','Colazione'],['pranzo','Pranzo'],['cena','Cena'],[cs,mealName(cs)]].map(([k,l])=>`<button data-pill="${k}" class="${k===cur?'on':''}">${l}</button>`).join('')
     +`<button data-pill="__new" class="newsn" ${empty?'disabled':''} title="${empty?mealName(cs)+' è ancora vuoto':'Chiude '+mealName(cs)+' e ne apre uno nuovo'}">Nuovo<br>spuntino</button>`;
 }
 $('#pills').addEventListener('click',e=>{const b=e.target.closest('[data-pill]');if(!b||b.disabled)return;e.stopPropagation();const k=b.dataset.pill;
-  if(k!=='__new'){ui.meal=k;render();return}
+  if(k!=='__new'){ui.meal=k;render();showMealBar();return}
   const cs=S.day.curSnack;if(!ensureMeal(cs).items.length){toast(mealName(cs)+' è ancora vuoto');return}
-  S.day.meals[cs].closed=true;const nx='spuntino'+(snackN(cs)+1);S.day.curSnack=nx;ensureMeal(nx);ui.meal=nx;save();render();toast(mealName(cs)+' chiuso · ora '+mealName(nx));
+  S.day.meals[cs].closed=true;const nx='spuntino'+(snackN(cs)+1);S.day.curSnack=nx;ensureMeal(nx);ui.meal=nx;save();render();showMealBar();toast(mealName(cs)+' chiuso · ora '+mealName(nx));
 });
 /* lettura ad alta voce */
 const TTS={msg:null,btn:null};
