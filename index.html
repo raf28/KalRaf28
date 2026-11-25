@@ -87,6 +87,11 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 .sml .sr.sub{font-size:14px;color:var(--mute);padding-left:14px}
 .sml .sr b{white-space:nowrap}
 .ansx{font-size:15.5px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px dashed var(--line)}
+.ast{color:var(--bad);font-weight:700;margin-left:2px}
+.missn{margin-top:8px;font-size:12.5px;color:var(--bad)}
+.tts{display:flex;gap:8px;margin-top:10px}
+.tts .tb{min-height:34px;padding:4px 12px;border-radius:999px;border:1.5px solid var(--brand2);background:var(--soft);font-size:13px;font-weight:600;color:var(--brand2)}
+.tts .tb.on{background:var(--brand2);color:#fff}
 .mnote{margin-top:8px;font-size:13.5px;color:var(--mute)}
 .msg.a:has(.sml){min-width:70%}
 .rc{margin-top:8px;padding:10px;border-radius:12px;background:var(--soft)}
@@ -515,7 +520,7 @@ async function sendMeal(text,photo){
   try{
     const out=await gemini(SYS_MEAL,toContents(hist,cur),SCHEMA_MEAL);
     if(!out.domanda)meal.items=(Array.isArray(out.items)?out.items:[]).map(clean).map(linkFood);
-    meal.chat.push({role:'a',text:out.reply||'',ans:!!out.domanda,tot:sum(meal.items),list:meal.items.map(i=>({n:i.nome,q:i.quantita,k:i.kcal}))});
+    meal.chat.push({role:'a',text:out.reply||'',ans:!!out.domanda,tot:sum(meal.items),list:meal.items.map(i=>({n:i.nome,q:i.quantita,k:i.kcal,miss:KEYS.slice(1).filter(k=>i[k]===null||i[k]===undefined)}))});
   }catch(e){meal.chat.push({role:'a',text:e.message,err:true})}
   ui.busy=false;save();render();
 }
@@ -598,13 +603,16 @@ function msgHtml(m,ix){
   let h=`<div class="msg a${m.err?' e':''}">`;
   if(m.tot&&!m.err){
     if(m.ans&&m.text)h+=`<div class="ansx">${md(m.text)}</div>`;
-    if(m.list&&m.list.length)h+=`<div class="sumh">Alimenti del pasto:</div><ul class="suml">${m.list.map(i=>`<li>– ${esc(i.n)}${i.q?' <b>'+esc(i.q)+'</b>':''}</li>`).join('')}</ul>`;
-    const t=m.tot,row=(l,k,sub)=>`<div class="sr${sub?' sub':''}"><span>${l}</span><b>${fv(t,k,'g')}</b></div>`;
+    const anyMiss=m.list&&m.list.some(i=>i.miss&&i.miss.length);
+    if(m.list&&m.list.length)h+=`<div class="sumh">Alimenti del pasto:</div><ul class="suml">${m.list.map(i=>`<li>– ${esc(i.n)}${i.q?' <b>'+esc(i.q)+'</b>':''}${i.miss&&i.miss.length?'<span class="ast">*</span>':''}</li>`).join('')}</ul>`;
+    const t=m.tot,row=(l,k,sub)=>`<div class="sr${sub?' sub':''}"><span>${l}${t.miss&&t.miss[k]?'<span class="ast">*</span>':''}</span><b>${fv(t,k,'g')}</b></div>`;
     h+=`<div class="sumt">Totale kcal pasto: <b>${f0(t.kcal)} kcal</b></div><div class="sml">${row('Carboidrati','carboidrati')}${row('di cui zuccheri','zuccheri',1)}${row('Proteine','proteine')}${row('Grassi','grassi')}${row('di cui saturi','saturi',1)}${row('Fibre','fibre')}${row('Sale','sale')}</div>`;
+    if(anyMiss)h+=`<div class="missn">* Valori mancanti: ${m.list.filter(i=>i.miss&&i.miss.length).map(i=>esc(i.n)+' ('+i.miss.join(', ')+')').join('; ')}. I totali segnati sono parziali.</div>`;
     if(m.text&&!m.ans)h+=`<div class="mnote">${md(m.text)}</div>`;
   }else h+=md(m.text);
   if(m.ricetta){const t=sum(m.ricetta.ingredienti);const saved=S.recipes.some(r=>r.src===m.ts);
     h+=`<div class="rc"><b>${esc(m.ricetta.nome)}</b><div class="m">Per porzione: ${f0(t.kcal)} kcal · ${mline(t)}</div><div class="row"><button class="btn sm ghost" data-saverec="${ix}" ${saved?'disabled':''}>${saved?'Salvata':'Salva nel ricettario'}</button></div></div>`}
+  if(!m.err&&('speechSynthesis' in window))h+=`<div class="tts"><button class="tb" data-say="${ix}">▶︎ Ascolta</button><button class="tb" data-pause>⏸ Pausa</button></div>`;
   return h+'</div>';
 }
 function renderRec(){
@@ -799,6 +807,31 @@ $('#pills').addEventListener('click',e=>{const b=e.target.closest('[data-pill]')
   const cs=S.day.curSnack;if(!ensureMeal(cs).items.length){toast(mealName(cs)+' è ancora vuoto');return}
   S.day.meals[cs].closed=true;const nx='spuntino'+(snackN(cs)+1);S.day.curSnack=nx;ensureMeal(nx);ui.meal=nx;save();render();toast(mealName(cs)+' chiuso · ora '+mealName(nx));
 });
+/* lettura ad alta voce */
+const TTS={msg:null,btn:null};
+function speechText(m){
+  const plain=x=>String(x||'').replace(/\*\*/g,'').replace(/[•–]/g,'');
+  let t=plain(m.text)+'. ';
+  if(m.tot&&!m.err){
+    if(m.list&&m.list.length)t+='Alimenti del pasto: '+m.list.map(i=>i.n+(i.q?', '+i.q.replace(/\bg\b/g,'grammi'):'')).join('; ')+'. ';
+    const T=m.tot,n=(k)=>fk(k,T[k]).replace('.',',');
+    t+=`Totale del pasto: ${f0(T.kcal)} chilocalorie. Carboidrati ${n('carboidrati')} grammi, di cui zuccheri ${n('zuccheri')}. Proteine ${n('proteine')} grammi. Grassi ${n('grassi')} grammi, di cui saturi ${n('saturi')}. Fibre ${n('fibre')} grammi. Sale ${n('sale')} grammi.`;
+    if(m.list&&m.list.some(i=>i.miss&&i.miss.length))t+=' Attenzione: per alcuni alimenti mancano dei valori, quindi alcuni totali sono parziali.';
+  }
+  return t;
+}
+function itVoice(){const v=speechSynthesis.getVoices();return v.find(x=>/^it/i.test(x.lang)&&/google/i.test(x.name))||v.find(x=>/^it/i.test(x.lang))}
+document.addEventListener('click',e=>{
+  const p=e.target.closest('[data-pause]'),b=e.target.closest('[data-say]');if(!p&&!b)return;e.stopPropagation();
+  const ss=window.speechSynthesis;
+  if(p){if(ss.speaking&&!ss.paused){ss.pause();p.classList.add('on')}return}
+  const chat=ui.view==='ricette'?S.recChat:ensureMeal(ui.meal).chat,m=chat[+b.dataset.say];if(!m)return;
+  if(TTS.msg===m&&ss.paused){ss.resume();document.querySelectorAll('[data-pause].on').forEach(x=>x.classList.remove('on'));return}
+  ss.cancel();const u=new SpeechSynthesisUtterance(speechText(m));u.lang='it-IT';const v=itVoice();if(v)u.voice=v;u.rate=1;
+  u.onend=u.onerror=()=>{TTS.msg=null;document.querySelectorAll('.tb.on').forEach(x=>x.classList.remove('on'))};
+  TTS.msg=m;document.querySelectorAll('.tb.on').forEach(x=>x.classList.remove('on'));b.classList.add('on');ss.speak(u);
+},true);
+if('speechSynthesis' in window){speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>{}}
 /* dettatura */
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null;
 function dictate(ta,btn,onEnd){if(!ta||!btn)return;btn.onclick=e=>{e.preventDefault();e.stopPropagation();
