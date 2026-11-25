@@ -178,6 +178,12 @@ details.card summary::-webkit-details-marker{display:none}
             <p>La barra diventa gialla tra obiettivo e obiettivo + margine, rossa oltre.</p></div>
         </div>
         <div class="card">
+          <h3>Storico</h3>
+          <div class="f"><label for="keep">Conserva le giornate chiuse per</label>
+            <select id="keep"><option value="3">3 giorni</option><option value="7">7 giorni</option><option value="14">14 giorni</option><option value="30">30 giorni</option><option value="0">Sempre</option></select>
+            <p>Le giornate più vecchie vengono eliminate in automatico. Le ricette restano sempre.</p></div>
+        </div>
+        <div class="card">
           <h3>Gemini</h3>
           <div class="f"><label for="key">Chiave API</label>
             <input type="password" id="key" autocomplete="off" placeholder="Incolla qui la chiave di AI Studio">
@@ -228,7 +234,7 @@ details.card summary::-webkit-details-marker{display:none}
 <script>
 {
 const KEY='diario_kcal_v1';
-const PIN_HASH='0e49960ee36bb39c26783eb0bff8c477004c5338f309f0d8e0eed7fd0e2332da';
+const PIN_HASH='9693c64e8d38b6080f44b36a26529bbcf06ef282d073a8d7ebe30adc29f55786';
 const API='https://generativelanguage.googleapis.com/v1beta/';
 const MEALS=[['colazione','Colazione'],['pranzo','Pranzo'],['cena','Cena'],['spuntino','Spuntino']];
 const NUTR=[['kcal','kcal',''],['proteine','Proteine','g'],['carboidrati','Carboidrati','g'],['grassi','Grassi','g'],['fibre','Fibre','g'],['sale','Sale','g']];
@@ -240,7 +246,7 @@ const f1=n=>(Math.round(n*10)/10).toLocaleString('it-IT');
 const mealName=k=>(MEALS.find(m=>m[0]===k)||[k,k])[1];
 
 const newDay=()=>{const d={id:Date.now(),start:new Date().toISOString(),meals:{}};MEALS.forEach(([k])=>d.meals[k]={items:[],chat:[]});return d};
-const defaults=()=>({settings:{apiKey:'',model:'',target:2000,margin:300},day:newDay(),history:[],recipes:[],recChat:[],unlocked:false});
+const defaults=()=>({settings:{apiKey:'',model:'',target:2000,margin:300,keepDays:7},day:newDay(),history:[],recipes:[],recChat:[],unlocked:false});
 let S=null;
 try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
 function normalize(){
@@ -249,7 +255,8 @@ function normalize(){
   S.history=Array.isArray(S.history)?S.history:[];S.recipes=Array.isArray(S.recipes)?S.recipes:[];S.recChat=Array.isArray(S.recChat)?S.recChat:[];
   S.day.meals=S.day.meals||{};MEALS.forEach(([k])=>{const m=S.day.meals[k]=S.day.meals[k]||{};m.items=m.items||[];m.chat=m.chat||[]});
 }
-normalize();
+function prune(){const d=Number(S.settings.keepDays)||0;if(d<=0)return;const lim=Date.now()-d*864e5;S.history=S.history.filter(h=>new Date(h.end||h.start).getTime()>=lim)}
+normalize();prune();
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Impossibile salvare: esporta un backup')}}
 
 function guessMeal(){const h=new Date().getHours();if(h>=4&&h<11)return'colazione';if(h>=11&&h<15)return'pranzo';if(h>=15&&h<18)return'spuntino';return'cena'}
@@ -438,10 +445,11 @@ function renderHist(){
     <div class="hm" style="margin-top:6px">${mline(t)}</div>
     ${MEALS.map(([k,l])=>{const it=(h.meals[k]||[]);if(!it.length)return'';const mt=sum(it);return`<div style="margin-top:10px"><b>${l}</b> <span class="hm">${f0(mt.kcal)} kcal</span>${it.map(i=>`<div class="hm">• ${esc(i.nome)} ${esc(i.quantita)} — ${f0(i.kcal)} kcal</div>`).join('')}</div>`}).join('')}
     <div class="row"><button class="btn sm ghost" data-delhist="${ix}">Elimina giornata</button></div></details>`}).join('')
-    :'<div class="empty">Qui trovi le giornate chiuse. Usa «Chiudi giornata» nel Diario quando hai finito di mangiare.</div>';
+    :'<div class="empty">Qui trovi le giornate chiuse (conservate per il periodo scelto nelle Impostazioni). Usa «Chiudi giornata» nel Diario quando hai finito di mangiare.</div>';
 }
 function renderSet(){
   const s=S.settings;
+  $('#keep').value=String(s.keepDays);
   $('#tgtR').value=$('#tgtN').value=s.target;$('#mgR').value=$('#mgN').value=s.margin;
   if(document.activeElement!==$('#key'))$('#key').value=s.apiKey;
   const sel=$('#model');
@@ -506,7 +514,7 @@ $('#closeDay').onclick=()=>{
   $('#okClose').onclick=()=>{
     const meals={};MEALS.forEach(([k])=>meals[k]=S.day.meals[k].items);
     if(dayItems(S.day).length)S.history.unshift({id:S.day.id,start:S.day.start,end:new Date().toISOString(),meals,tot:t,target,margin});
-    if(S.history.length>400)S.history.length=400;
+    if(S.history.length>400)S.history.length=400;prune();
     S.day=newDay();ui.meal=guessMeal();save();closeSheet();render();toast('Nuova giornata aperta');
   };
 };
@@ -534,6 +542,7 @@ $('#keySave').onclick=async()=>{
     $('#modelInfo').textContent=`Chiave valida · ${ui.models.length} modelli disponibili. Consigliato Flash-Lite.`;toast('Chiave salvata')}
   catch(e){$('#modelInfo').textContent=e.message}
 };
+$('#keep').onchange=e=>{S.settings.keepDays=Number(e.target.value);prune();save();toast(S.settings.keepDays?'Storico: '+S.settings.keepDays+' giorni':'Storico: sempre')};
 $('#model').onchange=e=>{S.settings.model=e.target.value;save();toast('Modello: '+e.target.value)};
 $('#exp').onclick=()=>{
   const data=JSON.parse(JSON.stringify(S));data.settings.apiKey='';delete data.unlocked;data.app='diario-kcal';data.exported=new Date().toISOString();
