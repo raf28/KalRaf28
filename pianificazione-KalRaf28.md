@@ -175,6 +175,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`.
 - **v39:** macro mancanti a 0 e nota "macro non specificati".
 - **v40:** manifest, service worker e icona "Kcal" collegata, per installare l'app come APK.
 - **Stessa sera:** APK generata con PWABuilder e installata sul Pixel; creato il repository `raf28.github.io` con `assetlinks.json`: l'app si apre come app vera, senza barra. Claude ha ora l'accesso in scrittura al repository KalRaf28.
+- **Icona ridisegnata:** "Kcal" più grande, bordo bianco più spesso intorno alle lettere e uguale intorno al cerchio; versione maskable pensata per il ritaglio a cerchio di Android. APK rigenerata con lo stesso keystore (versione 1.0.1, version code 2) e installata sopra.
 
 **Stato:** online, **collaudo in corso dal 25/11/2026**.
 
@@ -206,6 +207,10 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`.
 10. Il "Backup su file" non contiene le foto degli alimenti (stanno in IndexedDB), e la descrizione nomina solo "diario, storico e ricettario", anche se esporta pure alimenti e impostazioni. Va aggiornato il testo oppure incluse le foto.
 11. Il README del repository è vuoto: si potrebbe aggiungere una breve descrizione e un link a questo documento.
 12. Tenere aggiornato questo documento (è salvato nel repository) alla fine di ogni sessione di lavoro.
+
+### Da sistemare alla prossima rigenerazione dell'APK (non urgente)
+- **Blocco in verticale:** il manifest (v40) ha `"orientation": "portrait"` e PWABuilder l'ha messo dentro l'APK. Effetti: l'app **non ruota in orizzontale** e **non si può usare a schermo diviso** su Android (probabilmente per il blocco; le app TWA a volte sono comunque capricciose con lo schermo diviso). Soluzione: togliere `orientation` dal manifest (o metterlo `"any"`), poi rigenerare l'APK con PWABuilder (stesso keystore, version code 3) e reinstallarla sopra. Effetto collaterale: ruoterà anche in orizzontale, layout un po' largo.
+- **Barra in basso tagliata (visto una volta, 25/11):** alla prima apertura dopo l'aggiornamento dell'APK mancava la barra di navigazione in basso (Diario… Impostazioni); riaprendo l'app è tornata a posto. Se si ripresenta: far ricalcolare l'altezza dello schermo quando la finestra cambia dimensione o torna in primo piano (oggi il layout usa `100dvh`).
 
 ### Futuro
 13. Eventuale APK "autonoma" con tutto il codice dentro (Capacitor o simili): servirebbe solo per il Play Store o per non dipendere da GitHub. Richiede di rifare il login Google per Drive e la dettatura.
