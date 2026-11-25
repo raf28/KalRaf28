@@ -307,7 +307,7 @@ const sum=items=>{const t={miss:{},has:{}};KEYS.forEach(k=>t[k]=0);(items||[]).f
 const fv=(t,k,u)=>{const v=t[k];if(v===null||v===undefined)return'—';if(t.miss&&t.miss[k])return t.has&&t.has[k]?'≥'+f1(v)+u:'—';return f1(v)+u};
 const dayItems=d=>MEALS.flatMap(([k])=>d.meals[k]?d.meals[k].items:[]);
 const mline=t=>NUTR.slice(1).map(([k,l,u])=>`${l} ${fv(t,k,u)}`+(SUB[k]?` (di cui ${SUB[k][1]} ${fv(t,SUB[k][0],u)})`:'')).join(' · ');
-const clean=i=>{const o={nome:String(i.nome||'Alimento'),quantita:String(i.quantita||'')};o.kcal=num(i.kcal);KEYS.slice(1).forEach(k=>o[k]=nn(i[k]));if(i.imposto)o.imposto=true;return o};
+const clean=i=>{const o={nome:String(i.nome||'Alimento'),quantita:String(i.quantita||'')};o.kcal=num(i.kcal);KEYS.slice(1).forEach(k=>o[k]=nn(i[k]));if(i.imposto)o.imposto=true;if(i.alimento_id){o.alimento_id=String(i.alimento_id);o.grammi=nn(i.grammi);o.fattore=nn(i.fattore)}if(i.dalAlimenti)o.dalAlimenti=true;return o};
 function md(s){return esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/^\s*[-*•]\s+/gm,'• ').replace(/\n/g,'<br>')}
 
 function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}
@@ -317,7 +317,7 @@ $('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeSheet()})
 
 /* ---------- Gemini ---------- */
 const NUMN={type:'NUMBER',nullable:true};
-const ITEM={type:'OBJECT',properties:{nome:{type:'STRING'},quantita:{type:'STRING'},kcal:{type:'NUMBER'},proteine:NUMN,carboidrati:NUMN,zuccheri:NUMN,grassi:NUMN,saturi:NUMN,fibre:NUMN,sale:NUMN,imposto:{type:'BOOLEAN'}},required:['nome','quantita','kcal','proteine','carboidrati','zuccheri','grassi','saturi','fibre','sale']};
+const ITEM={type:'OBJECT',properties:{nome:{type:'STRING'},quantita:{type:'STRING'},kcal:{type:'NUMBER'},proteine:NUMN,carboidrati:NUMN,zuccheri:NUMN,grassi:NUMN,saturi:NUMN,fibre:NUMN,sale:NUMN,imposto:{type:'BOOLEAN'},alimento_id:{type:'STRING',nullable:true},grammi:NUMN,fattore:NUMN},required:['nome','quantita','kcal','proteine','carboidrati','zuccheri','grassi','saturi','fibre','sale']};
 const SCHEMA_MEAL={type:'OBJECT',properties:{reply:{type:'STRING'},items:{type:'ARRAY',items:ITEM}},required:['reply','items']};
 const SCHEMA_REC={type:'OBJECT',properties:{reply:{type:'STRING'},ricetta:{type:'OBJECT',nullable:true,properties:{nome:{type:'STRING'},porzioni:{type:'NUMBER'},ingredienti:{type:'ARRAY',items:ITEM}},required:['nome','porzioni','ingredienti']}},required:['reply']};
 const SYS_MEAL=`Sei l'assistente di un diario alimentare per il conteggio di kcal e macronutrienti. L'utente ti descrive o fotografa gli alimenti di UN pasto (anche etichette nutrizionali).
@@ -327,7 +327,7 @@ In ogni messaggio ricevi la LISTA ATTUALE degli alimenti del pasto in JSON. Devi
 - se l'utente dice di togliere qualcosa, rimuovilo;
 - le voci con "imposto": true le ha decise l'utente: non modificarle mai, salvo sua richiesta esplicita;
 - se il messaggio non riguarda il cibo, lascia la lista invariata.
-ALIMENTI SALVATI: se ricevi l'elenco "Alimenti salvati dall'utente" e un alimento citato corrisponde a uno di questi (anche con nome abbreviato), usa i SUOI valori, proporzionati alla quantità consumata rispetto al riferimento indicato, e il suo nome; usa le note (es. peso di un pezzo) per convertire pezzi in grammi. Se è ambiguo quale alimento salvato intende, scegli il più probabile e dillo nel reply.
+ALIMENTI SALVATI: se ricevi l'elenco "Alimenti salvati dall'utente" e un alimento citato corrisponde a uno di questi (anche con nome abbreviato), per quella voce compila "alimento_id" con il suo id e indica la quantità consumata in "grammi" (grammi o ml); usa le note (es. "1 vasetto = 170 g") per convertire pezzi in grammi. Se non è convertibile in grammi, metti grammi a null e compila "fattore" = quante volte il riferimento è stato consumato (es. riferimento "1 galletta", ne ha mangiate 3 → 3). I valori numerici di queste voci li ricalcola l'app con precisione: tu metti pure una stima. Se è ambiguo quale alimento salvato intende, scegli il più probabile e dillo nel reply. Per tutte le altre voci lascia alimento_id a null.
 CALCOLO NORMALE: per ogni alimento indica nome (con marca e formato se noti), quantita (es. "120 g", "2 gallette"), kcal, proteine, carboidrati, zuccheri (di cui zuccheri, g), grassi, saturi (di cui grassi saturi, g), fibre (fibre alimentari, g) e sale (g di sale, non sodio), riferiti alla quantità consumata, non a 100 g. Da una foto di un'etichetta leggi i valori per 100 g o per porzione e fai la proporzione. Usa i valori di etichetta della marca indicata se li conosci, altrimenti tabelle affidabili (es. CREA). Per le foto di piatti stima porzioni realistiche e dichiara le ipotesi.
 VALORI IMPOSTI DALL'UTENTE (hanno sempre la precedenza, mai ricalcolarli o "correggerli"; metti "imposto": true):
 - se l'utente dà kcal e/o macro per un alimento, usa ESATTAMENTE quei numeri;
@@ -386,6 +386,17 @@ async function send(){
   if(ui.view==='ricette'){ui.rec='chat';return sendRec(text,photo)}
 }
 function resetComposer(){$('#msg').value='';autoH();ui.photo=null;renderPhoto()}
+function refAmount(r){const t=String(r||'');const m=t.match(/\(([\d.,]+)\s*(g|ml)\b/i)||t.match(/([\d.,]+)\s*(g|ml)\b/i);return m?num(m[1]):0}
+function linkFood(i){
+  if(!i.alimento_id||i.imposto)return i;
+  const f=S.foods.find(x=>x.id===i.alimento_id);if(!f){delete i.alimento_id;return i}
+  const ref=refAmount(f.riferimento);let k=null;
+  if(i.grammi&&ref)k=i.grammi/ref;else if(i.fattore)k=i.fattore;
+  if(!k)return i;
+  const o={nome:f.nome,quantita:i.grammi?(f1(i.grammi)+(/ml/i.test(f.riferimento)?' ml':' g')):(i.quantita||f1(k)+' × '+f.riferimento),alimento_id:f.id,grammi:i.grammi,fattore:i.fattore,dalAlimenti:true};
+  KEYS.forEach(key=>{const v=f[key];o[key]=(v===null||v===undefined)?(key==='kcal'?0:null):Math.round(v*k*100)/100});
+  return o;
+}
 async function sendMeal(text,photo){
   const key=ui.meal,meal=S.day.meals[key];
   const hist=histOf(meal.chat);
@@ -394,7 +405,7 @@ async function sendMeal(text,photo){
   if(photo)cur.parts.push({inlineData:{mimeType:'image/jpeg',data:photo.b64}});
   try{
     const out=await gemini(SYS_MEAL,toContents(hist,cur),SCHEMA_MEAL);
-    meal.items=(Array.isArray(out.items)?out.items:[]).map(clean);
+    meal.items=(Array.isArray(out.items)?out.items:[]).map(clean).map(linkFood);
     meal.chat.push({role:'a',text:out.reply||'Fatto.',tot:sum(meal.items)});
   }catch(e){meal.chat.push({role:'a',text:e.message,err:true})}
   ui.busy=false;save();render();
@@ -458,7 +469,7 @@ function renderHead(){
 function renderMeal(){
   $('#mealTabs').innerHTML=MEALS.map(([k,l])=>`<button data-meal="${k}" class="${k===ui.meal?'on':''}">${l}<small>${f0(sum(S.day.meals[k].items).kcal)} kcal</small></button>`).join('');
   const m=S.day.meals[ui.meal],t=sum(m.items);
-  $('#mealItems').innerHTML=`<h3>${mealName(ui.meal)}</h3>`+(m.items.length?m.items.map((i,ix)=>`<div class="it"><div><div class="n">${esc(i.nome)}</div><div class="q">${esc(i.quantita)}${i.imposto?' · valore tuo':''}</div></div><div class="k">${f0(i.kcal)} kcal</div><button class="x" data-del="${ix}" aria-label="Elimina ${esc(i.nome)}">×</button><div class="m">${mline(i)}</div></div>`).join('')+
+  $('#mealItems').innerHTML=`<h3>${mealName(ui.meal)}</h3>`+(m.items.length?m.items.map((i,ix)=>`<div class="it"><div><div class="n">${esc(i.nome)}</div><div class="q">${esc(i.quantita)}${i.imposto?' · valore tuo':''}${i.dalAlimenti?' · dai tuoi alimenti':''}</div></div><div class="k">${f0(i.kcal)} kcal</div><button class="x" data-del="${ix}" aria-label="Elimina ${esc(i.nome)}">×</button><div class="m">${mline(i)}</div></div>`).join('')+
     `<div class="tot"><span>Totale ${mealName(ui.meal).toLowerCase()}</span><span>${f0(t.kcal)} kcal</span><small>${mline(t)}</small></div>`
     :`<div class="empty">Ancora niente. Scrivi cosa hai mangiato o allega una foto: il conteggio si aggiorna da solo, e se correggi qualcosa in chat vale sempre l'ultima versione.</div>`);
   $('#mealChat').innerHTML=m.chat.map(msgHtml).join('')+(ui.busy?'<div class="typing">Sto calcolando<i></i><i></i><i></i></div>':'');
@@ -567,7 +578,7 @@ Riscrivi tutto in italiano corretto e ordinato:
 - riferimento: la base dei valori, es. "100 g", "100 ml", "1 vasetto (170 g)";
 - valori: ESATTAMENTE quelli indicati dall'utente o letti in etichetta, senza modificarli. Se l'utente dà valori e c'è anche una foto, prevalgono quelli dell'utente. Sale in grammi (se l'etichetta riporta solo il sodio, sale = sodio × 2,5). Valori assenti: null, non inventarli; solo se mancano del tutto le kcal puoi stimarle e devi scriverlo nelle note;
 - note: le precisazioni dell'utente riscritte pulite e brevi (es. "1 galletta = 8 g", "da conservare in frigo"); stringa vuota se non ce ne sono.`;
-function foodsCtx(){if(!S.foods.length)return'';return'\nAlimenti salvati dall\'utente (JSON, valori riferiti a "riferimento"): '+JSON.stringify(S.foods.map(f=>{const o={nome:f.nome,riferimento:f.riferimento};FKEYS.forEach(([k])=>{if(f[k]!==null&&f[k]!==undefined)o[k]=f[k]});if(f.note)o.note=f.note;return o}))}
+function foodsCtx(){if(!S.foods.length)return'';return'\nAlimenti salvati dall\'utente (JSON, valori riferiti a "riferimento"): '+JSON.stringify(S.foods.map(f=>{const o={id:f.id,nome:f.nome,riferimento:f.riferimento};FKEYS.forEach(([k])=>{if(f[k]!==null&&f[k]!==undefined)o[k]=f[k]});if(f.note)o.note=f.note;return o}))}
 const letterOf=n=>{const c=String(n||'').normalize('NFD').replace(/[̀-ͯ]/g,'').trim().charAt(0).toUpperCase();return/[A-Z]/.test(c)?c:'#'};
 const fval=(v,u)=>v===null||v===undefined||v===''?'—':(u==='kcal'?f0(v)+' kcal':f1(v)+' '+u);
 function renderFoods(){
