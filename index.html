@@ -82,6 +82,8 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .btn.ghost{background:var(--soft);color:var(--ink)}
 .btn.bad{background:var(--bad)}
 .btn.sm{min-height:38px;padding:6px 12px;font-size:14px}
+.applybar{position:sticky;bottom:0;background:linear-gradient(transparent,var(--bg) 30%);padding:18px 14px calc(12px + env(safe-area-inset-bottom))}
+.applybar .btn{display:block;width:100%;max-width:692px;margin:0 auto;min-height:52px;font-size:17px;box-shadow:0 4px 14px rgba(0,0,0,.18)}
 .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 /* compositore */
 .comp{border-top:1px solid var(--line);background:var(--card);padding:8px 10px}
@@ -206,6 +208,7 @@ details.card summary::-webkit-details-marker{display:none}
         </div>
         <p class="hm">Versione 1 · i valori nutrizionali sono stime del modello.</p>
       </div>
+      <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
   </main>
 
@@ -537,13 +540,20 @@ function setM(v){S.settings.margin=Math.min(600,Math.max(0,Math.round((Number(v)
 $('#tgtR').oninput=e=>setT(e.target.value);$('#tgtN').onchange=e=>setT(e.target.value);
 $('#mgR').oninput=e=>setM(e.target.value);$('#mgN').onchange=e=>setM(e.target.value);
 $('#keyShow').onclick=()=>{const k=$('#key');k.type=k.type==='password'?'text':'password';$('#keyShow').textContent=k.type==='password'?'Mostra':'Nascondi'};
-$('#keySave').onclick=async()=>{
+async function saveKey(){
   S.settings.apiKey=$('#key').value.trim();save();
-  if(!S.settings.apiKey){toast('Chiave rimossa');return}
+  if(!S.settings.apiKey){toast('Chiave rimossa');return true}
   $('#modelInfo').textContent='Verifico la chiave…';
   try{ui.models=await listModels();if(!ui.models.some(m=>m.id===S.settings.model))S.settings.model=pickDefault(ui.models);save();renderSet();
     $('#modelInfo').textContent=`Chiave valida · ${ui.models.length} modelli disponibili. Consigliato Flash-Lite.`;toast('Chiave salvata')}
-  catch(e){$('#modelInfo').textContent=e.message}
+  catch(e){$('#modelInfo').textContent=e.message;return false}
+  return true;
+}
+$('#keySave').onclick=saveKey;
+$('#apply').onclick=async()=>{
+  setT($('#tgtN').value);setM($('#mgN').value);
+  if($('#key').value.trim()!==S.settings.apiKey){$('#apply').disabled=true;const ok=await saveKey();$('#apply').disabled=false;if(!ok)return}
+  save();ui.view='diario';render();$('#main').scrollTop=0;toast('Impostazioni salvate');
 };
 $('#keep').onchange=e=>{S.settings.keepDays=Number(e.target.value);prune();save();toast(S.settings.keepDays?'Storico: '+S.settings.keepDays+' giorni':'Storico: sempre')};
 $('#model').onchange=e=>{S.settings.model=e.target.value;save();toast('Modello: '+e.target.value)};
