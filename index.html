@@ -301,9 +301,15 @@ details.card summary::-webkit-details-marker{display:none}
             <input type="password" id="key" autocomplete="off" placeholder="Incolla qui la chiave di AI Studio">
             <p>Resta salvata solo in questo browser.</p></div>
           <div class="row" style="margin:-6px 0 14px"><button class="btn sm ghost" id="keySave">Salva e carica modelli</button><button class="btn sm ghost" id="keyShow">Mostra</button></div>
-          <div class="f"><label for="model">Modello</label>
+          <div class="f"><label for="model">Modello principale</label>
             <select id="model"></select>
-            <p id="modelInfo">Consigliato Flash-Lite: tante richieste gratuite al giorno.</p></div>
+            <p id="modelInfo">Usato per tutte le richieste. Consigliato Flash-Lite: tante richieste gratuite al giorno.</p></div>
+          <div class="f"><label for="bk1">Riserva 1</label>
+            <select id="bk1"></select>
+            <p>Entra in azione se il principale è sovraccarico, dopo 3 tentativi.</p></div>
+          <div class="f"><label for="bk2">Riserva 2</label>
+            <select id="bk2"></select>
+            <p>Ultimo tentativo, con un altro motore, se anche la riserva 1 non risponde.</p></div>
         </div>
         <div class="card">
           <h3>Backup</h3>
@@ -386,7 +392,7 @@ function deleteSnack(k){
 function ensureMeal(k){const m=S.day.meals[k]=S.day.meals[k]||{};m.items=m.items||[];m.chat=m.chat||[];return m}
 
 const newDay=()=>{const d={id:Date.now(),start:new Date().toISOString(),meals:{},curSnack:'spuntino1'};[...BASE,'spuntino1'].forEach(k=>d.meals[k]={items:[],chat:[]});return d};
-const defaults=()=>({settings:{apiKey:'',model:'',target:2000,margin:300,keepDays:7},day:newDay(),history:[],recipes:[],recChat:[],foods:[],unlocked:false});
+const defaults=()=>({settings:{apiKey:'',model:'',bk1:'',bk2:'',target:2000,margin:300,keepDays:7},day:newDay(),history:[],recipes:[],recChat:[],foods:[],unlocked:false});
 let S=null;
 try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
 function normalize(){
@@ -405,7 +411,7 @@ normalize();prune();
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Impossibile salvare: esporta un backup')}}
 
 function guessMeal(){const h=new Date().getHours();if(h>=4&&h<11)return'colazione';if(h>=11&&h<15)return'pranzo';if(h>=15&&h<18){return S.day&&S.day.curSnack||'spuntino1'}return'cena'}
-const ui={view:'diario',meal:null,dv:null,hmeal:null,rec:'chat',photo:null,busy:false};
+const ui={retry:{},view:'diario',meal:null,dv:null,hmeal:null,rec:'chat',photo:null,busy:false};
 
 const nn=v=>(v===null||v===undefined||v==='')?null:num(v);
 const sum=items=>{const t={miss:{},has:{}};KEYS.forEach(k=>t[k]=0);(items||[]).forEach(i=>KEYS.forEach(k=>{const v=nn(i[k]);if(v===null)t.miss[k]=true;else{t[k]+=v;t.has[k]=true}}));return t};
@@ -493,25 +499,35 @@ async function callModel(model,system,contents,schema){
     body:JSON.stringify({systemInstruction:{parts:[{text:system}]},contents,generationConfig:{responseMimeType:'application/json',responseSchema:schema}})});
   const j=await r.json().catch(()=>({}));return{r,j};
 }
+function autoBackups(list){
+  const main=S.settings.model,ok=list.filter(m=>m.id!==main&&/flash/i.test(m.id)&&!/(preview|exp|latest)/i.test(m.id));
+  const byVer=(a,b)=>b.id.localeCompare(a.id,undefined,{numeric:true});
+  const lite=ok.filter(m=>/lite/i.test(m.id)).sort(byVer)[0],full=ok.filter(m=>!/lite/i.test(m.id)).sort(byVer)[0];
+  return[lite&&lite.id||'',full&&full.id||''];
+}
 async function gemini(system,contents,schema){
   if(!S.settings.apiKey)throw new Error('Manca la chiave API: aggiungila in Impostazioni.');
-  if(!S.settings.model){const l=await listModels();S.settings.model=pickDefault(l);save();if(!S.settings.model)throw new Error('Nessun modello Gemini disponibile.')}
-  let model=S.settings.model,res=null,fell=false;
-  for(let att=0;att<5;att++){
-    res=await callModel(model,system,contents,schema);
+  if(!S.settings.model){const l=await listModels();ui.models=l;S.settings.model=pickDefault(l);save();if(!S.settings.model)throw new Error('Nessun modello Gemini disponibile.')}
+  const plan=[[S.settings.model,4]];let res=null,planned=false,prev=S.settings.model;
+  for(let step=0;step<plan.length;step++){
+    const [model,tries]=plan[step];
+    if(step>0)toast(prev+' sovraccarico: uso '+model);
+    for(let t=0;t<tries;t++){
+      res=await callModel(model,system,contents,schema);
+      if(res.r.ok||!isBusy(res.r.status,res.j))break;
+      if(t<tries-1)await sleep(1500*(t+1));
+    }
     if(res.r.ok||!isBusy(res.r.status,res.j))break;
-    if(att<2){await sleep(1500*(att+1));continue}
-    if(!fell){fell=true;try{const l=ui.models&&ui.models.length?ui.models:(ui.models=await listModels());
-      const alt=l.filter(m=>m.id!==S.settings.model&&/flash/i.test(m.id)&&!/(preview|exp)/i.test(m.id)).sort((a,b)=>(/lite/i.test(b.id)-/lite/i.test(a.id))||b.id.localeCompare(a.id,undefined,{numeric:true}))[0];
-      if(alt){model=alt.id;toast(S.settings.model+' sovraccarico: uso '+alt.id);continue}}catch(e){}}
-    break;
+    if(!planned){planned=true;try{const l=(ui.models&&ui.models.length)?ui.models:(ui.models=await listModels());const ab=autoBackups(l);
+      const b1=S.settings.bk1||ab[0],b2=S.settings.bk2||ab[1];[b1,b2].forEach(m=>{if(m&&!plan.some(p=>p[0]===m))plan.push([m,2])})}catch(e){}}
+    prev=model;
   }
   const {r,j}=res;
-  if(!r.ok)throw new Error(isBusy(r.status,j)?'Google è sovraccarico in questo momento. Riprova tra poco.':apiErr(j,r.status));
+  if(!r.ok)throw new Error(isBusy(r.status,j)?'Google è sovraccarico in questo momento (anche i modelli di riserva). Tocca «Riprova».':apiErr(j,r.status));
   const parts=(j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts)||[];
   const txt=parts.filter(p=>!p.thought).map(p=>p.text||'').join('').trim();
-  if(!txt)throw new Error('Il modello non ha risposto. Riprova.');
-  try{return JSON.parse(txt.replace(/^```(json)?|```$/g,''))}catch(e){throw new Error('Risposta non leggibile. Riprova.')}
+  if(!txt)throw new Error('Il modello non ha risposto.');
+  try{return JSON.parse(txt.replace(/^```(json)?|```$/g,''))}catch(e){throw new Error('Risposta non leggibile.')}
 }
 function toContents(hist,cur){
   const out=[];
@@ -543,8 +559,12 @@ function linkFood(i){
 async function sendMeal(text,photo){
   if(!ui.meal){toast('Scegli prima un pasto qui sotto');$('#msg').value=text;return}
   const key=ui.meal,meal=ensureMeal(key);
-  const hist=histOf(meal.chat);
-  meal.chat.push({role:'u',text,photo:!!photo});resetComposer();ui.busy=true;save();render();
+  meal.chat.push({role:'u',text,photo:!!photo});resetComposer();
+  return runMeal(key,text,photo);
+}
+async function runMeal(key,text,photo){
+  const meal=ensureMeal(key);ui.busy=true;save();render();
+  const hist=histOf(meal.chat.slice(0,-1));
   const cur={role:'user',parts:[{text:`Pasto: ${mealName(key)}.\nLista attuale degli alimenti (JSON): ${JSON.stringify(meal.items)}${foodsCtx()}\n\nMessaggio dell'utente: ${text||'(vedi foto)'}`}]};
   if(photo)cur.parts.push({inlineData:{mimeType:'image/jpeg',data:photo.b64}});
   try{
@@ -552,12 +572,16 @@ async function sendMeal(text,photo){
     if(!out.domanda)meal.items=(Array.isArray(out.items)?out.items:[]).map(clean).map(linkFood);
     if(!out.riepilogo)meal.chat.push({role:'a',text:out.reply||'Fatto.'});
     else meal.chat.push({role:'a',text:out.reply||'',ans:!!out.domanda,tot:sum(meal.items),list:meal.items.map(i=>({n:i.nome,q:i.quantita,k:i.kcal,miss:KEYS.slice(1).filter(k=>i[k]===null||i[k]===undefined)}))});
-  }catch(e){meal.chat.push({role:'a',text:e.message,err:true})}
+  }catch(e){const rid='r'+Date.now();ui.retry[rid]={kind:'meal',key,text,photo};meal.chat.push({role:'a',text:e.message,err:true,rid,rtext:text})}
   ui.busy=false;save();render();
 }
 async function sendRec(text,photo){
-  const hist=histOf(S.recChat);
-  S.recChat.push({role:'u',text,photo:!!photo});resetComposer();ui.busy=true;save();render();
+  S.recChat.push({role:'u',text,photo:!!photo});resetComposer();
+  return runRec(text,photo);
+}
+async function runRec(text,photo){
+  ui.busy=true;save();render();
+  const hist=histOf(S.recChat.slice(0,-1));
   const cur={role:'user',parts:[{text:text||'(vedi foto)'}]};
   if(photo)cur.parts.push({inlineData:{mimeType:'image/jpeg',data:photo.b64}});
   try{
@@ -565,7 +589,7 @@ async function sendRec(text,photo){
     let r=null;
     if(out.ricetta&&Array.isArray(out.ricetta.ingredienti)&&out.ricetta.ingredienti.length){r={nome:String(out.ricetta.nome||'Ricetta'),porzioni:num(out.ricetta.porzioni)||1,ingredienti:out.ricetta.ingredienti.map(clean)}}
     S.recChat.push({role:'a',text:out.reply||'',ricetta:r});
-  }catch(e){S.recChat.push({role:'a',text:e.message,err:true})}
+  }catch(e){const rid='r'+Date.now();ui.retry[rid]={kind:'rec',text,photo};S.recChat.push({role:'a',text:e.message,err:true,rid,rtext:text})}
   if(S.recChat.length>200)S.recChat=S.recChat.slice(-200);
   ui.busy=false;save();render();
 }
@@ -688,6 +712,7 @@ function msgHtml(m,ix){
   }else h+=md(m.text);
   if(m.ricetta){const t=sum(m.ricetta.ingredienti);const saved=S.recipes.some(r=>r.src===m.ts);
     h+=`<div class="rc"><b>${esc(m.ricetta.nome)}</b><div class="m">Per porzione: ${f0(t.kcal)} kcal · ${mline(t)}</div><div class="row"><button class="btn sm ghost" data-saverec="${ix}" ${saved?'disabled':''}>${saved?'Salvata':'Salva nel ricettario'}</button></div></div>`}
+  if(m.err&&m.rid)h+=`<div class="tts"><button class="tb" data-retry="${ix}">↻ Riprova</button></div>`;
   if(!m.err&&('speechSynthesis' in window))h+=`<div class="tts"><button class="tb" data-say="${ix}">▶︎ Ascolta</button><button class="tb" data-pause>⏸ Pausa</button></div>`;
   return h+'</div>';
 }
@@ -717,7 +742,12 @@ function renderSet(){
   const sel=$('#model');
   const opts=(ui.models||[]).length?ui.models:(s.model?[{id:s.model,label:s.model}]:[]);
   sel.innerHTML=opts.length?opts.map(m=>`<option value="${esc(m.id)}" ${m.id===s.model?'selected':''}>${esc(m.label)} (${esc(m.id)})</option>`).join(''):'<option value="">Salva prima la chiave</option>';
+  const ch=autoBackups(ui.models||[]);
+  [['bk1',ch[0]],['bk2',ch[1]]].forEach(([id,auto])=>{const cur=s[id];
+    $('#'+id).innerHTML=`<option value="" ${!cur?'selected':''}>Automatico${auto?' ('+esc(auto)+')':''}</option>`+(ui.models||[]).map(m=>`<option value="${esc(m.id)}" ${m.id===cur?'selected':''}>${esc(m.label)} (${esc(m.id)})</option>`).join('')+(cur&&!(ui.models||[]).some(m=>m.id===cur)?`<option value="${esc(cur)}" selected>${esc(cur)}</option>`:'')});
 }
+$('#bk1').onchange=e=>{S.settings.bk1=e.target.value;save()};$('#bk2').onchange=e=>{S.settings.bk2=e.target.value;save()};
+if(S.settings.apiKey&&!(ui.models||[]).length){listModels().then(l=>{ui.models=l;if(ui.view==='impost')renderSet()}).catch(()=>{})}
 
 /* ---------- azioni ---------- */
 document.addEventListener('click',e=>{
@@ -725,6 +755,9 @@ document.addEventListener('click',e=>{
   if(b.hasAttribute('data-collapse')){const d=b.closest('details');if(d){d.open=false;d.scrollIntoView({block:'nearest'})}return}
   if(b.dataset.v){go(b.dataset.v);return}
   if(b.dataset.meal){ui.meal=b.dataset.meal;render();return}
+  if(b.dataset.retry!==undefined){if(ui.busy)return;const inRec=ui.view==='ricette',chat=inRec?S.recChat:ensureMeal(ui.meal).chat,m=chat[+b.dataset.retry];if(!m)return;
+    const R=ui.retry[m.rid]||{kind:inRec?'rec':'meal',key:ui.meal,text:m.rtext||'',photo:null};chat.splice(+b.dataset.retry,1);delete ui.retry[m.rid];
+    if(R.kind==='rec')runRec(R.text,R.photo);else runMeal(R.key||ui.meal,R.text,R.photo);return}
   if(b.dataset.hmeal){ui.hmeal=b.dataset.hmeal;render();return}
   if(b.id==='reopenDay'){reopenDay();return}
   if(b.id==='backToday'){ui.dv=null;render();return}
@@ -827,7 +860,7 @@ function foodForm(f){foodSheet(f)}
 async function foodSheet(f){
   const ph={tabella:null,confezione:null};
   if(f&&f.foto){for(const k of ['tabella','confezione'])if(f.foto[k])ph[k]=await IDB.get(f.foto[k])}
-  let txt='',card=f?{...f}:null,busy=false,st='',auto=!f,pend=false,tmr=null;
+  let txt='',card=f?{...f}:null,busy=false,st='',stErr=false,auto=!f,pend=false,tmr=null;
   const MIC='<button class="btn sm ghost micbig" id="fMic" aria-label="Detta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg><span>Parla</span></button>';
   const grab=()=>{const t=$('#fTxt');if(t)txt=t.value;if(card&&$('#ffN')){card.nome=$('#ffN').value;card.riferimento=$('#ffR').value;card.note=$('#ffNote').value;FKEYS.forEach(([k])=>card[k]=$('#ff_'+k).value)}};
   const cardHtml=()=>!card?'':`<div class="card" style="margin-top:6px"><h3 style="font-size:16px">Scheda alimento</h3>
@@ -839,7 +872,7 @@ async function foodSheet(f){
     ${slotsHtml(ph,MIC)}
     <textarea id="fTxt" class="ta" rows="10" placeholder="Scrivi o detta nome, marca, valori e precisazioni. Es. «Prosciutto cotto Rovagnati, per 100 grammi: 135 kcal, proteine 20…»">${esc(txt)}</textarea>
     <div class="row"><button class="btn sm ghost two ${auto?'sel':''}" id="fGo">${auto?'✓ ':''}Prepara scheda<small>(automatico)</small></button><button class="btn sm ghost two ${!auto&&card?'sel':''}" id="fMan">Compila a mano</button></div>
-    <p class="hm" id="fSt">${esc(st||(auto&&!card?'Modalità automatica: detta, scrivi o aggiungi una foto e la scheda si prepara da sola.':''))}</p>
+    ${stErr?'<div class="tts" style="margin:0 0 6px"><button class="tb" id="fRetry">↻ Riprova</button></div>':''}<p class="hm" id="fSt">${esc(st||(auto&&!card?'Modalità automatica: detta, scrivi o aggiungi una foto e la scheda si prepara da sola.':''))}</p>
     ${cardHtml()}
     <div class="row between"><button class="btn sm ghost" id="noSheet">Annulla</button><button class="btn" id="ffSave" ${card?'':'disabled'}>Salva</button></div>`);
     bindSlots(ph,()=>{grab();draw();if(auto)prepare()});
@@ -847,14 +880,15 @@ async function foodSheet(f){
     $('#fTxt').addEventListener('input',()=>{if(!auto||rec)return;clearTimeout(tmr);tmr=setTimeout(()=>{if($('#fTxt')&&!rec)prepare()},2000)});
     $('#fMan').onclick=()=>{grab();auto=false;clearTimeout(tmr);if(!card)card={nome:'',riferimento:'100 g',note:''};st='';draw();$('#ffN').focus()};
     $('#fGo').onclick=()=>{grab();auto=true;draw();prepare(true)};
+    if($('#fRetry'))$('#fRetry').onclick=()=>{grab();prepare(true)};
   };
   const prepare=async(manual)=>{if(!$('#fTxt'))return;grab();clearTimeout(tmr);
       if(!txt.trim()&&!ph.tabella&&!ph.confezione){if(manual){st='Scrivi, detta qualcosa o aggiungi una foto.';draw()}return}
       if(busy){pend=true;return}
-      busy=true;st='Preparo la scheda…';const se=$('#fSt');if(se)se.textContent=st;
+      busy=true;stErr=false;st='Preparo la scheda…';const se=$('#fSt');if(se)se.textContent=st;
       const parts=[{text:txt.trim()||'(vedi foto)'}];for(const k of ['tabella','confezione'])if(ph[k])parts.push({text:'Foto '+k+':'},{inlineData:{mimeType:'image/jpeg',data:ph[k].split(',')[1]}});
       try{const o=await gemini(SYS_FOOD,[{role:'user',parts}],SCHEMA_FOOD);card={...(card||{}),nome:String(o.nome||''),riferimento:String(o.riferimento||'100 g'),note:String(o.note||'')};FKEYS.forEach(([k])=>card[k]=nn(o[k]));st='Scheda pronta: controlla i valori e premi Salva.'}
-      catch(e){st=e.message}
+      catch(e){st=e.message;stErr=true}
       busy=false;if(!$('#fTxt'))return;draw();if(pend){pend=false;prepare()}};
   const bindSave=()=>{
     $('#ffSave').onclick=async()=>{grab();if(!card)return;const nome=(card.nome||'').trim();if(!nome){st='Il nome è obbligatorio.';draw();return}
