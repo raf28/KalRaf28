@@ -181,6 +181,11 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`.
 
 ---
 
+## 📋 STATO DELLE SEZIONI (25/11/2026, valutazione dell'utente)
+- ✅ **Già funzionanti:** Diario, Alimenti, Storico, Impostazioni.
+- 🔧 **Da implementare / completare:** **Ricette** (nel codice esiste già una prima versione con chat e ricettario, da rivedere e completare) e **Preimpostati** (oggi solo il segnaposto "Sezione in arrivo").
+- ❓ Ricette e Preimpostati: **da decidere se resteranno** nell'app oppure no.
+
 ## ✅ COSE DA FARE
 
 ### Priorità alta
