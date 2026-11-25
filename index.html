@@ -76,6 +76,18 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 .typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
 @keyframes b{50%{opacity:.2}}
 @media(prefers-reduced-motion:reduce){.typing i{animation:none}.bar .fill{transition:none}}
+.sumh{font-weight:600;margin-bottom:2px}
+.suml{list-style:none;margin:0 0 8px;padding:0;font-size:15.5px}
+.suml li{padding:2px 0}
+.sumt{font-size:18px;margin:6px 0 4px;padding-top:8px;border-top:1px dashed var(--line)}
+.sumt b{font-size:21px;color:var(--brand2)}
+.sml{display:flex;flex-direction:column;font-size:16px}
+.sml .sr{display:flex;justify-content:space-between;gap:14px;padding:3px 0;border-bottom:1px solid var(--line)}
+.sml .sr:last-child{border-bottom:0}
+.sml .sr.sub{font-size:14px;color:var(--mute);padding-left:14px}
+.sml .sr b{white-space:nowrap}
+.mnote{margin-top:8px;font-size:13.5px;color:var(--mute)}
+.msg.a:has(.sml){min-width:70%}
 .rc{margin-top:8px;padding:10px;border-radius:12px;background:var(--soft)}
 .rc b{display:block}
 .rc .m{font-size:13px;color:var(--mute)}
@@ -500,7 +512,7 @@ async function sendMeal(text,photo){
   try{
     const out=await gemini(SYS_MEAL,toContents(hist,cur),SCHEMA_MEAL);
     meal.items=(Array.isArray(out.items)?out.items:[]).map(clean).map(linkFood);
-    meal.chat.push({role:'a',text:out.reply||'Fatto.',tot:sum(meal.items)});
+    meal.chat.push({role:'a',text:out.reply||'',tot:sum(meal.items),list:meal.items.map(i=>({n:i.nome,q:i.quantita,k:i.kcal}))});
   }catch(e){meal.chat.push({role:'a',text:e.message,err:true})}
   ui.busy=false;save();render();
 }
@@ -580,8 +592,13 @@ function renderMeal(){
 }
 function msgHtml(m,ix){
   if(m.role==='u')return`<div class="msg u">${m.photo?'<span class="chip">foto</span><br>':''}${esc(m.text)}</div>`;
-  let h=`<div class="msg a${m.err?' e':''}">${md(m.text)}`;
-  if(m.tot)h+=`<div class="mt">Totale pasto: <b>${f0(m.tot.kcal)} kcal</b><br>${mline(m.tot)}</div>`;
+  let h=`<div class="msg a${m.err?' e':''}">`;
+  if(m.tot&&!m.err){
+    if(m.list&&m.list.length)h+=`<div class="sumh">Alimenti del pasto:</div><ul class="suml">${m.list.map(i=>`<li>– ${esc(i.n)}${i.q?' <b>'+esc(i.q)+'</b>':''}</li>`).join('')}</ul>`;
+    const t=m.tot,row=(l,k,sub)=>`<div class="sr${sub?' sub':''}"><span>${l}</span><b>${fv(t,k,'g')}</b></div>`;
+    h+=`<div class="sumt">Totale kcal pasto: <b>${f0(t.kcal)} kcal</b></div><div class="sml">${row('Carboidrati','carboidrati')}${row('di cui zuccheri','zuccheri',1)}${row('Proteine','proteine')}${row('Grassi','grassi')}${row('di cui saturi','saturi',1)}${row('Fibre','fibre')}${row('Sale','sale')}</div>`;
+    if(m.text)h+=`<div class="mnote">${md(m.text)}</div>`;
+  }else h+=md(m.text);
   if(m.ricetta){const t=sum(m.ricetta.ingredienti);const saved=S.recipes.some(r=>r.src===m.ts);
     h+=`<div class="rc"><b>${esc(m.ricetta.nome)}</b><div class="m">Per porzione: ${f0(t.kcal)} kcal · ${mline(t)}</div><div class="row"><button class="btn sm ghost" data-saverec="${ix}" ${saved?'disabled':''}>${saved?'Salvata':'Salva nel ricettario'}</button></div></div>`}
   return h+'</div>';
