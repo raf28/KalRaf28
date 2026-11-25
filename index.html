@@ -397,7 +397,7 @@ normalize();prune();
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Impossibile salvare: esporta un backup')}}
 
 function guessMeal(){const h=new Date().getHours();if(h>=4&&h<11)return'colazione';if(h>=11&&h<15)return'pranzo';if(h>=15&&h<18){return S.day&&S.day.curSnack||'spuntino1'}return'cena'}
-const ui={view:'diario',meal:guessMeal(),rec:'chat',photo:null,busy:false};
+const ui={view:'diario',meal:null,rec:'chat',photo:null,busy:false};
 
 const nn=v=>(v===null||v===undefined||v==='')?null:num(v);
 const sum=items=>{const t={miss:{},has:{}};KEYS.forEach(k=>t[k]=0);(items||[]).forEach(i=>KEYS.forEach(k=>{const v=nn(i[k]);if(v===null)t.miss[k]=true;else{t[k]+=v;t.has[k]=true}}));return t};
@@ -533,6 +533,7 @@ function linkFood(i){
   return o;
 }
 async function sendMeal(text,photo){
+  if(!ui.meal){toast('Scegli prima un pasto qui sotto');$('#msg').value=text;return}
   const key=ui.meal,meal=ensureMeal(key);
   const hist=histOf(meal.chat);
   meal.chat.push({role:'u',text,photo:!!photo});resetComposer();ui.busy=true;save();render();
@@ -583,7 +584,7 @@ function render(){
   $('#send').disabled=ui.busy;
   if(false){}else{$('#msg').disabled=$('#mic').disabled=$('#bCam').disabled=$('#bGal').disabled=false}
   $('#pills').hidden=ui.view!=='diario';$('#ctx').hidden=ui.view==='diario';
-  if(ui.view==='diario'){ensureMeal(ui.meal);renderHead();renderMeal();renderPills();$('#msg').placeholder='Cosa hai mangiato?'}
+  if(ui.view==='diario'){if(ui.meal)ensureMeal(ui.meal);renderHead();renderMeal();renderPills();$('#msg').placeholder=ui.meal?'Cosa hai mangiato?':'Scegli prima un pasto ↑'}
   if(ui.view==='ricette'){renderRec();$('#ctx').textContent='Chat ricette · non viene contata nel diario';$('#msg').placeholder='Chiedi un\'idea o una ricetta'}
   if(ui.view==='storico')renderHist();
   if(ui.view==='alimenti')renderFoods();
@@ -607,6 +608,10 @@ function renderHead(){
 }
 function renderMeal(){
   const started=orderKeys(Object.keys(S.day.meals)).filter(k=>{const m=S.day.meals[k];return m.items.length||m.chat.length});
+  if(!ui.meal){$('#mealTabs').hidden=!started.length;$('#mealBar').hidden=true;
+    $('#mealTabs').innerHTML=started.map(k=>`<button data-meal="${k}">${mealName(k)}<small>${f0(sum(S.day.meals[k].items).kcal)} kcal</small></button>`).join('');
+    $('#mealItems').innerHTML=`<div class="empty">${started.length?'Tocca un pasto qui sopra per rivederlo, oppure ':''}<b>scegli un pasto nei pulsanti in basso</b> (Colazione, Pranzo, Cena o Spuntino) e scrivi, detta o fotografa cosa hai mangiato.</div>`;
+    $('#mealChat').innerHTML='';return}
   const m0=ensureMeal(ui.meal),isStarted=started.includes(ui.meal);
   const tabsK=orderKeys([...new Set([...started,ui.meal])]);
   $('#mealTabs').hidden=false;
@@ -680,7 +685,7 @@ document.addEventListener('click',e=>{
   if(b.dataset.delrec){S.recipes=S.recipes.filter(r=>r.id!==b.dataset.delrec);save();render();return}
   if(b.dataset.addrec){return addRecipe(b.dataset.addrec)}
   if(b.dataset.delhist!==undefined){const i=+b.dataset.delhist;sheet(`<h3>Eliminare questa giornata?</h3><p class="hm">Non si può annullare.</p><div class="row between"><button class="btn ghost" id="noSheet">Annulla</button><button class="btn bad" id="okDelH">Elimina</button></div>`);$('#okDelH').onclick=()=>{S.history.splice(i,1);save();closeSheet();render()};return}
-  if(b.id==='mealDel'){const k=ui.meal,sn=isSnack(k);
+  if(b.id==='mealDel'&&ui.meal){const k=ui.meal,sn=isSnack(k);
     sheet(`<h3>${sn?'Eliminare '+mealName(k)+'?':'Svuotare '+mealName(k)+'?'}</h3><p class="hm">${sn?'Lo spuntino e la sua chat verranno eliminati; gli altri spuntini vengono rinumerati.':'Tutti gli alimenti e la chat di questo pasto verranno cancellati.'} Non si può annullare.</p><div class="row between"><button class="btn ghost" id="noSheet">Annulla</button><button class="btn bad" id="okMealDel">${sn?'Elimina':'Svuota'}</button></div>`);
     $('#okMealDel').onclick=()=>{if(sn)deleteSnack(k);else{S.day.meals[k]={items:[],chat:[]}}save();closeSheet();render();toast(sn?'Spuntino eliminato':'Pasto svuotato')};return}
   if(b.id==='noSheet'){closeSheet();return}
@@ -691,7 +696,7 @@ document.addEventListener('click',e=>{
   if(b.id==='recClear'){S.recChat=[];save();render();return}
 });
 function addRecipe(id){
-  const r=S.recipes.find(x=>x.id===id);if(!r)return;let p=1,meal=ui.meal;
+  const r=S.recipes.find(x=>x.id===id);if(!r)return;let p=1,meal=ui.meal||'pranzo';
   if(isClosed(meal))meal=S.day.curSnack;
   const draw=()=>{const t=sum(r.ingredienti);sheet(`<h3>${esc(r.nome)}</h3><div class="f"><label>Pasto</label><div class="seg" style="padding:0">${[...BASE,S.day.curSnack].map(k=>`<button class="${k===meal?'on':''}" data-pm="${k}">${mealName(k)}</button>`).join('')}</div></div>
     <div class="f"><label>Porzioni</label><div class="row" style="align-items:center"><button class="btn ghost sm" id="pm">−</button><b style="min-width:50px;text-align:center">${f1(p)}</b><button class="btn ghost sm" id="pp">+</button></div><p>${f0(t.kcal*p)} kcal · ${mline(Object.fromEntries(Object.entries(t).map(([k,v])=>[k,v*p])))}</p></div>
@@ -822,7 +827,7 @@ $('#closeDay').onclick=()=>{
     const meals={};orderKeys(Object.keys(S.day.meals)).forEach(k=>{if(S.day.meals[k].items.length)meals[k]=S.day.meals[k].items});
     if(dayItems(S.day).length)S.history.unshift({id:S.day.id,start:S.day.start,end:new Date().toISOString(),meals,tot:t,target,margin});
     if(S.history.length>400)S.history.length=400;prune();
-    S.day=newDay();ui.meal=guessMeal();save();closeSheet();render();toast('Nuova giornata aperta');
+    S.day=newDay();ui.meal=null;save();closeSheet();render();toast('Nuova giornata aperta');
   };
 };
 function showMealBar(){requestAnimationFrame(()=>{const st=document.querySelector('.mstick'),mn=$('#main');if(!st)return;const top=st.offsetTop;if(mn.scrollTop<top)mn.scrollTo({top,behavior:'smooth'})})}
@@ -854,7 +859,7 @@ document.addEventListener('click',e=>{
   const p=e.target.closest('[data-pause]'),b=e.target.closest('[data-say]');if(!p&&!b)return;e.stopPropagation();
   const ss=window.speechSynthesis;
   if(p){if(ss.speaking&&!ss.paused){ss.pause();p.classList.add('on')}return}
-  const chat=ui.view==='ricette'?S.recChat:ensureMeal(ui.meal).chat,m=chat[+b.dataset.say];if(!m)return;
+  const chat=ui.view==='ricette'?S.recChat:(ui.meal?ensureMeal(ui.meal).chat:[]),m=chat[+b.dataset.say];if(!m)return;
   if(TTS.msg===m&&ss.paused){ss.resume();document.querySelectorAll('[data-pause].on').forEach(x=>x.classList.remove('on'));return}
   ss.cancel();const u=new SpeechSynthesisUtterance(speechText(m));u.lang='it-IT';const v=itVoice();if(v)u.voice=v;u.rate=1;
   u.onend=u.onerror=()=>{TTS.msg=null;document.querySelectorAll('.tb.on').forEach(x=>x.classList.remove('on'))};
