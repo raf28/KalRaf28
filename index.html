@@ -45,7 +45,7 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 .macros small{display:block;font-size:11.5px;opacity:.75;line-height:1.2;margin-top:2px}
 /* pasti */
 .seg{display:flex;gap:6px;overflow-x:auto;padding:14px 0 10px;scrollbar-width:none}
-.seg button{flex:none;min-height:44px;padding:6px 14px;border-radius:12px;background:var(--card);border:1px solid var(--line);text-align:left;line-height:1.2}
+.seg button{flex:none;min-height:44px;padding:6px 14px;border-radius:12px;background:var(--card);border:1.5px solid var(--brand2);text-align:left;line-height:1.2}
 .seg button small{display:block;font-size:13px;color:var(--mute)}
 .seg button.on{background:var(--brand2);border-color:var(--brand2);color:#fff}
 .seg button.on small{color:#d7eadc}
@@ -79,8 +79,8 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 .rc{margin-top:8px;padding:10px;border-radius:12px;background:var(--soft)}
 .rc b{display:block}
 .rc .m{font-size:13px;color:var(--mute)}
-.btn{min-height:44px;padding:8px 16px;border-radius:12px;background:var(--brand2);color:#fff;font-weight:600}
-.btn.ghost{background:var(--soft);color:var(--ink)}
+.btn{min-height:44px;padding:8px 16px;border-radius:12px;background:var(--brand2);color:#fff;font-weight:600;border:1.5px solid var(--brand2)}
+.btn.ghost{background:var(--soft);color:var(--ink);border:1.5px solid var(--brand2)}
 .btn.bad{background:var(--bad)}
 .btn.sm{min-height:38px;padding:6px 12px;font-size:14px}
 .applybar{position:sticky;bottom:0;background:linear-gradient(transparent,var(--bg) 30%);padding:18px 14px calc(12px + env(safe-area-inset-bottom))}
@@ -116,6 +116,7 @@ details.food summary .kv{white-space:nowrap;color:var(--mute);font-size:14px}
 .micbig svg{width:26px;height:26px}
 .micbig.rec{background:var(--bad)!important;color:#fff!important;animation:pulse 1.2s infinite}
 .btn.two{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}
+.btn.sel{background:light-dark(#dcefe2,#23402f);box-shadow:inset 0 0 0 1px var(--brand2)}
 .btn.two small{font-size:11px;font-weight:500;opacity:.75}
 .btn:disabled{opacity:.4;cursor:default}
 .row.between{justify-content:space-between;margin-top:12px}
@@ -129,7 +130,7 @@ details.food summary .kv{white-space:nowrap;color:var(--mute);font-size:14px}
 .ib.send{background:var(--brand2);color:#fff}
 .ib:disabled{opacity:.4}
 .pills{max-width:720px;margin:0 auto 8px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) 58px;gap:4px;align-items:stretch}
-.pills button{min-height:40px;border-radius:999px;border:1.5px solid var(--line);background:var(--bg);font-size:12.5px;letter-spacing:-.2px;font-weight:500;padding:2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pills button{min-height:40px;border-radius:999px;border:1.5px solid var(--brand2);background:var(--bg);font-size:12.5px;letter-spacing:-.2px;font-weight:500;padding:2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pills button.on{background:var(--brand2);border-color:var(--brand2);color:#fff;font-weight:600}
 .pills .newsn{border-radius:8px;background:#f4c430;border-color:#e0ad12;color:#3a2c00;font-size:11px;font-weight:700;line-height:1.1;white-space:normal;text-overflow:clip;padding:2px 0}
 .pills .newsn:disabled{opacity:.4}
@@ -689,7 +690,7 @@ function foodForm(f){foodSheet(f)}
 async function foodSheet(f){
   const ph={tabella:null,confezione:null};
   if(f&&f.foto){for(const k of ['tabella','confezione'])if(f.foto[k])ph[k]=await IDB.get(f.foto[k])}
-  let txt='',card=f?{...f}:null,busy=false,st='';
+  let txt='',card=f?{...f}:null,busy=false,st='',auto=!f,pend=false,tmr=null;
   const MIC='<button class="btn sm ghost micbig" id="fMic" aria-label="Detta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg><span>Parla</span></button>';
   const grab=()=>{const t=$('#fTxt');if(t)txt=t.value;if(card&&$('#ffN')){card.nome=$('#ffN').value;card.riferimento=$('#ffR').value;card.note=$('#ffNote').value;FKEYS.forEach(([k])=>card[k]=$('#ff_'+k).value)}};
   const cardHtml=()=>!card?'':`<div class="card" style="margin-top:6px"><h3 style="font-size:16px">Scheda alimento</h3>
@@ -697,28 +698,35 @@ async function foodSheet(f){
     <div class="f"><label for="ffR">Valori riferiti a</label><input type="text" id="ffR" value="${esc(card.riferimento||'100 g')}" placeholder="100 g"></div>
     <div class="fgrid">${FKEYS.map(([k,l,u])=>`<div><label for="ff_${k}">${l} (${u})</label><input type="number" inputmode="decimal" step="any" id="ff_${k}" value="${card[k]===null||card[k]===undefined?'':esc(card[k])}"></div>`).join('')}</div>
     <div class="f" style="margin:12px 0 0"><label for="ffNote">Note</label><textarea id="ffNote" class="ta" rows="2">${esc(card.note||'')}</textarea></div></div>`;
-  const draw=()=>{sheet(`<h3>${f?'Modifica alimento':'Aggiungi alimento'}</h3>
+  let draw=()=>{sheet(`<h3>${f?'Modifica alimento':'Aggiungi alimento'}</h3>
     ${slotsHtml(ph,MIC)}
     <textarea id="fTxt" class="ta" rows="10" placeholder="Scrivi o detta nome, marca, valori e precisazioni. Es. «Prosciutto cotto Rovagnati, per 100 grammi: 135 kcal, proteine 20…»">${esc(txt)}</textarea>
-    <div class="row"><button class="btn sm ghost two" id="fGo" ${busy?'disabled':''}>Prepara scheda<small>(automatico)</small></button><button class="btn sm ghost two" id="fMan">Compila a mano</button></div>
-    <p class="hm" id="fSt">${esc(st)}</p>
+    <div class="row"><button class="btn sm ghost two ${auto?'sel':''}" id="fGo">${auto?'✓ ':''}Prepara scheda<small>(automatico)</small></button><button class="btn sm ghost two ${!auto&&card?'sel':''}" id="fMan">Compila a mano</button></div>
+    <p class="hm" id="fSt">${esc(st||(auto&&!card?'Modalità automatica: detta, scrivi o aggiungi una foto e la scheda si prepara da sola.':''))}</p>
     ${cardHtml()}
     <div class="row between"><button class="btn sm ghost" id="noSheet">Annulla</button><button class="btn" id="ffSave" ${card?'':'disabled'}>Salva</button></div>`);
-    bindSlots(ph,()=>{grab();draw()});
-    dictate($('#fTxt'),$('#fMic'));
-    $('#fMan').onclick=()=>{grab();if(!card)card={nome:'',riferimento:'100 g',note:''};draw();$('#ffN').focus()};
-    $('#fGo').onclick=async()=>{grab();if(!txt.trim()&&!ph.tabella&&!ph.confezione){st='Scrivi, detta qualcosa o aggiungi una foto.';draw();return}
-      busy=true;st='Preparo la scheda…';draw();
+    bindSlots(ph,()=>{grab();draw();if(auto)prepare()});
+    dictate($('#fTxt'),$('#fMic'),()=>{if(auto&&$('#fTxt'))prepare()});
+    $('#fTxt').addEventListener('input',()=>{if(!auto||rec)return;clearTimeout(tmr);tmr=setTimeout(()=>{if($('#fTxt')&&!rec)prepare()},2000)});
+    $('#fMan').onclick=()=>{grab();auto=false;clearTimeout(tmr);if(!card)card={nome:'',riferimento:'100 g',note:''};st='';draw();$('#ffN').focus()};
+    $('#fGo').onclick=()=>{grab();auto=true;draw();prepare(true)};
+  };
+  const prepare=async(manual)=>{if(!$('#fTxt'))return;grab();clearTimeout(tmr);
+      if(!txt.trim()&&!ph.tabella&&!ph.confezione){if(manual){st='Scrivi, detta qualcosa o aggiungi una foto.';draw()}return}
+      if(busy){pend=true;return}
+      busy=true;st='Preparo la scheda…';const se=$('#fSt');if(se)se.textContent=st;
       const parts=[{text:txt.trim()||'(vedi foto)'}];for(const k of ['tabella','confezione'])if(ph[k])parts.push({text:'Foto '+k+':'},{inlineData:{mimeType:'image/jpeg',data:ph[k].split(',')[1]}});
       try{const o=await gemini(SYS_FOOD,[{role:'user',parts}],SCHEMA_FOOD);card={...(card||{}),nome:String(o.nome||''),riferimento:String(o.riferimento||'100 g'),note:String(o.note||'')};FKEYS.forEach(([k])=>card[k]=nn(o[k]));st='Scheda pronta: controlla i valori e premi Salva.'}
       catch(e){st=e.message}
-      busy=false;draw();};
+      busy=false;if(!$('#fTxt'))return;draw();if(pend){pend=false;prepare()}};
+  const bindSave=()=>{
     $('#ffSave').onclick=async()=>{grab();if(!card)return;const nome=(card.nome||'').trim();if(!nome){st='Il nome è obbligatorio.';draw();return}
       const id=(f&&f.id)||('f'+Date.now());const old=S.foods.find(x=>x.id===id);const foto={...(old&&old.foto||{})};
       for(const k of ['tabella','confezione']){const key=id+'_'+k;if(ph[k]){await IDB.put(key,ph[k]);foto[k]=key}else if(foto[k]){await IDB.del(foto[k]);delete foto[k]}}
       const rec={id,nome,riferimento:String(card.riferimento||'').trim()||'100 g',note:String(card.note||'').trim(),foto};FKEYS.forEach(([k])=>rec[k]=nn(card[k]));
       if(old)Object.assign(old,rec);else S.foods.push(rec);save();closeSheet();ui.view='alimenti';render();toast(old?'Alimento aggiornato':'Alimento salvato')};
   };
+  const draw0=draw;draw=()=>{const ae=document.activeElement,id=ae&&ae.id,ss=ae&&ae.selectionStart,se=ae&&ae.selectionEnd,sc=$('#sheet').scrollTop;draw0();bindSave();$('#sheet').scrollTop=sc;if(id&&$('#'+id)&&$('#sheet').contains($('#'+id))){const el=$('#'+id);el.focus({preventScroll:true});try{if(ss!=null)el.setSelectionRange(ss,se)}catch(e){}}};
   draw();
 }
 $('#foodQ').addEventListener('input',renderFoods);
@@ -746,14 +754,14 @@ $('#pills').addEventListener('click',e=>{const b=e.target.closest('[data-pill]')
 });
 /* dettatura */
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null;
-function dictate(ta,btn){if(!ta||!btn)return;btn.onclick=e=>{e.preventDefault();e.stopPropagation();
+function dictate(ta,btn,onEnd){if(!ta||!btn)return;btn.onclick=e=>{e.preventDefault();e.stopPropagation();
   if(!SR){toast('Dettatura non supportata da questo browser: usa il microfono della tastiera');return}
   if(rec){rec.stop();return}
   const r=new SR();rec=r;r.lang='it-IT';r.interimResults=true;r.continuous=true;
   const base=ta.value?ta.value.replace(/\s*$/,' '):'';
   r.onresult=ev=>{let t='';for(let i=0;i<ev.results.length;i++)t+=ev.results[i][0].transcript;ta.value=base+t;ta.dispatchEvent(new Event('input'))};
   r.onerror=ev=>{if(ev.error==='not-allowed')toast('Consenti l\'uso del microfono a Chrome per dettare')};
-  r.onend=()=>{if(rec===r)rec=null;btn.classList.remove('rec')};
+  r.onend=()=>{if(rec===r)rec=null;btn.classList.remove('rec');if(onEnd)onEnd()};
   try{r.start();btn.classList.add('rec')}catch(err){rec=null;toast('Impossibile avviare il microfono')}
 }}
 dictate($('#msg'),$('#mic'));
