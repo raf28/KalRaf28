@@ -118,6 +118,12 @@ details.food summary .kv{white-space:nowrap;color:var(--mute);font-size:14px}
 .ib svg{width:24px;height:24px}
 .ib.send{background:var(--brand2);color:#fff}
 .ib:disabled{opacity:.4}
+.pills{max-width:720px;margin:0 auto 8px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.pills button{min-height:40px;border-radius:999px;border:1.5px solid var(--line);background:var(--bg);font-size:14px;font-weight:500;padding:4px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pills button.on{background:var(--brand2);border-color:var(--brand2);color:#fff;font-weight:600}
+.ib.mic{margin-right:8px}
+.ib.mic.rec{background:var(--bad);color:#fff;animation:pulse 1.2s infinite}
+@keyframes pulse{50%{opacity:.6}}
 .prev{max-width:720px;margin:0 auto 6px;display:flex;align-items:center;gap:8px;font-size:14px;color:var(--mute)}
 .prev img{width:52px;height:52px;object-fit:cover;border-radius:10px}
 .ctx{max-width:720px;margin:0 auto 4px;font-size:13px;color:var(--mute)}
@@ -250,11 +256,13 @@ details.card summary::-webkit-details-marker{display:none}
 
   <div class="comp" id="comp">
     <div class="ctx" id="ctx"></div>
+    <div class="pills" id="pills"></div>
     <div class="prev" id="prev" hidden><img id="prevImg" alt="Foto allegata"><span>Foto allegata</span><button class="x" id="prevX" aria-label="Rimuovi foto">×</button></div>
     <div class="in">
       <button class="ib" id="bCam" aria-label="Scatta foto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></button>
       <button class="ib" id="bGal" aria-label="Allega dalla galleria"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg></button>
       <textarea id="msg" rows="1" placeholder="Cosa hai mangiato?"></textarea>
+      <button class="ib mic" id="mic" aria-label="Detta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg></button>
       <button class="ib send" id="send" aria-label="Invia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
     </div>
     <input type="file" id="fCam" accept="image/*" capture="environment" hidden>
@@ -287,9 +295,16 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const num=v=>{const n=Number(String(v).replace(',','.'));return isFinite(n)&&n>0?n:0};
 const f0=n=>Math.round(n).toLocaleString('it-IT');
 const f1=n=>(Math.round(n*10)/10).toLocaleString('it-IT');
-const mealName=k=>(MEALS.find(m=>m[0]===k)||[k,k])[1];
+const BASE=['colazione','pranzo','cena'];
+const isSnack=k=>/^spuntino\d+$/.test(k);
+const snackN=k=>Number(k.replace('spuntino',''))||1;
+const mealName=k=>isSnack(k)?'Spuntino '+snackN(k):k==='spuntino'?'Spuntino':(MEALS.find(m=>m[0]===k)||[k,k])[1];
+const orderKeys=keys=>[...BASE.filter(k=>keys.includes(k)),...keys.filter(isSnack).sort((a,b)=>snackN(a)-snackN(b))];
+const snacksOf=d=>orderKeys(Object.keys(d.meals)).filter(isSnack).filter(k=>{const m=d.meals[k];return m.items.length||m.chat.length});
+const visibleMeals=()=>{const ks=[...BASE,...snacksOf(S.day)];if(isSnack(ui.meal)&&!ks.includes(ui.meal))ks.push(ui.meal);return orderKeys(ks)};
+function ensureMeal(k){const m=S.day.meals[k]=S.day.meals[k]||{};m.items=m.items||[];m.chat=m.chat||[];return m}
 
-const newDay=()=>{const d={id:Date.now(),start:new Date().toISOString(),meals:{}};MEALS.forEach(([k])=>d.meals[k]={items:[],chat:[]});return d};
+const newDay=()=>{const d={id:Date.now(),start:new Date().toISOString(),meals:{}};BASE.forEach(k=>d.meals[k]={items:[],chat:[]});return d};
 const defaults=()=>({settings:{apiKey:'',model:'',target:2000,margin:300,keepDays:7},day:newDay(),history:[],recipes:[],recChat:[],foods:[],unlocked:false});
 let S=null;
 try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
@@ -297,19 +312,21 @@ function normalize(){
   if(!S||typeof S!=='object'||!S.day)S=defaults();
   S.settings=Object.assign(defaults().settings,S.settings||{});
   S.history=Array.isArray(S.history)?S.history:[];S.recipes=Array.isArray(S.recipes)?S.recipes:[];S.recChat=Array.isArray(S.recChat)?S.recChat:[];S.foods=Array.isArray(S.foods)?S.foods:[];
-  S.day.meals=S.day.meals||{};MEALS.forEach(([k])=>{const m=S.day.meals[k]=S.day.meals[k]||{};m.items=m.items||[];m.chat=m.chat||[]});
+  S.day.meals=S.day.meals||{};BASE.forEach(k=>ensureMeal(k));
+  if(S.day.meals.spuntino){const o=S.day.meals.spuntino;delete S.day.meals.spuntino;if((o.items||[]).length||(o.chat||[]).length&&!S.day.meals.spuntino1)S.day.meals.spuntino1=o}
+  Object.keys(S.day.meals).forEach(k=>ensureMeal(k));
 }
 function prune(){const d=Number(S.settings.keepDays)||0;if(d<=0)return;const lim=Date.now()-d*864e5;S.history=S.history.filter(h=>new Date(h.end||h.start).getTime()>=lim)}
 normalize();prune();
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Impossibile salvare: esporta un backup')}}
 
-function guessMeal(){const h=new Date().getHours();if(h>=4&&h<11)return'colazione';if(h>=11&&h<15)return'pranzo';if(h>=15&&h<18)return'spuntino';return'cena'}
+function guessMeal(){const h=new Date().getHours();if(h>=4&&h<11)return'colazione';if(h>=11&&h<15)return'pranzo';if(h>=15&&h<18){const sn=S.day?snacksOf(S.day):[];return sn.length?sn[sn.length-1]:'spuntino1'}return'cena'}
 const ui={view:'diario',meal:guessMeal(),rec:'chat',photo:null,busy:false};
 
 const nn=v=>(v===null||v===undefined||v==='')?null:num(v);
 const sum=items=>{const t={miss:{},has:{}};KEYS.forEach(k=>t[k]=0);(items||[]).forEach(i=>KEYS.forEach(k=>{const v=nn(i[k]);if(v===null)t.miss[k]=true;else{t[k]+=v;t.has[k]=true}}));return t};
 const fv=(t,k,u)=>{const v=t[k];if(v===null||v===undefined)return'—';if(t.miss&&t.miss[k])return t.has&&t.has[k]?'≥'+f1(v)+u:'—';return f1(v)+u};
-const dayItems=d=>MEALS.flatMap(([k])=>d.meals[k]?d.meals[k].items:[]);
+const dayItems=d=>Object.values(d.meals).flatMap(m=>m.items||[]);
 const mline=t=>NUTR.slice(1).map(([k,l,u])=>`${l} ${fv(t,k,u)}`+(SUB[k]?` (di cui ${SUB[k][1]} ${fv(t,SUB[k][0],u)})`:'')).join(' · ');
 const clean=i=>{const o={nome:String(i.nome||'Alimento'),quantita:String(i.quantita||'')};o.kcal=num(i.kcal);KEYS.slice(1).forEach(k=>o[k]=nn(i[k]));if(i.imposto)o.imposto=true;if(i.alimento_id){o.alimento_id=String(i.alimento_id);o.grammi=nn(i.grammi);o.fattore=nn(i.fattore)}if(i.dalAlimenti)o.dalAlimenti=true;const F=['utente','etichetta','generico','foto','non_trovato','alimenti','ricetta','preimpostato'];o.fonte=F.includes(i.fonte)?i.fonte:(i.dalAlimenti?'alimenti':i.imposto?'utente':i.stima?'generico':'generico');if(i.imposto)o.fonte='utente';
   if(o.fonte==='non_trovato'){o.kcal=0;KEYS.slice(1).forEach(k=>o[k]=null)}return o};
@@ -412,7 +429,7 @@ function linkFood(i){
   return o;
 }
 async function sendMeal(text,photo){
-  const key=ui.meal,meal=S.day.meals[key];
+  const key=ui.meal,meal=ensureMeal(key);
   const hist=histOf(meal.chat);
   meal.chat.push({role:'u',text,photo:!!photo});resetComposer();ui.busy=true;save();render();
   const cur={role:'user',parts:[{text:`Pasto: ${mealName(key)}.\nLista attuale degli alimenti (JSON): ${JSON.stringify(meal.items)}${foodsCtx()}\n\nMessaggio dell'utente: ${text||'(vedi foto)'}`}]};
@@ -459,7 +476,8 @@ function render(){
   const chatView=ui.view==='diario'||(ui.view==='ricette'&&ui.rec==='chat');
   $('#comp').hidden=!chatView;
   $('#send').disabled=ui.busy;
-  if(ui.view==='diario'){renderHead();renderMeal();$('#ctx').textContent='Stai aggiungendo a: '+mealName(ui.meal);$('#msg').placeholder='Cosa hai mangiato?'}
+  $('#pills').hidden=ui.view!=='diario';$('#ctx').hidden=ui.view==='diario';
+  if(ui.view==='diario'){ensureMeal(ui.meal);renderHead();renderMeal();renderPills();$('#msg').placeholder='Cosa hai mangiato?'}
   if(ui.view==='ricette'){renderRec();$('#ctx').textContent='Chat ricette · non viene contata nel diario';$('#msg').placeholder='Chiedi un\'idea o una ricetta'}
   if(ui.view==='storico')renderHist();
   if(ui.view==='alimenti')renderFoods();
@@ -481,7 +499,7 @@ function renderHead(){
   $('#dayLabel').textContent='Giornata iniziata '+d.toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'})+' alle '+d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
 }
 function renderMeal(){
-  $('#mealTabs').innerHTML=MEALS.map(([k,l])=>`<button data-meal="${k}" class="${k===ui.meal?'on':''}">${l}<small>${f0(sum(S.day.meals[k].items).kcal)} kcal</small></button>`).join('');
+  $('#mealTabs').innerHTML=visibleMeals().map(k=>`<button data-meal="${k}" class="${k===ui.meal?'on':''}">${mealName(k)}<small>${f0(sum(ensureMeal(k).items).kcal)} kcal</small></button>`).join('');
   const m=S.day.meals[ui.meal],t=sum(m.items);
   $('#mealItems').innerHTML=`<h3>${mealName(ui.meal)}</h3>`+(m.items.length?m.items.map((i,ix)=>`<div class="it"><div><div class="n">${esc(i.nome)}</div><div class="q">${esc(i.quantita)}${srcTag(i)}</div></div><div class="k">${f0(i.kcal)} kcal</div><button class="x" data-del="${ix}" aria-label="Elimina ${esc(i.nome)}">×</button><div class="m">${mline(i)}</div></div>`).join('')+
     `<div class="tot"><span>Totale ${mealName(ui.meal).toLowerCase()}</span><span>${f0(t.kcal)} kcal</span><small>${mline(t)}</small></div>`
@@ -510,7 +528,7 @@ function renderHist(){
   $('#histList').innerHTML=S.history.length?S.history.map((h,ix)=>{const t=h.tot,max=h.target+h.margin,st=t.kcal<=h.target?'ok':t.kcal<=max?'warn':'bad';const d=new Date(h.start);
     return`<details class="card"><summary><span><span class="dot" style="background:var(--${st})"></span><b>${d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'})}</b></span><span><b>${f0(t.kcal)}</b> / ${f0(h.target)} kcal</span></summary>
     <div class="hm" style="margin-top:6px">${mline(t)}</div>
-    ${MEALS.map(([k,l])=>{const it=(h.meals[k]||[]);if(!it.length)return'';const mt=sum(it);return`<div style="margin-top:10px"><b>${l}</b> <span class="hm">${f0(mt.kcal)} kcal</span>${it.map(i=>`<div class="hm">• ${esc(i.nome)} ${esc(i.quantita)} — ${f0(i.kcal)} kcal</div>`).join('')}</div>`}).join('')}
+    ${orderKeys(Object.keys(h.meals).map(k=>k==='spuntino'?'spuntino1':k)).map(k=>{const l=mealName(k);const it=(h.meals[k]||(k==='spuntino1'?h.meals.spuntino:null)||[]);if(!it.length)return'';const mt=sum(it);return`<div style="margin-top:10px"><b>${l}</b> <span class="hm">${f0(mt.kcal)} kcal</span>${it.map(i=>`<div class="hm">• ${esc(i.nome)} ${esc(i.quantita)} — ${f0(i.kcal)} kcal</div>`).join('')}</div>`}).join('')}
     <div class="row"><button class="btn sm ghost" data-delhist="${ix}">Elimina giornata</button></div></details>`}).join('')
     :'<div class="empty">Qui trovi le giornate chiuse (conservate per il periodo scelto nelle Impostazioni). Usa «Chiudi giornata» nel Diario quando hai finito di mangiare.</div>';
 }
@@ -544,13 +562,13 @@ document.addEventListener('click',e=>{
 });
 function addRecipe(id){
   const r=S.recipes.find(x=>x.id===id);if(!r)return;let p=1,meal=ui.meal;
-  const draw=()=>{const t=sum(r.ingredienti);sheet(`<h3>${esc(r.nome)}</h3><div class="f"><label>Pasto</label><div class="seg" style="padding:0">${MEALS.map(([k,l])=>`<button class="${k===meal?'on':''}" data-pm="${k}">${l}</button>`).join('')}</div></div>
+  const draw=()=>{const t=sum(r.ingredienti);sheet(`<h3>${esc(r.nome)}</h3><div class="f"><label>Pasto</label><div class="seg" style="padding:0">${[...visibleMeals(),'spuntino'+(snacksOf(S.day).length+1)].filter((k,i,a)=>a.indexOf(k)===i).map(k=>`<button class="${k===meal?'on':''}" data-pm="${k}">${(!S.day.meals[k]||!(S.day.meals[k].items.length||S.day.meals[k].chat.length))&&isSnack(k)&&snacksOf(S.day).length?'Nuovo spuntino ('+snackN(k)+')':mealName(k)}</button>`).join('')}</div></div>
     <div class="f"><label>Porzioni</label><div class="row" style="align-items:center"><button class="btn ghost sm" id="pm">−</button><b style="min-width:50px;text-align:center">${f1(p)}</b><button class="btn ghost sm" id="pp">+</button></div><p>${f0(t.kcal*p)} kcal · ${mline(Object.fromEntries(Object.entries(t).map(([k,v])=>[k,v*p])))}</p></div>
     <div class="row"><button class="btn" id="okAdd">Aggiungi</button><button class="btn ghost" id="noSheet">Annulla</button></div>`);
     document.querySelectorAll('[data-pm]').forEach(x=>x.onclick=()=>{meal=x.dataset.pm;draw()});
     $('#pm').onclick=()=>{p=Math.max(.5,p-.5);draw()};$('#pp').onclick=()=>{p=Math.min(10,p+.5);draw()};
     $('#okAdd').onclick=()=>{const t=sum(r.ingredienti);const it={nome:'Ricetta: '+r.nome,quantita:f1(p)+(p===1?' porzione':' porzioni'),fonte:'ricetta'};KEYS.forEach(k=>it[k]=(t.miss[k]&&!t.has[k])?null:t[k]*p);
-      const m=S.day.meals[meal];m.items.push(it);m.chat.push({role:'u',text:`(Aggiunta dal ricettario: ${r.nome}, ${it.quantita})`});save();closeSheet();ui.view='diario';ui.meal=meal;render();toast('Aggiunta a '+mealName(meal))}};
+      const m=ensureMeal(meal);m.items.push(it);m.chat.push({role:'u',text:`(Aggiunta dal ricettario: ${r.nome}, ${it.quantita})`});save();closeSheet();ui.view='diario';ui.meal=meal;render();toast('Aggiunta a '+mealName(meal))}};
   draw();
 }
 function importRecipes(){
@@ -661,16 +679,40 @@ $('#foodQ').addEventListener('input',renderFoods);
 $('#closeDay').onclick=()=>{
   const t=sum(dayItems(S.day)),{target,margin}=S.settings;
   sheet(`<h3>Chiudere la giornata?</h3><p style="margin:0 0 6px"><b style="font-size:28px">${f0(t.kcal)}</b> kcal su ${f0(target)}${margin?` (+${f0(margin)} bonus)`:''}</p><p class="hm" style="margin:0 0 10px">${mline(t)}</p>
-  ${MEALS.map(([k,l])=>`<div class="hm">${l}: ${f0(sum(S.day.meals[k].items).kcal)} kcal</div>`).join('')}
+  ${orderKeys(Object.keys(S.day.meals)).filter(k=>S.day.meals[k].items.length).map(k=>`<div class="hm">${mealName(k)}: ${f0(sum(S.day.meals[k].items).kcal)} kcal</div>`).join('')}
   <p class="hm">La giornata va nello storico e se ne apre una nuova, vuota.</p><div class="row"><button class="btn" id="okClose">Chiudi e apri nuova</button><button class="btn ghost" id="noSheet">Annulla</button></div>`);
   $('#okClose').onclick=()=>{
-    const meals={};MEALS.forEach(([k])=>meals[k]=S.day.meals[k].items);
+    const meals={};orderKeys(Object.keys(S.day.meals)).forEach(k=>{if(S.day.meals[k].items.length)meals[k]=S.day.meals[k].items});
     if(dayItems(S.day).length)S.history.unshift({id:S.day.id,start:S.day.start,end:new Date().toISOString(),meals,tot:t,target,margin});
     if(S.history.length>400)S.history.length=400;prune();
     S.day=newDay();ui.meal=guessMeal();save();closeSheet();render();toast('Nuova giornata aperta');
   };
 };
-$('#send').onclick=send;
+function renderPills(){
+  const cur=ui.meal;
+  $('#pills').innerHTML=[['colazione','Colazione'],['pranzo','Pranzo'],['cena','Cena'],['__snack',isSnack(cur)?mealName(cur):'Spuntino']].map(([k,l])=>`<button data-pill="${k}" class="${(k===cur||(k==='__snack'&&isSnack(cur)))?'on':''}">${l}</button>`).join('');
+}
+$('#pills').addEventListener('click',e=>{const b=e.target.closest('[data-pill]');if(!b)return;e.stopPropagation();const k=b.dataset.pill;
+  if(k!=='__snack'){ui.meal=k;render();return}
+  const sn=snacksOf(S.day);
+  if(!sn.length){ui.meal='spuntino1';render();return}
+  const next='spuntino'+(snackN(sn[sn.length-1])+1);
+  sheet(`<h3>Spuntino</h3><div class="row" style="flex-direction:column;align-items:stretch">${[...sn].reverse().map(x=>`<button class="btn ghost" data-snk="${x}">Aggiungi a ${mealName(x)} · ${f0(sum(S.day.meals[x].items).kcal)} kcal</button>`).join('')}<button class="btn" data-snk="${next}">Nuovo spuntino (${snackN(next)})</button><button class="btn ghost" id="noSheet">Annulla</button></div>`);
+  document.querySelectorAll('[data-snk]').forEach(x=>x.onclick=()=>{ui.meal=x.dataset.snk;closeSheet();render()});
+});
+/* dettatura */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null,recBase='';
+$('#mic').onclick=()=>{
+  if(!SR){toast('Dettatura non supportata da questo browser: usa il microfono della tastiera');return}
+  if(rec){rec.stop();return}
+  rec=new SR();rec.lang='it-IT';rec.interimResults=true;rec.continuous=true;
+  recBase=$('#msg').value?$('#msg').value.replace(/\s*$/,' '):'';
+  rec.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;$('#msg').value=recBase+t;autoH()};
+  rec.onerror=e=>{if(e.error==='not-allowed')toast('Consenti l\'uso del microfono a Chrome per dettare')};
+  rec.onend=()=>{rec=null;$('#mic').classList.remove('rec')};
+  try{rec.start();$('#mic').classList.add('rec')}catch(err){rec=null;toast('Impossibile avviare il microfono')}
+};
+$('#send').onclick=()=>{if(rec)rec.stop();send()};
 $('#msg').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&window.matchMedia('(pointer:fine)').matches){e.preventDefault();send()}});
 function autoH(){const t=$('#msg');t.style.height='auto';t.style.height=Math.min(120,t.scrollHeight)+'px'}
 $('#msg').addEventListener('input',autoH);
