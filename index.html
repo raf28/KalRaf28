@@ -405,6 +405,9 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
 #sheet .btn:not(.two,.addlist .btn),details .btn,#closeDay{min-height:40px;padding:8px 18px;border-radius:99px;border:0;color:#fff;font-size:14px;font-weight:400;line-height:1.15;background:var(--brand);box-shadow:none}
 #sheet .btn.bad:not(.two,.addlist .btn),details .btn.bad{background:var(--bad)}
 #sheet .slot .btn{padding:8px 10px}
+/* Impostazioni (v122): Aspetto, tasti pieni verdi, selezionato verde chiaro */
+.thm button{background:var(--brand2);color:#fff;border-color:var(--brand2)}
+.thm button.on{background:#2f8f5c;border-color:#2f8f5c;color:#fff}
 /* Impostazioni (v121): bordo dei blocchi nel verde del tasto «Applica e torna al Diario» */
 #v-impost .card{border-color:var(--brand2)}
 /* Diario (v120): barra del pasto uguale alla barra dei pasti in basso */
@@ -513,7 +516,7 @@ window.addEventListener('error',()=>hideSplash());</script>
         </div>
         <div class="card">
           <h3>Aspetto</h3>
-          <div class="thm" id="thm"><button data-thm="auto">Come il telefono</button><button data-thm="light">Chiaro</button><button data-thm="dark">Scuro</button></div>
+          <div class="thm" id="thm"><button data-thm="auto">Come il Telefono</button><button data-thm="light">Chiaro</button><button data-thm="dark">Scuro</button></div>
           <p class="hm" style="margin:8px 0 0">La scelta viene salvata anche nel backup su Drive.</p>
         </div>
         <div class="card">
@@ -558,7 +561,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 121 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 122 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1325,7 +1328,7 @@ $('#apply').onclick=async()=>{
   if($('#key').value.trim()!==S.settings.apiKey){$('#apply').disabled=true;const ok=await saveKey();$('#apply').disabled=false;if(!ok)return}
   save();go('diario');toast('Impostazioni salvate');
 };
-$('#thm').onclick=e=>{const b=e.target.closest('[data-thm]');if(!b)return;S.settings.theme=b.dataset.thm;save();applyTheme();toast(b.dataset.thm==='auto'?'Aspetto: come il telefono':b.dataset.thm==='light'?'Aspetto: chiaro':'Aspetto: scuro')};
+$('#thm').onclick=e=>{const b=e.target.closest('[data-thm]');if(!b)return;S.settings.theme=b.dataset.thm;save();applyTheme();toast(b.dataset.thm==='auto'?'Aspetto: come il Telefono':b.dataset.thm==='light'?'Aspetto: chiaro':'Aspetto: scuro')};
 $('#keep').onchange=e=>{S.settings.keepDays=Number(e.target.value);prune();save();toast(S.settings.keepDays?'Storico: '+S.settings.keepDays+' giorni':'Storico: sempre')};
 $('#model').onchange=e=>{S.settings.model=e.target.value;save();toast('Modello: '+e.target.value)};
 $('#exp').onclick=async()=>{
