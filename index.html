@@ -82,7 +82,7 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 .tot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;padding-top:9px;border-top:2px solid var(--line);font-weight:600}
 .tot small{font-weight:400;color:var(--mute);font-size:13px;width:100%}
 .empty{color:var(--mute);font-size:15px;padding:6px 0}
-#mealItems:has(.it){border:1px solid var(--brand2)}
+#mealItems:has(.it){border:2px solid var(--brand2)}
 .lt{text-align:center;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:light-dark(#17201a,#fff);margin:-2px 0 6px}
 /* chat */
 .chat{display:flex;flex-direction:column;gap:8px}
@@ -343,7 +343,7 @@ details.card summary::-webkit-details-marker{display:none}
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 50 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 51 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -786,7 +786,9 @@ document.addEventListener('click',e=>{
   if(b.id==='reopenDay'){reopenDay();return}
   if(b.id==='backToday'){ui.dv=null;render();return}
   if(b.dataset.rtab){ui.rec=b.dataset.rtab;render();return}
-  if(b.dataset.del!==undefined){const m=S.day.meals[ui.meal];const it=m.items[+b.dataset.del];m.items.splice(+b.dataset.del,1);m.chat.push({role:'u',text:`(Ho eliminato a mano: ${it?it.nome:'una voce'})`});save();render();return}
+  if(b.dataset.del!==undefined){const k=ui.meal,ix=+b.dataset.del,m=S.day.meals[k],it=m.items[ix];if(!it)return;
+    sheet(`<h3>Eliminare questo alimento?</h3><p class="hm"><b>${esc(it.nome)}</b> ${esc(it.quantita)} — ${f0(it.kcal)} kcal verrà tolto da ${mealName(k).toLowerCase()}.</p><div class="row between"><button class="btn ghost" id="noSheet">Annulla</button><button class="btn bad" id="okItemDel">Elimina</button></div>`);
+    $('#okItemDel').onclick=()=>{const mm=S.day.meals[k],j=mm.items.indexOf(it);if(j>=0){mm.items.splice(j,1);mm.chat.push({role:'u',text:`(Ho eliminato a mano: ${it.nome})`});save()}closeSheet();render();toast('Alimento eliminato')};return}
   if(b.dataset.saverec!==undefined){const m=S.recChat[+b.dataset.saverec];if(m&&m.ricetta){S.recipes.unshift({id:'r'+Date.now(),src:m.ts,...m.ricetta});save();toast('Ricetta salvata');render()}return}
   if(b.dataset.delrec){S.recipes=S.recipes.filter(r=>r.id!==b.dataset.delrec);save();render();return}
   if(b.dataset.addrec){return addRecipe(b.dataset.addrec)}
