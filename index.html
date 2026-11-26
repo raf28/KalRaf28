@@ -498,7 +498,7 @@ window.addEventListener('error',()=>hideSplash());</script>
         </div>
         <div class="card">
           <h3>Backup su file</h3>
-          <p class="hm" style="margin-top:0">Esporta diario, storico e ricettario in un file (la chiave API non viene inclusa).</p>
+          <p class="hm" style="margin-top:0">Salva in un unico file <b>tutti i dati</b>: diario, storico, alimenti <b>con le foto</b>, ricette e impostazioni. La chiave API non viene inclusa.</p>
           <div class="row"><button class="btn sm ghost" id="exp">Esporta backup</button><button class="btn sm ghost" id="imp">Importa backup</button></div>
           <input type="file" id="impF" accept="application/json,.json" hidden>
         </div>
@@ -510,7 +510,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 89 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 90 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1234,18 +1234,21 @@ $('#apply').onclick=async()=>{
 $('#thm').onclick=e=>{const b=e.target.closest('[data-thm]');if(!b)return;S.settings.theme=b.dataset.thm;save();applyTheme();toast(b.dataset.thm==='auto'?'Aspetto: come il telefono':b.dataset.thm==='light'?'Aspetto: chiaro':'Aspetto: scuro')};
 $('#keep').onchange=e=>{S.settings.keepDays=Number(e.target.value);prune();save();toast(S.settings.keepDays?'Storico: '+S.settings.keepDays+' giorni':'Storico: sempre')};
 $('#model').onchange=e=>{S.settings.model=e.target.value;save();toast('Modello: '+e.target.value)};
-$('#exp').onclick=()=>{
+$('#exp').onclick=async()=>{
   const data=JSON.parse(JSON.stringify(S));data.settings.apiKey='';delete data.unlocked;data.app='diario-kcal';data.exported=new Date().toISOString();
+  const photos={};for(const k of gdPhKeys()){const d=await IDB.get(k);if(d)photos[k]=d}data.photos=photos;
   const blob=new Blob([JSON.stringify(data,null,1)],{type:'application/json'});const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);a.download='diario-kcal-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();
-  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);toast('Backup esportato');
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);toast('Backup esportato'+(Object.keys(photos).length?' con '+Object.keys(photos).length+' foto':''));
 };
 $('#imp').onclick=()=>$('#impF').click();
 $('#impF').onchange=async e=>{
   const f=e.target.files[0];e.target.value='';if(!f)return;
   try{const d=JSON.parse(await f.text());if(!d||!d.day||!d.settings)throw 0;
-    sheet(`<h3>Importare il backup?</h3><p class="hm">Sostituisce diario, storico e ricettario attuali. La chiave API resta quella di questo dispositivo.</p><div class="row between"><button class="btn ghost" id="noSheet">Annulla</button><button class="btn" id="okImp">Importa</button></div>`);
-    $('#okImp').onclick=()=>{const k=S.settings.apiKey;S=d;delete S.app;delete S.exported;S.unlocked=true;normalize();S.settings.apiKey=k;save();closeSheet();render();toast('Backup importato')};
+    sheet(`<h3>Importare il backup?</h3><p class="hm">Sostituisce <b>tutti i dati</b> attuali${d.photos?', foto degli alimenti comprese':''}. La chiave API resta quella di questo dispositivo.</p><div class="row between"><button class="btn ghost" id="noSheet">Annulla</button><button class="btn" id="okImp">Importa</button></div>`);
+    $('#okImp').onclick=async()=>{const k=S.settings.apiKey,ph=d.photos;S=d;delete S.app;delete S.exported;delete S.photos;S.unlocked=true;normalize();S.settings.apiKey=k;
+      let n=0;if(ph&&typeof ph==='object'){try{await IDB.op('readwrite',st=>st.clear())}catch(e){}for(const [pk,pv] of Object.entries(ph)){if(typeof pv==='string'&&pv.startsWith('data:image')){await IDB.op('readwrite',st=>st.put(pv,pk)).catch(()=>{});n++}}}
+      save();closeSheet();render();toast(n?'Backup importato con '+n+' foto':'Backup importato')};
   }catch(err){toast('File di backup non valido')}
 };
 $('#relock').onclick=()=>{S.unlocked=false;save();boot()};

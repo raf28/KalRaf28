@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 89 (26/11/2026, sera).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 90 (26/11/2026, sera).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **89**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **90**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -114,7 +114,7 @@ La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impos
 - **Conservazione dello storico:** 3, 7 (predefinito), 14 o 30 giorni, oppure sempre.
 - **Gemini:** chiave API (con "Mostra/Nascondi" e "Salva e carica modelli"), modello principale (si consiglia Flash‑Lite) e Riserve 1 e 2.
 - **Backup su Google Drive** (vedi 3.9).
-- **Backup su file:** esporta e importa un JSON (`diario-kcal-AAAA-MM-GG.json`) senza la chiave API.
+- **Backup su file (v90):** esporta e importa un unico JSON (`diario-kcal-AAAA-MM-GG.json`) con **tutti i dati e le foto degli alimenti** (campo `photos`, le foto in base64), senza la chiave API. L'importazione sostituisce tutti i dati e rimette le foto; i file vecchi senza foto si importano lo stesso e lasciano le foto attuali. È indipendente dal backup su Drive, che non è stato toccato.
 - **Aspetto (v57):** come il telefono / chiaro / scuro (`settings.theme`), salvato anche nel backup.
 - **Sicurezza:** "Blocca con PIN su questo dispositivo".
 - **Reset App:** scollega Google e cancella tutti i dati sul telefono. I backup su Drive restano.
@@ -207,6 +207,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - Scheda alimento (v87): microfono e invio accanto al campo di testo, come nel Diario.
   - Schermata di avvio (v88): sfondo verde, icona "Kcal" in un cerchio con contorno bianco, motto "Mangia bene, conta giusto", puntini animati e frutta/verdura disegnate intorno. Dura almeno 1 secondo (v89); se il caricamento è lento resta (con i puntini che si muovono) finché l'app non è pronta. Il service worker (cache kalraf28-v45) prova prima GitHub, ma se non risponde entro 0,8 secondi apre subito la copia salvata e la aggiorna in sottofondo: in quel caso la versione nuova arriva all'apertura successiva.
   - Icona Android (v89): il bordo bianco sul Pixel era spesso perché PWABuilder mette l'icona maskable rimpicciolita (margine 8,5dp) su sfondo bianco. Cerchio verde dell'icona maskable portato da r=155 a r=178 (su 512) per dimezzare il bordo visibile. APK 1.0.2 (version code 3) rigenerata la sera stessa con la stessa chiave.
+  - Backup su file con le foto (v90): "Esporta backup" mette nello stesso file JSON anche le foto degli alimenti e "Importa backup" le ripristina. Backup su Drive invariato.
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
