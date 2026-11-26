@@ -226,6 +226,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
 ### Futuro
 1. Eventuale APK "autonoma" con tutto il codice dentro (Capacitor o simili): servirebbe solo per il Play Store o per non dipendere da GitHub. Richiede di rifare il login Google per Drive e la dettatura.
 2. Possibilità di agganciare altri "cervelli" AI usando gli abbonamenti Pro (ChatGPT, Gemini Pro, Claude Pro), quando renderanno disponibile questa funzione nelle app di terze parti.
+3. Possibilità di agganciare un'AI locale come "cervello" (per esempio Gemini Nano sul telefono), quando sarà possibile farlo.
 
 ### Note
 - **Blocco in verticale** (da sistemare alla prossima rigenerazione dell'APK, non urgente): l'app non ruota in orizzontale e non si può usare a schermo diviso. Soluzione: togliere `orientation` dal manifest e rigenerare l'APK (stesso keystore, **version code 4**). Rimandato dall'utente il 26/11.
