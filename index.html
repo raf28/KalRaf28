@@ -588,8 +588,8 @@ window.addEventListener('error',()=>hideSplash());</script>
         <div class="card">
           <h3>Backup su file</h3>
           <p class="hm" style="margin-top:0">Salva in un unico file <b>tutti i dati</b>: diario, storico, alimenti <b>con le foto</b>, ricette e impostazioni. La chiave API non viene inclusa.</p>
-          <div class="row"><button class="btn sm ghost" id="exp">Esporta backup</button><button class="btn sm ghost" id="imp">Importa backup</button></div>
-          <input type="file" id="impF" accept="application/json,.json" hidden>
+          <div class="row" style="justify-content:space-between"><button class="btn sm aib gdb" id="exp">Esporta backup</button><button class="btn sm aib gdb" id="imp">Importa backup</button></div>
+          <input type="file" id="impF" accept="application/json,.json,text/plain,.txt" hidden>
         </div>
         <div class="card">
           <h3>Sicurezza</h3>
@@ -599,7 +599,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 143</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 144</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1385,9 +1385,15 @@ $('#model').onchange=e=>{S.settings.model=e.target.value;save();toast('Modello: 
 $('#exp').onclick=async()=>{
   const data=JSON.parse(JSON.stringify(S));data.settings.apiKey='';delete data.unlocked;data.app='diario-kcal';data.exported=new Date().toISOString();
   const photos={};for(const k of gdPhKeys()){const d=await IDB.get(k);if(d)photos[k]=d}data.photos=photos;
-  const blob=new Blob([JSON.stringify(data,null,1)],{type:'application/json'});const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);a.download='diario-kcal-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();
-  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);toast('Backup esportato'+(Object.keys(photos).length?' con '+Object.keys(photos).length+' foto':''));
+  const txt=JSON.stringify(data,null,1),base='diario-kcal-'+new Date().toISOString().slice(0,10),np=Object.keys(photos).length,fx=np?' con '+np+' foto':'';
+  const dl=()=>{const blob=new Blob([txt],{type:'application/json'});const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);a.download=base+'.json';document.body.appendChild(a);a.click();
+    setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);toast('Backup salvato in Download'+fx)};
+  /* v144: menu di condivisione di Android (File, Drive, email, WhatsApp…). Android non accetta i .json nella condivisione: il file è un .txt che contiene lo stesso JSON */
+  try{const f=new File([txt],base+'.txt',{type:'text/plain'});
+    if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'Backup KalRaf28'});toast('Backup esportato'+fx);return}
+  }catch(e){if(e&&e.name==='AbortError'){dl();return}}
+  dl();
 };
 $('#imp').onclick=()=>$('#impF').click();
 $('#impF').onchange=async e=>{

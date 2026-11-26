@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 143 (26/11/2026, sera).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 144 (26/11/2026, sera).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **143**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **144**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -277,6 +277,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **Titolo della tabella (v141):** "LISTA ALIMENTI – TOTALE KCAL E MACRO", in grassetto, 17 px (come il nome del pasto nella barra), bianco in modalità scura.
   - **Tabella del pasto (v142):** titolo su due righe senza trattino ("LISTA ALIMENTI" / "TOTALE KCAL E MACRO"); riga "Totale kcal PRANZO:" grande come il titolo (17 px, grassetto, bianca in scuro) con il numero delle kcal nel verde dell'etichetta "valore sicuro" (`#2a7a4b` in chiaro, `#5cc58a` in scuro).
   - **Impostazioni (v143):** il tasto di Sicurezza si chiama "PIN Applicazione" ed è come "Sincronizza" (150 × 40 px, verde scuro); sotto Reset App: "Cancella solo i dati su questo telefono:" e a capo "i backup su Drive restano."
+  - **Backup su file (v144):** "Esporta backup" apre il menu di condivisione di Android (File con scelta della cartella, Google Drive, email, WhatsApp…); il file condiviso si chiama `diario-kcal-AAAA-MM-GG.txt` (Android non permette di condividere i `.json`, il contenuto è lo stesso JSON). Se si chiude il menu senza scegliere, o la condivisione non è disponibile, il file `.json` va in Download come prima. "Importa backup" accetta sia `.json` sia `.txt`. Tasti "Esporta backup" (a sinistra) e "Importa backup" (a destra) nello stile di "Sincronizza".
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
