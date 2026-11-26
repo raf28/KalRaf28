@@ -522,7 +522,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 99 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 100 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1174,7 +1174,7 @@ $('#pills').addEventListener('click',e=>{const b=e.target.closest('[data-pill]')
   S.day.meals[cs].closed=true;const nx='spuntino'+(snackN(cs)+1);S.day.curSnack=nx;ensureMeal(nx);ui.meal=nx;save();render();showMealBar();toast(mealName(cs)+' chiuso · ora '+mealName(nx));
 });
 /* lettura ad alta voce */
-const TTS={key:null,len:0,chunks:[],idx:0,playing:false,tok:0};
+const TTS={key:null,len:0,chunks:[],idx:0,pos:0,playing:false,tok:0};
 function speechText(m){
   const plain=x=>String(x||'').replace(/\*\*/g,'').replace(/[•–]/g,'');
   let t=plain(m.text)+'. ';
@@ -1193,27 +1193,31 @@ function ttsKey(ix){return (ui.view==='ricette'?'rec':'meal:'+ui.meal)+':'+ix}
 function ttsSaved(){try{const o=JSON.parse(localStorage.getItem(TTSK)||'null');if(o&&Date.now()-o.ts<3600000)return o;localStorage.removeItem(TTSK)}catch(e){}return null}
 function ttsSave(o){try{o?localStorage.setItem(TTSK,JSON.stringify(o)):localStorage.removeItem(TTSK)}catch(e){}}
 function ttsState(ix){const k=ttsKey(ix);if(TTS.playing&&TTS.key===k)return'play';const o=ttsSaved();return o&&o.key===k?'pause':''}
-function ttsChunks(t){return (String(t).replace(/\s+/g,' ').match(/[^.!?;:]+[.!?;:]*/g)||[]).map(x=>x.trim()).filter(x=>/[\p{L}\p{N}]/u.test(x))}
+function ttsChunks(t){const out=[];
+  String(t).split(/\n+/).forEach(line=>{(line.match(/.+?(?:[.!?;:,](?=\s|$)|$)/g)||[]).forEach(seg=>{
+    const w=seg.trim().split(/\s+/).filter(Boolean);for(let i=0;i<w.length;i+=12)out.push(w.slice(i,i+12).join(' '))})});
+  return out.filter(x=>/[\p{L}\p{N}]/u.test(x))}
 function ttsMark(){document.querySelectorAll('.tts .tb.on').forEach(x=>x.classList.remove('on'));
   document.querySelectorAll('[data-say]').forEach(b=>{const st=ttsState(+b.dataset.say);if(st==='play')b.classList.add('on');const p=b.parentNode.querySelector('[data-pause]');if(p&&st==='pause')p.classList.add('on')})}
 function ttsStop(c=true){TTS.tok++;TTS.playing=false;if(c)try{speechSynthesis.cancel()}catch(e){}}
-function ttsPlay(i){const tok=TTS.tok;
+function ttsPlay(i,off=0){const tok=TTS.tok;
   if(i>=TTS.chunks.length){TTS.playing=false;ttsSave(null);ttsMark();return}
-  TTS.idx=i;const u=new SpeechSynthesisUtterance(TTS.chunks[i]);u.lang='it-IT';const v=itVoice();if(v)u.voice=v;u.rate=1;
+  TTS.idx=i;TTS.pos=off;const u=new SpeechSynthesisUtterance(TTS.chunks[i].slice(off));u.lang='it-IT';const v=itVoice();if(v)u.voice=v;u.rate=1;
+  u.onboundary=ev=>{if(tok===TTS.tok&&(!ev.name||ev.name==='word'))TTS.pos=off+ev.charIndex};
   u.onend=()=>{if(tok===TTS.tok)ttsPlay(i+1)};
   u.onerror=ev=>{if(tok!==TTS.tok||ev.error==='interrupted'||ev.error==='canceled')return;TTS.playing=false;ttsMark()};
   speechSynthesis.speak(u)}
 document.addEventListener('click',e=>{
   const p=e.target.closest('[data-pause]'),b=e.target.closest('[data-say]');if(!p&&!b)return;e.stopPropagation();
-  if(p){const k=ttsKey(+p.dataset.pause);if(TTS.playing&&TTS.key===k){ttsStop();ttsSave({key:k,len:TTS.len,idx:TTS.idx,ts:Date.now()});ttsMark()}return}
+  if(p){const k=ttsKey(+p.dataset.pause);if(TTS.playing&&TTS.key===k){ttsStop();ttsSave({key:k,len:TTS.len,idx:TTS.idx,pos:TTS.pos||0,ts:Date.now()});ttsMark()}return}
   const ix=+b.dataset.say,k=ttsKey(ix);if(TTS.playing&&TTS.key===k)return;
   const chat=ui.view==='ricette'?S.recChat:(ui.meal?ensureMeal(ui.meal).chat:[]),m=chat[ix];if(!m)return;
   const txt=speechText(m),chunks=ttsChunks(txt);if(!chunks.length)return;
-  const o=ttsSaved();let start=0;if(o&&o.key===k&&o.len===txt.length&&o.idx<chunks.length)start=o.idx;
+  const o=ttsSaved();let start=0,off=0;if(o&&o.key===k&&o.len===txt.length&&o.idx<chunks.length){start=o.idx;off=Math.min(o.pos||0,chunks[start].length-1);off=Math.max(0,chunks[start].lastIndexOf(' ',off)+1)}
   const busy=!!(speechSynthesis.speaking||speechSynthesis.pending);ttsStop(busy);ttsSave(null);
   Object.assign(TTS,{key:k,len:txt.length,chunks,playing:true});ttsMark();
   /* su Android, speak() subito dopo cancel() viene spesso ignorato: piccola attesa */
-  const tok=TTS.tok;if(busy)setTimeout(()=>{if(tok===TTS.tok)ttsPlay(start)},250);else ttsPlay(start);
+  const tok=TTS.tok;if(busy)setTimeout(()=>{if(tok===TTS.tok)ttsPlay(start,off)},250);else ttsPlay(start,off);
 },true);
 if('speechSynthesis' in window){speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>{}}
 /* dettatura */
