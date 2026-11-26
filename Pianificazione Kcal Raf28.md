@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 128 (26/11/2026, sera).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 129 (26/11/2026, sera).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **128**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **129**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -262,6 +262,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **Impostazioni (v126):** il blocco "Gemini" si chiama **"Intelligenza Artificiale: Gemini"** (in futuro potranno esserci altri modelli). Tasti a pillola alti 40 px come lo standard 2, nel verde dei tasti non selezionati di Aspetto (`#1f4d35`): "Salva e Carica Modelli" a sinistra, "Mostra/Nascondi" a destra con larghezza fissa (104 px) che non cambia tra le due scritte.
   - **Impostazioni (v127):** blocco Backup su Google Drive riordinato: sotto il testo "Sincronizza" a sinistra (larghezza fissa, anche quando diventa "Sincronizzo…") con accanto "Ultimo backup" e gli avvisi; una riga sotto, a destra, "Scollega" e "Ripristina da Drive". Tutti nello stile dei tasti del blocco Intelligenza Artificiale (pillola 40 px, `#1f4d35`), compreso "Accedi con Google".
   - **Impostazioni (v128):** nel blocco Drive i tre tasti sono larghi uguali (150 × 40 px); "Scollega" è rosso. Accanto a "Sincronizza" c'è solo "Ultimo backup: data e ora" (tolti gli avvisi "Modifiche in attesa" ed errori); durante la sincronizzazione il tasto si disattiva e mostra "Sincronizzo…".
+  - **Impostazioni (v129):** più spazio (22 px) tra "Sincronizza" e la riga "Scollega / Ripristina da Drive". Senza account collegato il blocco mostra il testo di spiegazione e solo "Accedi con Google".
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
