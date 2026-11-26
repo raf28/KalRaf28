@@ -296,7 +296,7 @@ details.card summary::-webkit-details-marker{display:none}
 .mdock .seg button small{font-size:12px}
 .mdock .seg button.vuoto{border-style:dashed;opacity:.85}
 .mdock .sarr{top:0;bottom:0}
-.mdock{background:var(--bg);padding:10px 4px 8px}
+.mdock{background:var(--bg);padding:0 4px 8px}
 .mdock .mrow{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 8px 6px 6px}
 .mdock .seg button{border-radius:999px}
 .mdock .sarr.l{left:-4px;background:linear-gradient(90deg,var(--card) 55%,transparent)}.mdock .sarr.r{right:-4px;background:linear-gradient(270deg,var(--card) 55%,transparent)}
@@ -405,6 +405,13 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
 #sheet .btn:not(.two,.addlist .btn),details .btn,#closeDay{min-height:40px;padding:8px 18px;border-radius:99px;border:0;color:#fff;font-size:14px;font-weight:400;line-height:1.15;background:var(--brand);box-shadow:none}
 #sheet .btn.bad:not(.two,.addlist .btn),details .btn.bad{background:var(--bad)}
 #sheet .slot .btn{padding:8px 10px}
+/* Diario (v120): barra del pasto uguale alla barra dei pasti in basso */
+#mealBar:not(.histbar){margin-left:-10px;margin-right:-10px;background:var(--brand);border-radius:999px;padding:6px 6px 6px 20px;min-height:58px;box-sizing:border-box;box-shadow:none}
+/* Diario (v120): sfumature sotto la barra del pasto e sopra la barra dei pasti, come negli Alimenti */
+#v-diario .mstick::after{content:'';position:absolute;left:0;right:0;top:100%;height:46px;background:linear-gradient(to top,transparent 0,color-mix(in srgb,var(--bg) 70%,transparent) 24px,var(--bg) 46px);pointer-events:none;opacity:0;transition:opacity .15s}
+#v-diario .mstick.stuck::after{opacity:1}
+.dfadeB{position:sticky;bottom:0;z-index:2;height:46px;margin-top:-46px;pointer-events:none;background:linear-gradient(to bottom,transparent 0,color-mix(in srgb,var(--bg) 70%,transparent) 22px,var(--bg) 46px);opacity:0;transition:opacity .15s}
+.dfadeB.on{opacity:1}
 /* Alimenti (v119): la ricerca resta fissa in alto, le lettere si fermano sotto di lei, sfumatura sotto la lettera ferma */
 #v-alimenti .ahead{position:sticky;top:var(--ahTop,0px);z-index:4}
 #v-alimenti .letter{top:var(--ltTop,0px);z-index:3}
@@ -462,6 +469,7 @@ window.addEventListener('error',()=>hideSplash());</script>
         <div class="mbar" id="mealBar" hidden></div></div>
         <div class="card" id="mealItems"></div>
         <div class="chat" id="mealChat"></div>
+        <div class="dfadeB" id="dfadeB" aria-hidden="true"></div>
       </div>
     </section>
 
@@ -548,7 +556,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 119 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 120 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -868,9 +876,12 @@ function updSeg(){[['mealTabs','segw'],['psc','pillw']].forEach(([a,b])=>{const 
 /* v119: misure per la barra di ricerca fissa e le lettere degli Alimenti */
 function alimSticky(){const sec=$('#v-alimenti');if(!sec||sec.hidden)return;const ah=sec.querySelector('.ahead'),q=$('#foodQ');if(!ah||!q)return;
   const top=-Math.max(0,q.offsetTop-10);sec.style.setProperty('--ahTop',top+'px');sec.style.setProperty('--ltTop',(ah.offsetHeight+top)+'px');alimStuck()}
+function diarioFades(){const mn=$('#main'),sec=$('#v-diario');if(!sec||sec.hidden)return;const st=sec.querySelector('.mstick'),fb=$('#dfadeB');
+  if(st)st.classList.toggle('stuck',!$('#mealBar').hidden&&mn.scrollTop>0&&st.getBoundingClientRect().top<=mn.getBoundingClientRect().top+1);
+  if(fb)fb.classList.toggle('on',mn.scrollHeight-mn.scrollTop-mn.clientHeight>2)}
 function alimStuck(){const sec=$('#v-alimenti');if(!sec||sec.hidden)return;const mn=$('#main').getBoundingClientRect().top,lt=parseFloat(sec.style.getPropertyValue('--ltTop'))||0;
   let on=null;sec.querySelectorAll('.letter').forEach(l=>{l.classList.remove('stuck');if(l.getBoundingClientRect().top<=mn+lt+1&&$('#main').scrollTop>0)on=l});if(on)on.classList.add('stuck')}
-function render(){applyTheme();requestAnimationFrame(alimSticky);if(ui.view!=='alimenti')fdKill();requestAnimationFrame(updSeg);
+function render(){applyTheme();requestAnimationFrame(alimSticky);requestAnimationFrame(()=>requestAnimationFrame(diarioFades));if(ui.view!=='alimenti')fdKill();requestAnimationFrame(updSeg);
   ['diario','alimenti','ricette','pasti','storico','impost'].forEach(v=>$('#v-'+v).hidden=ui.view!==v);
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===ui.view));
   const chatView=ui.view==='diario'||(ui.view==='ricette'&&ui.rec==='chat');
@@ -1507,7 +1518,7 @@ try{history.replaceState({v:'diario'},'')}catch(e){}
  new MutationObserver(()=>requestAnimationFrame(upd)).observe(mn,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden','open']});
  U.onclick=()=>mn.scrollTo({top:0,behavior:'smooth'});D.onclick=()=>mn.scrollTo({top:mn.scrollHeight,behavior:'smooth'});
  window.updJump=upd;setTimeout(upd,300);}
-$('#main').addEventListener('scroll',()=>alimStuck(),{passive:true});window.addEventListener('resize',()=>requestAnimationFrame(alimSticky));
+$('#main').addEventListener('scroll',()=>{alimStuck();diarioFades()},{passive:true});window.addEventListener('resize',()=>requestAnimationFrame(alimSticky));
 /* altezza dell'app misurata davvero (dopo "trascina per aggiornare" o all'avvio Android a volte dava un'altezza sbagliata e la barra in basso spariva) */
 (function(){const de=document.documentElement;function fitH(){const vv=window.visualViewport,a=document.activeElement,typing=a&&/^(INPUT|TEXTAREA)$/.test(a.tagName);let h=window.innerHeight;if(vv&&!typing)h=Math.min(h,Math.round(vv.height));if(h>200)de.style.setProperty('--appH',h+'px');if(window.scrollY)window.scrollTo(0,0)}
  fitH();['resize','orientationchange','pageshow','load'].forEach(ev=>window.addEventListener(ev,fitH));document.addEventListener('visibilitychange',()=>{if(!document.hidden){fitH();setTimeout(fitH,300)}});if(window.visualViewport)visualViewport.addEventListener('resize',fitH);[50,300,1000,2500].forEach(ms=>setTimeout(fitH,ms));window.fitH=fitH})();
