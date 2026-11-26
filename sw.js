@@ -1,9 +1,9 @@
 /* KalRaf28 – service worker
    Serve per installare l'app (APK/PWA) e per aprirla anche senza rete.
-   Regola: prima la rete, così ogni aggiornamento caricato su GitHub arriva subito;
+   Regola: prima la rete (senza la cache HTTP del browser), così ogni aggiornamento caricato su GitHub arriva subito;
    la copia salvata si usa solo se la rete non c'è.
    Le chiamate a Gemini, Google e Drive non passano mai di qui (altri domini). */
-const CACHE = 'kalraf28-v40b';
+const CACHE = 'kalraf28-v44';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icone/icona-kcal-192.png', './icone/icona-kcal-512.png', './icone/icona-kcal.svg'];
 
 self.addEventListener('install', e => {
@@ -23,7 +23,8 @@ self.addEventListener('fetch', e => {
   if (url.origin !== self.location.origin) return;            // Gemini, Google, Drive, font: non toccati
   if (!url.pathname.startsWith(new URL(self.registration.scope).pathname)) return;
   e.respondWith(
-    fetch(req).then(res => {
+    // no-cache: chiede sempre a GitHub se il file è cambiato (niente copie vecchie di 10 minuti)
+    fetch(req.url, { cache: 'no-cache', credentials: 'same-origin' }).then(res => {
       if (res && res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); }
       return res;
     }).catch(() => caches.match(req).then(r => r || (req.mode === 'navigate' ? caches.match('./index.html') : Response.error())))
