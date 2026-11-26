@@ -378,8 +378,8 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
 .sl3x{position:absolute;top:5px;right:5px;width:28px;height:28px;border-radius:50%;background:var(--brand);color:#fff;font-size:20px;line-height:1;display:grid;place-items:center;padding:0 0 2px}
 .sl3l{font-size:12px;font-weight:600;text-align:center;line-height:1.2;min-height:2.4em;color:var(--ink)}
 .sl3b{display:flex;gap:6px}
-.sl3b button{width:40px;height:40px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center}
-.sl3b svg{width:20px;height:20px}
+.sl3b button{width:44px;height:44px;border-radius:50%;background:light-dark(#436955,var(--brand));color:#fff;display:grid;place-items:center}
+.sl3b svg{width:24px;height:24px}
 .sl3r{width:90px;height:40px;border-radius:99px;background:var(--brand);color:#fff;font-size:14px;font-weight:400}
 .sl3r:disabled{opacity:.35}
 
@@ -541,7 +541,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 114 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 115 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -666,8 +666,11 @@ function toast(t){const d=document.createElement('div');d.className='toast';d.te
 let curDead=false;
 function hpush(st){try{history.pushState(st,'')}catch(e){}curDead=false}
 function go(v){if(v===ui.view){render();return}ui.view=v;hpush({v});render();$('#main').scrollTop=0}
-function sheet(html){const was=!$('#modal').hidden;$('#sheet').innerHTML=html;$('#modal').hidden=false;$('#sheet').scrollTop=0;if(!was)hpush({v:ui.view,sheet:1})}
-function closeSheet(fromPop){if(typeof rec!=='undefined'&&rec)rec.stop();if($('#modal').hidden)return;$('#modal').hidden=true;$('#sheet').innerHTML='';
+function sheet(html){const was=!$('#modal').hidden;$('#sheet').innerHTML=html;$('#modal').hidden=false;$('#sheet').scrollTop=0;if(!was){hpush({v:ui.view,sheet:1});
+  /* v115: se c'è una scheda alimento aperta (che ascolta l'Indietro), anche la finestra ascolta l'Indietro e si chiude per prima */
+  if('CloseWatcher' in window&&[...document.querySelectorAll('details.food')].some(d=>d._cw)){try{const w=new CloseWatcher();sheetCW=w;w.onclose=()=>{if(sheetCW===w){sheetCW=null;closeSheet()}}}catch(e){}}}}
+let sheetCW=null;
+function closeSheet(fromPop){if(sheetCW){const w=sheetCW;sheetCW=null;try{w.destroy()}catch(e){}}if(typeof rec!=='undefined'&&rec)rec.stop();if($('#modal').hidden)return;$('#modal').hidden=true;$('#sheet').innerHTML='';
   if(!fromPop&&history.state&&history.state.sheet){try{history.replaceState({v:ui.view,dead:1},'')}catch(e){}curDead=true}}
 /* foto a tutto schermo (Diario e Alimenti): tocca per chiudere, anche con il tasto Indietro */
 let lbEl=null,lbSkip=false,fdSkip=false;
@@ -1131,7 +1134,7 @@ function pickImage(cam){return new Promise(res=>{const i=document.createElement(
 const PHK=['confezione','confezione2','tabella'];
 const PHL={tabella:'Tabella valori nutrizionali',confezione:'Confezione 1',confezione2:'Confezione 2',confezione3:'Confezione 3'};
 function slotsHtml(ph){const L=[['confezione','Foto confezione 1'],['confezione2','Foto confezione 2'],['tabella','Foto tabella valori nutrizionali']];
-  return`<div class="ph3">${L.map(([k,l])=>`<div class="sl3"><div class="sl3i">${ph[k]?`<img alt="${l}" src="${esc(ph[k])}">`:'<span>nessuna foto</span>'}</div><div class="sl3l">${l}</div><div class="sl3b"><button data-slot="${k}" data-cam="1" aria-label="Scatta foto: ${l}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></button><button data-slot="${k}" aria-label="Scegli file: ${l}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.8"/><path d="M21 16l-5-5-9 9"/></svg></button></div><button class="sl3r" data-unslot="${k}" ${ph[k]?'':'disabled'}>Rimuovi</button></div>`).join('')}</div>`}
+  return`<div class="ph3">${L.map(([k,l])=>`<div class="sl3"><div class="sl3i">${ph[k]?`<img alt="${l}" src="${esc(ph[k])}">`:'<span>nessuna foto</span>'}</div><div class="sl3l">${l}</div><div class="sl3b"><button data-slot="${k}" data-cam="1" aria-label="Scatta foto: ${l}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></button><button data-slot="${k}" aria-label="Scegli file: ${l}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.8"/><path d="M21 16l-5-5-9 9"/></svg></button></div><button class="sl3r btn std2" data-unslot="${k}" ${ph[k]?'':'disabled'}>Rimuovi</button></div>`).join('')}</div>`}
 function bindSlots(ph,redraw){document.querySelectorAll('[data-slot]').forEach(b=>b.onclick=async()=>{const d=await pickImage(!!b.dataset.cam);if(d){ph[b.dataset.slot]=d;redraw()}});document.querySelectorAll('[data-unslot]').forEach(b=>b.onclick=()=>{ph[b.dataset.unslot]=null;const c=['confezione','confezione2','confezione3'].map(k=>ph[k]).filter(Boolean);['confezione','confezione2','confezione3'].forEach((k,i)=>ph[k]=c[i]||null);redraw()})}
 function addFoodStart(){foodSheet(null)}
 function foodForm(f){foodSheet(f)}
