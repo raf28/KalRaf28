@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 136 (26/11/2026, sera).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 137 (26/11/2026, sera).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **136**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **137**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -270,6 +270,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **Storico (v134):** titolo "Storico Giornate Alimentari" (20 px, con il conteggio accanto); tolte le sfumature (la pagina scorre normalmente). Nella giornata aperta, sotto la data: "RIEPILOGO: N kcal" e sotto i macro e gli orari; poi "COLAZIONE: N kcal", "PRANZO: …", "SPUNTINO 1: …" con gli alimenti. I titoletti sono verdi: `#1f4d35` (colore del bordo) in chiaro, `#4cc184` in scuro, perché il verde del bordo su fondo scuro non si leggeva.
   - **Storico (v135):** in modalità scura i titoletti (RIEPILOGO, COLAZIONE, PRANZO, SPUNTINO…) usano il verde di "Applica e torna al Diario" (`#2c6a49`); se risultasse troppo scuro si torna a `#4cc184` (v134). Le kcal in alto a destra restano verde acceso.
   - **Storico (v136):** il verde scuro era troppo scuro: in modalità scura i titoletti tornano a `#4cc184` (come nella v134).
+  - **Riepilogo in chat (v137):** il totale kcal del pasto è nel verde chiaro di "Elimina pranzo/spuntino" (`#2f8f5c`); nell'elenco "Alimenti del pasto" ogni riga mostra anche le kcal dell'alimento in grassetto e nello stesso verde (es. "– Gallette di farro **8 g** — **30 kcal**").
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
