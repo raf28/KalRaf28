@@ -46,6 +46,9 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 .histbar .mbtn{white-space:nowrap}
 .histbar>div{flex:1 1 150px}
 .histbar #reopenDay{display:block;margin-top:10px}
+#editBar{margin:7px 0 0}
+#editBar .ebtns{display:flex;justify-content:space-between;gap:10px;margin-top:10px}
+#editBar .btn:disabled{opacity:.45}
 .pill{border:1px solid rgba(255,255,255,.45);border-radius:99px;padding:8px 14px;color:#fff;font-size:14px;min-height:40px}
 #closeDay{background:var(--brand);border:0;min-height:40px;padding:4px 13px;font-size:13px;line-height:1.15;text-align:center;flex:none;white-space:nowrap}
 .kc{display:flex;align-items:baseline;gap:8px;margin:18px 0 8px;flex-wrap:wrap}
@@ -433,6 +436,7 @@ window.addEventListener('error',()=>hideSplash());</script>
         <div class="macros" id="dMacros"></div>
       </div></div>
       <div class="wrap">
+        <div class="mbar histbar" id="editBar" hidden></div>
         <div class="mstick">
         <div class="mbar" id="mealBar" hidden></div></div>
         <div class="card" id="mealItems"></div>
@@ -523,7 +527,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 103 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 104 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -861,8 +865,8 @@ function viewDay(){return ui.dv===null?S.day:histDay(ui.dv)}
 function renderHead(){
   const D=viewDay()||S.day,H=ui.dv!==null;
   const t=sum(dayItems(D)),target=H?D.target:(S.parked&&S.day.target||S.settings.target),margin=H?D.margin:(S.parked&&S.day.margin!=null?S.day.margin:S.settings.margin),max=target+margin;
-  $('#dPrev').disabled=!!S.parked||(ui.dv===null?!S.history.length:ui.dv>=S.history.length-1);$('#dNext').disabled=ui.dv===null&&!S.parked;
-  $('#closeDay').hidden=H;document.querySelector('.head').classList.toggle('editing',!!S.parked&&!H);$('#closeDay').innerHTML=S.parked?'Fine<br>modifiche':'Nuova Giornata<br>Alimentare';
+  $('#dPrev').disabled=!!S.parked||(ui.dv===null?!S.history.length:ui.dv>=S.history.length-1);$('#dNext').disabled=ui.dv===null||!!S.parked;
+  $('#closeDay').hidden=H||!!S.parked;document.querySelector('.head').classList.toggle('editing',!!S.parked&&!H);$('#closeDay').innerHTML=S.parked?'Fine<br>modifiche':'Nuova Giornata<br>Alimentare';
   const scale=Math.max(max*1.12,t.kcal*1.02);
   const st=t.kcal<=target?'ok':t.kcal<=max?'warn':'bad';
   $('#kNow').textContent=f0(t.kcal);$('#kTarget').textContent=f0(target);
@@ -875,6 +879,8 @@ function renderHead(){
   $('#dMacros').innerHTML=NUTR.slice(1).map(([k,l,u])=>`<div><span>${l==='Carboidrati'?'Carbo':l}</span><b>${fv(t,k,u)}</b>${SUB[k]?`<small>${SUB[k][1]} ${fv(t,SUB[k][0],u)}</small>`:''}</div>`).join('');
   const d=new Date(D.start);
   {const wd=d.toLocaleDateString('it-IT',{weekday:'long'}),mo=d.toLocaleDateString('it-IT',{month:'long'});$('#dayLabel').innerHTML=(S.parked&&!H?'✎ ':'')+esc(wd.charAt(0).toUpperCase()+wd.slice(1))+' '+d.getDate()+'<br>'+esc(mo.charAt(0).toUpperCase()+mo.slice(1))}
+  const eb=$('#editBar');eb.hidden=!(S.parked&&!H);
+  if(!eb.hidden)eb.innerHTML=`<div><b>Giornata archiviata</b><small>stai modificando questa giornata: tocca «Salva» per salvare e tornare a oggi</small><div class="ebtns"><button class="btn bdef" disabled>Modifica giornata</button><button class="btn bdef" id="saveEdit">Salva</button></div></div>`;
 }
 function renderHistDay(){
   const D=histDay(ui.dv);if(!D){ui.dv=null;render();return}
@@ -900,7 +906,7 @@ function reopenDay(){
 function finishEdit(){
   if(!S.parked)return;
   const rec=packDay(S.day);S.history.splice(Math.min(S.editPos||0,S.history.length),0,rec);
-  S.day=S.parked;delete S.parked;delete S.editPos;normalize();ui.dv=null;ui.meal=null;gdWant('full');save();render();toast('Modifiche salvate · sei tornato alla giornata attuale');
+  S.day=S.parked;delete S.parked;delete S.editPos;normalize();ui.dv=null;ui.meal=null;gdWant('full');save();render();toast('Aggiornamento salvato');
 }
 $('#dPrev').onclick=()=>{if(S.parked)return;ui.dv=ui.dv===null?0:Math.min(S.history.length-1,ui.dv+1);ui.hmeal=null;ui.toTop=true;render();$('#main').scrollTop=0};
 $('#dNext').onclick=()=>{if(S.parked){finishEdit();return}ui.dv=ui.dv>0?ui.dv-1:null;ui.hmeal=null;ui.toTop=true;render();$('#main').scrollTop=0};
@@ -996,6 +1002,7 @@ document.addEventListener('click',e=>{
     if(R.kind==='rec')runRec(R.text,R.photo);else runMeal(R.key||ui.meal,R.text,R.photo);return}
   if(b.dataset.hmeal){ui.hmeal=b.dataset.hmeal;render();return}
   if(b.id==='reopenDay'){reopenDay();return}
+  if(b.id==='saveEdit'){finishEdit();return}
   if(b.id==='backToday'){ui.dv=null;render();return}
   if(b.dataset.rtab){ui.rec=b.dataset.rtab;render();return}
   if(b.dataset.foodinfo){const it=(S.day.meals[ui.meal]||{items:[]}).items.find(x=>x.alimento_id===b.dataset.foodinfo);foodInfo(b.dataset.foodinfo,it);return}

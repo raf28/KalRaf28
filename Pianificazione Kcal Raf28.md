@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 103 (26/11/2026, sera).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 104 (26/11/2026, sera).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **103**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **104**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -55,7 +55,7 @@ La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impos
 
 ### 3.1 Diario
 - **Testata verde:** una pillola con la data per esteso, le frecce piccole per sfogliare le giornate e "Nuova Giornata Alimentare" (tasto di default, verde chiaro, v94); poi kcal consumate / obiettivo (+bonus) e una barra colorata: verde fino all'obiettivo, gialla nella zona bonus (a righe), rossa oltre. Accanto c'è l'etichetta "Restano X kcal", "Bonus: X rimaste" oppure "Oltre di X". Sotto ci sono i riquadri dei macro con il nome sopra e il valore sotto (stesso bianco e stessa grandezza).
-- **Frecce ‹ ›** per sfogliare le giornate archiviate. Una giornata archiviata si apre in sola lettura e con **"Modifica giornata"** si può riaprire. Durante la modifica la testata diventa marrone/oro e il pulsante diventa "Fine modifiche"; al termine la giornata torna nello storico al suo posto.
+- **Frecce ‹ ›** per sfogliare le giornate archiviate. Una giornata archiviata si apre in sola lettura e con **"Modifica giornata"** si può riaprire. Durante la modifica la testata diventa marrone/oro, le frecce si disattivano e la barra "Giornata archiviata" mostra "Salva" (v104); al termine la giornata torna nello storico al suo posto.
 - **Riga dei pasti (v63)**, sopra il campo di scrittura: una pillola verde con il cerchio **+** bianco a sinistra e i pasti aggiunti (larghi 96 px; quello scelto è bianco). Il **+** apre "Aggiungi Colazione / Pranzo / Cena / Spuntino": colazione, pranzo e cena uno ciascuno, spuntini numerati fino a **9**. I pasti compaiono **nell'ordine in cui sono stati aggiunti** (`day.order`).
 - **Ogni pasto** ha una barra fissa in alto ("PRANZO 412 kcal") con **"Elimina pranzo/cena/…"** (con conferma; eliminando uno spuntino in mezzo i successivi vengono rinumerati), il riquadro **"Lista alimenti"** con cornice verde (nome, quantità in bianco, kcal, X nel cerchio con conferma, etichetta che dice da dove viene il valore; ⓘ sugli alimenti "valore sicuro" apre la scheda con le foto), la riga del totale e la chat con Gemini.
 - **Composer:** icone nei cerchi verde scuro: fotocamera, galleria, testo, **dettatura vocale** (Web Speech API, it‑IT) e invio. Le foto vengono ridotte a 1280 px in JPEG.
@@ -229,6 +229,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **Data nella testata (v101):** su due righe, "Giovedì 26" sopra e il mese in MAIUSCOLO sotto ("NOVEMBRE"), stessa grandezza del testo (14 px); frecce ‹ › più grandi (32 px invece di 26).
   - **Data nella testata (v102):** il mese ha solo l'iniziale maiuscola ("Novembre"); spazio tra frecce e data portato a 12 px per lato (uguale a sinistra e a destra).
   - **Giornata archiviata (v103):** sfogliando con le frecce la pagina resta in cima (testata con data e kcal visibili; prima scorreva subito in fondo alla chat). Nella barra marrone tolto "Oggi ›" (per tornare a oggi si usa la freccia ›); "Modifica giornata" è un tasto di default verde scuro, sotto la frase, a sinistra.
+  - **Modifica di una giornata archiviata (v104):** durante la modifica la barra marrone "Giornata archiviata" resta visibile sopra il pasto (elemento `#editBar`), con "Modifica giornata" disattivato a sinistra e **"Salva"** a destra (tasti di default). Frecce ‹ › disattivate e "Fine modifiche" in testata tolto. "Salva" rimette la giornata nello storico, mostra "Aggiornamento salvato" e torna alla giornata attuale.
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
