@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 148 (26/11/2026, sera).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 149 (26/11/2026, sera).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **148**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **149**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -49,7 +49,7 @@ KalRaf28 è un diario alimentare personale. Al posto di contare le calorie nelle
 - **Mai spese extra per l'API** oltre all'abbonamento.
 - In futuro forse un'APK.
 
-## 3. Come funziona oggi (v148): sezioni
+## 3. Come funziona oggi (v149): sezioni
 
 La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impostazioni** (Preimpostati tolto nella v53). La voce attiva è evidenziata con una pillola verde `#2f8f5c`.
 
@@ -136,7 +136,7 @@ La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impos
 ### 3.10 Altro
 - "Trascina in basso per aggiornare" ricarica la pagina.
 - Le frecce rotonde ↑ ↓ portano in cima o in fondo.
-- Il tasto Indietro di Android chiude prima le finestre (e le schede alimento aperte, v112) e poi torna alla sezione precedente.
+- Il tasto/gesto Indietro di Android chiude prima le finestre (pop-up come "Aggiungi un pasto", conferme, foto a tutto schermo) e le schede aperte (Alimenti, Storico), poi torna alla sezione precedente. Dalla v149 finestre, foto e schede usano **CloseWatcher** (Chrome 120+): si chiudono senza passare dalla cronologia, quindi niente schermata che scorre con lo swipe da sinistra; se CloseWatcher non c'è si usa la cronologia come prima.
 - Nella cartella `icone/` c'è l'icona dell'app creata dall'utente: un **cerchio verde scuro con la scritta "Kcal"** bianca con il bordo nero. Formati: PNG trasparenti da 48, 72, 96, 144, 192 e 512 px; PNG maskable da 192 e 512 px; `icona-kcal.svg` e `icona-kcal-maskable.svg`. È collegata dalla v40 (scheda del browser, manifest, APK).
 - **Icona maskable (quella usata per l'APK):** quadrato bianco con cerchio verde e "Kcal". PWABuilder la mette nell'APK **rimpicciolita** (margine di 8,5dp per lato) su uno **sfondo bianco**, e il Pixel mostra solo il cerchio centrale: per questo il bordo bianco sul telefono è molto più spesso che nel disegno. Nella v89 il cerchio verde è passato da r=155 a r=178 (su 512) per **dimezzare** il bordo visibile. Le anteprime vanno fatte simulando questo passaggio, non ritagliando il disegno così com'è.
 
@@ -284,10 +284,11 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **v146:** nello Storico, nella giornata aperta: "Annulla" a sinistra, a destra "Modifica" e poi "Elimina" (rosso, tutto a destra, v147). "Modifica" porta subito al Diario su quella giornata archiviata, con la barra marrone e "Modifica giornata" (se si sta già modificando un'altra giornata, avvisa). All'avvio e dopo ogni aggiornamento (anche "trascina per aggiornare") l'app riparte sempre dal **Diario, giornata in corso, nessun pasto selezionato** (se c'era una modifica di giornata archiviata non salvata, riapre quella).
   - **v147:** nello Storico l'ordine dei tasti è Annulla … Modifica, **Elimina** (rosso, tutto a destra). Ascolta nella tabella del pasto legge per ogni alimento anche le kcal ("Gallette di farro, 8 grammi, 30 chilocalorie").
   - **v148:** nello Storico più spazio tra il pallino colorato e la data (14 px). Documento di pianificazione riallineato in tutte le sezioni allo stato attuale.
+  - **v149:** corretto il gesto Indietro sulle finestre (es. "Aggiungi un pasto" aperto con il +, conferme, "Nuova Giornata Alimentare") e sulle foto a tutto schermo: si chiudono in modo fluido, senza la schermata che scorre (CloseWatcher, come già per le schede di Alimenti e Storico).
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
-**Stato:** online, **collaudo in corso dal 25/11/2026**. Il 26/11 sera (v91–v148) è stata rifinita la grafica di Diario, Alimenti, Storico e Impostazioni: interfaccia considerata finita dall'utente; resta da ristrutturare la sezione Ricette (vedi Cose da fare).
+**Stato:** online, **collaudo in corso dal 25/11/2026**. Il 26/11 sera (v91–v149) è stata rifinita la grafica di Diario, Alimenti, Storico e Impostazioni: interfaccia considerata finita dall'utente; resta da ristrutturare la sezione Ricette (vedi Cose da fare).
 
 ---
 

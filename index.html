@@ -602,7 +602,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 148</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 149</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -727,17 +727,21 @@ function toast(t){const d=document.createElement('div');d.className='toast';d.te
 let curDead=false;
 function hpush(st){try{history.pushState(st,'')}catch(e){}curDead=false}
 function go(v){if(v===ui.view){render();return}ui.view=v;hpush({v});render();$('#main').scrollTop=0}
-function sheet(html){const was=!$('#modal').hidden;$('#sheet').innerHTML=html;$('#modal').hidden=false;$('#sheet').scrollTop=0;if(!was){hpush({v:ui.view,sheet:1});
-  /* v115: se c'è una scheda alimento aperta (che ascolta l'Indietro), anche la finestra ascolta l'Indietro e si chiude per prima */
-  if('CloseWatcher' in window&&[...document.querySelectorAll('details')].some(d=>d._cw)){try{const w=new CloseWatcher();sheetCW=w;w.onclose=()=>{if(sheetCW===w){sheetCW=null;closeSheet()}}}catch(e){}}}}
+function sheet(html){const was=!$('#modal').hidden;$('#sheet').innerHTML=html;$('#modal').hidden=false;$('#sheet').scrollTop=0;if(!was){
+  /* v149: con CloseWatcher il gesto Indietro chiude la finestra senza passare dalla cronologia (niente schermata che scorre); altrimenti si usa la cronologia */
+  if('CloseWatcher' in window){try{const w=new CloseWatcher();sheetCW=w;w.onclose=()=>{if(sheetCW===w){sheetCW=null;closeSheet()}};return}catch(e){}}
+  hpush({v:ui.view,sheet:1})}}
 let sheetCW=null;
 function closeSheet(fromPop){if(sheetCW){const w=sheetCW;sheetCW=null;try{w.destroy()}catch(e){}}if(typeof rec!=='undefined'&&rec)rec.stop();if($('#modal').hidden)return;$('#modal').hidden=true;$('#sheet').innerHTML='';
   if(!fromPop&&history.state&&history.state.sheet){try{history.replaceState({v:ui.view,dead:1},'')}catch(e){}curDead=true}}
 /* foto a tutto schermo (Diario e Alimenti): tocca per chiudere, anche con il tasto Indietro */
 let lbEl=null,lbSkip=false,fdSkip=false;
 function openLb(src,cap){closeLb(true);lbEl=document.createElement('div');lbEl.className='lb';lbEl.innerHTML=`<button class="lbx" aria-label="Chiudi foto">×</button><img alt="${esc(cap||'Foto')}" src="${esc(src)}">${cap?`<div class="cap">${esc(cap)}</div>`:''}`;
-  lbEl.addEventListener('click',()=>closeLb());document.body.appendChild(lbEl);try{history.pushState(Object.assign({},history.state||{},{lb:1}),'')}catch(e){}}
-function closeLb(silent){if(!lbEl)return;lbEl.remove();lbEl=null;if(!silent&&history.state&&history.state.lb){lbSkip=true;history.back()}}
+  lbEl.addEventListener('click',()=>closeLb());document.body.appendChild(lbEl);
+  if('CloseWatcher' in window){try{const w=new CloseWatcher();lbCW=w;w.onclose=()=>{if(lbCW===w){lbCW=null;closeLb(true)}};return}catch(e){}}
+  try{history.pushState(Object.assign({},history.state||{},{lb:1}),'')}catch(e){}}
+let lbCW=null;
+function closeLb(silent){if(lbCW){const w=lbCW;lbCW=null;try{w.destroy()}catch(e){}}if(!lbEl)return;lbEl.remove();lbEl=null;if(!silent&&history.state&&history.state.lb){lbSkip=true;history.back()}}
 document.addEventListener('click',e=>{const im=e.target.closest('.ph figure img');if(!im)return;e.preventDefault();e.stopPropagation();const fc=im.closest('figure').querySelector('figcaption');openLb(im.src,fc?fc.textContent:'')},true);
 window.addEventListener('popstate',e=>{if(lbSkip){lbSkip=false;return}if(fdSkip){fdSkip=false;return}if(lbEl){closeLb(true);return}const st=e.state||{v:'diario'};
   if(!$('#modal').hidden){closeSheet(true);if(st.dead)history.back();if(!st.sheet)return}
