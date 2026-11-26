@@ -406,7 +406,8 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
 #sheet .btn.bad:not(.two,.addlist .btn),details .btn.bad{background:var(--bad)}
 #sheet .slot .btn{padding:8px 10px}
 /* Impostazioni (v122, v123): Aspetto, tasti non selezionati nel verde degli spuntini non selezionati, selezionato verde chiaro */
-.thm button{background:light-dark(#436955,#153424);color:#fff;border-color:light-dark(#436955,#153424)}
+.thm button{background:var(--brand);color:#fff;border-color:var(--brand)}
+.thm button.on::before{content:"✓ ";font-weight:700}
 .thm button.on{background:#2f8f5c;border-color:#2f8f5c;color:#fff}
 /* Impostazioni (v121): bordo dei blocchi nel verde del tasto «Applica e torna al Diario» */
 #v-impost .card{border-color:var(--brand2)}
@@ -521,9 +522,9 @@ window.addEventListener('error',()=>hideSplash());</script>
         </div>
         <div class="card">
           <h3>Storico</h3>
-          <div class="f"><label for="keep">Conserva le giornate alimentari per</label>
+          <div class="f"><label for="keep">Conserva le Giornate Alimentari per</label>
             <select id="keep"><option value="3">3 giorni</option><option value="7">7 giorni</option><option value="14">14 giorni</option><option value="30">30 giorni</option><option value="0">Sempre</option></select>
-            <p>Le giornate alimentari più vecchie vengono eliminate in automatico.</p></div>
+            <p>Quelle più vecchie vengono eliminate in automatico.</p></div>
         </div>
         <div class="card">
           <h3>Gemini</h3>
@@ -561,7 +562,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 124 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 125 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>

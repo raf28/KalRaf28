@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 124 (26/11/2026, sera).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 125 (26/11/2026, sera).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **124**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **125**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -258,6 +258,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **Impostazioni (v122):** in Aspetto i tre tasti ("Come il Telefono", "Chiaro", "Scuro") sono pieni nel verde di "Applica e torna al Diario" (`#2c6a49`) con scritta bianca; quello selezionato è nel verde chiaro di "Nuova Giornata Alimentare" (`#2f8f5c`).
   - **Impostazioni (v123):** in Aspetto i tasti non selezionati hanno il verde degli spuntini non selezionati della barra del Diario (`#436955` in chiaro, `#153424` in scuro); il selezionato resta verde chiaro `#2f8f5c`.
   - **Impostazioni (v124):** cursori di Obiettivo kcal e Margine bonus nel verde chiaro `#2f8f5c`; nel blocco Storico "Conserva le giornate alimentari per" e sotto "Le giornate alimentari più vecchie vengono eliminate in automatico." (tolto "Le ricette restano sempre").
+  - **Impostazioni (v125):** in Aspetto i tasti non selezionati hanno il verde della barra dei pasti del Diario (`#1f4d35`); quello selezionato è verde chiaro `#2f8f5c` con la spunta bianca ✓. Storico: "Conserva le Giornate Alimentari per" e sotto "Quelle più vecchie vengono eliminate in automatico."
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
