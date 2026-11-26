@@ -339,7 +339,7 @@ details.card summary::-webkit-details-marker{display:none}
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 46 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 47 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -656,7 +656,7 @@ function renderHead(){
   const scale=Math.max(max*1.12,t.kcal*1.02);
   const st=t.kcal<=target?'ok':t.kcal<=max?'warn':'bad';
   $('#kNow').textContent=f0(t.kcal);$('#kTarget').textContent=f0(target);
-  $('#kLeft').textContent=st==='ok'?`Restano ${f0(target-t.kcal)}`:st==='warn'?`Bonus: ${f0(max-t.kcal)} rimaste`:`Oltre di ${f0(t.kcal-max)}`;
+  $('#kLeft').textContent=st==='ok'?`Restano ${f0(target-t.kcal)} kcal`:st==='warn'?`Bonus: ${f0(max-t.kcal)} kcal rimaste`:`Oltre di ${f0(t.kcal-max)} kcal`;
   const fill=$('#bFill');fill.style.width=Math.min(100,t.kcal/scale*100)+'%';fill.style.background=`var(--${st})`;
   $('#bZone').style.left=target/scale*100+'%';$('#bZone').style.width=margin/scale*100+'%';
   $('#bMk').style.left=target/scale*100+'%';
