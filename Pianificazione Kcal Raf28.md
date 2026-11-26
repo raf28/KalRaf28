@@ -228,6 +228,23 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
 2. Possibilità di agganciare altri "cervelli" AI usando gli abbonamenti Pro (ChatGPT, Gemini Pro, Claude Pro), quando renderanno disponibile questa funzione nelle app di terze parti.
 3. Possibilità di agganciare un'AI locale come "cervello" (per esempio Gemini Nano sul telefono), quando sarà possibile farlo.
 
+### Cose da vedere per far utilizzare l'applicazione ad altre persone
+*Ipotesi del 26/11/2026: passare la stessa APK a un'amica, che usa una sua chiave API Gemini.*
+
+**Cosa resta separato (nessun conflitto):**
+- **Dati:** diario, storico, alimenti con foto, ricette e impostazioni stanno nel telefono di chi usa l'app. Nessuno vede i dati dell'altro.
+- **Chiave API:** la sua chiave resta solo sul suo telefono; le richieste a Gemini vanno sul suo progetto Google e consumano la sua quota gratuita. Anche lei deve usare un progetto **senza fatturazione**.
+- **Backup su Drive:** si salva nel **suo** Google Drive, nella sua cartella "KalRaf28 Backup".
+- **Repository:** contiene solo il codice, uguale per tutti; l'app lo legge e non ci scrive niente.
+
+**Cosa è condiviso (da sistemare prima):**
+1. **PIN:** è unico e scritto nel codice (hash), quindi lei dovrebbe conoscere il PIN dell'utente. Se non lo si vuole condividere, va cambiato il sistema.
+2. **Accesso a Google Drive:** il login passa dalla schermata di consenso OAuth del progetto Google Cloud dell'utente. Se è in modalità "test", va aggiunto il suo Gmail tra gli **utenti di prova**, altrimenti Google blocca il backup su Drive (il resto dell'app funziona comunque).
+3. **Aggiornamenti:** ogni modifica pubblicata arriva anche a lei, comprese prove o errori. Conviene pubblicare solo versioni controllate.
+4. **APK:** si passa lo stesso file `KalRaf28.apk` e lo si installa dal file; funziona uguale, anche senza la barra in alto.
+
+**In sintesi:** l'uso da parte di un'altra persona è fattibile. Prima vanno sistemati il PIN (condividerlo o cambiare il sistema) e, se serve il backup su Drive, l'aggiunta del suo account agli utenti di prova su Google Cloud.
+
 ### Note
 - **Blocco in verticale** (da sistemare alla prossima rigenerazione dell'APK, non urgente): l'app non ruota in orizzontale e non si può usare a schermo diviso. Soluzione: togliere `orientation` dal manifest e rigenerare l'APK (stesso keystore, **version code 4**). Rimandato dall'utente il 26/11.
   - **Idea dell'utente:** interruttore **"Blocca in verticale" sì/no** nelle Impostazioni, con `screen.orientation.lock()` / `unlock()`.
