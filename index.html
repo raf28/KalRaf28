@@ -113,13 +113,13 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 .x:active{background:var(--soft)}
 .flink{font:inherit;color:inherit;text-align:left;padding:0}
 .flink span{margin-left:6px;font-size:.85em;color:light-dark(#2c6a49,#7cc79a);text-decoration:none;display:inline-block}
-#mealItems .x{width:30px;height:30px;border-radius:50%;border:0;background:var(--bad);color:#fff;font-size:24px;font-weight:400;display:grid;place-items:center;padding:0 0 3px;justify-self:center;align-self:center}
-#mealItems .x:active{background:color-mix(in srgb,var(--bad) 75%,#000)}
+#mealItems .x,.mbox .x{width:30px;height:30px;border-radius:50%;border:0;background:var(--bad);color:#fff;font-size:24px;font-weight:400;display:grid;place-items:center;padding:0 0 3px;justify-self:center;align-self:center}
+#mealItems .x:active,.mbox .x:active{background:color-mix(in srgb,var(--bad) 75%,#000)}
 .tot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;padding-top:9px;border-top:2px solid var(--line);font-weight:600}
 .tot small{font-weight:400;color:var(--mute);font-size:13px;width:100%}
 .empty{color:var(--mute);font-size:15px;padding:6px 0}
 .msg.a.rsum{border:2px solid var(--brand2)}
-#mealItems:has(.it){border:2px solid var(--brand2)}
+#mealItems:has(.it),.mbox{border:2px solid var(--brand2)}
 .lt{text-align:center;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:light-dark(#17201a,#fff);margin:-2px 0 6px}
 /* chat */
 .chat{display:flex;flex-direction:column;gap:8px}
@@ -439,6 +439,10 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
 /* Storico (v133): giornata aperta più leggibile */
 #v-storico details.hday[open] .hm{color:var(--ink);font-size:inherit}
 #v-storico details.hday[open] b.ht{text-transform:uppercase;letter-spacing:.03em;color:light-dark(var(--brand),#4cc184)}
+/* v139: riepilogo in chat = tabella del pasto, larga e incorniciata */
+.msg.a.rsumw{background:none;border:0;padding:0;max-width:100%;width:100%;box-shadow:none}
+.msg.a.rsumw .mbox{margin:0}
+#mealItems .sumt,.mbox .sumt{margin-top:10px}
 /* Impostazioni (v121): bordo dei blocchi nel verde del tasto «Applica e torna al Diario» */
 #v-impost .card{border-color:var(--brand2)}
 /* Diario (v120): barra del pasto uguale alla barra dei pasti in basso */
@@ -592,7 +596,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 138</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 139</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -972,7 +976,8 @@ function renderHistDay(){
   bar.innerHTML=`<div><b>Giornata archiviata</b><small>tocca «Modifica giornata» per correggerla</small><button class="btn bdef" id="reopenDay">Modifica giornata</button></div>`;
   if(!ui.hmeal){$('#mealItems').innerHTML='<div class="empty">Nessun alimento in questa giornata.</div>';$('#mealChat').innerHTML='';return}
   const m=D.meals[ui.hmeal],t=sum(m.items);
-  $('#mealItems').innerHTML='<div class="lt">Lista alimenti</div>'+m.items.map(i=>`<div class="it"><div><div class="n">${esc(i.nome)}</div><div class="q">${esc(i.quantita)}${srcTag(i)}</div></div><div class="k">${f0(i.kcal)} kcal</div><span></span><div class="m">${mline(i)}</div></div>`).join('')+`<div class="tot"><span>Totale ${mealName(ui.hmeal).toLowerCase()}</span><span>${f0(t.kcal)} kcal</span><small>${mline(t)}</small></div>`;
+  ui.box={items:m.items,name:mealName(ui.hmeal),edit:false};
+  $('#mealItems').innerHTML=mealBoxHTML(m.items,mealName(ui.hmeal),false);
   $('#mealChat').innerHTML=m.chat.map(msgHtml).join('');
 }
 function packDay(d){const meals={};orderKeys(Object.keys(d.meals)).forEach(k=>{if(d.meals[k].items.length)meals[k]=d.meals[k].items});
@@ -1006,8 +1011,8 @@ function renderMeal(){
     $('#mealItems').innerHTML=`<div class="empty">Scrivi, detta o fotografa cosa hai mangiato a <b>${mealName(ui.meal).toLowerCase()}</b>: il conteggio si aggiorna da solo, e se correggi qualcosa in chat vale sempre l'ultima versione.</div>`;
     $('#mealChat').innerHTML=ui.busy?'<div class="typing">Sto calcolando<i></i><i></i><i></i></div>':'';return}
   const m=S.day.meals[ui.meal],t=sum(m.items);
-  $('#mealItems').innerHTML=(m.items.length?'<div class="lt">Lista alimenti</div>'+m.items.map((i,ix)=>`<div class="it it2"><div class="n">${foodLink(i)}</div><div class="q"><span class="qq">${esc(i.quantita)}</span>${srcTag(i)}</div><div class="k">${f0(i.kcal)} kcal</div><button class="x" data-del="${ix}" aria-label="Elimina ${esc(i.nome)}">×</button><div class="m">${mline(i)}</div></div>`).join('')+
-    `<div class="tot"><span>Totale ${mealName(ui.meal).toLowerCase()}</span><span>${f0(t.kcal)} kcal</span><small>${mline(t)}</small></div>`
+  ui.box={items:m.items,name:mealName(ui.meal),edit:true};
+  $('#mealItems').innerHTML=(m.items.length?mealBoxHTML(m.items,mealName(ui.meal),true)
     :`<div class="empty">Ancora niente. Scrivi cosa hai mangiato o allega una foto: il conteggio si aggiorna da solo, e se correggi qualcosa in chat vale sempre l'ultima versione.</div>`);
   $('#mealChat').innerHTML=m.chat.map(msgHtml).join('')+(ui.busy?'<div class="typing">Sto calcolando<i></i><i></i><i></i></div>':'');
 }
@@ -1017,16 +1022,20 @@ function foodInfo(id,it){const f=S.foods.find(x=>x.id===id);if(!f)return;
   <table class="vt"><tbody><tr><td>Riferimento</td><td>${esc(f.riferimento||'100 g')}</td></tr>${FKEYS.map(([k,l,u])=>`<tr class="${l.startsWith('di cui')?'sub':''}"><td>${l}</td><td>${fval(f[k],u,k)}</td></tr>`).join('')}</tbody></table>
   ${f.note?`<p style="margin:10px 0 0"><b>Note:</b> ${esc(f.note)}</p>`:''}${macroNote(f)?`<p class="hm" style="margin:8px 0 0">${esc(macroNote(f))}</p>`:''}
   <div class="ph" id="fiPh"></div><div class="row" style="justify-content:flex-start"><button class="btn sm fiClose" id="noSheet">Chiudi</button></div>`);loadFoodPhotos(f.id,$('#fiPh'))}
+/* v139: tabella unica del pasto (Lista alimenti + totale + macro), usata in alto e nei riepiloghi della chat (sempre aggiornata) */
+function mealBoxHTML(items,name,edit){if(!items||!items.length)return'<div class="empty">Nessun alimento in questo pasto.</div>';
+  const t=sum(items),row=(l,k,sub)=>`<div class="sr${sub?' sub':''}"><span>${l}${t.miss[k]&&t.has[k]?'<span class="ast">*</span>':''}</span><b>${fv(t,k,'g')}</b></div>`;
+  const miss=items.filter(i=>KEYS.slice(1).some(k=>nn(i[k])===null));
+  return'<div class="lt">Lista alimenti</div>'+items.map((i,ix)=>`<div class="it it2"><div class="n">${edit?foodLink(i):esc(i.nome)}</div><div class="q"><span class="qq">${esc(i.quantita)}</span>${srcTag(i)}</div><div class="k">${f0(i.kcal)} kcal</div>${edit?`<button class="x" data-del="${ix}" aria-label="Elimina ${esc(i.nome)}">×</button>`:'<span></span>'}<div class="m">${mline(i)}</div></div>`).join('')+
+    `<div class="sumt">Totale kcal ${esc(name.toUpperCase())}: <b>${f0(t.kcal)} kcal</b></div><div class="sml">${row('Carboidrati','carboidrati')}${row('di cui zuccheri','zuccheri',1)}${row('Proteine','proteine')}${row('Grassi','grassi')}${row('di cui saturi','saturi',1)}${row('Fibre','fibre')}${row('Sale','sale')}</div>`+
+    (miss.length?`<div class="missn">* Valori mancanti per: ${miss.map(i=>esc(i.nome)).join(', ')}. I totali segnati sono parziali.</div>`:'')}
 function msgHtml(m,ix){
   if(m.role==='u')return`<div class="msg u">${m.photo?'<span class="chip">foto</span><br>':''}${esc(m.text)}</div>`;
-  let h=`<div class="msg a${m.err?' e':''}${m.tot&&!m.err?' rsum':''}">`;
+  let h=`<div class="msg a${m.err?' e':''}${m.tot&&!m.err?' rsumw':''}">`;
   if(m.tot&&!m.err){
     if(m.ans&&m.text)h+=`<div class="ansx">${md(m.text)}</div>`;
-    const anyMiss=m.list&&m.list.some(i=>i.miss&&i.miss.length);
-    if(m.list&&m.list.length)h+=`<div class="sumh">Alimenti del pasto:</div><ul class="suml">${m.list.map(i=>`<li>– ${esc(i.n)}${i.miss&&i.miss.length?'<span class="ast">*</span>':''}${i.q||i.k!=null?'<div class="sq">'+(i.q?'<b>'+esc(i.q)+'</b>':'')+(i.q&&i.k!=null?' — ':'')+(i.k!=null?'<b class="kg">'+f0(i.k)+' kcal</b>':'')+'</div>':''}</li>`).join('')}</ul>`;
-    const t=m.tot,row=(l,k,sub)=>`<div class="sr${sub?' sub':''}"><span>${l}${t.miss&&t.miss[k]?'<span class="ast">*</span>':''}</span><b>${fv(t,k,'g')}</b></div>`;
-    h+=`<div class="sumt">Totale kcal pasto: <b>${f0(t.kcal)} kcal</b></div><div class="sml">${row('Carboidrati','carboidrati')}${row('di cui zuccheri','zuccheri',1)}${row('Proteine','proteine')}${row('Grassi','grassi')}${row('di cui saturi','saturi',1)}${row('Fibre','fibre')}${row('Sale','sale')}</div>`;
-    if(anyMiss)h+=`<div class="missn">* Valori mancanti: ${m.list.filter(i=>i.miss&&i.miss.length).map(i=>esc(i.n)+' ('+i.miss.join(', ')+')').join('; ')}. I totali segnati sono parziali.</div>`;
+    const B=ui.box||{items:[],name:'pasto',edit:false};
+    h+=`<div class="card mbox">${mealBoxHTML(B.items,B.name,B.edit)}</div>`;
     if(m.text&&!m.ans)h+=`<div class="mnote">${md(m.text)}</div>`;
   }else h+=md(m.text);
   if(m.ricetta){const t=sum(m.ricetta.ingredienti);const saved=S.recipes.some(r=>r.src===m.ts);
@@ -1278,6 +1287,7 @@ const TTS={key:null,len:0,chunks:[],idx:0,pos:0,playing:false,tok:0};
 function speechText(m){
   const plain=x=>String(x||'').replace(/\*\*/g,'').replace(/[•–]/g,'');
   let t=plain(m.text)+'. ';
+  if(m.tot&&!m.err&&ui.box&&ui.box.items){m=Object.assign({},m,{tot:sum(ui.box.items),list:ui.box.items.map(i=>({n:i.nome,q:i.quantita,k:i.kcal,miss:KEYS.slice(1).filter(k=>nn(i[k])===null)}))})}
   if(m.tot&&!m.err){
     if(m.list&&m.list.length)t+='Alimenti del pasto: '+m.list.map(i=>i.n+(i.q?', '+i.q.replace(/\bg\b/g,'grammi'):'')).join('; ')+'. ';
     const T=m.tot,n=(k)=>fk(k,T[k]).replace('.',',');

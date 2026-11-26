@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 138 (26/11/2026, sera).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 139 (26/11/2026, sera).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **138**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **139**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -74,7 +74,7 @@ La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impos
   6. `non_trovato` → kcal 0 e macro vuoti, "cercare manualmente l'alimento", e Gemini chiede i valori
 - Le fonti `ricetta` e `preimpostato` esistono già nel codice. La seconda è pronta per la sezione futura.
 - **Domande** ("sei sicuro del sale?"): risponde senza modificare la lista (`domanda: true`).
-- **Riepilogo** solo su richiesta esplicita ("dammi il totale"): mostra un riquadro con l'elenco degli alimenti, il totale kcal e la tabella dei macro. I valori mancanti sono segnati con * e i totali parziali con "≥".
+- **Riepilogo** solo su richiesta esplicita ("dammi il totale"): dalla v139 mostra in chat la stessa tabella del pasto della "Lista alimenti" (alimenti con X, totale kcal, macro), sempre aggiornata. I valori mancanti sono segnati con *.
 - Ogni risposta ha i pulsanti **▶︎ Ascolta / ⏸ Pausa** per la lettura ad alta voce in italiano.
 - Gemini riceve solo gli ultimi 10 messaggi della chat del pasto come storia.
 
@@ -272,6 +272,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **Storico (v136):** il verde scuro era troppo scuro: in modalità scura i titoletti tornano a `#4cc184` (come nella v134).
   - **Riepilogo in chat (v137):** il totale kcal del pasto è nel verde chiaro di "Elimina pranzo/spuntino" (`#2f8f5c`); nell'elenco "Alimenti del pasto" ogni riga mostra anche le kcal dell'alimento in grassetto e nello stesso verde (es. "– Gallette di farro **8 g** — **30 kcal**").
   - **v138:** nel riepilogo "Alimenti del pasto" il nome è sulla prima riga ("– Nome") e quantità e kcal vanno a capo, rientrati. Nella Lista alimenti la X nel cerchio per togliere un alimento è **rossa** (`var(--bad)`, come i tasti Elimina).
+  - **Tabella unica del pasto (v139):** la "Lista alimenti" in alto e il riepilogo in chat sono lo stesso riquadro largo e incorniciato (`mealBoxHTML()`): elenco alimenti (con X rossa), "Totale kcal PRANZO: N kcal" (verde chiaro) e tabella dei macro (Carboidrati, di cui zuccheri, Proteine, Grassi, di cui saturi, Fibre, Sale), più l'eventuale nota sui valori mancanti. In chat compare solo quando si chiede il totale/riepilogo, con Ascolta/Pausa sotto; tutte le tabelle della chat sono **sempre aggiornate** (eliminando un alimento da una si aggiornano tutte) e Ascolta legge i valori attuali. Nelle giornate archiviate lo stesso riquadro senza X.
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
