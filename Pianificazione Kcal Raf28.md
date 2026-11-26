@@ -224,7 +224,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
 ## ✅ COSE DA FARE
 
 ### Da implementare
-1. **Sezione Ricette, da ristrutturare** (non urgente, da fare in un secondo momento). Due parti:
+1. **Sezione Ricette, da ristrutturare** (non urgente, da fare in un secondo momento). Come dovrà funzionare:
    - **Chat per creare le ricette.** Si danno a Gemini gli ingredienti con le dosi e si indica in quante **porzioni** si divide la ricetta (es. un impasto da cui escono 4 piadine = 4 porzioni). A ogni ingrediente aggiunto o modificato si vede sempre, aggiornato:
      - il **totale della ricetta**: elenco di tutti gli ingredienti con le quantità, kcal totali e macro totali;
      - sotto, la **singola porzione**: ingredienti con le quantità per porzione, kcal e macro di una porzione (totale diviso per il numero di porzioni).
