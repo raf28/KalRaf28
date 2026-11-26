@@ -65,6 +65,11 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 .thm{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
 .thm button{min-height:44px;border-radius:99px;border:1.5px solid var(--brand2);background:var(--card);font-size:14px;font-weight:500;padding:4px 6px}
 .thm button.on{background:var(--brand2);color:#fff}
+.segw{position:relative}
+.sarr{position:absolute;top:14px;bottom:10px;width:40px;display:none;align-items:center;font-size:44px;font-weight:400;line-height:1;color:light-dark(#2c6a49,#7cc79a);z-index:1;padding:0 0 4px}
+.sarr.l{left:-14px;justify-content:flex-start;padding-left:4px;background:linear-gradient(90deg,var(--bg) 55%,transparent)}
+.sarr.r{right:-14px;justify-content:flex-end;padding-right:4px;background:linear-gradient(270deg,var(--bg) 55%,transparent)}
+.segw.cl .sarr.l,.segw.cr .sarr.r{display:flex}
 .seg{display:flex;gap:6px;overflow-x:auto;padding:14px 0 10px;scrollbar-width:none}
 .seg button{flex:none;min-height:44px;padding:6px 14px;border-radius:12px;background:var(--card);border:1.5px solid var(--brand2);text-align:left;line-height:1.2}
 .seg button small{display:block;font-size:13px;color:var(--mute)}
@@ -274,7 +279,7 @@ details.card summary::-webkit-details-marker{display:none}
         <div class="macros" id="dMacros"></div>
       </div></div>
       <div class="wrap">
-        <div class="mstick"><div class="seg" id="mealTabs"></div>
+        <div class="mstick"><div class="segw" id="segw"><div class="seg" id="mealTabs"></div><button class="sarr l" data-segs="-1" aria-label="Scorri a sinistra">‹</button><button class="sarr r" data-segs="1" aria-label="Scorri a destra">›</button></div>
         <div class="mbar" id="mealBar" hidden></div></div>
         <div class="card" id="mealItems"></div>
         <div class="chat" id="mealChat"></div>
@@ -363,7 +368,7 @@ details.card summary::-webkit-details-marker{display:none}
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 57 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 58 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -658,7 +663,8 @@ function renderPhoto(){$('#prev').hidden=!ui.photo;if(ui.photo)$('#prevImg').src
 
 /* ---------- render ---------- */
 function applyTheme(){const th=(S.settings&&S.settings.theme)||'auto';document.documentElement.style.colorScheme=th==='light'?'light':th==='dark'?'dark':'light dark';document.querySelectorAll('[data-thm]').forEach(b=>b.classList.toggle('on',b.dataset.thm===th))}
-function render(){applyTheme();
+function updSeg(){const s=$('#mealTabs'),w=$('#segw');if(!s||!w)return;const max=s.scrollWidth-s.clientWidth;w.classList.toggle('cl',!s.hidden&&s.scrollLeft>4);w.classList.toggle('cr',!s.hidden&&s.scrollLeft<max-4)}
+function render(){applyTheme();requestAnimationFrame(updSeg);
   ['diario','alimenti','ricette','pasti','storico','impost'].forEach(v=>$('#v-'+v).hidden=ui.view!==v);
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===ui.view));
   const chatView=ui.view==='diario'||(ui.view==='ricette'&&ui.rec==='chat');
@@ -1256,6 +1262,8 @@ try{history.replaceState({v:'diario'},'')}catch(e){}
  fitH();['resize','orientationchange','pageshow','load'].forEach(ev=>window.addEventListener(ev,fitH));document.addEventListener('visibilitychange',()=>{if(!document.hidden){fitH();setTimeout(fitH,300)}});if(window.visualViewport)visualViewport.addEventListener('resize',fitH);[50,300,1000,2500].forEach(ms=>setTimeout(fitH,ms));window.fitH=fitH})();
 /* service worker: serve per installare l'app (APK) e aprirla anche offline */
 if('serviceWorker' in navigator&&location.protocol==='https:')window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})});
+$('#mealTabs').addEventListener('scroll',updSeg,{passive:true});window.addEventListener('resize',updSeg);
+document.addEventListener('click',e=>{const a=e.target.closest('[data-segs]');if(!a)return;e.stopPropagation();const s=$('#mealTabs');s.scrollBy({left:+a.dataset.segs*s.clientWidth*.7,behavior:'smooth'})},true);
 boot();
 }
 </script>
