@@ -1,14 +1,14 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 131 (26/11/2026, sera).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 132 (26/11/2026, sera).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **131**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **132**.
 >
-> Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione NN") e il commit si chiama "vNN: descrizione breve".
+> Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
 > L'app è installata sul mio Pixel come **APK Android** (TWA creata con PWABuilder, package `io.github.raf28.kalraf28`, nome KalRaf28, icona "Kcal"). L'APK carica l'app da GitHub Pages, quindi ogni modifica pubblicata su KalRaf28 arriva da sola sul telefono. Il secondo repository **raf28.github.io** contiene solo `.well-known/assetlinks.json` (verifica che toglie la barra dell'indirizzo) e non va toccato.
 >
@@ -105,7 +105,7 @@ La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impos
 - Pulsante tolto dalla barra (v53). Nel codice resta solo il segnaposto "Sezione in arrivo." (vedi Stato delle sezioni).
 
 ### 3.7 Storico
-- È l'elenco delle giornate chiuse. Ognuna ha un pallino verde, giallo o rosso, le kcal rispetto all'obiettivo, i macro e il dettaglio per pasto, con i pulsanti "Annulla" ed "Elimina giornata".
+- È l'elenco delle giornate chiuse, nello stile degli Alimenti (v132). Ognuna ha un pallino verde, giallo o rosso, le kcal rispetto all'obiettivo, i macro e il dettaglio per pasto, con i pulsanti "Annulla" ed "Elimina" (standard 2).
 - Si conservano al massimo 400 giornate. Le più vecchie del periodo scelto vengono eliminate in automatico.
 
 ### 3.8 Impostazioni
@@ -118,7 +118,7 @@ La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impos
 - **Aspetto (v57):** come il telefono / chiaro / scuro (`settings.theme`), salvato anche nel backup.
 - **Sicurezza:** "Blocca con PIN su questo dispositivo".
 - **Reset App:** scollega Google e cancella tutti i dati sul telefono. I backup su Drive restano.
-- In fondo c'è "* I Valori Nutrizionali Generici sono stime del modello" (nel colore arancione dell'etichetta "valore generico" del Diario) e sotto "Versione NN" (v131), poi il pulsante "Applica e torna al Diario".
+- In fondo c'è "* I Valori Nutrizionali Generici sono stime del modello" (nel colore arancione dell'etichetta "valore generico" del Diario) e sotto "Versione App: NN" (v132), poi il pulsante "Applica e torna al Diario".
 
 ### 3.9 Backup su Google Drive (v34–v38) ✅
 - Si accede con Google (Google Identity Services, token OAuth). Il permesso è **solo `drive.file`**: l'app vede solo i file che crea lei.
@@ -265,6 +265,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **Impostazioni (v129):** più spazio (22 px) tra "Sincronizza" e la riga "Scollega / Ripristina da Drive". Senza account collegato il blocco mostra il testo di spiegazione e solo "Accedi con Google".
   - **Impostazioni (v130):** testo del blocco Drive su tre righe: "Collegato come email" / "Alimenti, ricette e impostazioni si salvano subito;" / "il diario alla chiusura della giornata e una volta ogni 24 ore.". Accanto a Sincronizza: "Ultimo backup:" e sotto, su una riga, giorno, data e ora per esteso (es. "giovedì 26 novembre, 21:41").
   - **Impostazioni (v131):** in fondo alla pagina "* I Valori Nutrizionali Generici sono stime del modello" (arancione come "valore generico") e, a capo, "Versione NN". Per le prossime versioni si cambia solo il numero in "Versione NN".
+  - **v132:** in fondo alle Impostazioni "Versione App: NN". **Storico nello stile degli Alimenti:** testata verde "Storico" con il conteggio ("8 giornate") fissa in alto, con la sfumatura sotto quando si scorre e quella in basso sopra la barra di navigazione; ogni giornata è una pillola verde scuro (bordo 4 px, raggio 34) con pallino colorato, giorno e data, kcal e "su obiettivo" in bianco; aperta torna con lo sfondo normale; tasti "Annulla" ed "Elimina" (prima "Elimina giornata") nel formato standard 2, anche nel pop-up di conferma (Elimina rosso).
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 

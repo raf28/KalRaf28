@@ -418,6 +418,22 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
 #v-impost .btn.aib:disabled{opacity:.6}
 #v-impost .btn.aib.gdb{width:150px;padding:0 8px}
 #v-impost .btn.aib.bad{background:var(--bad)}
+/* Storico (v132): stesso stile della sezione Alimenti */
+#v-storico.vh{padding-top:0}
+#v-storico .hhead{position:sticky;top:0;z-index:4}
+#v-storico .hhead::after{content:'';position:absolute;left:0;right:0;top:100%;height:46px;background:linear-gradient(to top,transparent 0,color-mix(in srgb,var(--bg) 70%,transparent) 24px,var(--bg) 46px);pointer-events:none;opacity:0;transition:opacity .15s}
+#v-storico .hhead.stuck::after{opacity:1}
+#v-storico .wrap{padding-left:6px;padding-right:6px;padding-top:14px}
+#v-storico details.hday{border:4px solid var(--brand);border-radius:34px;padding:12px 22px;margin-bottom:10px}
+#v-storico details.hday[open]{border-radius:28px}
+#v-storico details.hday:not([open]){background:var(--brand)}
+#v-storico details.hday summary{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;min-height:46px}
+#v-storico details.hday summary .nm{font-weight:600;line-height:1.25}
+#v-storico details.hday summary .kv{display:flex;flex-direction:column;align-items:flex-end;line-height:1.2;color:light-dark(#22804f,#4cc184)}
+#v-storico details.hday summary .kv b{font-size:15px;white-space:nowrap}
+#v-storico details.hday summary .kv small{font-size:12.5px;font-weight:500}
+#v-storico details.hday:not([open]) summary,#v-storico details.hday:not([open]) summary .kv{color:#fff}
+#v-storico details.hday .dot{box-shadow:0 0 0 2px #fff}
 /* Impostazioni (v121): bordo dei blocchi nel verde del tasto «Applica e torna al Diario» */
 #v-impost .card{border-color:var(--brand2)}
 /* Diario (v120): barra del pasto uguale alla barra dei pasti in basso */
@@ -510,7 +526,8 @@ window.addEventListener('error',()=>hideSplash());</script>
     </section>
 
     <section id="v-storico" class="vh" hidden>
-      <div class="wrap"><h2>Storico giornate</h2><div id="histList"></div></div>
+      <div class="ahead hhead"><div class="in"><div class="aht"><h2>Storico</h2><span class="acnt" id="histCnt"></span></div></div></div>
+      <div class="wrap"><div id="histList"></div><div class="dfadeB" id="hfadeB" aria-hidden="true"></div></div>
     </section>
 
     <section id="v-impost" class="vh" hidden>
@@ -570,7 +587,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione 131</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 132</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -893,9 +910,11 @@ function alimSticky(){const sec=$('#v-alimenti');if(!sec||sec.hidden)return;cons
 function diarioFades(){const mn=$('#main'),sec=$('#v-diario');if(!sec||sec.hidden)return;const st=sec.querySelector('.mstick'),fb=$('#dfadeB');
   if(st)st.classList.toggle('stuck',!$('#mealBar').hidden&&mn.scrollTop>0&&st.getBoundingClientRect().top<=mn.getBoundingClientRect().top+1);
   if(fb)fb.classList.toggle('on',mn.scrollHeight-mn.scrollTop-mn.clientHeight>2)}
+function histFades(){const mn=$('#main'),sec=$('#v-storico');if(!sec||sec.hidden)return;const h=sec.querySelector('.hhead'),fb=$('#hfadeB');
+  if(h)h.classList.toggle('stuck',mn.scrollTop>0);if(fb)fb.classList.toggle('on',mn.scrollHeight-mn.scrollTop-mn.clientHeight>2)}
 function alimStuck(){const sec=$('#v-alimenti');if(!sec||sec.hidden)return;const mn=$('#main').getBoundingClientRect().top,lt=parseFloat(sec.style.getPropertyValue('--ltTop'))||0;
   let on=null;sec.querySelectorAll('.letter').forEach(l=>{l.classList.remove('stuck');if(l.getBoundingClientRect().top<=mn+lt+1&&$('#main').scrollTop>0)on=l});if(on)on.classList.add('stuck')}
-function render(){applyTheme();requestAnimationFrame(alimSticky);requestAnimationFrame(()=>requestAnimationFrame(diarioFades));if(ui.view!=='alimenti')fdKill();requestAnimationFrame(updSeg);
+function render(){applyTheme();requestAnimationFrame(alimSticky);requestAnimationFrame(()=>requestAnimationFrame(()=>{diarioFades();histFades()}));if(ui.view!=='alimenti')fdKill();requestAnimationFrame(updSeg);
   ['diario','alimenti','ricette','pasti','storico','impost'].forEach(v=>$('#v-'+v).hidden=ui.view!==v);
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===ui.view));
   const chatView=ui.view==='diario'||(ui.view==='ricette'&&ui.rec==='chat');
@@ -1022,12 +1041,13 @@ function renderRec(){
     :'<div class="empty">Nessuna ricetta salvata. Dalla chat, tocca «Salva nel ricettario» sotto una ricetta proposta, oppure usa «Importa ricette» per incollare quelle che hai già con i tuoi valori.</div>');
 }
 function renderHist(){
+  {const c=$('#histCnt');if(c)c.textContent=S.history.length===1?'1 giornata':S.history.length+' giornate'}
   $('#histList').innerHTML=S.history.length?S.history.map((h,ix)=>{const t=h.tot,max=h.target+h.margin,st=t.kcal<=h.target?'ok':t.kcal<=max?'warn':'bad';const d=new Date(h.start);
-    return`<details class="card"><summary><span><span class="dot" style="background:var(--${st})"></span><b>${d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'})}</b></span><span><b>${f0(t.kcal)}</b> / ${f0(h.target)} kcal</span></summary>
+    return`<details class="card hday"><summary><span class="nm"><span class="dot" style="background:var(--${st})"></span>${(s=>s.charAt(0).toUpperCase()+s.slice(1))(d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'}))}</span><span class="kv"><b>${f0(t.kcal)} kcal</b><small>su ${f0(h.target)}</small></span></summary>
     <div class="hm" style="margin-top:6px">${mline(t)}</div>
     <div class="hm" style="margin-top:4px">Aperta: ${fdt(h.start)}${h.end?` · Chiusa: ${fdt(h.end)}`:''}</div>
     ${orderKeys(Object.keys(h.meals).map(k=>k==='spuntino'?'spuntino1':k)).map(k=>{const l=mealName(k);const it=(h.meals[k]||(k==='spuntino1'?h.meals.spuntino:null)||[]);if(!it.length)return'';const mt=sum(it);return`<div style="margin-top:10px"><b>${l}</b> <span class="hm">${f0(mt.kcal)} kcal</span>${it.map(i=>`<div class="hm">• ${esc(i.nome)} ${esc(i.quantita)} — ${f0(i.kcal)} kcal</div>`).join('')}</div>`}).join('')}
-    <div class="row between"><button class="btn sm ghost" data-collapse>Annulla</button><button class="btn sm ghost" data-delhist="${ix}">Elimina giornata</button></div></details>`}).join('')
+    <div class="row between" style="margin-top:14px"><button class="btn sm ghost std2" data-collapse>Annulla</button><button class="btn sm ghost std2" data-delhist="${ix}">Elimina</button></div></details>`}).join('')
     :'<div class="empty">Qui trovi le giornate chiuse (conservate per il periodo scelto nelle Impostazioni). Usa «Nuova Giornata Alimentare» nel Diario quando hai finito di mangiare.</div>';
 }
 function renderSet(){
@@ -1068,7 +1088,7 @@ document.addEventListener('click',e=>{
   if(b.dataset.saverec!==undefined){const m=S.recChat[+b.dataset.saverec];if(m&&m.ricetta){S.recipes.unshift({id:'r'+Date.now(),src:m.ts,...m.ricetta});save();toast('Ricetta salvata');render()}return}
   if(b.dataset.delrec){S.recipes=S.recipes.filter(r=>r.id!==b.dataset.delrec);save();render();return}
   if(b.dataset.addrec){return addRecipe(b.dataset.addrec)}
-  if(b.dataset.delhist!==undefined){const i=+b.dataset.delhist;sheet(`<h3>Eliminare questa giornata?</h3><p class="hm">Non si può annullare.</p><div class="row between"><button class="btn ghost" id="noSheet">Annulla</button><button class="btn bad" id="okDelH">Elimina</button></div>`);$('#okDelH').onclick=()=>{S.history.splice(i,1);save();closeSheet();render()};return}
+  if(b.dataset.delhist!==undefined){const i=+b.dataset.delhist;sheet(`<h3>Eliminare questa giornata?</h3><p class="hm">Non si può annullare.</p><div class="row between"><button class="btn ghost std2" id="noSheet">Annulla</button><button class="btn bad std2" id="okDelH">Elimina</button></div>`);$('#okDelH').onclick=()=>{S.history.splice(i,1);save();closeSheet();render()};return}
   if(b.id==='mealDel'&&ui.meal){const k=ui.meal,sn=isSnack(k),nm=mealName(k),dopo=sn&&S.day.order.filter(isSnack).some(x=>snackN(x)>snackN(k));
     const art=sn?'lo ':k==='pranzo'?'il ':'la ';
     sheet(`<h3>Eliminare ${art}${sn?nm:nm.toLowerCase()}?</h3><p class="hm">${sn?'Lo spuntino':'Il pasto'}, i suoi alimenti e la sua chat verranno eliminati.${dopo?' Gli spuntini successivi vengono rinumerati.':''}<br>Potrai riaggiungerne uno nuovo con il tasto <b>+</b></p><div class="row between"><button class="btn ghost dg" id="noSheet">Annulla</button><button class="btn bad dg" id="okMealDel">Elimina</button></div>`);
@@ -1532,7 +1552,7 @@ try{history.replaceState({v:'diario'},'')}catch(e){}
  new MutationObserver(()=>requestAnimationFrame(upd)).observe(mn,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden','open']});
  U.onclick=()=>mn.scrollTo({top:0,behavior:'smooth'});D.onclick=()=>mn.scrollTo({top:mn.scrollHeight,behavior:'smooth'});
  window.updJump=upd;setTimeout(upd,300);}
-$('#main').addEventListener('scroll',()=>{alimStuck();diarioFades()},{passive:true});window.addEventListener('resize',()=>requestAnimationFrame(alimSticky));
+$('#main').addEventListener('scroll',()=>{alimStuck();diarioFades();histFades()},{passive:true});window.addEventListener('resize',()=>requestAnimationFrame(alimSticky));
 /* altezza dell'app misurata davvero (dopo "trascina per aggiornare" o all'avvio Android a volte dava un'altezza sbagliata e la barra in basso spariva) */
 (function(){const de=document.documentElement;function fitH(){const vv=window.visualViewport,a=document.activeElement,typing=a&&/^(INPUT|TEXTAREA)$/.test(a.tagName);let h=window.innerHeight;if(vv&&!typing)h=Math.min(h,Math.round(vv.height));if(h>200)de.style.setProperty('--appH',h+'px');if(window.scrollY)window.scrollTo(0,0)}
  fitH();['resize','orientationchange','pageshow','load'].forEach(ev=>window.addEventListener(ev,fitH));document.addEventListener('visibilitychange',()=>{if(!document.hidden){fitH();setTimeout(fitH,300)}});if(window.visualViewport)visualViewport.addEventListener('resize',fitH);[50,300,1000,2500].forEach(ms=>setTimeout(fitH,ms));window.fitH=fitH})();
