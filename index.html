@@ -602,7 +602,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 146</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 147</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1070,7 +1070,7 @@ function renderHist(){fdKill();
     <div class="hm" style="margin-top:2px">${mline(t)}</div>
     <div class="hm" style="margin-top:4px">Aperta: ${fdt(h.start)}${h.end?` · Chiusa: ${fdt(h.end)}`:''}</div>
     ${orderKeys(Object.keys(h.meals).map(k=>k==='spuntino'?'spuntino1':k)).map(k=>{const l=mealName(k);const it=(h.meals[k]||(k==='spuntino1'?h.meals.spuntino:null)||[]);if(!it.length)return'';const mt=sum(it);return`<div style="margin-top:10px"><b class="ht">${l}:</b> <span class="hm">${f0(mt.kcal)} kcal</span>${it.map(i=>`<div class="hm">• ${esc(i.nome)} ${esc(i.quantita)} — ${f0(i.kcal)} kcal</div>`).join('')}</div>`}).join('')}
-    <div class="row between" style="margin-top:14px"><button class="btn sm ghost std2" data-collapse>Annulla</button><span class="row" style="margin:0"><button class="btn sm ghost std2 bad" data-delhist="${ix}">Elimina</button><button class="btn sm ghost std2" data-edithist="${ix}">Modifica</button></span></div></details>`}).join('')
+    <div class="row between" style="margin-top:14px"><button class="btn sm ghost std2" data-collapse>Annulla</button><span class="row" style="margin:0"><button class="btn sm ghost std2" data-edithist="${ix}">Modifica</button><button class="btn sm ghost std2 bad" data-delhist="${ix}">Elimina</button></span></div></details>`}).join('')
     :'<div class="empty">Qui trovi le giornate chiuse (conservate per il periodo scelto nelle Impostazioni). Usa «Nuova Giornata Alimentare» nel Diario quando hai finito di mangiare.</div>';
   document.querySelectorAll('#histList details.hday').forEach(d=>bindCloseDetails(d));
 }
@@ -1300,7 +1300,7 @@ function speechText(m){
   let t=m.tot&&!m.err?'':plain(m.text)+'. ';
   if(m.tot&&!m.err&&ui.box&&ui.box.items){m=Object.assign({},m,{tot:sum(ui.box.items),list:ui.box.items.map(i=>({n:i.nome,q:i.quantita,k:i.kcal,miss:KEYS.slice(1).filter(k=>nn(i[k])===null)}))})}
   if(m.tot&&!m.err){
-    if(m.list&&m.list.length)t+='Alimenti del pasto: '+m.list.map(i=>i.n+(i.q?', '+i.q.replace(/\bg\b/g,'grammi'):'')).join('; ')+'. ';
+    if(m.list&&m.list.length)t+='Alimenti del pasto: '+m.list.map(i=>i.n+(i.q?', '+i.q.replace(/\bg\b/g,'grammi'):'')+(i.k!=null?', '+f0(i.k)+' chilocalorie':'')).join('; ')+'. ';
     const T=m.tot,n=(k)=>fk(k,T[k]).replace('.',',');
     t+=`Totale del pasto: ${f0(T.kcal)} chilocalorie. Carboidrati ${n('carboidrati')} grammi, di cui zuccheri ${n('zuccheri')}. Proteine ${n('proteine')} grammi. Grassi ${n('grassi')} grammi, di cui saturi ${n('saturi')}. Fibre ${n('fibre')} grammi. Sale ${n('sale')} grammi.`;
     if(m.list&&m.list.some(i=>i.miss&&i.miss.length))t+=' Attenzione: per alcuni alimenti mancano dei valori, quindi alcuni totali sono parziali.';

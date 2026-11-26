@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 146 (26/11/2026, sera).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 147 (26/11/2026, sera).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **146**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **147**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -279,7 +279,8 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **Impostazioni (v143):** il tasto di Sicurezza si chiama "PIN Applicazione" ed è come "Sincronizza" (150 × 40 px, verde scuro); sotto Reset App: "Cancella solo i dati su questo telefono:" e a capo "i backup su Drive restano."
   - **Backup su file (v144):** "Esporta backup" apre il menu di condivisione di Android (File con scelta della cartella, Google Drive, email, WhatsApp…); il file condiviso si chiama `diario-kcal-AAAA-MM-GG.txt` (Android non permette di condividere i `.json`, il contenuto è lo stesso JSON). Se si chiude il menu senza scegliere, o la condivisione non è disponibile, il file `.json` va in Download come prima. "Importa backup" accetta sia `.json` sia `.txt`. Tasti "Esporta backup" (a sinistra) e "Importa backup" (a destra) nello stile di "Sincronizza".
   - **Tabella del pasto (v145):** i tasti **Ascolta / Pausa** sono dentro la tabella, sotto la riga del Sale (con un po' di spazio), sia nella "Lista alimenti" in alto sia nelle tabelle in chat; leggono solo il contenuto della tabella (alimenti, totale e macro). Tolta la nota piccola grigia di Gemini sotto le tabelle del riepilogo in chat.
-  - **v146:** nello Storico, nella giornata aperta: "Annulla" a sinistra, a destra "Elimina" (ora **rosso**) e "Modifica" (standard 2). "Modifica" porta subito al Diario su quella giornata archiviata, con la barra marrone e "Modifica giornata" (se si sta già modificando un'altra giornata, avvisa). All'avvio e dopo ogni aggiornamento (anche "trascina per aggiornare") l'app riparte sempre dal **Diario, giornata in corso, nessun pasto selezionato** (se c'era una modifica di giornata archiviata non salvata, riapre quella).
+  - **v146:** nello Storico, nella giornata aperta: "Annulla" a sinistra, a destra "Modifica" e poi "Elimina" (rosso, tutto a destra, v147). "Modifica" porta subito al Diario su quella giornata archiviata, con la barra marrone e "Modifica giornata" (se si sta già modificando un'altra giornata, avvisa). All'avvio e dopo ogni aggiornamento (anche "trascina per aggiornare") l'app riparte sempre dal **Diario, giornata in corso, nessun pasto selezionato** (se c'era una modifica di giornata archiviata non salvata, riapre quella).
+  - **v147:** nello Storico l'ordine dei tasti è Annulla … Modifica, **Elimina** (rosso, tutto a destra). Ascolta nella tabella del pasto legge per ogni alimento anche le kcal ("Gallette di farro, 8 grammi, 30 chilocalorie").
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
