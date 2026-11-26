@@ -45,6 +45,7 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 .histbar b{font-size:15px}
 .histbar .mbtn{white-space:nowrap}
 .histbar>div{flex:1 1 150px}
+.histbar #reopenDay{display:block;margin-top:10px}
 .pill{border:1px solid rgba(255,255,255,.45);border-radius:99px;padding:8px 14px;color:#fff;font-size:14px;min-height:40px}
 #closeDay{background:var(--brand);border:0;min-height:40px;padding:4px 13px;font-size:13px;line-height:1.15;text-align:center;flex:none;white-space:nowrap}
 .kc{display:flex;align-items:baseline;gap:8px;margin:18px 0 8px;flex-wrap:wrap}
@@ -522,7 +523,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 102 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 103 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -882,7 +883,7 @@ function renderHistDay(){
   $('#mealTabs').hidden=!keys.length;
   $('#mealTabs').innerHTML=keys.map(k=>`<button data-hmeal="${k}" class="${k===ui.hmeal?'on':''}">${mealName(k)}<small>${f0(sum(D.meals[k].items).kcal)} kcal</small></button>`).join('');
   const bar=$('#mealBar');bar.hidden=false;bar.classList.add('histbar');
-  bar.innerHTML=`<div><b>Giornata archiviata</b><small>tocca «Modifica giornata» per correggerla</small></div><button class="mbtn" id="reopenDay">Modifica giornata</button><button class="mbtn" id="backToday">Oggi ›</button>`;
+  bar.innerHTML=`<div><b>Giornata archiviata</b><small>tocca «Modifica giornata» per correggerla</small><button class="btn bdef" id="reopenDay">Modifica giornata</button></div>`;
   if(!ui.hmeal){$('#mealItems').innerHTML='<div class="empty">Nessun alimento in questa giornata.</div>';$('#mealChat').innerHTML='';return}
   const m=D.meals[ui.hmeal],t=sum(m.items);
   $('#mealItems').innerHTML='<div class="lt">Lista alimenti</div>'+m.items.map(i=>`<div class="it"><div><div class="n">${esc(i.nome)}</div><div class="q">${esc(i.quantita)}${srcTag(i)}</div></div><div class="k">${f0(i.kcal)} kcal</div><span></span><div class="m">${mline(i)}</div></div>`).join('')+`<div class="tot"><span>Totale ${mealName(ui.hmeal).toLowerCase()}</span><span>${f0(t.kcal)} kcal</span><small>${mline(t)}</small></div>`;
@@ -901,8 +902,8 @@ function finishEdit(){
   const rec=packDay(S.day);S.history.splice(Math.min(S.editPos||0,S.history.length),0,rec);
   S.day=S.parked;delete S.parked;delete S.editPos;normalize();ui.dv=null;ui.meal=null;gdWant('full');save();render();toast('Modifiche salvate · sei tornato alla giornata attuale');
 }
-$('#dPrev').onclick=()=>{if(S.parked)return;ui.dv=ui.dv===null?0:Math.min(S.history.length-1,ui.dv+1);ui.hmeal=null;render();$('#main').scrollTop=0};
-$('#dNext').onclick=()=>{if(S.parked){finishEdit();return}ui.dv=ui.dv>0?ui.dv-1:null;ui.hmeal=null;render();$('#main').scrollTop=0};
+$('#dPrev').onclick=()=>{if(S.parked)return;ui.dv=ui.dv===null?0:Math.min(S.history.length-1,ui.dv+1);ui.hmeal=null;ui.toTop=true;render();$('#main').scrollTop=0};
+$('#dNext').onclick=()=>{if(S.parked){finishEdit();return}ui.dv=ui.dv>0?ui.dv-1:null;ui.hmeal=null;ui.toTop=true;render();$('#main').scrollTop=0};
 function renderMeal(){
   $('#mealBar').classList.remove('histbar');
   const order=S.day.order;if(ui.meal&&!order.includes(ui.meal))ui.meal=null;

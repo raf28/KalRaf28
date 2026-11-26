@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 102 (26/11/2026, sera).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 103 (26/11/2026, sera).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **102**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **103**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -228,6 +228,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **Ascolta / Pausa (v100):** il testo si legge a pezzi più corti (si spezza anche su virgole e a capo, massimo 12 parole per pezzo), così una pausa successiva riprende davvero dal nuovo punto e non dal pezzo lungo precedente. Se il telefono segnala la parola che sta leggendo (`onboundary`), la ripresa parte dalla **parola esatta**; altrimenti dall'inizio del pezzo interrotto.
   - **Data nella testata (v101):** su due righe, "Giovedì 26" sopra e il mese in MAIUSCOLO sotto ("NOVEMBRE"), stessa grandezza del testo (14 px); frecce ‹ › più grandi (32 px invece di 26).
   - **Data nella testata (v102):** il mese ha solo l'iniziale maiuscola ("Novembre"); spazio tra frecce e data portato a 12 px per lato (uguale a sinistra e a destra).
+  - **Giornata archiviata (v103):** sfogliando con le frecce la pagina resta in cima (testata con data e kcal visibili; prima scorreva subito in fondo alla chat). Nella barra marrone tolto "Oggi ›" (per tornare a oggi si usa la freccia ›); "Modifica giornata" è un tasto di default verde scuro, sotto la frase, a sinistra.
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
