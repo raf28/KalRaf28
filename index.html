@@ -247,7 +247,7 @@ nav button.on{color:var(--brand2);font-weight:600}
 .f label{display:block;font-weight:600;margin-bottom:4px}
 .f p{margin:4px 0 0;font-size:13.5px;color:var(--mute)}
 .f input[type=text],.f input[type=password],.f input[type=number],.f select{width:100%;min-height:44px;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:8px 12px;font-size:16px}
-.f input[type=range]{width:100%;accent-color:var(--brand2);height:32px}
+.f input[type=range]{width:100%;accent-color:#2f8f5c;height:32px}
 .rng{display:flex;gap:10px;align-items:center}
 .rng input[type=number]{width:110px;flex:none}
 h2{font-size:22px;margin:18px 0 10px}
@@ -521,9 +521,9 @@ window.addEventListener('error',()=>hideSplash());</script>
         </div>
         <div class="card">
           <h3>Storico</h3>
-          <div class="f"><label for="keep">Conserva le giornate chiuse per</label>
+          <div class="f"><label for="keep">Conserva le giornate alimentari per</label>
             <select id="keep"><option value="3">3 giorni</option><option value="7">7 giorni</option><option value="14">14 giorni</option><option value="30">30 giorni</option><option value="0">Sempre</option></select>
-            <p>Le giornate più vecchie vengono eliminate in automatico. Le ricette restano sempre.</p></div>
+            <p>Le giornate alimentari più vecchie vengono eliminate in automatico.</p></div>
         </div>
         <div class="card">
           <h3>Gemini</h3>
@@ -561,7 +561,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 123 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 124 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
