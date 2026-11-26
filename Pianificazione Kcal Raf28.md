@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 125 (26/11/2026, sera).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 126 (26/11/2026, sera).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **125**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **126**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -112,7 +112,7 @@ La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impos
 - **Obiettivo kcal**, da 1000 a 5000 a passi di 50 (cursore + numero; predefinito 2000).
 - **Margine bonus**, da 0 a 600 a passi di 50 (predefinito 300).
 - **Conservazione dello storico:** 3, 7 (predefinito), 14 o 30 giorni, oppure sempre.
-- **Gemini:** chiave API (con "Mostra/Nascondi" e "Salva e carica modelli"), modello principale (si consiglia Flash‑Lite) e Riserve 1 e 2.
+- **Intelligenza Artificiale: Gemini** (v126): chiave API (con "Mostra/Nascondi" e "Salva e Carica Modelli"), modello principale (si consiglia Flash‑Lite) e Riserve 1 e 2.
 - **Backup su Google Drive** (vedi 3.9).
 - **Backup su file (v90):** esporta e importa un unico JSON (`diario-kcal-AAAA-MM-GG.json`) con **tutti i dati e le foto degli alimenti** (campo `photos`, le foto in base64), senza la chiave API. L'importazione sostituisce tutti i dati e rimette le foto; i file vecchi senza foto si importano lo stesso e lasciano le foto attuali. È indipendente dal backup su Drive, che non è stato toccato.
 - **Aspetto (v57):** come il telefono / chiaro / scuro (`settings.theme`), salvato anche nel backup.
@@ -259,6 +259,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **Impostazioni (v123):** in Aspetto i tasti non selezionati hanno il verde degli spuntini non selezionati della barra del Diario (`#436955` in chiaro, `#153424` in scuro); il selezionato resta verde chiaro `#2f8f5c`.
   - **Impostazioni (v124):** cursori di Obiettivo kcal e Margine bonus nel verde chiaro `#2f8f5c`; nel blocco Storico "Conserva le giornate alimentari per" e sotto "Le giornate alimentari più vecchie vengono eliminate in automatico." (tolto "Le ricette restano sempre").
   - **Impostazioni (v125):** in Aspetto i tasti non selezionati hanno il verde della barra dei pasti del Diario (`#1f4d35`); quello selezionato è verde chiaro `#2f8f5c` con la spunta bianca ✓. Storico: "Conserva le Giornate Alimentari per" e sotto "Quelle più vecchie vengono eliminate in automatico."
+  - **Impostazioni (v126):** il blocco "Gemini" si chiama **"Intelligenza Artificiale: Gemini"** (in futuro potranno esserci altri modelli). Tasti a pillola alti 40 px come lo standard 2, nel verde dei tasti non selezionati di Aspetto (`#1f4d35`): "Salva e Carica Modelli" a sinistra, "Mostra/Nascondi" a destra con larghezza fissa (104 px) che non cambia tra le due scritte.
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 

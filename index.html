@@ -409,6 +409,8 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
 .thm button{background:var(--brand);color:#fff;border-color:var(--brand)}
 .thm button.on::before{content:"✓ ";font-weight:700}
 .thm button.on{background:#2f8f5c;border-color:#2f8f5c;color:#fff}
+/* Impostazioni (v126): tasti del blocco Intelligenza Artificiale, forma dello standard 2, verde dei tasti non selezionati di Aspetto */
+#v-impost .btn.aib{height:40px;min-height:40px;padding:0 18px;border-radius:99px;border:0;background:var(--brand);color:#fff;font-size:14px;font-weight:400;flex:none}
 /* Impostazioni (v121): bordo dei blocchi nel verde del tasto «Applica e torna al Diario» */
 #v-impost .card{border-color:var(--brand2)}
 /* Diario (v120): barra del pasto uguale alla barra dei pasti in basso */
@@ -527,11 +529,11 @@ window.addEventListener('error',()=>hideSplash());</script>
             <p>Quelle più vecchie vengono eliminate in automatico.</p></div>
         </div>
         <div class="card">
-          <h3>Gemini</h3>
+          <h3>Intelligenza Artificiale: Gemini</h3>
           <div class="f"><label for="key">Chiave API</label>
             <input type="password" id="key" autocomplete="off" placeholder="Incolla qui la chiave di AI Studio">
             <p>Resta salvata solo in questo browser.</p></div>
-          <div class="row" style="margin:-6px 0 14px"><button class="btn sm ghost" id="keySave">Salva e carica modelli</button><button class="btn sm ghost" id="keyShow">Mostra</button></div>
+          <div class="row" style="margin:-6px 0 14px;justify-content:space-between"><button class="btn sm ghost aib" id="keySave">Salva e Carica Modelli</button><button class="btn sm ghost aib" id="keyShow" style="width:104px">Mostra</button></div>
           <div class="f"><label for="model">Modello principale</label>
             <select id="model"></select>
             <p id="modelInfo">Usato per tutte le richieste. Consigliato Flash-Lite: tante richieste gratuite al giorno.</p></div>
@@ -562,7 +564,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 125 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 126 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
