@@ -222,40 +222,4 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
 
 ## ✅ COSE DA FARE
 
-### Priorità alta
-1. **Collaudo del backup su Drive:** collegare, modificare un alimento e verificare il file su Drive; chiudere una giornata; fare un Reset App e poi un ripristino completo, foto comprese; provare cosa succede con il token scaduto e da offline.
-2. **Sezione "Preimpostati" (pranzi e cene):** è ancora da progettare. Cose da decidere:
-   - Come si crea un preimpostato: dalla chat, salvando un pasto già fatto dal diario, oppure a mano.
-   - Come si aggiunge a un pasto, per esempio con le porzioni come per le ricette.
-   - La fonte `preimpostato` ("valore sicuro – Preimpostati") è già prevista nel codice.
-   - Va incluso nel backup su Drive tra i dati salvati subito.
-3. **Installare l'APK 1.0.2** (version code 3, icona con bordo dimezzato) sopra quella attuale e controllare l'icona sul Pixel. Poi verificare sul telefono la schermata di avvio (v88–v89) con rete lenta e veloce.
-3b. **APK Android (TWA con PWABuilder), storia:** con la v40 sono stati aggiunti `manifest.webmanifest` (icone "Kcal", schermo intero) e `sw.js` (prima la rete, copia offline come riserva); anche l'icona nella scheda del browser ora è "Kcal". APK generata il 25/11/2026 su pwabuilder.com (package `io.github.raf28.kalraf28`, nome KalRaf28). APK installata sul Pixel il 25/11/2026. Per togliere la barra dell'indirizzo è stato creato il repository pubblico `raf28.github.io` con `.well-known/assetlinks.json` (impronta della firma dell'APK) e `_config.yml` (`include: [".well-known"]`, altrimenti GitHub Pages non pubblica la cartella). L'APK carica l'app da GitHub: i repository KalRaf28 e raf28.github.io e GitHub Pages devono restare come sono. Se in futuro si rifà l'APK con un'altra firma, va aggiornata l'impronta in assetlinks.json. Prossimo passo: collaudo dell'app installata. **Fatto il 25/11:** APK installata e barra sparita.
-
-4. **Mettere al sicuro le chiavi** (in un posto solo, per esempio una cartella privata su Drive), senza mai scriverle in questo documento né nel repository:
-   - `signing.keystore` e il file di testo con le sue password, presi dallo zip di PWABuilder: servono per rifare l'APK in futuro (stesso package `io.github.raf28.kalraf28`);
-   - la **chiave API di Gemini** (Google AI Studio), da tenere insieme alle altre.
-
-### Da verificare durante il collaudo
-5. Sezione **Alimenti** (era "fatta, da testare"): creazione con dettatura e con foto, collegamento nel diario con i grammi o i pezzi, ricalcolo dei valori.
-6. Regola v39 "macro mancanti = 0": controllare che non dia valori falsi quando l'etichetta è incompleta.
-7. Modelli di riserva: provarli nelle ore in cui Google è sovraccarico.
-8. **Costi API:** controllare in Google AI Studio / Google Cloud che il progetto della chiave **non abbia la fatturazione attiva**, così si resta solo nel livello gratuito e non si paga mai.
-9. **Schermata di consenso OAuth:** se è in modalità "test", controllare la durata dell'accesso e gli utenti di prova. Valutare se pubblicarla.
-
-### Piccole cose ancora aperte
-- Il pulsante rotondo ↓ (salta in fondo) nella sezione Alimenti si sovrappone a "Aggiungi alimento": da spostare.
-- **Ricette:** da decidere se resta e come completarla (vedi Stato delle sezioni).
-
-### Piccole cose notate rileggendo il codice
-10. Il "Backup su file" non contiene le foto degli alimenti (stanno in IndexedDB), e la descrizione nomina solo "diario, storico e ricettario", anche se esporta pure alimenti e impostazioni. Va aggiornato il testo oppure incluse le foto.
-11. Il README del repository è vuoto: si potrebbe aggiungere una breve descrizione e un link a questo documento.
-12. Tenere aggiornato questo documento (è salvato nel repository) alla fine di ogni sessione di lavoro.
-
-### Da sistemare alla prossima rigenerazione dell'APK (non urgente)
-- **Blocco in verticale:** il manifest (v40) ha `"orientation": "portrait"` e PWABuilder l'ha messo dentro l'APK. Effetti: l'app **non ruota in orizzontale** e **non si può usare a schermo diviso** su Android (probabilmente per il blocco; le app TWA a volte sono comunque capricciose con lo schermo diviso). Soluzione: togliere `orientation` dal manifest (o metterlo `"any"`), poi rigenerare l'APK con PWABuilder (stesso keystore, **version code 4**) e reinstallarla sopra. **26/11:** l'utente ha deciso di rimandarlo; l'APK 1.0.2 è ancora bloccata in verticale. Effetto collaterale: ruoterà anche in orizzontale, layout un po' largo.
-  - **Idea dell'utente:** aggiungere nelle Impostazioni un interruttore **"Blocca in verticale" sì/no**, per scegliere se l'app ruota o no. Come farlo: togliere il blocco dall'APK (una sola rigenerazione), poi gestire la rotazione dentro l'app con `screen.orientation.lock('portrait')` / `unlock()` in base all'interruttore (da verificare che funzioni nella TWA). Dopo quella rigenerazione, l'interruttore e le sue eventuali modifiche arrivano da GitHub senza rifare l'APK.
-- **Barra in basso tagliata (visto una volta, 25/11):** alla prima apertura dopo l'aggiornamento dell'APK mancava la barra di navigazione in basso (Diario… Impostazioni); riaprendo l'app è tornata a posto. Si ripresentava anche dopo il "trascina per aggiornare". **v52 (26/11):** l'altezza dell'app ora è misurata in JavaScript (`--appH`, la più piccola tra `innerHeight` e `visualViewport.height` quando non si sta scrivendo) e ricalcolata all'avvio, dopo il ricaricamento, al ritorno in primo piano e a ogni cambio di dimensione. Da verificare sul telefono.
-
-### Futuro
-13. Eventuale APK "autonoma" con tutto il codice dentro (Capacitor o simili): servirebbe solo per il Play Store o per non dipendere da GitHub. Richiede di rifare il login Google per Drive e la dettatura.
+*Nessuna attività aperta al momento (lista svuotata il 26/11/2026).*
