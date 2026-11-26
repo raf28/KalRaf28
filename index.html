@@ -291,10 +291,14 @@ details.card summary::-webkit-details-marker{display:none}
 .mdock .seg button.vuoto{border-style:dashed;opacity:.85}
 .mdock .sarr{top:0;bottom:0}
 .mdock{background:var(--bg);padding:10px 4px 8px}
-.mdock .mrow{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 8px 6px 6px}
+.mdock .mrow{background:var(--card);border:2px solid var(--brand2);border-radius:999px;padding:6px 8px 6px 6px}
 .mdock .seg button{border-radius:999px}
 .mdock .sarr.l{left:-4px;background:linear-gradient(90deg,var(--card) 55%,transparent)}.mdock .sarr.r{right:-4px;background:linear-gradient(270deg,var(--card) 55%,transparent)}
 .comp{border-top:1px solid var(--line)}
+.mdock .sarr.r{right:0;border-radius:0 999px 999px 0}.mdock .sarr.l{border-radius:999px 0 0 999px}
+.mdock .addm,.mdock .seg button.on{border:2px solid light-dark(#1f4d35,#fff)}
+.mdock .addm{box-sizing:border-box}
+.mdock .seg button{border-width:2px}
 </style>
 </head>
 <body>
@@ -406,7 +410,7 @@ details.card summary::-webkit-details-marker{display:none}
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 68 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 69 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
