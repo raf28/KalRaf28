@@ -144,6 +144,11 @@ details.food summary .kv{white-space:nowrap;color:var(--mute);font-size:14px}
 .ph figure{margin:0;width:120px}
 .ph img{width:120px;height:120px;object-fit:cover;border-radius:12px;border:1px solid var(--line);background:var(--soft)}
 .ph figcaption{font-size:12.5px;color:var(--mute);text-align:center}
+.ph figure img{cursor:zoom-in}
+.lb{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.94);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:calc(env(safe-area-inset-top) + 56px) 10px calc(env(safe-area-inset-bottom) + 16px)}
+.lb img{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px;touch-action:pinch-zoom}
+.lb .cap{color:#fff;font-size:14px;margin-top:10px;opacity:.85}
+.lb .lbx{position:absolute;top:calc(env(safe-area-inset-top) + 10px);right:12px;width:40px;height:40px;border-radius:50%;border:1px solid #ff4d3a;background:var(--brand);color:#fff;font-size:26px;line-height:1;display:grid;place-items:center;padding:0 0 3px}
 .slot .sb{display:flex;flex-direction:column;gap:6px;margin-top:6px}
 .slot .sb .btn{width:100%}
 .slot{width:150px;border:1px dashed var(--line);border-radius:12px;padding:8px;text-align:center;font-size:13px;color:var(--mute)}
@@ -350,7 +355,7 @@ details.card summary::-webkit-details-marker{display:none}
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 55 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 56 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -462,7 +467,13 @@ function go(v){if(v===ui.view){render();return}ui.view=v;hpush({v});render();$('
 function sheet(html){const was=!$('#modal').hidden;$('#sheet').innerHTML=html;$('#modal').hidden=false;$('#sheet').scrollTop=0;if(!was)hpush({v:ui.view,sheet:1})}
 function closeSheet(fromPop){if(typeof rec!=='undefined'&&rec)rec.stop();if($('#modal').hidden)return;$('#modal').hidden=true;$('#sheet').innerHTML='';
   if(!fromPop&&history.state&&history.state.sheet){try{history.replaceState({v:ui.view,dead:1},'')}catch(e){}curDead=true}}
-window.addEventListener('popstate',e=>{const st=e.state||{v:'diario'};
+/* foto a tutto schermo (Diario e Alimenti): tocca per chiudere, anche con il tasto Indietro */
+let lbEl=null,lbSkip=false;
+function openLb(src,cap){closeLb(true);lbEl=document.createElement('div');lbEl.className='lb';lbEl.innerHTML=`<button class="lbx" aria-label="Chiudi foto">×</button><img alt="${esc(cap||'Foto')}" src="${esc(src)}">${cap?`<div class="cap">${esc(cap)}</div>`:''}`;
+  lbEl.addEventListener('click',()=>closeLb());document.body.appendChild(lbEl);try{history.pushState(Object.assign({},history.state||{},{lb:1}),'')}catch(e){}}
+function closeLb(silent){if(!lbEl)return;lbEl.remove();lbEl=null;if(!silent&&history.state&&history.state.lb){lbSkip=true;history.back()}}
+document.addEventListener('click',e=>{const im=e.target.closest('.ph figure img');if(!im)return;e.preventDefault();e.stopPropagation();const fc=im.closest('figure').querySelector('figcaption');openLb(im.src,fc?fc.textContent:'')},true);
+window.addEventListener('popstate',e=>{if(lbSkip){lbSkip=false;return}if(lbEl){closeLb(true);return}const st=e.state||{v:'diario'};
   if(!$('#modal').hidden){closeSheet(true);if(st.dead)history.back();if(!st.sheet)return}
   if(curDead){curDead=false;if((st.v||'diario')===ui.view&&!st.sheet){history.back();return}}
   if(st.dead){history.back();return}
