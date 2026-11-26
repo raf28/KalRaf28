@@ -34,7 +34,7 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 .head{background:var(--brand);color:#fff;padding:calc(env(safe-area-inset-top) + 14px) 16px 16px}
 .head .in{max-width:720px;margin:0 auto}
 .dayline{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;opacity:.9}
-.dnav{display:flex;align-items:center;gap:6px;min-width:0}
+.dnav{display:flex;align-items:center;gap:12px;min-width:0}
 .arw{width:32px;height:32px;flex:none;border-radius:50%;border:2px solid #fff;color:#fff;font-size:22px;font-weight:600;line-height:1;display:grid;place-items:center;padding:0 0 2px}
 .dayline{background:var(--brand2);border-radius:99px;padding:6px 6px 6px 10px;opacity:1;box-shadow:0 3px 10px rgba(0,0,0,.12)}
 #dayLabel{font-size:14px;line-height:1.2;min-width:0}
@@ -522,7 +522,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 101 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 102 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -873,7 +873,7 @@ function renderHead(){
   $('#lgMax').textContent=margin?`obiettivo ${f0(target)} · bonus fino a ${f0(max)}`:`obiettivo ${f0(target)}`;
   $('#dMacros').innerHTML=NUTR.slice(1).map(([k,l,u])=>`<div><span>${l==='Carboidrati'?'Carbo':l}</span><b>${fv(t,k,u)}</b>${SUB[k]?`<small>${SUB[k][1]} ${fv(t,SUB[k][0],u)}</small>`:''}</div>`).join('');
   const d=new Date(D.start);
-  {const wd=d.toLocaleDateString('it-IT',{weekday:'long'}),mo=d.toLocaleDateString('it-IT',{month:'long'}).toUpperCase();$('#dayLabel').innerHTML=(S.parked&&!H?'✎ ':'')+esc(wd.charAt(0).toUpperCase()+wd.slice(1))+' '+d.getDate()+'<br>'+esc(mo)}
+  {const wd=d.toLocaleDateString('it-IT',{weekday:'long'}),mo=d.toLocaleDateString('it-IT',{month:'long'});$('#dayLabel').innerHTML=(S.parked&&!H?'✎ ':'')+esc(wd.charAt(0).toUpperCase()+wd.slice(1))+' '+d.getDate()+'<br>'+esc(mo.charAt(0).toUpperCase()+mo.slice(1))}
 }
 function renderHistDay(){
   const D=histDay(ui.dv);if(!D){ui.dv=null;render();return}
