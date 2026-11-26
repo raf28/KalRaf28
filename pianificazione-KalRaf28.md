@@ -1,6 +1,6 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 57 (26/11/2026).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 63 (26/11/2026).*
 
 ---
 
@@ -189,6 +189,8 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`.
   - risolto il bug della barra in basso che spariva dopo il "trascina per aggiornare" (v52);
   - tolto il pulsante Preimpostati (v53);
   - scelta dell'aspetto in Impostazioni: come il telefono / chiaro / scuro, salvata anche nel backup (v57).
+  - riga dei pasti spostata sopra il campo di scrittura, tolta la vecchia barra in basso (v60);
+  - **nuovo sistema dei pasti (v63):** cerchio **+** fisso a sinistra della riga → menu "Aggiungi Colazione / Pranzo / Cena / Spuntino". Nella riga compaiono solo i pasti aggiunti, **nell'ordine in cui sono stati aggiunti** (`day.order`). Colazione, pranzo e cena uno solo ciascuno; spuntini numerati in sequenza, **massimo 10**. Ogni pasto ha **"Elimina …"** con conferma (sostituisce "Svuota pasto"): eliminando uno spuntino in mezzo, i successivi vengono rinumerati. Tolti "Nuovo spuntino", lo spuntino "in corso" e gli spuntini "chiusi": tutti i pasti restano sempre modificabili. Le giornate salvate con il vecchio formato vengono convertite da sole.
 
 **Stato:** online, **collaudo in corso dal 25/11/2026**. Interfaccia del Diario rifinita il 26/11.
 
