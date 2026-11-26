@@ -195,12 +195,19 @@ details.food summary .kv{white-space:nowrap;color:var(--mute);font-size:14px}
 .ib svg{width:24px;height:24px}
 .ib.send{background:var(--brand2);color:#fff}
 .ib:disabled{opacity:.4}
-.pills{max-width:720px;margin:0 auto 8px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) 58px;gap:4px;align-items:stretch}
+.pills{max-width:720px;margin:0 auto 8px;display:grid;grid-template-columns:minmax(0,1fr) 58px;gap:4px;align-items:stretch}
+.pills .segw{min-width:0}
+.psc{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;scroll-behavior:smooth}
+.psc::-webkit-scrollbar{display:none}
+.psc button{flex:0 0 calc((100% - 12px)/4)}
+.pills .sarr{top:0;bottom:0;width:34px;font-size:36px}
+.pills .sarr{border:0;border-radius:0;min-height:0;overflow:visible;font-weight:400;color:light-dark(#2c6a49,#7cc79a)}
+.pills .sarr.l{left:-2px;background:linear-gradient(90deg,var(--card) 55%,transparent)}.pills .sarr.r{right:-2px;background:linear-gradient(270deg,var(--card) 55%,transparent)}
 .pills button{min-height:40px;border-radius:999px;border:1.5px solid var(--brand2);background:var(--bg);font-size:12.5px;letter-spacing:-.2px;font-weight:500;padding:2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pills button.on{background:var(--brand2);border-color:var(--brand2);color:#fff;font-weight:600}
 .pills .newsn{border-radius:8px;background:#f4c430;border-color:#e0ad12;color:#3a2c00;font-size:11px;font-weight:700;line-height:1.1;white-space:normal;text-overflow:clip;padding:2px 0}
 .pills .newsn:disabled{opacity:.4}
-@media(min-width:600px){.pills{grid-template-columns:repeat(4,minmax(0,1fr)) 110px}.pills button{font-size:14px}}
+@media(min-width:600px){.pills{grid-template-columns:minmax(0,1fr) 110px}.pills button{font-size:14px}}
 .ib.mic{margin-right:8px}
 .ib.mic.rec{background:var(--bad);color:#fff;animation:pulse 1.2s infinite}
 @keyframes pulse{50%{opacity:.6}}
@@ -368,7 +375,7 @@ details.card summary::-webkit-details-marker{display:none}
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 58 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 59 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -663,7 +670,7 @@ function renderPhoto(){$('#prev').hidden=!ui.photo;if(ui.photo)$('#prevImg').src
 
 /* ---------- render ---------- */
 function applyTheme(){const th=(S.settings&&S.settings.theme)||'auto';document.documentElement.style.colorScheme=th==='light'?'light':th==='dark'?'dark':'light dark';document.querySelectorAll('[data-thm]').forEach(b=>b.classList.toggle('on',b.dataset.thm===th))}
-function updSeg(){const s=$('#mealTabs'),w=$('#segw');if(!s||!w)return;const max=s.scrollWidth-s.clientWidth;w.classList.toggle('cl',!s.hidden&&s.scrollLeft>4);w.classList.toggle('cr',!s.hidden&&s.scrollLeft<max-4)}
+function updSeg(){[['mealTabs','segw'],['psc','pillw']].forEach(([a,b])=>{const s=$('#'+a),w=$('#'+b);if(!s||!w)return;const max=s.scrollWidth-s.clientWidth;w.classList.toggle('cl',!s.hidden&&s.scrollLeft>4);w.classList.toggle('cr',!s.hidden&&s.scrollLeft<max-4)})}
 function render(){applyTheme();requestAnimationFrame(updSeg);
   ['diario','alimenti','ricette','pasti','storico','impost'].forEach(v=>$('#v-'+v).hidden=ui.view!==v);
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===ui.view));
@@ -987,8 +994,10 @@ $('#closeDay').onclick=()=>{if(S.parked){finishEdit();return}
 function showMealBar(){requestAnimationFrame(()=>{const st=document.querySelector('.mstick'),mn=$('#main');if(!st)return;const top=st.offsetTop;if(mn.scrollTop<top)mn.scrollTo({top,behavior:'smooth'})})}
 function renderPills(){
   const cur=ui.meal,cs=S.day.curSnack,empty=!ensureMeal(cs).items.length;
-  $('#pills').innerHTML=[['colazione','Colazione'],['pranzo','Pranzo'],['cena','Cena'],[cs,mealName(cs)]].map(([k,l])=>`<button data-pill="${k}" class="${k===cur?'on':''}">${l}</button>`).join('')
+  const keep=$('#psc')?$('#psc').scrollLeft:0;
+  $('#pills').innerHTML=`<div class="segw" id="pillw"><div class="psc" id="psc">${visibleMeals().map(k=>`<button data-pill="${k}" class="${k===cur?'on':''}">${mealName(k)}</button>`).join('')}</div><button class="sarr l" data-segs="-1" data-segt="psc" aria-label="Scorri a sinistra">‹</button><button class="sarr r" data-segs="1" data-segt="psc" aria-label="Scorri a destra">›</button></div>`
     +`<button data-pill="__new" class="newsn" ${empty?'disabled':''} title="${empty?mealName(cs)+' è ancora vuoto':'Chiude '+mealName(cs)+' e ne apre uno nuovo'}">Nuovo<br>spuntino</button>`;
+  const sc=$('#psc');sc.style.scrollBehavior='auto';sc.scrollLeft=keep;const on=sc.querySelector('.on');if(on){const l=on.offsetLeft,r=l+on.offsetWidth;if(l<sc.scrollLeft||r>sc.scrollLeft+sc.clientWidth)sc.scrollLeft=Math.max(0,l-(sc.clientWidth-on.offsetWidth)/2)}sc.style.scrollBehavior='';sc.addEventListener('scroll',updSeg,{passive:true});requestAnimationFrame(updSeg);
 }
 $('#pills').addEventListener('click',e=>{const b=e.target.closest('[data-pill]');if(!b||b.disabled)return;e.stopPropagation();const k=b.dataset.pill;
   if(k!=='__new'){ui.meal=k;render();showMealBar();return}
@@ -1263,7 +1272,7 @@ try{history.replaceState({v:'diario'},'')}catch(e){}
 /* service worker: serve per installare l'app (APK) e aprirla anche offline */
 if('serviceWorker' in navigator&&location.protocol==='https:')window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})});
 $('#mealTabs').addEventListener('scroll',updSeg,{passive:true});window.addEventListener('resize',updSeg);
-document.addEventListener('click',e=>{const a=e.target.closest('[data-segs]');if(!a)return;e.stopPropagation();const s=$('#mealTabs');s.scrollBy({left:+a.dataset.segs*s.clientWidth*.7,behavior:'smooth'})},true);
+document.addEventListener('click',e=>{const a=e.target.closest('[data-segs]');if(!a)return;e.stopPropagation();const s=$('#'+(a.dataset.segt||'mealTabs'));s.scrollBy({left:+a.dataset.segs*s.clientWidth*.7,behavior:'smooth'})},true);
 boot();
 }
 </script>
