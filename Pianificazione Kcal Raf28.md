@@ -223,6 +223,14 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
 
 ## ✅ COSE DA FARE
 
+### Da implementare
+1. **Sezione Ricette, da ristrutturare** (non urgente, da fare in un secondo momento). Due parti:
+   - **Chat per creare le ricette.** Si danno a Gemini gli ingredienti con le dosi e si indica in quante **porzioni** si divide la ricetta (es. un impasto da cui escono 4 piadine = 4 porzioni). A ogni ingrediente aggiunto o modificato si vede sempre, aggiornato:
+     - il **totale della ricetta**: elenco di tutti gli ingredienti con le quantità, kcal totali e macro totali;
+     - sotto, la **singola porzione**: ingredienti con le quantità per porzione, kcal e macro di una porzione (totale diviso per il numero di porzioni).
+   - **Ricettario.** Quando la ricetta è nella versione finale, dalla chat la si salva nel Ricettario, cioè l'elenco di tutte le ricette salvate.
+   - **Salva come alimento.** Sia nella chat sia nel Ricettario, il blocco della **singola porzione** (ingredienti, kcal e macro per porzione) si può salvare come **singolo alimento** nella sezione Alimenti (es. "1 piadina").
+
 ### Futuro
 1. Eventuale APK "autonoma" con tutto il codice dentro (Capacitor o simili): servirebbe solo per il Play Store o per non dipendere da GitHub. Richiede di rifare il login Google per Drive e la dettatura.
 2. Possibilità di agganciare altri "cervelli" AI usando gli abbonamenti Pro (ChatGPT, Gemini Pro, Claude Pro), quando renderanno disponibile questa funzione nelle app di terze parti.
