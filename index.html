@@ -347,6 +347,17 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
 .applybar .btn.addbar{display:flex;align-items:center;justify-content:flex-start;gap:14px;background:var(--brand);border:0;border-radius:999px;padding:6px 18px 6px 6px;min-height:58px;font-size:17px;font-weight:600}
 .addbar .pl{width:46px;height:46px;border-radius:50%;background:#fff;color:var(--brand);font-size:30px;font-weight:400;line-height:1;display:grid;place-items:center;padding:0 0 3px;flex:none}
 .addbar{position:relative}
+
+/* Alimenti: schede a pillola, larghe, sempre alte due righe */
+#v-alimenti .wrap{padding-left:6px;padding-right:6px}
+#v-alimenti .letter{padding-left:12px}
+#v-alimenti details.food{border-radius:34px;padding:12px 22px}
+#v-alimenti details.food[open]{border-radius:28px}
+#v-alimenti details.food summary{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;min-height:46px}
+#v-alimenti details.food summary .nm{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.25}
+#v-alimenti details.food summary .kv{white-space:normal;text-align:right;max-width:44vw;line-height:1.2;display:flex;flex-direction:column;align-items:flex-end}
+#v-alimenti details.food summary .kv b{font-size:15px;white-space:nowrap}
+#v-alimenti details.food summary .kv small{font-size:12.5px;font-weight:500;overflow-wrap:anywhere}
 </style>
 </head>
 <body>
@@ -459,7 +470,7 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 83 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 84 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1018,7 +1029,7 @@ function renderFoods(){
   if(!list.length){$('#foodList').innerHTML='<div class="empty">Nessun alimento trovato.</div>';return}
   let h='',cur='';
   list.forEach(f=>{const L=letterOf(f.nome);if(L!==cur){cur=L;h+=`<div class="letter">${L}</div>`}
-    h+=`<details class="card food" data-fid="${esc(f.id)}"><summary><span class="nm">${esc(f.nome)}</span><span class="kv">${fval(f.kcal,'kcal')} / ${esc(f.riferimento||'100 g')}</span></summary>
+    h+=`<details class="card food" data-fid="${esc(f.id)}"><summary><span class="nm">${esc(f.nome)}</span><span class="kv"><b>${fval(f.kcal,'kcal')}</b><small>per ${esc(f.riferimento||'100 g')}</small></span></summary>
     <table class="vt"><tbody><tr><td>Riferimento</td><td>${esc(f.riferimento||'100 g')}</td></tr>${FKEYS.map(([k,l,u])=>`<tr class="${l.startsWith('di cui')?'sub':''}"><td>${l}</td><td>${fval(f[k],u,k)}</td></tr>`).join('')}</tbody></table>
     ${f.note?`<p style="margin:10px 0 0"><b>Note:</b> ${esc(f.note)}</p>`:''}${macroNote(f)?`<p class="hm" style="margin:8px 0 0">${esc(macroNote(f))}</p>`:''}
     <div class="ph" data-ph="${esc(f.id)}"></div>
