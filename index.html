@@ -434,6 +434,9 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
 #v-storico details.hday summary .kv small{font-size:12.5px;font-weight:500}
 #v-storico details.hday:not([open]) summary,#v-storico details.hday:not([open]) summary .kv{color:#fff}
 #v-storico details.hday .dot{box-shadow:0 0 0 2px #fff}
+/* Storico (v133): giornata aperta più leggibile */
+#v-storico details.hday[open] .hm{color:var(--ink);font-size:inherit}
+#v-storico details.hday[open] > div > b{text-transform:uppercase;letter-spacing:.03em}
 /* Impostazioni (v121): bordo dei blocchi nel verde del tasto «Applica e torna al Diario» */
 #v-impost .card{border-color:var(--brand2)}
 /* Diario (v120): barra del pasto uguale alla barra dei pasti in basso */
@@ -587,7 +590,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 132</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 133</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -714,7 +717,7 @@ function hpush(st){try{history.pushState(st,'')}catch(e){}curDead=false}
 function go(v){if(v===ui.view){render();return}ui.view=v;hpush({v});render();$('#main').scrollTop=0}
 function sheet(html){const was=!$('#modal').hidden;$('#sheet').innerHTML=html;$('#modal').hidden=false;$('#sheet').scrollTop=0;if(!was){hpush({v:ui.view,sheet:1});
   /* v115: se c'è una scheda alimento aperta (che ascolta l'Indietro), anche la finestra ascolta l'Indietro e si chiude per prima */
-  if('CloseWatcher' in window&&[...document.querySelectorAll('details.food')].some(d=>d._cw)){try{const w=new CloseWatcher();sheetCW=w;w.onclose=()=>{if(sheetCW===w){sheetCW=null;closeSheet()}}}catch(e){}}}}
+  if('CloseWatcher' in window&&[...document.querySelectorAll('details')].some(d=>d._cw)){try{const w=new CloseWatcher();sheetCW=w;w.onclose=()=>{if(sheetCW===w){sheetCW=null;closeSheet()}}}catch(e){}}}}
 let sheetCW=null;
 function closeSheet(fromPop){if(sheetCW){const w=sheetCW;sheetCW=null;try{w.destroy()}catch(e){}}if(typeof rec!=='undefined'&&rec)rec.stop();if($('#modal').hidden)return;$('#modal').hidden=true;$('#sheet').innerHTML='';
   if(!fromPop&&history.state&&history.state.sheet){try{history.replaceState({v:ui.view,dead:1},'')}catch(e){}curDead=true}}
@@ -727,7 +730,7 @@ document.addEventListener('click',e=>{const im=e.target.closest('.ph figure img'
 window.addEventListener('popstate',e=>{if(lbSkip){lbSkip=false;return}if(fdSkip){fdSkip=false;return}if(lbEl){closeLb(true);return}const st=e.state||{v:'diario'};
   if(!$('#modal').hidden){closeSheet(true);if(st.dead)history.back();if(!st.sheet)return}
   /* Indietro di Android: chiude prima la scheda alimento aperta (v112) */
-  {const od=ui.view==='alimenti'&&document.querySelector('#v-alimenti details.food[open]');if(od){od.dataset.pop='1';od.open=false;return}}
+  {const od=document.querySelector('#v-'+ui.view+' details.food[open], #v-'+ui.view+' details.hday[open]');if(od){od.dataset.pop='1';od.open=false;return}}
   if(curDead){curDead=false;if((st.v||'diario')===ui.view&&!st.sheet){history.back();return}}
   if(st.dead){history.back();return}
   ui.view=st.v||'diario';render();$('#main').scrollTop=0;
@@ -914,7 +917,7 @@ function histFades(){const mn=$('#main'),sec=$('#v-storico');if(!sec||sec.hidden
   if(h)h.classList.toggle('stuck',mn.scrollTop>0);if(fb)fb.classList.toggle('on',mn.scrollHeight-mn.scrollTop-mn.clientHeight>2)}
 function alimStuck(){const sec=$('#v-alimenti');if(!sec||sec.hidden)return;const mn=$('#main').getBoundingClientRect().top,lt=parseFloat(sec.style.getPropertyValue('--ltTop'))||0;
   let on=null;sec.querySelectorAll('.letter').forEach(l=>{l.classList.remove('stuck');if(l.getBoundingClientRect().top<=mn+lt+1&&$('#main').scrollTop>0)on=l});if(on)on.classList.add('stuck')}
-function render(){applyTheme();requestAnimationFrame(alimSticky);requestAnimationFrame(()=>requestAnimationFrame(()=>{diarioFades();histFades()}));if(ui.view!=='alimenti')fdKill();requestAnimationFrame(updSeg);
+function render(){applyTheme();requestAnimationFrame(alimSticky);requestAnimationFrame(()=>requestAnimationFrame(()=>{diarioFades();histFades()}));fdKill($('#v-'+ui.view));requestAnimationFrame(updSeg);
   ['diario','alimenti','ricette','pasti','storico','impost'].forEach(v=>$('#v-'+v).hidden=ui.view!==v);
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===ui.view));
   const chatView=ui.view==='diario'||(ui.view==='ricette'&&ui.rec==='chat');
@@ -1040,7 +1043,7 @@ function renderRec(){
   $('#recBook').innerHTML='<div class="row" style="margin:0 0 12px"><button class="btn sm ghost" id="impRec">Importa ricette</button></div>'+(S.recipes.length?S.recipes.map(r=>{const t=sum(r.ingredienti);return`<div class="card"><h3>${esc(r.nome)}</h3><div class="hm">Per porzione: <b>${f0(t.kcal)} kcal</b> · ${mline(t)}</div><details style="margin-top:6px"><summary class="hm">Ingredienti</summary>${r.ingredienti.map(i=>`<div class="hm">• ${esc(i.nome)} ${esc(i.quantita)} — ${f0(i.kcal)} kcal</div>`).join('')}</details><div class="row"><button class="btn sm ghost" data-addrec="${esc(r.id)}">Aggiungi a un pasto</button><button class="btn sm ghost" data-delrec="${esc(r.id)}">Elimina</button></div></div>`}).join('')
     :'<div class="empty">Nessuna ricetta salvata. Dalla chat, tocca «Salva nel ricettario» sotto una ricetta proposta, oppure usa «Importa ricette» per incollare quelle che hai già con i tuoi valori.</div>');
 }
-function renderHist(){
+function renderHist(){fdKill();
   {const c=$('#histCnt');if(c)c.textContent=S.history.length===1?'1 giornata':S.history.length+' giornate'}
   $('#histList').innerHTML=S.history.length?S.history.map((h,ix)=>{const t=h.tot,max=h.target+h.margin,st=t.kcal<=h.target?'ok':t.kcal<=max?'warn':'bad';const d=new Date(h.start);
     return`<details class="card hday"><summary><span class="nm"><span class="dot" style="background:var(--${st})"></span>${(s=>s.charAt(0).toUpperCase()+s.slice(1))(d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'}))}</span><span class="kv"><b>${f0(t.kcal)} kcal</b><small>su ${f0(h.target)}</small></span></summary>
@@ -1049,6 +1052,7 @@ function renderHist(){
     ${orderKeys(Object.keys(h.meals).map(k=>k==='spuntino'?'spuntino1':k)).map(k=>{const l=mealName(k);const it=(h.meals[k]||(k==='spuntino1'?h.meals.spuntino:null)||[]);if(!it.length)return'';const mt=sum(it);return`<div style="margin-top:10px"><b>${l}</b> <span class="hm">${f0(mt.kcal)} kcal</span>${it.map(i=>`<div class="hm">• ${esc(i.nome)} ${esc(i.quantita)} — ${f0(i.kcal)} kcal</div>`).join('')}</div>`}).join('')}
     <div class="row between" style="margin-top:14px"><button class="btn sm ghost std2" data-collapse>Annulla</button><button class="btn sm ghost std2" data-delhist="${ix}">Elimina</button></div></details>`}).join('')
     :'<div class="empty">Qui trovi le giornate chiuse (conservate per il periodo scelto nelle Impostazioni). Usa «Nuova Giornata Alimentare» nel Diario quando hai finito di mangiare.</div>';
+  document.querySelectorAll('#histList details.hday').forEach(d=>bindCloseDetails(d));
 }
 function renderSet(){
   const s=S.settings;
@@ -1158,7 +1162,15 @@ if(S.foods.filter(f=>fixMacros(f)).length){try{localStorage.setItem(KEY,JSON.str
 function foodsCtx(){if(!S.foods.length)return'';return'\nAlimenti salvati dall\'utente (JSON, valori riferiti a "riferimento"): '+JSON.stringify(S.foods.map(f=>{const o={id:f.id,nome:f.nome,riferimento:f.riferimento};FKEYS.forEach(([k])=>{if(f[k]!==null&&f[k]!==undefined)o[k]=f[k]});if(f.note)o.note=f.note;return o}))}
 const letterOf=n=>{const c=String(n||'').normalize('NFD').replace(/[̀-ͯ]/g,'').trim().charAt(0).toUpperCase();return/[A-Z]/.test(c)?c:'#'};
 const fval=(v,u,k)=>v===null||v===undefined||v===''?'—':(u==='kcal'?f0(v)+' kcal':fk(k,v)+' '+u);
-function fdKill(){document.querySelectorAll('details.food').forEach(d=>{if(d._cw){try{d._cw.destroy()}catch(e){}d._cw=null}})}
+/* Schede apribili (Alimenti v113, Storico v133): il gesto Indietro chiude la scheda aperta senza animazione di pagina (CloseWatcher; altrimenti cronologia) */
+function bindCloseDetails(d,onOpen){d.addEventListener('toggle',()=>{
+    if(d.open){if(onOpen)onOpen();
+      if('CloseWatcher' in window){try{const w=new CloseWatcher();d._cw=w;w.onclose=()=>{d._cw=null;if(d.open){d.dataset.pop='1';d.open=false}};return}catch(e){}}
+      try{history.pushState(Object.assign({},history.state||{},{fd:1}),'')}catch(e){}return}
+    if(d.dataset.pop){delete d.dataset.pop;if(d._cw){try{d._cw.destroy()}catch(e){}d._cw=null}return}
+    if(d._cw){const w=d._cw;d._cw=null;try{w.destroy()}catch(e){}return}
+    if(history.state&&history.state.fd){fdSkip=true;history.back()}})}
+function fdKill(keep){document.querySelectorAll('details').forEach(d=>{if(d._cw&&!(keep&&keep.contains(d))){try{d._cw.destroy()}catch(e){}d._cw=null}})}
 function renderFoods(){fdKill();
   const q=($('#foodQ').value||'').trim().toLowerCase();
   const list=S.foods.filter(f=>!q||(f.nome+' '+(f.note||'')).toLowerCase().includes(q)).sort((a,b)=>a.nome.localeCompare(b.nome,'it',{sensitivity:'base'}));
@@ -1172,14 +1184,7 @@ function renderFoods(){fdKill();
     <div class="ph" data-ph="${esc(f.id)}"></div>
     <div class="row between"><button class="btn sm ghost std2" data-collapse>Annulla</button><span class="row" style="margin:0"><button class="btn sm ghost std2" data-editfood="${esc(f.id)}">Modifica</button><button class="btn sm ghost std2" data-delfood="${esc(f.id)}">Elimina</button></span></div></details>`});
   $('#foodList').innerHTML=h;const c=$('#foodCnt');if(c)c.textContent=S.foods.length+(S.foods.length===1?' salvato':' salvati');
-  document.querySelectorAll('details.food').forEach(d=>d.addEventListener('toggle',()=>{
-    if(d.open){loadFoodPhotos(d.dataset.fid);
-      /* v113: con CloseWatcher il gesto Indietro chiude la scheda senza passare dalla cronologia (niente animazione di pagina che scorre) */
-      if('CloseWatcher' in window){try{const w=new CloseWatcher();d._cw=w;w.onclose=()=>{d._cw=null;if(d.open){d.dataset.pop='1';d.open=false}};return}catch(e){}}
-      try{history.pushState(Object.assign({},history.state||{},{fd:1}),'')}catch(e){}return}
-    if(d.dataset.pop){delete d.dataset.pop;if(d._cw){try{d._cw.destroy()}catch(e){}d._cw=null}return}
-    if(d._cw){const w=d._cw;d._cw=null;try{w.destroy()}catch(e){}return}
-    if(history.state&&history.state.fd){fdSkip=true;history.back()}}));
+  document.querySelectorAll('details.food').forEach(d=>bindCloseDetails(d,()=>loadFoodPhotos(d.dataset.fid)));
 }
 async function loadFoodPhotos(id,box0){
   const f=S.foods.find(x=>x.id===id),box=box0||document.querySelector(`[data-ph="${CSS.escape(id)}"]`);if(!f||!box||!f.foto)return;
