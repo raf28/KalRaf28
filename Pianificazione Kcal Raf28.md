@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 141 (26/11/2026, sera).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 142 (26/11/2026, sera).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **141**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **142**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -275,6 +275,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **Tabella unica del pasto (v139):** la "Lista alimenti" in alto e il riepilogo in chat sono lo stesso riquadro largo e incorniciato (`mealBoxHTML()`): elenco alimenti (con X rossa), "Totale kcal PRANZO: N kcal" (verde chiaro) e tabella dei macro (Carboidrati, di cui zuccheri, Proteine, Grassi, di cui saturi, Fibre, Sale), più l'eventuale nota sui valori mancanti. In chat compare solo quando si chiede il totale/riepilogo, con Ascolta/Pausa sotto; tutte le tabelle della chat sono **sempre aggiornate** (eliminando un alimento da una si aggiornano tutte) e Ascolta legge i valori attuali. Nelle giornate archiviate lo stesso riquadro senza X.
   - **Domande di cucina (v140):** nel prompt `SYS_MEAL` regola fissa con esempi: temperature, tempi e modi di cottura (friggitrice ad aria, forno, padella…), livello del fuoco, preparazione, conservazione, sostituzioni sono sempre "domanda": la lista non si tocca, Gemini risponde da cuoco esperto; citare un alimento in una domanda di cucina non lo aggiunge (se è ambiguo chiede se aggiungerlo).
   - **Titolo della tabella (v141):** "LISTA ALIMENTI – TOTALE KCAL E MACRO", in grassetto, 17 px (come il nome del pasto nella barra), bianco in modalità scura.
+  - **Tabella del pasto (v142):** titolo su due righe senza trattino ("LISTA ALIMENTI" / "TOTALE KCAL E MACRO"); riga "Totale kcal PRANZO:" grande come il titolo (17 px, grassetto, bianca in scuro) con il numero delle kcal nel verde dell'etichetta "valore sicuro" (`#2a7a4b` in chiaro, `#5cc58a` in scuro).
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
