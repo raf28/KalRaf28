@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 118 (26/11/2026, sera).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 119 (26/11/2026, sera).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **118**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **119**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -85,7 +85,7 @@ La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impos
 - I messaggi d'errore sono in italiano: chiave non valida, limite di richieste (429), modello che non risponde.
 
 ### 3.4 Alimenti (archivio prodotti di marca)
-- È un elenco alfabetico con la lettera dell'indice fissa in alto e una ricerca per nome e note.
+- È un elenco alfabetico con la ricerca fissa in alto e, sotto, la lettera dell'indice che si ferma scorrendo (v119); la ricerca è per nome e note.
 - **Grafica (v80–v84):** testata verde con il conteggio e la ricerca a pillola (senza lente); schede a pillola alte due righe con bordo verde da 4 px, kcal sopra e "per …" sotto; pulsante a pillola "Aggiungi alimento" con il + bianco.
 - Ogni scheda contiene nome ("Prodotto – Marca"), riferimento ("100 g", "1 vasetto (170 g)"…), kcal, i macro completi, le note (es. "1 galletta = 8 g") e **tre foto (v86)**: **Confezione 1**, **Confezione 2** e **Tabella valori nutrizionali**, sulla stessa riga, ognuna con fotocamera, galleria e "Rimuovi". Sono salvate in IndexedDB (chiavi `confezione`, `confezione2`, `tabella`).
 - **"Aggiungi alimento":** in alto si sceglie **"Compila scheda Automaticamente"** (predefinito) o **"Compila scheda Manualmente"**.
@@ -252,6 +252,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **Alimenti (v116):** più spazio (8 px in più) tra i cerchi fotocamera/galleria e il tasto "Rimuovi".
   - **Alimenti (v117):** le pillole chiuse hanno lo sfondo dello stesso verde scuro della cornice (`#1f4d35`), in chiaro e in scuro; scritte bianche.
   - **Alimenti (v118):** sfumatura sopra "Aggiungi alimento" più lunga (46 px invece di 18) e più decisa; barra con ombra più marcata in chiaro e, in scuro, ombra profonda più un alone chiaro di 1 px, così si stacca anche su fondo scuro. Solo nella sezione Alimenti.
+  - **Alimenti (v119):** scorrendo, il titolo "Alimenti / N salvati" esce dallo schermo ma la barra **"Cerca un alimento" resta fissa in alto**; la lettera dell'indice si ferma subito sotto di lei, e sotto la lettera ferma c'è la stessa sfumatura della barra in basso (46 px). Le misure si calcolano da sole (`alimSticky()` / `alimStuck()`).
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
