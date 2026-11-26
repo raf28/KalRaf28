@@ -62,6 +62,9 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 .macros span{display:block;font-size:16px;font-weight:700;color:#fff}
 .macros small{display:block;font-size:11.5px;opacity:.75;line-height:1.2;margin-top:2px}
 /* pasti */
+.thm{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.thm button{min-height:44px;border-radius:99px;border:1.5px solid var(--brand2);background:var(--card);font-size:14px;font-weight:500;padding:4px 6px}
+.thm button.on{background:var(--brand2);color:#fff}
 .seg{display:flex;gap:6px;overflow-x:auto;padding:14px 0 10px;scrollbar-width:none}
 .seg button{flex:none;min-height:44px;padding:6px 14px;border-radius:12px;background:var(--card);border:1.5px solid var(--brand2);text-align:left;line-height:1.2}
 .seg button small{display:block;font-size:13px;color:var(--mute)}
@@ -314,6 +317,11 @@ details.card summary::-webkit-details-marker{display:none}
             <p>La barra diventa gialla tra obiettivo e obiettivo + margine, rossa oltre.</p></div>
         </div>
         <div class="card">
+          <h3>Aspetto</h3>
+          <div class="thm" id="thm"><button data-thm="auto">Come il telefono</button><button data-thm="light">Chiaro</button><button data-thm="dark">Scuro</button></div>
+          <p class="hm" style="margin:8px 0 0">La scelta viene salvata anche nel backup su Drive.</p>
+        </div>
+        <div class="card">
           <h3>Storico</h3>
           <div class="f"><label for="keep">Conserva le giornate chiuse per</label>
             <select id="keep"><option value="3">3 giorni</option><option value="7">7 giorni</option><option value="14">14 giorni</option><option value="30">30 giorni</option><option value="0">Sempre</option></select>
@@ -355,7 +363,7 @@ details.card summary::-webkit-details-marker{display:none}
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 56 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 57 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -427,7 +435,7 @@ function deleteSnack(k){
 function ensureMeal(k){const m=S.day.meals[k]=S.day.meals[k]||{};m.items=m.items||[];m.chat=m.chat||[];return m}
 
 const newDay=()=>{const d={id:Date.now(),start:new Date().toISOString(),meals:{},curSnack:'spuntino1'};[...BASE,'spuntino1'].forEach(k=>d.meals[k]={items:[],chat:[]});return d};
-const defaults=()=>({settings:{apiKey:'',model:'',bk1:'',bk2:'',target:2000,margin:300,keepDays:7},day:newDay(),history:[],recipes:[],recChat:[],foods:[],unlocked:false});
+const defaults=()=>({settings:{apiKey:'',model:'',bk1:'',bk2:'',target:2000,margin:300,keepDays:7,theme:'auto'},day:newDay(),history:[],recipes:[],recChat:[],foods:[],unlocked:false});
 let S=null;
 try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
 function normalize(){
@@ -649,7 +657,8 @@ async function loadPhoto(file){
 function renderPhoto(){$('#prev').hidden=!ui.photo;if(ui.photo)$('#prevImg').src=ui.photo.url}
 
 /* ---------- render ---------- */
-function render(){
+function applyTheme(){const th=(S.settings&&S.settings.theme)||'auto';document.documentElement.style.colorScheme=th==='light'?'light':th==='dark'?'dark':'light dark';document.querySelectorAll('[data-thm]').forEach(b=>b.classList.toggle('on',b.dataset.thm===th))}
+function render(){applyTheme();
   ['diario','alimenti','ricette','pasti','storico','impost'].forEach(v=>$('#v-'+v).hidden=ui.view!==v);
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===ui.view));
   const chatView=ui.view==='diario'||(ui.view==='ricette'&&ui.rec==='chat');
@@ -1050,6 +1059,7 @@ $('#apply').onclick=async()=>{
   if($('#key').value.trim()!==S.settings.apiKey){$('#apply').disabled=true;const ok=await saveKey();$('#apply').disabled=false;if(!ok)return}
   save();go('diario');toast('Impostazioni salvate');
 };
+$('#thm').onclick=e=>{const b=e.target.closest('[data-thm]');if(!b)return;S.settings.theme=b.dataset.thm;save();applyTheme();toast(b.dataset.thm==='auto'?'Aspetto: come il telefono':b.dataset.thm==='light'?'Aspetto: chiaro':'Aspetto: scuro')};
 $('#keep').onchange=e=>{S.settings.keepDays=Number(e.target.value);prune();save();toast(S.settings.keepDays?'Storico: '+S.settings.keepDays+' giorni':'Storico: sempre')};
 $('#model').onchange=e=>{S.settings.model=e.target.value;save();toast('Modello: '+e.target.value)};
 $('#exp').onclick=()=>{
