@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 130 (26/11/2026, sera).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 131 (26/11/2026, sera).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **130**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **131**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -118,7 +118,7 @@ La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impos
 - **Aspetto (v57):** come il telefono / chiaro / scuro (`settings.theme`), salvato anche nel backup.
 - **Sicurezza:** "Blocca con PIN su questo dispositivo".
 - **Reset App:** scollega Google e cancella tutti i dati sul telefono. I backup su Drive restano.
-- In fondo c'è "Versione NN · i valori nutrizionali sono stime del modello." e il pulsante "Applica e torna al Diario".
+- In fondo c'è "* I Valori Nutrizionali Generici sono stime del modello" (nel colore arancione dell'etichetta "valore generico" del Diario) e sotto "Versione NN" (v131), poi il pulsante "Applica e torna al Diario".
 
 ### 3.9 Backup su Google Drive (v34–v38) ✅
 - Si accede con Google (Google Identity Services, token OAuth). Il permesso è **solo `drive.file`**: l'app vede solo i file che crea lei.
@@ -264,6 +264,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **Impostazioni (v128):** nel blocco Drive i tre tasti sono larghi uguali (150 × 40 px); "Scollega" è rosso. Accanto a "Sincronizza" c'è solo "Ultimo backup: data e ora" (tolti gli avvisi "Modifiche in attesa" ed errori); durante la sincronizzazione il tasto si disattiva e mostra "Sincronizzo…".
   - **Impostazioni (v129):** più spazio (22 px) tra "Sincronizza" e la riga "Scollega / Ripristina da Drive". Senza account collegato il blocco mostra il testo di spiegazione e solo "Accedi con Google".
   - **Impostazioni (v130):** testo del blocco Drive su tre righe: "Collegato come email" / "Alimenti, ricette e impostazioni si salvano subito;" / "il diario alla chiusura della giornata e una volta ogni 24 ore.". Accanto a Sincronizza: "Ultimo backup:" e sotto, su una riga, giorno, data e ora per esteso (es. "giovedì 26 novembre, 21:41").
+  - **Impostazioni (v131):** in fondo alla pagina "* I Valori Nutrizionali Generici sono stime del modello" (arancione come "valore generico") e, a capo, "Versione NN". Per le prossime versioni si cambia solo il numero in "Versione NN".
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
