@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 147 (26/11/2026, sera).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 148 (26/11/2026, sera).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **147**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **148**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -49,15 +49,15 @@ KalRaf28 è un diario alimentare personale. Al posto di contare le calorie nelle
 - **Mai spese extra per l'API** oltre all'abbonamento.
 - In futuro forse un'APK.
 
-## 3. Come funziona oggi (v89): sezioni
+## 3. Come funziona oggi (v148): sezioni
 
 La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impostazioni** (Preimpostati tolto nella v53). La voce attiva è evidenziata con una pillola verde `#2f8f5c`.
 
 ### 3.1 Diario
-- **Testata verde:** una pillola con la data per esteso, le frecce piccole per sfogliare le giornate e "Nuova Giornata Alimentare" (tasto di default, verde chiaro, v94); poi kcal consumate / obiettivo (+bonus) e una barra colorata: verde fino all'obiettivo, gialla nella zona bonus (a righe), rossa oltre. Accanto c'è l'etichetta "Restano X kcal", "Bonus: X rimaste" oppure "Oltre di X". Sotto ci sono i riquadri dei macro con il nome sopra e il valore sotto (stesso bianco e stessa grandezza).
+- **Testata verde:** una pillola con la data su due righe ("Giovedì 26" / "Novembre", v102), le frecce ‹ › (32 px) per sfogliare le giornate e "Nuova Giornata Alimentare" (tasto di default, verde chiaro, v94); poi kcal consumate / obiettivo (+bonus) e una barra colorata: verde fino all'obiettivo, gialla nella zona bonus (a righe), rossa oltre. Accanto c'è l'etichetta "Restano X kcal", "Bonus: X rimaste" oppure "Oltre di X". Sotto ci sono i riquadri dei macro con il nome sopra e il valore sotto (stesso bianco e stessa grandezza).
 - **Frecce ‹ ›** per sfogliare le giornate archiviate. Una giornata archiviata si apre in sola lettura e con **"Modifica giornata"** si può riaprire. Durante la modifica la testata diventa marrone/oro, le frecce si disattivano e la barra "Giornata archiviata" mostra "Salva" (v106); al termine la giornata torna nello storico al suo posto.
 - **Riga dei pasti (v63)**, sopra il campo di scrittura: una pillola verde con il cerchio **+** bianco a sinistra e i pasti aggiunti (larghi 96 px; quello scelto è verde chiaro con scritta bianca, v108). Il **+** apre "Aggiungi Colazione / Pranzo / Cena / Spuntino": colazione, pranzo e cena uno ciascuno, spuntini numerati fino a **9**. I pasti compaiono **nell'ordine in cui sono stati aggiunti** (`day.order`).
-- **Ogni pasto** ha una barra fissa in alto ("PRANZO 412 kcal") con **"Elimina pranzo/cena/…"** (con conferma; eliminando uno spuntino in mezzo i successivi vengono rinumerati), il riquadro **"Lista alimenti"** con cornice verde (nome, quantità in bianco, kcal, X nel cerchio con conferma, etichetta che dice da dove viene il valore; ⓘ sugli alimenti "valore sicuro" apre la scheda con le foto), la riga del totale e la chat con Gemini.
+- **Ogni pasto** ha una barra fissa in alto a pillola, uguale alla riga dei pasti ("PRANZO 412 kcal", v120), con **"Elimina pranzo/cena/…"** (verde chiaro; con conferma; eliminando uno spuntino in mezzo i successivi vengono rinumerati); poi la **tabella del pasto** "LISTA ALIMENTI / TOTALE KCAL E MACRO" (v139–v147) con cornice verde: alimenti (nome, quantità, fonte, kcal, macro, X rossa con conferma; ⓘ sugli alimenti "valore sicuro" apre la scheda con le foto), "Totale kcal PRANZO: N kcal", tabella dei macro e Ascolta/Pausa; infine la chat con Gemini. Scorrendo, il contenuto sfuma sotto la barra del pasto e sopra la riga dei pasti.
 - **Composer:** icone nei cerchi verde scuro: fotocamera, galleria, testo, **dettatura vocale** (Web Speech API, it‑IT) e invio. Le foto vengono ridotte a 1280 px in JPEG.
 - **La × su una voce** la toglie, e nella chat compare "(Ho eliminato a mano: …)" così Gemini lo sa.
 - **"Nuova Giornata Alimentare" (prima "Chiudi giornata", v94):** apre il pop-up "Chiudere la giornata alimentare?" con, nell'ordine: la frase "La giornata alimentare attuale verrà chiusa, conservata nello storico e se ne aprirà una nuova. / Potrai consultarla nello Storico e modificarla tornando indietro con la freccia ‹ accanto alla data.", il riepilogo kcal e quello dei macro in bianco, le kcal per pasto e i tasti "Annulla" (verde scuro) e "Nuova Giornata Alimentare" (verde chiaro `#2f8f5c`). Conferma: mostra un riepilogo, manda la giornata nello storico e apre una giornata nuova vuota.
@@ -86,7 +86,7 @@ La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impos
 
 ### 3.4 Alimenti (archivio prodotti di marca)
 - È un elenco alfabetico con la ricerca fissa in alto e, sotto, la lettera dell'indice che si ferma scorrendo (v119); la ricerca è per nome e note.
-- **Grafica (v80–v84):** testata verde con il conteggio e la ricerca a pillola (senza lente); schede a pillola alte due righe con bordo verde da 4 px, kcal sopra e "per …" sotto; pulsante a pillola "Aggiungi alimento" con il + bianco.
+- **Grafica (v80–v84, v111–v119):** testata verde con il conteggio e la ricerca a pillola (la ricerca resta fissa scorrendo); schede a pillola alte due righe, piene di verde scuro `#1f4d35` con scritte bianche (nome, kcal, "per …"); aperte tornano con lo sfondo normale e i tasti Annulla / Modifica / Elimina (standard 2). Il tasto Indietro di Android chiude la scheda aperta. Pulsante a pillola "Aggiungi alimento" con il cerchio + come nel Diario e sfumature in alto e in basso.
 - Ogni scheda contiene nome ("Prodotto – Marca"), riferimento ("100 g", "1 vasetto (170 g)"…), kcal, i macro completi, le note (es. "1 galletta = 8 g") e **tre foto (v86)**: **Confezione 1**, **Confezione 2** e **Tabella valori nutrizionali**, sulla stessa riga, ognuna con fotocamera, galleria e "Rimuovi". Sono salvate in IndexedDB (chiavi `confezione`, `confezione2`, `tabella`).
 - **"Aggiungi alimento":** in alto si sceglie **"Compila scheda Automaticamente"** (predefinito) o **"Compila scheda Manualmente"**.
   - **Automaticamente:** si detta (microfono accanto al campo di testo, con il tasto invio, come nel Diario: v87), si scrive o si fotografa, e dopo 2 secondi di pausa Gemini prepara da solo la scheda (prompt `SYS_FOOD`). Gemini sistema gli errori di dettatura, usa esattamente i valori dati, converte il sodio in sale × 2,5, mette 0 ai macro che mancano se c'è una tabella e lascia vuoti i macro se è indicato solo il valore kcal.
@@ -105,7 +105,8 @@ La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impos
 - Pulsante tolto dalla barra (v53). Nel codice resta solo il segnaposto "Sezione in arrivo." (vedi Stato delle sezioni).
 
 ### 3.7 Storico
-- È l'elenco delle giornate chiuse, nello stile degli Alimenti (v132). Ognuna ha un pallino verde, giallo o rosso, le kcal rispetto all'obiettivo, i macro e il dettaglio per pasto, con i pulsanti "Annulla" ed "Elimina" (standard 2).
+- Titolo "Storico Giornate Alimentari" con il conteggio. È l'elenco delle giornate chiuse, nello stile degli Alimenti (v132–v148): pillole verde scuro con pallino colorato, data e kcal "su obiettivo". Aperta mostra "RIEPILOGO: N kcal", macro, orari, poi COLAZIONE / PRANZO / SPUNTINO… con gli alimenti, e i tasti Annulla … Modifica, Elimina (rosso). "Modifica" porta al Diario su quella giornata. Il tasto Indietro di Android chiude la giornata aperta.
+- 🟢🟡🔴 **Significato del pallino colorato** (nota da riusare in futuro, per esempio in una legenda nell'app): **verde** = la giornata è rimasta entro l'obiettivo kcal; **giallo/arancione** = ha superato l'obiettivo ma è rimasta nel margine bonus; **rosso** = ha superato anche il bonus (stessi colori della barra kcal del Diario). Il colore si calcola con l'obiettivo e il margine salvati in quella giornata.
 - Si conservano al massimo 400 giornate. Le più vecchie del periodo scelto vengono eliminate in automatico.
 
 ### 3.8 Impostazioni
@@ -114,10 +115,11 @@ La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impos
 - **Conservazione dello storico:** 3, 7 (predefinito), 14 o 30 giorni, oppure sempre.
 - **Intelligenza Artificiale: Gemini** (v126): chiave API (con "Mostra/Nascondi" e "Salva e Carica Modelli"), modello principale (si consiglia Flash‑Lite) e Riserve 1 e 2.
 - **Backup su Google Drive** (vedi 3.9).
-- **Backup su file (v90):** esporta e importa un unico JSON (`diario-kcal-AAAA-MM-GG.json`) con **tutti i dati e le foto degli alimenti** (campo `photos`, le foto in base64), senza la chiave API. L'importazione sostituisce tutti i dati e rimette le foto; i file vecchi senza foto si importano lo stesso e lasciano le foto attuali. È indipendente dal backup su Drive, che non è stato toccato.
-- **Aspetto (v57):** come il telefono / chiaro / scuro (`settings.theme`), salvato anche nel backup.
+- **Backup su file (v90, v144):** "Esporta backup" apre il menu di condivisione di Android (File, Drive, email, WhatsApp; il file condiviso è un `.txt` con il JSON) o, se annullato, salva `diario-kcal-AAAA-MM-GG.json` in Download; "Importa backup" accetta `.json` e `.txt`. Un unico JSON con **tutti i dati e le foto degli alimenti** (campo `photos`, le foto in base64), senza la chiave API. L'importazione sostituisce tutti i dati e rimette le foto; i file vecchi senza foto si importano lo stesso e lasciano le foto attuali. È indipendente dal backup su Drive, che non è stato toccato.
+- **Aspetto (v57, v125):** "Come il Telefono" / "Chiaro" / "Scuro" (`settings.theme`), salvato anche nel backup; tasti verde scuro, quello scelto verde chiaro con ✓.
 - **Sicurezza:** tasto "PIN Applicazione" (blocca l'app con il PIN su questo dispositivo; dalla v143, stesso stile di "Sincronizza").
-- **Reset App:** scollega Google e cancella tutti i dati sul telefono. I backup su Drive restano.
+- **Reset App:** scollega Google e cancella tutti i dati sul telefono ("Cancella solo i dati su questo telefono: / i backup su Drive restano.").
+- Tutti i blocchi hanno il bordo verde `#2c6a49` (v121).
 - In fondo c'è "* I Valori Nutrizionali Generici sono stime del modello" (nel colore arancione dell'etichetta "valore generico" del Diario) e sotto "Versione App: NN" (v132), poi il pulsante "Applica e torna al Diario".
 
 ### 3.9 Backup su Google Drive (v34–v38) ✅
@@ -281,10 +283,11 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **Tabella del pasto (v145):** i tasti **Ascolta / Pausa** sono dentro la tabella, sotto la riga del Sale (con un po' di spazio), sia nella "Lista alimenti" in alto sia nelle tabelle in chat; leggono solo il contenuto della tabella (alimenti, totale e macro). Tolta la nota piccola grigia di Gemini sotto le tabelle del riepilogo in chat.
   - **v146:** nello Storico, nella giornata aperta: "Annulla" a sinistra, a destra "Modifica" e poi "Elimina" (rosso, tutto a destra, v147). "Modifica" porta subito al Diario su quella giornata archiviata, con la barra marrone e "Modifica giornata" (se si sta già modificando un'altra giornata, avvisa). All'avvio e dopo ogni aggiornamento (anche "trascina per aggiornare") l'app riparte sempre dal **Diario, giornata in corso, nessun pasto selezionato** (se c'era una modifica di giornata archiviata non salvata, riapre quella).
   - **v147:** nello Storico l'ordine dei tasti è Annulla … Modifica, **Elimina** (rosso, tutto a destra). Ascolta nella tabella del pasto legge per ogni alimento anche le kcal ("Gallette di farro, 8 grammi, 30 chilocalorie").
+  - **v148:** nello Storico più spazio tra il pallino colorato e la data (14 px). Documento di pianificazione riallineato in tutte le sezioni allo stato attuale.
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
-**Stato:** online, **collaudo in corso dal 25/11/2026**. Interfaccia di Diario e Alimenti rifinita il 26/11; schermata di avvio aggiunta (v88).
+**Stato:** online, **collaudo in corso dal 25/11/2026**. Il 26/11 sera (v91–v148) è stata rifinita la grafica di Diario, Alimenti, Storico e Impostazioni: interfaccia considerata finita dall'utente; resta da ristrutturare la sezione Ricette (vedi Cose da fare).
 
 ---
 
@@ -309,6 +312,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
 1. Eventuale APK "autonoma" con tutto il codice dentro (Capacitor o simili): servirebbe solo per il Play Store o per non dipendere da GitHub. Richiede di rifare il login Google per Drive e la dettatura.
 2. Possibilità di agganciare altri "cervelli" AI usando gli abbonamenti Pro (ChatGPT, Gemini Pro, Claude Pro), quando renderanno disponibile questa funzione nelle app di terze parti.
 3. Possibilità di agganciare un'AI locale come "cervello" (per esempio Gemini Nano sul telefono), quando sarà possibile farlo.
+4. **Legenda del pallino colorato nello Storico** (idea, 26/11/2026): verde = entro l'obiettivo kcal, giallo/arancione = nel margine bonus, rosso = oltre il bonus. Da mostrare prima o poi nell'app (per esempio una riga piccola sotto il titolo dello Storico).
 
 ### Cose da vedere per far utilizzare l'applicazione ad altre persone
 *Ipotesi del 26/11/2026: passare la stessa APK a un'amica, che usa una sua chiave API Gemini.*
