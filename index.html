@@ -147,6 +147,8 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 .tts{display:flex;gap:8px;margin-top:10px}
 .tts .tb{min-height:34px;padding:4px 12px;border-radius:999px;border:1.5px solid var(--brand2);background:var(--soft);font-size:13px;font-weight:600;color:var(--brand2)}
 .tts .tb.on{background:var(--brand2);color:#fff}
+.tts .tb{display:inline-flex;align-items:center;gap:6px}
+.tts .tb .ic{width:15px;height:15px;flex:none}
 .mnote{margin-top:8px;font-size:13.5px;color:var(--mute)}
 .msg.a:has(.sml){min-width:70%}
 .rc{margin-top:8px;padding:10px;border-radius:12px;background:var(--soft)}
@@ -520,7 +522,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 97 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 98 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -943,7 +945,7 @@ function msgHtml(m,ix){
   if(m.ricetta){const t=sum(m.ricetta.ingredienti);const saved=S.recipes.some(r=>r.src===m.ts);
     h+=`<div class="rc"><b>${esc(m.ricetta.nome)}</b><div class="m">Per porzione: ${f0(t.kcal)} kcal · ${mline(t)}</div><div class="row"><button class="btn sm ghost" data-saverec="${ix}" ${saved?'disabled':''}>${saved?'Salvata':'Salva nel ricettario'}</button></div></div>`}
   if(m.err&&m.rid)h+=`<div class="tts"><button class="tb" data-retry="${ix}">↻ Riprova</button></div>`;
-  if(!m.err&&('speechSynthesis' in window))h+=`<div class="tts"><button class="tb" data-say="${ix}">▶︎ Ascolta</button><button class="tb" data-pause>⏸ Pausa</button></div>`;
+  if(!m.err&&('speechSynthesis' in window))h+=`<div class="tts"><button class="tb${ttsState(ix)==='play'?' on':''}" data-say="${ix}"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9.5-5.5z" fill="currentColor"/></svg>Ascolta</button><button class="tb${ttsState(ix)==='pause'?' on':''}" data-pause="${ix}"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="0.5" y="0.5" width="15" height="15" rx="3.5" fill="#1f4d35"/><rect x="5" y="4" width="2" height="8" rx=".6" fill="#fff"/><rect x="9" y="4" width="2" height="8" rx=".6" fill="#fff"/></svg>Pausa</button></div>`;
   return h+'</div>';
 }
 function renderRec(){
@@ -1172,7 +1174,7 @@ $('#pills').addEventListener('click',e=>{const b=e.target.closest('[data-pill]')
   S.day.meals[cs].closed=true;const nx='spuntino'+(snackN(cs)+1);S.day.curSnack=nx;ensureMeal(nx);ui.meal=nx;save();render();showMealBar();toast(mealName(cs)+' chiuso · ora '+mealName(nx));
 });
 /* lettura ad alta voce */
-const TTS={msg:null,btn:null};
+const TTS={key:null,len:0,chunks:[],idx:0,playing:false,tok:0};
 function speechText(m){
   const plain=x=>String(x||'').replace(/\*\*/g,'').replace(/[•–]/g,'');
   let t=plain(m.text)+'. ';
@@ -1185,15 +1187,31 @@ function speechText(m){
   return t;
 }
 function itVoice(){const v=speechSynthesis.getVoices();return v.find(x=>/^it/i.test(x.lang)&&/google/i.test(x.name))||v.find(x=>/^it/i.test(x.lang))}
+/* Ascolta/Pausa (v98): lettura a frasi; la Pausa ricorda la frase per 1 ora (solo l'ultimo audio) */
+const TTSK='kalraf28_tts';
+function ttsKey(ix){return (ui.view==='ricette'?'rec':'meal:'+ui.meal)+':'+ix}
+function ttsSaved(){try{const o=JSON.parse(localStorage.getItem(TTSK)||'null');if(o&&Date.now()-o.ts<3600000)return o;localStorage.removeItem(TTSK)}catch(e){}return null}
+function ttsSave(o){try{o?localStorage.setItem(TTSK,JSON.stringify(o)):localStorage.removeItem(TTSK)}catch(e){}}
+function ttsState(ix){const k=ttsKey(ix);if(TTS.playing&&TTS.key===k)return'play';const o=ttsSaved();return o&&o.key===k?'pause':''}
+function ttsChunks(t){return (String(t).replace(/\s+/g,' ').match(/[^.!?;:]+[.!?;:]*/g)||[]).map(x=>x.trim()).filter(x=>/[\p{L}\p{N}]/u.test(x))}
+function ttsMark(){document.querySelectorAll('.tts .tb.on').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('[data-say]').forEach(b=>{const st=ttsState(+b.dataset.say);if(st==='play')b.classList.add('on');const p=b.parentNode.querySelector('[data-pause]');if(p&&st==='pause')p.classList.add('on')})}
+function ttsStop(){TTS.tok++;TTS.playing=false;try{speechSynthesis.cancel()}catch(e){}}
+function ttsPlay(i){const tok=TTS.tok;
+  if(i>=TTS.chunks.length){TTS.playing=false;ttsSave(null);ttsMark();return}
+  TTS.idx=i;const u=new SpeechSynthesisUtterance(TTS.chunks[i]);u.lang='it-IT';const v=itVoice();if(v)u.voice=v;u.rate=1;
+  u.onend=()=>{if(tok===TTS.tok)ttsPlay(i+1)};
+  u.onerror=ev=>{if(tok!==TTS.tok||ev.error==='interrupted'||ev.error==='canceled')return;TTS.playing=false;ttsMark()};
+  speechSynthesis.speak(u)}
 document.addEventListener('click',e=>{
   const p=e.target.closest('[data-pause]'),b=e.target.closest('[data-say]');if(!p&&!b)return;e.stopPropagation();
-  const ss=window.speechSynthesis;
-  if(p){if(ss.speaking&&!ss.paused){ss.pause();p.classList.add('on')}return}
-  const chat=ui.view==='ricette'?S.recChat:(ui.meal?ensureMeal(ui.meal).chat:[]),m=chat[+b.dataset.say];if(!m)return;
-  if(TTS.msg===m&&ss.paused){ss.resume();document.querySelectorAll('[data-pause].on').forEach(x=>x.classList.remove('on'));return}
-  ss.cancel();const u=new SpeechSynthesisUtterance(speechText(m));u.lang='it-IT';const v=itVoice();if(v)u.voice=v;u.rate=1;
-  u.onend=u.onerror=()=>{TTS.msg=null;document.querySelectorAll('.tb.on').forEach(x=>x.classList.remove('on'))};
-  TTS.msg=m;document.querySelectorAll('.tb.on').forEach(x=>x.classList.remove('on'));b.classList.add('on');ss.speak(u);
+  if(p){const k=ttsKey(+p.dataset.pause);if(TTS.playing&&TTS.key===k){ttsStop();ttsSave({key:k,len:TTS.len,idx:TTS.idx,ts:Date.now()});ttsMark()}return}
+  const ix=+b.dataset.say,k=ttsKey(ix);if(TTS.playing&&TTS.key===k)return;
+  const chat=ui.view==='ricette'?S.recChat:(ui.meal?ensureMeal(ui.meal).chat:[]),m=chat[ix];if(!m)return;
+  const txt=speechText(m),chunks=ttsChunks(txt);if(!chunks.length)return;
+  const o=ttsSaved();let start=0;if(o&&o.key===k&&o.len===txt.length&&o.idx<chunks.length)start=o.idx;
+  ttsStop();ttsSave(null);
+  Object.assign(TTS,{key:k,len:txt.length,chunks,playing:true});ttsMark();ttsPlay(start);
 },true);
 if('speechSynthesis' in window){speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>{}}
 /* dettatura */

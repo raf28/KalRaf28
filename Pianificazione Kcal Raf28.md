@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 97 (26/11/2026, sera).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 98 (26/11/2026, sera).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **97**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **98**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -223,6 +223,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **Elimina pasto (v95):** il pulsante "Elimina pranzo / cena / colazione / spuntino" sulla barra del pasto ha il formato del tasto di default (150 × 40 px) in verde chiaro `#2f8f5c`. Nel pop-up "Eliminare il …?" i tasti "Annulla" (verde scuro) ed "Elimina" (rosso, eliminazione definitiva) hanno il formato del tasto di default.
   - **Testo del pop-up "Eliminare il …?" (v96):** "Il pasto (o Lo spuntino), i suoi alimenti e la sua chat verranno eliminati." e a capo "Potrai riaggiungerne uno nuovo con il tasto +" (senza punto finale, v97); tolto "Non si può annullare". Per gli spuntini resta la nota sulla rinumerazione.
   - **Lista alimenti (v97):** la X nel cerchio per togliere un alimento è verde chiaro `#2f8f5c` (stesso formato di prima). Nel pop-up "Eliminare questo alimento?" i tasti "Annulla" (verde scuro) ed "Elimina" (rosso) hanno il formato del tasto di default.
+  - **Ascolta / Pausa (v98):** icone disegnate (non più emoji): triangolino del play nel colore della scritta, quadratino della pausa verde scuro `#1f4d35` con le due lineette bianche. Il tasto attivo (Ascolta mentre legge, Pausa quando è in pausa) diventa verde pieno con scritta e triangolino bianchi. La lettura avviene **frase per frase**; Pausa ferma e ricorda la frase interrotta, Ascolta **riprende dall'inizio di quella frase**. Il punto di pausa si salva sul telefono (`localStorage` chiave `kalraf28_tts`, non nel backup) per **1 ora** e solo per l'ultimo audio: avviare un'altra risposta lo dimentica; a fine lettura si riparte dall'inizio.
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
