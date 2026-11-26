@@ -352,7 +352,7 @@ nav button.on{font-weight:700;color:light-dark(#1f4d35,#fff)}
 details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radius:99px;min-height:40px;padding:8px 16px;font-weight:500}
 .btn.fiClose{background:var(--brand);color:#fff;border:0;border-radius:99px;min-height:40px;padding:8px 16px;font-weight:500}
 .applybar .btn.addbar{display:flex;align-items:center;justify-content:flex-start;gap:14px;background:var(--brand);border:0;border-radius:999px;padding:6px 18px 6px 6px;min-height:58px;font-size:17px;font-weight:600}
-.addbar .pl{width:46px;height:46px;border-radius:50%;background:#fff;color:var(--brand);font-size:30px;font-weight:400;line-height:1;display:grid;place-items:center;padding:0 0 3px;flex:none}
+.addbar .pl{width:46px;height:46px;border-radius:50%;background:#fff;color:light-dark(#436955,var(--brand));box-shadow:inset 0 0 0 2px light-dark(#436955,var(--brand));font-size:30px;font-weight:600;line-height:1;display:grid;place-items:center;padding:0 0 3px;flex:none}
 .addbar{position:relative}
 
 /* Alimenti: schede a pillola, larghe, sempre alte due righe */
@@ -535,7 +535,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 111 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 112 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -664,13 +664,15 @@ function sheet(html){const was=!$('#modal').hidden;$('#sheet').innerHTML=html;$(
 function closeSheet(fromPop){if(typeof rec!=='undefined'&&rec)rec.stop();if($('#modal').hidden)return;$('#modal').hidden=true;$('#sheet').innerHTML='';
   if(!fromPop&&history.state&&history.state.sheet){try{history.replaceState({v:ui.view,dead:1},'')}catch(e){}curDead=true}}
 /* foto a tutto schermo (Diario e Alimenti): tocca per chiudere, anche con il tasto Indietro */
-let lbEl=null,lbSkip=false;
+let lbEl=null,lbSkip=false,fdSkip=false;
 function openLb(src,cap){closeLb(true);lbEl=document.createElement('div');lbEl.className='lb';lbEl.innerHTML=`<button class="lbx" aria-label="Chiudi foto">×</button><img alt="${esc(cap||'Foto')}" src="${esc(src)}">${cap?`<div class="cap">${esc(cap)}</div>`:''}`;
   lbEl.addEventListener('click',()=>closeLb());document.body.appendChild(lbEl);try{history.pushState(Object.assign({},history.state||{},{lb:1}),'')}catch(e){}}
 function closeLb(silent){if(!lbEl)return;lbEl.remove();lbEl=null;if(!silent&&history.state&&history.state.lb){lbSkip=true;history.back()}}
 document.addEventListener('click',e=>{const im=e.target.closest('.ph figure img');if(!im)return;e.preventDefault();e.stopPropagation();const fc=im.closest('figure').querySelector('figcaption');openLb(im.src,fc?fc.textContent:'')},true);
-window.addEventListener('popstate',e=>{if(lbSkip){lbSkip=false;return}if(lbEl){closeLb(true);return}const st=e.state||{v:'diario'};
+window.addEventListener('popstate',e=>{if(lbSkip){lbSkip=false;return}if(fdSkip){fdSkip=false;return}if(lbEl){closeLb(true);return}const st=e.state||{v:'diario'};
   if(!$('#modal').hidden){closeSheet(true);if(st.dead)history.back();if(!st.sheet)return}
+  /* Indietro di Android: chiude prima la scheda alimento aperta (v112) */
+  {const od=ui.view==='alimenti'&&document.querySelector('#v-alimenti details.food[open]');if(od){od.dataset.pop='1';od.open=false;return}}
   if(curDead){curDead=false;if((st.v||'diario')===ui.view&&!st.sheet){history.back();return}}
   if(st.dead){history.back();return}
   ui.view=st.v||'diario';render();$('#main').scrollTop=0;
@@ -1103,7 +1105,10 @@ function renderFoods(){
     <div class="ph" data-ph="${esc(f.id)}"></div>
     <div class="row between"><button class="btn sm ghost" data-collapse>Annulla</button><span class="row" style="margin:0"><button class="btn sm ghost" data-editfood="${esc(f.id)}">Modifica</button><button class="btn sm ghost" data-delfood="${esc(f.id)}">Elimina</button></span></div></details>`});
   $('#foodList').innerHTML=h;const c=$('#foodCnt');if(c)c.textContent=S.foods.length+(S.foods.length===1?' salvato':' salvati');
-  document.querySelectorAll('details.food').forEach(d=>d.addEventListener('toggle',()=>{if(d.open)loadFoodPhotos(d.dataset.fid)}));
+  document.querySelectorAll('details.food').forEach(d=>d.addEventListener('toggle',()=>{
+    if(d.open){loadFoodPhotos(d.dataset.fid);try{history.pushState(Object.assign({},history.state||{},{fd:1}),'')}catch(e){}}
+    else if(d.dataset.pop)delete d.dataset.pop;
+    else if(history.state&&history.state.fd){fdSkip=true;history.back()}}));
 }
 async function loadFoodPhotos(id,box0){
   const f=S.foods.find(x=>x.id===id),box=box0||document.querySelector(`[data-ph="${CSS.escape(id)}"]`);if(!f||!box||!f.foto)return;
