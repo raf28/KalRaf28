@@ -520,7 +520,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 95 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 96 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1005,7 +1005,7 @@ document.addEventListener('click',e=>{
   if(b.dataset.delhist!==undefined){const i=+b.dataset.delhist;sheet(`<h3>Eliminare questa giornata?</h3><p class="hm">Non si può annullare.</p><div class="row between"><button class="btn ghost" id="noSheet">Annulla</button><button class="btn bad" id="okDelH">Elimina</button></div>`);$('#okDelH').onclick=()=>{S.history.splice(i,1);save();closeSheet();render()};return}
   if(b.id==='mealDel'&&ui.meal){const k=ui.meal,sn=isSnack(k),nm=mealName(k),dopo=sn&&S.day.order.filter(isSnack).some(x=>snackN(x)>snackN(k));
     const art=sn?'lo ':k==='pranzo'?'il ':'la ';
-    sheet(`<h3>Eliminare ${art}${sn?nm:nm.toLowerCase()}?</h3><p class="hm">${sn?'Lo spuntino':'Il pasto'}, i suoi alimenti e la sua chat verranno eliminati.${dopo?' Gli spuntini successivi vengono rinumerati.':''} Potrai riaggiungerlo con il <b>+</b>. Non si può annullare.</p><div class="row between"><button class="btn ghost dg" id="noSheet">Annulla</button><button class="btn bad dg" id="okMealDel">Elimina</button></div>`);
+    sheet(`<h3>Eliminare ${art}${sn?nm:nm.toLowerCase()}?</h3><p class="hm">${sn?'Lo spuntino':'Il pasto'}, i suoi alimenti e la sua chat verranno eliminati.${dopo?' Gli spuntini successivi vengono rinumerati.':''}<br>Potrai riaggiungerne uno nuovo con il tasto <b>+</b>.</p><div class="row between"><button class="btn ghost dg" id="noSheet">Annulla</button><button class="btn bad dg" id="okMealDel">Elimina</button></div>`);
     $('#okMealDel').onclick=()=>{deleteMeal(k);save();closeSheet();render();toast(nm+(k==='colazione'||k==='cena'?' eliminata':' eliminato'))};return}
   if(b.id==='noSheet'){closeSheet();return}
   if(b.id==='impRec'){return importRecipes()}
