@@ -19,7 +19,7 @@
 --brand:#1f4d35;--brand2:#2c6a49;--ok:#3a9a62;--warn:#e9a21b;--bad:#d9452b;--me:light-dark(#dcefe2,#23402f)}
 *{box-sizing:border-box;min-width:0}
 html,body{height:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Outfit,system-ui,sans-serif;display:flex;flex-direction:column;height:100dvh;overflow:hidden}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Outfit,system-ui,sans-serif;display:flex;flex-direction:column;height:var(--appH,100dvh);overflow:hidden}
 button,input,textarea,select{font:inherit;color:inherit}
 button{cursor:pointer;border:0;background:none}
 [hidden]{display:none!important}
@@ -82,6 +82,7 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 .tot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;padding-top:9px;border-top:2px solid var(--line);font-weight:600}
 .tot small{font-weight:400;color:var(--mute);font-size:13px;width:100%}
 .empty{color:var(--mute);font-size:15px;padding:6px 0}
+.msg.a.rsum{border:2px solid var(--brand2)}
 #mealItems:has(.it){border:2px solid var(--brand2)}
 .lt{text-align:center;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:light-dark(#17201a,#fff);margin:-2px 0 6px}
 /* chat */
@@ -343,7 +344,7 @@ details.card summary::-webkit-details-marker{display:none}
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 51 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 52 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -723,7 +724,7 @@ function renderMeal(){
 }
 function msgHtml(m,ix){
   if(m.role==='u')return`<div class="msg u">${m.photo?'<span class="chip">foto</span><br>':''}${esc(m.text)}</div>`;
-  let h=`<div class="msg a${m.err?' e':''}">`;
+  let h=`<div class="msg a${m.err?' e':''}${m.tot&&!m.err?' rsum':''}">`;
   if(m.tot&&!m.err){
     if(m.ans&&m.text)h+=`<div class="ansx">${md(m.text)}</div>`;
     const anyMiss=m.list&&m.list.some(i=>i.miss&&i.miss.length);
@@ -1216,6 +1217,9 @@ try{history.replaceState({v:'diario'},'')}catch(e){}
  new MutationObserver(()=>requestAnimationFrame(upd)).observe(mn,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden','open']});
  U.onclick=()=>mn.scrollTo({top:0,behavior:'smooth'});D.onclick=()=>mn.scrollTo({top:mn.scrollHeight,behavior:'smooth'});
  window.updJump=upd;setTimeout(upd,300);}
+/* altezza dell'app misurata davvero (dopo "trascina per aggiornare" o all'avvio Android a volte dava un'altezza sbagliata e la barra in basso spariva) */
+(function(){const de=document.documentElement;function fitH(){const vv=window.visualViewport,a=document.activeElement,typing=a&&/^(INPUT|TEXTAREA)$/.test(a.tagName);let h=window.innerHeight;if(vv&&!typing)h=Math.min(h,Math.round(vv.height));if(h>200)de.style.setProperty('--appH',h+'px');if(window.scrollY)window.scrollTo(0,0)}
+ fitH();['resize','orientationchange','pageshow','load'].forEach(ev=>window.addEventListener(ev,fitH));document.addEventListener('visibilitychange',()=>{if(!document.hidden){fitH();setTimeout(fitH,300)}});if(window.visualViewport)visualViewport.addEventListener('resize',fitH);[50,300,1000,2500].forEach(ms=>setTimeout(fitH,ms));window.fitH=fitH})();
 /* service worker: serve per installare l'app (APK) e aprirla anche offline */
 if('serviceWorker' in navigator&&location.protocol==='https:')window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})});
 boot();
