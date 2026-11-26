@@ -59,7 +59,7 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 .macros{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:12px}
 .macros div{background:rgba(255,255,255,.1);border-radius:10px;padding:6px 4px;text-align:center}
 .macros b{display:block;font-size:16px}
-.macros span{display:block;font-size:16px;font-weight:500;opacity:.9}
+.macros span{display:block;font-size:16px;font-weight:700;color:#fff}
 .macros small{display:block;font-size:11.5px;opacity:.75;line-height:1.2;margin-top:2px}
 /* pasti */
 .seg{display:flex;gap:6px;overflow-x:auto;padding:14px 0 10px;scrollbar-width:none}
@@ -80,6 +80,8 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 .tot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;padding-top:9px;border-top:2px solid var(--line);font-weight:600}
 .tot small{font-weight:400;color:var(--mute);font-size:13px;width:100%}
 .empty{color:var(--mute);font-size:15px;padding:6px 0}
+#mealItems:has(.it){border:1px solid var(--brand2)}
+.lt{text-align:center;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:light-dark(#2c6a49,#7cc79a);margin:-2px 0 6px}
 /* chat */
 .chat{display:flex;flex-direction:column;gap:8px}
 .msg{max-width:88%;padding:9px 13px;border-radius:16px;font-size:15.5px;white-space:normal;overflow-wrap:anywhere}
@@ -339,7 +341,7 @@ details.card summary::-webkit-details-marker{display:none}
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 48 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 49 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -676,7 +678,7 @@ function renderHistDay(){
   bar.innerHTML=`<div><b>Giornata archiviata</b><small>tocca «Modifica giornata» per correggerla</small></div><button class="mbtn" id="reopenDay">Modifica giornata</button><button class="mbtn" id="backToday">Oggi ›</button>`;
   if(!ui.hmeal){$('#mealItems').innerHTML='<div class="empty">Nessun alimento in questa giornata.</div>';$('#mealChat').innerHTML='';return}
   const m=D.meals[ui.hmeal],t=sum(m.items);
-  $('#mealItems').innerHTML=m.items.map(i=>`<div class="it"><div><div class="n">${esc(i.nome)}</div><div class="q">${esc(i.quantita)}${srcTag(i)}</div></div><div class="k">${f0(i.kcal)} kcal</div><span></span><div class="m">${mline(i)}</div></div>`).join('')+`<div class="tot"><span>Totale ${mealName(ui.hmeal).toLowerCase()}</span><span>${f0(t.kcal)} kcal</span><small>${mline(t)}</small></div>`;
+  $('#mealItems').innerHTML='<div class="lt">Lista alimenti</div>'+m.items.map(i=>`<div class="it"><div><div class="n">${esc(i.nome)}</div><div class="q">${esc(i.quantita)}${srcTag(i)}</div></div><div class="k">${f0(i.kcal)} kcal</div><span></span><div class="m">${mline(i)}</div></div>`).join('')+`<div class="tot"><span>Totale ${mealName(ui.hmeal).toLowerCase()}</span><span>${f0(t.kcal)} kcal</span><small>${mline(t)}</small></div>`;
   $('#mealChat').innerHTML=m.chat.map(msgHtml).join('');
 }
 function packDay(d){const meals={};orderKeys(Object.keys(d.meals)).forEach(k=>{if(d.meals[k].items.length)meals[k]=d.meals[k].items});
@@ -712,7 +714,7 @@ function renderMeal(){
     $('#mealChat').innerHTML=ui.busy?'<div class="typing">Sto calcolando<i></i><i></i><i></i></div>':'';return}
   $('#mealTabs').innerHTML=started.map(k=>`<button data-meal="${k}" class="${k===ui.meal?'on':''}">${mealName(k)}<small>${f0(sum(ensureMeal(k).items).kcal)} kcal</small></button>`).join('');
   const m=S.day.meals[ui.meal],t=sum(m.items);
-  $('#mealItems').innerHTML=(m.items.length?m.items.map((i,ix)=>`<div class="it"><div><div class="n">${esc(i.nome)}</div><div class="q">${esc(i.quantita)}${srcTag(i)}</div></div><div class="k">${f0(i.kcal)} kcal</div><button class="x" data-del="${ix}" aria-label="Elimina ${esc(i.nome)}">×</button><div class="m">${mline(i)}</div></div>`).join('')+
+  $('#mealItems').innerHTML=(m.items.length?'<div class="lt">Lista alimenti</div>'+m.items.map((i,ix)=>`<div class="it"><div><div class="n">${esc(i.nome)}</div><div class="q">${esc(i.quantita)}${srcTag(i)}</div></div><div class="k">${f0(i.kcal)} kcal</div><button class="x" data-del="${ix}" aria-label="Elimina ${esc(i.nome)}">×</button><div class="m">${mline(i)}</div></div>`).join('')+
     `<div class="tot"><span>Totale ${mealName(ui.meal).toLowerCase()}</span><span>${f0(t.kcal)} kcal</span><small>${mline(t)}</small></div>`
     :`<div class="empty">Ancora niente. Scrivi cosa hai mangiato o allega una foto: il conteggio si aggiorna da solo, e se correggi qualcosa in chat vale sempre l'ultima versione.</div>`);
   $('#mealChat').innerHTML=m.chat.map(msgHtml).join('')+(ui.busy?'<div class="typing">Sto calcolando<i></i><i></i><i></i></div>':'');
