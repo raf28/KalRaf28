@@ -411,6 +411,11 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
 .thm button.on{background:#2f8f5c;border-color:#2f8f5c;color:#fff}
 /* Impostazioni (v126): tasti del blocco Intelligenza Artificiale, forma dello standard 2, verde dei tasti non selezionati di Aspetto */
 #v-impost .btn.aib{height:40px;min-height:40px;padding:0 18px;border-radius:99px;border:0;background:var(--brand);color:#fff;font-size:14px;font-weight:400;flex:none}
+/* Impostazioni (v127): blocco Backup su Google Drive */
+#gdBtns .gdr1{display:flex;align-items:center;gap:12px;margin:10px 0 0}
+#gdBtns #gdStat{font-size:13px;line-height:1.35;margin:0}
+#gdBtns .gdr2{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
+#v-impost .btn.aib:disabled{opacity:.6}
 /* Impostazioni (v121): bordo dei blocchi nel verde del tasto «Applica e torna al Diario» */
 #v-impost .card{border-color:var(--brand2)}
 /* Diario (v120): barra del pasto uguale alla barra dei pasti in basso */
@@ -547,8 +552,7 @@ window.addEventListener('error',()=>hideSplash());</script>
         <div class="card">
           <h3>Backup su Google Drive</h3>
           <p class="hm" style="margin-top:0" id="gdInfo"></p>
-          <div class="row" id="gdBtns"></div>
-          <p class="hm" id="gdStat" style="margin-bottom:0"></p>
+          <div id="gdBtns"></div>
         </div>
         <div class="card">
           <h3>Backup su file</h3>
@@ -564,7 +568,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 126 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 127 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1476,9 +1480,9 @@ function gdDisconnect(silent){
 function gdRender(){
   if(!$('#gdBtns'))return;
   if(!GD.on){$('#gdInfo').textContent='Accedi con il tuo account Google: l\'app salva una copia di tutto (impostazioni e chiave, alimenti con foto, ricette, diario e storico) in una cartella «'+GD_FOLDER+'» del tuo Drive. L\'app vede solo quella cartella.';
-    $('#gdBtns').innerHTML='<button class="btn sm" id="gdIn">Accedi con Google</button>';$('#gdStat').textContent='';return}
+    $('#gdBtns').innerHTML='<div class="gdr1"><button class="btn sm aib" id="gdIn">Accedi con Google</button><span class="hm" id="gdStat"></span></div>';return}
   $('#gdInfo').innerHTML='Collegato'+(GD.email?' come <b>'+esc(GD.email)+'</b>':'')+'. Alimenti, ricette e impostazioni si salvano subito; il diario alla chiusura della giornata e una volta al giorno.';
-  $('#gdBtns').innerHTML='<button class="btn sm ghost" id="gdOut">Scollega</button><button class="btn sm" id="gdNow"'+(gdBusy?' disabled':'')+'>'+(gdBusy?'Sincronizzo…':'Sincronizza')+'</button><button class="btn sm ghost" id="gdRes">Ripristina da Drive</button>';
+  $('#gdBtns').innerHTML='<div class="gdr1"><button class="btn sm aib" id="gdNow" style="width:128px;padding:0 8px"'+(gdBusy?' disabled':'')+'>'+(gdBusy?'Sincronizzo…':'Sincronizza')+'</button><span class="hm" id="gdStat"></span></div><div class="gdr2"><button class="btn sm aib" id="gdOut">Scollega</button><button class="btn sm aib" id="gdRes">Ripristina da Drive</button></div>';
   const last=GD.last?new Date(GD.last).toLocaleString('it-IT',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'mai';
   $('#gdStat').innerHTML='Ultimo backup: <b>'+last+'</b>'+(GD.pending&&!gdBusy?'<br>⏳ Modifiche in attesa'+(navigator.onLine?(gdTokOk()?'':' · tocca un punto qualsiasi dell\'app per riconnetterti'):' · in attesa della rete'):'')+(GD.err?'<br>'+esc(GD.err):'');
 }
