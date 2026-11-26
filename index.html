@@ -380,7 +380,7 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
 .sl3b{display:flex;gap:6px}
 .sl3b button{width:40px;height:40px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center}
 .sl3b svg{width:20px;height:20px}
-.sl3r{width:86px;height:40px;border-radius:99px;background:var(--brand);color:#fff;font-size:14px;font-weight:600}
+.sl3r{width:90px;height:40px;border-radius:99px;background:var(--brand);color:#fff;font-size:14px;font-weight:400}
 .sl3r:disabled{opacity:.35}
 
 .fin{display:flex;gap:8px;align-items:stretch}
@@ -413,6 +413,10 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
 #sheet .addlist .btn{min-height:58px;padding:10px 22px;border-radius:34px;border:0;background:var(--brand2);color:#fff;font-size:17px;font-weight:600;box-shadow:none}
 #sheet .addlist .btn small{color:#d7eadc;font-size:13px;font-weight:400}
 #sheet .addlist .btn:disabled{opacity:.45}
+/* TASTO STANDARD 2 (v114): pillola 90x40, scritta bianca 14px normale, verde scuro #1f4d35 (rosso per eliminazioni definitive). Classe "btn std2". Usato nella sezione Alimenti */
+.btn.std2{width:90px!important;height:40px!important;min-height:40px!important;padding:0 4px!important;border-radius:99px!important;border:0!important;background:var(--brand)!important;color:#fff!important;font-size:14px!important;font-weight:400!important;line-height:1.15!important;text-align:center;box-shadow:none!important;flex:none}
+.btn.std2.bad{background:var(--bad)!important}
+.btn.std2:disabled{opacity:.4}
 /* TASTO DI DEFAULT (v94): pillola 150x40, scritta bianca 14px normale, max 2 righe centrate, verde scuro #1f4d35. Per nuovi pulsanti usare class="btn bdef" */
 .btn.bdef{min-height:40px;border-radius:99px;border:0;color:#fff;font-size:14px;font-weight:400;line-height:1.15;background:var(--brand);box-shadow:none}
 #closeDay,#sheet .row>.btn.dg,.btn.bdef,.mbar #mealDel{width:150px;height:40px;padding:3px 10px;white-space:nowrap;text-align:center;flex:none}
@@ -537,7 +541,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 113 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 114 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1033,7 +1037,7 @@ document.addEventListener('click',e=>{
   if(b.id==='impRec'){return importRecipes()}
   if(b.id==='addFood'){return addFoodStart()}
   if(b.dataset.editfood){const f=S.foods.find(x=>x.id===b.dataset.editfood);if(f)foodForm(f,false);return}
-  if(b.dataset.delfood){const id=b.dataset.delfood;const f=S.foods.find(x=>x.id===id);sheet(`<h3>Eliminare «${esc(f?f.nome:'')}»?</h3><p class="hm">Verranno eliminate anche le sue foto. Non si può annullare.</p><div class="row between"><button class="btn ghost" id="noSheet">Annulla</button><button class="btn bad" id="okDelF">Elimina</button></div>`);$('#okDelF').onclick=async()=>{if(f)for(const k of Object.values(f.foto||{}))await IDB.del(k);S.foods=S.foods.filter(x=>x.id!==id);save();closeSheet();render();toast('Alimento eliminato')};return}
+  if(b.dataset.delfood){const id=b.dataset.delfood;const f=S.foods.find(x=>x.id===id);sheet(`<h3>Eliminare «${esc(f?f.nome:'')}»?</h3><p class="hm">Verranno eliminate anche le sue foto. Non si può annullare.</p><div class="row between"><button class="btn ghost std2" id="noSheet">Annulla</button><button class="btn bad std2" id="okDelF">Elimina</button></div>`);$('#okDelF').onclick=async()=>{if(f)for(const k of Object.values(f.foto||{}))await IDB.del(k);S.foods=S.foods.filter(x=>x.id!==id);save();closeSheet();render();toast('Alimento eliminato')};return}
   if(b.id==='recClear'){S.recChat=[];save();render();return}
 });
 function addRecipe(id){
@@ -1106,7 +1110,7 @@ function renderFoods(){fdKill();
     <table class="vt"><tbody><tr><td>Riferimento</td><td>${esc(f.riferimento||'100 g')}</td></tr>${FKEYS.map(([k,l,u])=>`<tr class="${l.startsWith('di cui')?'sub':''}"><td>${l}</td><td>${fval(f[k],u,k)}</td></tr>`).join('')}</tbody></table>
     ${f.note?`<p style="margin:10px 0 0"><b>Note:</b> ${esc(f.note)}</p>`:''}${macroNote(f)?`<p class="hm" style="margin:8px 0 0">${esc(macroNote(f))}</p>`:''}
     <div class="ph" data-ph="${esc(f.id)}"></div>
-    <div class="row between"><button class="btn sm ghost" data-collapse>Annulla</button><span class="row" style="margin:0"><button class="btn sm ghost" data-editfood="${esc(f.id)}">Modifica</button><button class="btn sm ghost" data-delfood="${esc(f.id)}">Elimina</button></span></div></details>`});
+    <div class="row between"><button class="btn sm ghost std2" data-collapse>Annulla</button><span class="row" style="margin:0"><button class="btn sm ghost std2" data-editfood="${esc(f.id)}">Modifica</button><button class="btn sm ghost std2" data-delfood="${esc(f.id)}">Elimina</button></span></div></details>`});
   $('#foodList').innerHTML=h;const c=$('#foodCnt');if(c)c.textContent=S.foods.length+(S.foods.length===1?' salvato':' salvati');
   document.querySelectorAll('details.food').forEach(d=>d.addEventListener('toggle',()=>{
     if(d.open){loadFoodPhotos(d.dataset.fid);
@@ -1148,7 +1152,7 @@ async function foodSheet(f){
     <div class="fin"><textarea id="fTxt" class="ta" rows="8" placeholder="Scrivi o detta nome, marca, valori e precisazioni. Es. «Prosciutto cotto Rovagnati, per 100 grammi: 135 kcal, proteine 20…»">${esc(txt)}</textarea>${MIC}</div>
     ${stErr?'<div class="tts" style="margin:0 0 6px"><button class="tb" id="fRetry">↻ Riprova</button></div>':''}<p class="hm" id="fSt">${esc(st||(auto&&!card?'Modalità automatica: detta, scrivi o aggiungi una foto e la scheda si prepara da sola.':''))}</p>
     ${cardHtml()}
-    <div class="row between"><button class="btn sm ghost" id="noSheet">Annulla</button><button class="btn" id="ffSave" ${card?'':'disabled'}>Salva</button></div>`);
+    <div class="row between"><button class="btn sm ghost std2" id="noSheet">Annulla</button><button class="btn std2" id="ffSave" ${card?'':'disabled'}>Salva</button></div>`);
     bindSlots(ph,()=>{grab();draw();if(auto)prepare()});
     dictate($('#fTxt'),$('#fMic'),()=>{if(auto&&$('#fTxt'))prepare()});
     $('#fSend').onclick=()=>{stopDictation();prepare(true)};
