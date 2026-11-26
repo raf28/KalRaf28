@@ -405,6 +405,9 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
 #sheet .btn:not(.two,.addlist .btn),details .btn,#closeDay{min-height:40px;padding:8px 18px;border-radius:99px;border:0;color:#fff;font-size:14px;font-weight:400;line-height:1.15;background:var(--brand);box-shadow:none}
 #sheet .btn.bad:not(.two,.addlist .btn),details .btn.bad{background:var(--bad)}
 #sheet .slot .btn{padding:8px 10px}
+/* Alimenti (v118): barra "Aggiungi alimento" più staccata dal contenuto che scorre */
+#v-alimenti .applybar{padding-top:46px;background:linear-gradient(to bottom,transparent 0,color-mix(in srgb,var(--bg) 70%,transparent) 22px,var(--bg) 46px)}
+#v-alimenti .applybar .btn.addbar{box-shadow:light-dark(0 6px 18px rgba(0,0,0,.28),0 6px 20px rgba(0,0,0,.75)),light-dark(0 0 0 0 transparent,0 0 0 1px rgba(255,255,255,.14))}
 /* Alimenti (v111, v117): pillole chiuse dello stesso verde della cornice, scritte bianche */
 #v-alimenti details.food:not([open]){background:var(--brand)}
 #v-alimenti details.food:not([open]) summary,#v-alimenti details.food:not([open]) summary .nm,#v-alimenti details.food:not([open]) summary .kv,#v-alimenti details.food:not([open]) summary .kv small{color:#fff}
@@ -541,7 +544,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 117 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 118 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
