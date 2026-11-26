@@ -330,7 +330,8 @@ nav button.on{font-weight:700;color:light-dark(#1f4d35,#fff)}
 .comp .ib,.ib.send{background:light-dark(#436955,var(--brand))}
 
 /* Alimenti: stile unificato al Diario (v80) */
-.ahead{background:var(--brand);color:#fff;padding:14px 16px 16px}
+#v-alimenti.vh{padding-top:0}
+.ahead{background:var(--brand);color:#fff;padding:calc(env(safe-area-inset-top) + 14px) 16px 16px}
 .ahead .in{max-width:720px;margin:0 auto}
 .ahead .aht{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .ahead h2{margin:0;font-size:24px;color:#fff}
@@ -338,7 +339,7 @@ nav button.on{font-weight:700;color:light-dark(#1f4d35,#fff)}
 .ahead input{width:100%;margin-top:12px;border:0;border-radius:99px;padding:12px 18px;font-size:16px;background:rgba(255,255,255,.14);color:#fff;box-sizing:border-box}
 .ahead input::placeholder{color:rgba(255,255,255,.7)}
 .letter{color:light-dark(#2c6a49,#4cc184)}
-#v-alimenti details.food{border:2px solid var(--brand)}
+#v-alimenti details.food{border:3px solid var(--brand)}
 #v-alimenti details.food summary .kv{color:light-dark(#22804f,#4cc184);font-weight:600}
 #v-alimenti .vt tr.sub td{color:var(--ink)}
 #v-alimenti details.food .hm{color:var(--ink)}
@@ -458,7 +459,7 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 81 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 82 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
