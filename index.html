@@ -527,7 +527,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 104 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 105 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -880,7 +880,7 @@ function renderHead(){
   const d=new Date(D.start);
   {const wd=d.toLocaleDateString('it-IT',{weekday:'long'}),mo=d.toLocaleDateString('it-IT',{month:'long'});$('#dayLabel').innerHTML=(S.parked&&!H?'✎ ':'')+esc(wd.charAt(0).toUpperCase()+wd.slice(1))+' '+d.getDate()+'<br>'+esc(mo.charAt(0).toUpperCase()+mo.slice(1))}
   const eb=$('#editBar');eb.hidden=!(S.parked&&!H);
-  if(!eb.hidden)eb.innerHTML=`<div><b>Giornata archiviata</b><small>stai modificando questa giornata: tocca «Salva» per salvare e tornare a oggi</small><div class="ebtns"><button class="btn bdef" disabled>Modifica giornata</button><button class="btn bdef" id="saveEdit">Salva</button></div></div>`;
+  if(!eb.hidden)eb.innerHTML=`<div><b>Giornata archiviata</b><small>stai modificando questa giornata: tocca «Fine Modifiche» per salvare</small><div class="ebtns"><button class="btn bdef" disabled>Modifica giornata</button><button class="btn bdef" id="saveEdit">Fine Modifiche</button></div></div>`;
 }
 function renderHistDay(){
   const D=histDay(ui.dv);if(!D){ui.dv=null;render();return}
@@ -905,8 +905,8 @@ function reopenDay(){
 }
 function finishEdit(){
   if(!S.parked)return;
-  const rec=packDay(S.day);S.history.splice(Math.min(S.editPos||0,S.history.length),0,rec);
-  S.day=S.parked;delete S.parked;delete S.editPos;normalize();ui.dv=null;ui.meal=null;gdWant('full');save();render();toast('Aggiornamento salvato');
+  const rec=packDay(S.day),pos=Math.min(S.editPos||0,S.history.length);S.history.splice(pos,0,rec);
+  S.day=S.parked;delete S.parked;delete S.editPos;normalize();ui.dv=pos;ui.hmeal=null;ui.toTop=true;ui.meal=null;gdWant('full');save();render();toast('Aggiornamento salvato');
 }
 $('#dPrev').onclick=()=>{if(S.parked)return;ui.dv=ui.dv===null?0:Math.min(S.history.length-1,ui.dv+1);ui.hmeal=null;ui.toTop=true;render();$('#main').scrollTop=0};
 $('#dNext').onclick=()=>{if(S.parked){finishEdit();return}ui.dv=ui.dv>0?ui.dv-1:null;ui.hmeal=null;ui.toTop=true;render();$('#main').scrollTop=0};
