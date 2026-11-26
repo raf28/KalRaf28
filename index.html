@@ -35,8 +35,10 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 .head .in{max-width:720px;margin:0 auto}
 .dayline{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;opacity:.9}
 .dnav{display:flex;align-items:center;gap:6px;min-width:0}
-.arw{width:30px;height:30px;flex:none;border-radius:50%;border:1px solid rgba(255,255,255,.45);color:#fff;font-size:20px;line-height:1;display:grid;place-items:center;padding:0 0 2px}
-.arw:disabled{opacity:.25}
+.arw{width:40px;height:40px;flex:none;border-radius:50%;border:2px solid #fff;color:#fff;font-size:26px;font-weight:600;line-height:1;display:grid;place-items:center;padding:0 0 3px}
+#dayLabel{font-size:14px;line-height:1.2;min-width:0}
+#dayLabel::first-letter{text-transform:uppercase}
+.arw:disabled{opacity:.4}
 .head.editing{background:#7a5c12}
 .histbar{background:#7a5c12!important;flex-wrap:wrap}
 .histbar b{font-size:15px}
@@ -336,7 +338,7 @@ details.card summary::-webkit-details-marker{display:none}
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 44 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 45 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -384,6 +386,7 @@ const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const num=v=>{const n=Number(String(v).replace(',','.'));return isFinite(n)&&n>0?n:0};
 const f0=n=>Math.round(n).toLocaleString('it-IT');
+const fdt=x=>new Date(x).toLocaleString('it-IT',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
 const f1=n=>(Math.round(n*10)/10).toLocaleString('it-IT');
 const BASE=['colazione','pranzo','cena'];
 const isSnack=k=>/^spuntino\d+$/.test(k);
@@ -660,7 +663,7 @@ function renderHead(){
   $('#lgMax').textContent=margin?`obiettivo ${f0(target)} · bonus fino a ${f0(max)}`:`obiettivo ${f0(target)}`;
   $('#dMacros').innerHTML=NUTR.slice(1).map(([k,l,u])=>`<div><b>${fv(t,k,u)}</b><span>${l==='Carboidrati'?'Carbo':l}</span>${SUB[k]?`<small>${SUB[k][1]} ${fv(t,SUB[k][0],u)}</small>`:''}</div>`).join('');
   const d=new Date(D.start);
-  $('#dayLabel').textContent=(S.parked&&!H?'✎ ':'')+(window.innerWidth<600?'':'Giornata iniziata ')+d.toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'})+' alle '+d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+  $('#dayLabel').textContent=(S.parked&&!H?'✎ ':'')+d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
 }
 function renderHistDay(){
   const D=histDay(ui.dv);if(!D){ui.dv=null;render();return}
@@ -745,6 +748,7 @@ function renderHist(){
   $('#histList').innerHTML=S.history.length?S.history.map((h,ix)=>{const t=h.tot,max=h.target+h.margin,st=t.kcal<=h.target?'ok':t.kcal<=max?'warn':'bad';const d=new Date(h.start);
     return`<details class="card"><summary><span><span class="dot" style="background:var(--${st})"></span><b>${d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'})}</b></span><span><b>${f0(t.kcal)}</b> / ${f0(h.target)} kcal</span></summary>
     <div class="hm" style="margin-top:6px">${mline(t)}</div>
+    <div class="hm" style="margin-top:4px">Aperta: ${fdt(h.start)}${h.end?` · Chiusa: ${fdt(h.end)}`:''}</div>
     ${orderKeys(Object.keys(h.meals).map(k=>k==='spuntino'?'spuntino1':k)).map(k=>{const l=mealName(k);const it=(h.meals[k]||(k==='spuntino1'?h.meals.spuntino:null)||[]);if(!it.length)return'';const mt=sum(it);return`<div style="margin-top:10px"><b>${l}</b> <span class="hm">${f0(mt.kcal)} kcal</span>${it.map(i=>`<div class="hm">• ${esc(i.nome)} ${esc(i.quantita)} — ${f0(i.kcal)} kcal</div>`).join('')}</div>`}).join('')}
     <div class="row between"><button class="btn sm ghost" data-collapse>Annulla</button><button class="btn sm ghost" data-delhist="${ix}">Elimina giornata</button></div></details>`}).join('')
     :'<div class="empty">Qui trovi le giornate chiuse (conservate per il periodo scelto nelle Impostazioni). Usa «Chiudi giornata» nel Diario quando hai finito di mangiare.</div>';
