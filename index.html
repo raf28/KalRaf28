@@ -77,6 +77,8 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 .it .m{grid-column:1/3;font-size:13px;color:var(--mute)}
 .x{width:44px;height:44px;border-radius:12px;color:var(--mute);font-size:22px;line-height:1}
 .x:active{background:var(--soft)}
+.flink{font:inherit;color:inherit;text-align:left;padding:0;text-decoration:underline;text-decoration-color:var(--brand2);text-decoration-thickness:2px;text-underline-offset:3px}
+.flink span{margin-left:6px;font-size:.85em;color:light-dark(#2c6a49,#7cc79a);text-decoration:none;display:inline-block}
 #mealItems .x{width:30px;height:30px;border-radius:50%;border:1px solid #ff4d3a;background:var(--brand);color:#fff;font-size:24px;font-weight:400;display:grid;place-items:center;padding:0 0 3px;justify-self:center;align-self:center}
 #mealItems .x:active{background:var(--brand2)}
 .tot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;padding-top:9px;border-top:2px solid var(--line);font-weight:600}
@@ -344,7 +346,7 @@ details.card summary::-webkit-details-marker{display:none}
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 53 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 54 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -717,11 +719,17 @@ function renderMeal(){
     $('#mealChat').innerHTML=ui.busy?'<div class="typing">Sto calcolando<i></i><i></i><i></i></div>':'';return}
   $('#mealTabs').innerHTML=started.map(k=>`<button data-meal="${k}" class="${k===ui.meal?'on':''}">${mealName(k)}<small>${f0(sum(ensureMeal(k).items).kcal)} kcal</small></button>`).join('');
   const m=S.day.meals[ui.meal],t=sum(m.items);
-  $('#mealItems').innerHTML=(m.items.length?'<div class="lt">Lista alimenti</div>'+m.items.map((i,ix)=>`<div class="it"><div><div class="n">${esc(i.nome)}</div><div class="q">${esc(i.quantita)}${srcTag(i)}</div></div><div class="k">${f0(i.kcal)} kcal</div><button class="x" data-del="${ix}" aria-label="Elimina ${esc(i.nome)}">×</button><div class="m">${mline(i)}</div></div>`).join('')+
+  $('#mealItems').innerHTML=(m.items.length?'<div class="lt">Lista alimenti</div>'+m.items.map((i,ix)=>`<div class="it"><div><div class="n">${foodLink(i)}</div><div class="q">${esc(i.quantita)}${srcTag(i)}</div></div><div class="k">${f0(i.kcal)} kcal</div><button class="x" data-del="${ix}" aria-label="Elimina ${esc(i.nome)}">×</button><div class="m">${mline(i)}</div></div>`).join('')+
     `<div class="tot"><span>Totale ${mealName(ui.meal).toLowerCase()}</span><span>${f0(t.kcal)} kcal</span><small>${mline(t)}</small></div>`
     :`<div class="empty">Ancora niente. Scrivi cosa hai mangiato o allega una foto: il conteggio si aggiorna da solo, e se correggi qualcosa in chat vale sempre l'ultima versione.</div>`);
   $('#mealChat').innerHTML=m.chat.map(msgHtml).join('')+(ui.busy?'<div class="typing">Sto calcolando<i></i><i></i><i></i></div>':'');
 }
+function foodLink(i){const f=i.fonte==='alimenti'&&i.alimento_id&&S.foods.find(x=>x.id===i.alimento_id);return f?`<button class="flink" data-foodinfo="${esc(f.id)}">${esc(i.nome)}<span aria-hidden="true">ⓘ</span></button>`:esc(i.nome)}
+function foodInfo(id,it){const f=S.foods.find(x=>x.id===id);if(!f)return;
+  sheet(`<h3>${esc(f.nome)}</h3><p class="hm" style="margin:0 0 8px">Valore sicuro dalla tua lista <b>Alimenti</b>${it?` · in questo pasto: <b>${esc(it.quantita)}</b> = <b>${f0(it.kcal)} kcal</b>`:''}</p>
+  <table class="vt"><tbody><tr><td>Riferimento</td><td>${esc(f.riferimento||'100 g')}</td></tr>${FKEYS.map(([k,l,u])=>`<tr class="${l.startsWith('di cui')?'sub':''}"><td>${l}</td><td>${fval(f[k],u,k)}</td></tr>`).join('')}</tbody></table>
+  ${f.note?`<p style="margin:10px 0 0"><b>Note:</b> ${esc(f.note)}</p>`:''}${macroNote(f)?`<p class="hm" style="margin:8px 0 0">${esc(macroNote(f))}</p>`:''}
+  <div class="ph" id="fiPh"></div><div class="row" style="justify-content:flex-end"><button class="btn ghost" id="noSheet">Chiudi</button></div>`);loadFoodPhotos(f.id,$('#fiPh'))}
 function msgHtml(m,ix){
   if(m.role==='u')return`<div class="msg u">${m.photo?'<span class="chip">foto</span><br>':''}${esc(m.text)}</div>`;
   let h=`<div class="msg a${m.err?' e':''}${m.tot&&!m.err?' rsum':''}">`;
@@ -787,6 +795,7 @@ document.addEventListener('click',e=>{
   if(b.id==='reopenDay'){reopenDay();return}
   if(b.id==='backToday'){ui.dv=null;render();return}
   if(b.dataset.rtab){ui.rec=b.dataset.rtab;render();return}
+  if(b.dataset.foodinfo){const it=(S.day.meals[ui.meal]||{items:[]}).items.find(x=>x.alimento_id===b.dataset.foodinfo);foodInfo(b.dataset.foodinfo,it);return}
   if(b.dataset.del!==undefined){const k=ui.meal,ix=+b.dataset.del,m=S.day.meals[k],it=m.items[ix];if(!it)return;
     sheet(`<h3>Eliminare questo alimento?</h3><p class="hm"><b>${esc(it.nome)}</b> ${esc(it.quantita)} — ${f0(it.kcal)} kcal verrà tolto da ${mealName(k).toLowerCase()}.</p><div class="row between"><button class="btn ghost" id="noSheet">Annulla</button><button class="btn bad" id="okItemDel">Elimina</button></div>`);
     $('#okItemDel').onclick=()=>{const mm=S.day.meals[k],j=mm.items.indexOf(it);if(j>=0){mm.items.splice(j,1);mm.chat.push({role:'u',text:`(Ho eliminato a mano: ${it.nome})`});save()}closeSheet();render();toast('Alimento eliminato')};return}
@@ -878,8 +887,8 @@ function renderFoods(){
   $('#foodList').innerHTML=h;
   document.querySelectorAll('details.food').forEach(d=>d.addEventListener('toggle',()=>{if(d.open)loadFoodPhotos(d.dataset.fid)}));
 }
-async function loadFoodPhotos(id){
-  const f=S.foods.find(x=>x.id===id),box=document.querySelector(`[data-ph="${CSS.escape(id)}"]`);if(!f||!box||!f.foto)return;
+async function loadFoodPhotos(id,box0){
+  const f=S.foods.find(x=>x.id===id),box=box0||document.querySelector(`[data-ph="${CSS.escape(id)}"]`);if(!f||!box||!f.foto)return;
   let h='';for(const [k,lab] of [['tabella','Tabella'],['confezione','Confezione']]){if(!f.foto[k])continue;const d=await IDB.get(f.foto[k]);if(d)h+=`<figure><img alt="${lab}" src="${esc(d)}"><figcaption>${lab}</figcaption></figure>`}
   box.innerHTML=h;
 }
