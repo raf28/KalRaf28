@@ -109,8 +109,8 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 .x:active{background:var(--soft)}
 .flink{font:inherit;color:inherit;text-align:left;padding:0}
 .flink span{margin-left:6px;font-size:.85em;color:light-dark(#2c6a49,#7cc79a);text-decoration:none;display:inline-block}
-#mealItems .x{width:30px;height:30px;border-radius:50%;border:0;background:var(--brand);color:#fff;font-size:24px;font-weight:400;display:grid;place-items:center;padding:0 0 3px;justify-self:center;align-self:center}
-#mealItems .x:active{background:var(--brand2)}
+#mealItems .x{width:30px;height:30px;border-radius:50%;border:0;background:#2f8f5c;color:#fff;font-size:24px;font-weight:400;display:grid;place-items:center;padding:0 0 3px;justify-self:center;align-self:center}
+#mealItems .x:active{background:var(--brand)}
 .tot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;padding-top:9px;border-top:2px solid var(--line);font-weight:600}
 .tot small{font-weight:400;color:var(--mute);font-size:13px;width:100%}
 .empty{color:var(--mute);font-size:15px;padding:6px 0}
@@ -520,7 +520,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 96 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 97 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -997,7 +997,7 @@ document.addEventListener('click',e=>{
   if(b.dataset.rtab){ui.rec=b.dataset.rtab;render();return}
   if(b.dataset.foodinfo){const it=(S.day.meals[ui.meal]||{items:[]}).items.find(x=>x.alimento_id===b.dataset.foodinfo);foodInfo(b.dataset.foodinfo,it);return}
   if(b.dataset.del!==undefined){const k=ui.meal,ix=+b.dataset.del,m=S.day.meals[k],it=m.items[ix];if(!it)return;
-    sheet(`<h3>Eliminare questo alimento?</h3><p class="hm"><b>${esc(it.nome)}</b> ${esc(it.quantita)} — ${f0(it.kcal)} kcal verrà tolto da ${mealName(k).toLowerCase()}.</p><div class="row between"><button class="btn ghost" id="noSheet">Annulla</button><button class="btn bad" id="okItemDel">Elimina</button></div>`);
+    sheet(`<h3>Eliminare questo alimento?</h3><p class="hm"><b>${esc(it.nome)}</b> ${esc(it.quantita)} — ${f0(it.kcal)} kcal verrà tolto da ${mealName(k).toLowerCase()}.</p><div class="row between"><button class="btn ghost dg" id="noSheet">Annulla</button><button class="btn bad dg" id="okItemDel">Elimina</button></div>`);
     $('#okItemDel').onclick=()=>{const mm=S.day.meals[k],j=mm.items.indexOf(it);if(j>=0){mm.items.splice(j,1);mm.chat.push({role:'u',text:`(Ho eliminato a mano: ${it.nome})`});save()}closeSheet();render();toast('Alimento eliminato')};return}
   if(b.dataset.saverec!==undefined){const m=S.recChat[+b.dataset.saverec];if(m&&m.ricetta){S.recipes.unshift({id:'r'+Date.now(),src:m.ts,...m.ricetta});save();toast('Ricetta salvata');render()}return}
   if(b.dataset.delrec){S.recipes=S.recipes.filter(r=>r.id!==b.dataset.delrec);save();render();return}
@@ -1005,7 +1005,7 @@ document.addEventListener('click',e=>{
   if(b.dataset.delhist!==undefined){const i=+b.dataset.delhist;sheet(`<h3>Eliminare questa giornata?</h3><p class="hm">Non si può annullare.</p><div class="row between"><button class="btn ghost" id="noSheet">Annulla</button><button class="btn bad" id="okDelH">Elimina</button></div>`);$('#okDelH').onclick=()=>{S.history.splice(i,1);save();closeSheet();render()};return}
   if(b.id==='mealDel'&&ui.meal){const k=ui.meal,sn=isSnack(k),nm=mealName(k),dopo=sn&&S.day.order.filter(isSnack).some(x=>snackN(x)>snackN(k));
     const art=sn?'lo ':k==='pranzo'?'il ':'la ';
-    sheet(`<h3>Eliminare ${art}${sn?nm:nm.toLowerCase()}?</h3><p class="hm">${sn?'Lo spuntino':'Il pasto'}, i suoi alimenti e la sua chat verranno eliminati.${dopo?' Gli spuntini successivi vengono rinumerati.':''}<br>Potrai riaggiungerne uno nuovo con il tasto <b>+</b>.</p><div class="row between"><button class="btn ghost dg" id="noSheet">Annulla</button><button class="btn bad dg" id="okMealDel">Elimina</button></div>`);
+    sheet(`<h3>Eliminare ${art}${sn?nm:nm.toLowerCase()}?</h3><p class="hm">${sn?'Lo spuntino':'Il pasto'}, i suoi alimenti e la sua chat verranno eliminati.${dopo?' Gli spuntini successivi vengono rinumerati.':''}<br>Potrai riaggiungerne uno nuovo con il tasto <b>+</b></p><div class="row between"><button class="btn ghost dg" id="noSheet">Annulla</button><button class="btn bad dg" id="okMealDel">Elimina</button></div>`);
     $('#okMealDel').onclick=()=>{deleteMeal(k);save();closeSheet();render();toast(nm+(k==='colazione'||k==='cena'?' eliminata':' eliminato'))};return}
   if(b.id==='noSheet'){closeSheet();return}
   if(b.id==='impRec'){return importRecipes()}
