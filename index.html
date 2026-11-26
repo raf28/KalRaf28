@@ -446,6 +446,9 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
 /* v142: riga del totale grande come il titolo; kcal nel verde di «valore sicuro» */
 #mealItems .sumt,.mbox .sumt{font-size:17px;font-weight:700;color:light-dark(#17201a,#fff)}
 #mealItems .sumt b,.mbox .sumt b{font-size:17px;font-weight:700;color:light-dark(#2a7a4b,#5cc58a)}
+/* v145: Ascolta/Pausa dentro la tabella del pasto */
+.mtts{margin-top:16px}
+.mtts .tts{margin-top:0}
 /* Impostazioni (v121): bordo dei blocchi nel verde del tasto «Applica e torna al Diario» */
 #v-impost .card{border-color:var(--brand2)}
 /* Diario (v120): barra del pasto uguale alla barra dei pasti in basso */
@@ -599,7 +602,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 144</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 145</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -981,7 +984,7 @@ function renderHistDay(){
   if(!ui.hmeal){$('#mealItems').innerHTML='<div class="empty">Nessun alimento in questa giornata.</div>';$('#mealChat').innerHTML='';return}
   const m=D.meals[ui.hmeal],t=sum(m.items);
   ui.box={items:m.items,name:mealName(ui.hmeal),edit:false};
-  $('#mealItems').innerHTML=mealBoxHTML(m.items,mealName(ui.hmeal),false);
+  $('#mealItems').innerHTML=mealBoxHTML(m.items,mealName(ui.hmeal),false,'box');
   $('#mealChat').innerHTML=m.chat.map(msgHtml).join('');
 }
 function packDay(d){const meals={};orderKeys(Object.keys(d.meals)).forEach(k=>{if(d.meals[k].items.length)meals[k]=d.meals[k].items});
@@ -1016,7 +1019,7 @@ function renderMeal(){
     $('#mealChat').innerHTML=ui.busy?'<div class="typing">Sto calcolando<i></i><i></i><i></i></div>':'';return}
   const m=S.day.meals[ui.meal],t=sum(m.items);
   ui.box={items:m.items,name:mealName(ui.meal),edit:true};
-  $('#mealItems').innerHTML=(m.items.length?mealBoxHTML(m.items,mealName(ui.meal),true)
+  $('#mealItems').innerHTML=(m.items.length?mealBoxHTML(m.items,mealName(ui.meal),true,'box')
     :`<div class="empty">Ancora niente. Scrivi cosa hai mangiato o allega una foto: il conteggio si aggiorna da solo, e se correggi qualcosa in chat vale sempre l'ultima versione.</div>`);
   $('#mealChat').innerHTML=m.chat.map(msgHtml).join('')+(ui.busy?'<div class="typing">Sto calcolando<i></i><i></i><i></i></div>':'');
 }
@@ -1027,25 +1030,26 @@ function foodInfo(id,it){const f=S.foods.find(x=>x.id===id);if(!f)return;
   ${f.note?`<p style="margin:10px 0 0"><b>Note:</b> ${esc(f.note)}</p>`:''}${macroNote(f)?`<p class="hm" style="margin:8px 0 0">${esc(macroNote(f))}</p>`:''}
   <div class="ph" id="fiPh"></div><div class="row" style="justify-content:flex-start"><button class="btn sm fiClose" id="noSheet">Chiudi</button></div>`);loadFoodPhotos(f.id,$('#fiPh'))}
 /* v139: tabella unica del pasto (Lista alimenti + totale + macro), usata in alto e nei riepiloghi della chat (sempre aggiornata) */
-function mealBoxHTML(items,name,edit){if(!items||!items.length)return'<div class="empty">Nessun alimento in questo pasto.</div>';
+function ttsHTML(ix){return `<div class="tts"><button class="tb${ttsState(ix)==='play'?' on':''}" data-say="${ix}"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="0.5" y="0.5" width="15" height="15" rx="3.5" fill="#1f4d35"/><path d="M6 4.2v7.6l6-3.8z" fill="#fff"/></svg>Ascolta</button><button class="tb${ttsState(ix)==='pause'?' on':''}" data-pause="${ix}"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="0.5" y="0.5" width="15" height="15" rx="3.5" fill="#1f4d35"/><rect x="5" y="4" width="2" height="8" rx=".6" fill="#fff"/><rect x="9" y="4" width="2" height="8" rx=".6" fill="#fff"/></svg>Pausa</button></div>`}
+function mealBoxHTML(items,name,edit,tix){if(!items||!items.length)return'<div class="empty">Nessun alimento in questo pasto.</div>';
   const t=sum(items),row=(l,k,sub)=>`<div class="sr${sub?' sub':''}"><span>${l}${t.miss[k]&&t.has[k]?'<span class="ast">*</span>':''}</span><b>${fv(t,k,'g')}</b></div>`;
   const miss=items.filter(i=>KEYS.slice(1).some(k=>nn(i[k])===null));
   return'<div class="lt">Lista alimenti<br>Totale kcal e macro</div>'+items.map((i,ix)=>`<div class="it it2"><div class="n">${edit?foodLink(i):esc(i.nome)}</div><div class="q"><span class="qq">${esc(i.quantita)}</span>${srcTag(i)}</div><div class="k">${f0(i.kcal)} kcal</div>${edit?`<button class="x" data-del="${ix}" aria-label="Elimina ${esc(i.nome)}">×</button>`:'<span></span>'}<div class="m">${mline(i)}</div></div>`).join('')+
     `<div class="sumt">Totale kcal ${esc(name.toUpperCase())}: <b>${f0(t.kcal)} kcal</b></div><div class="sml">${row('Carboidrati','carboidrati')}${row('di cui zuccheri','zuccheri',1)}${row('Proteine','proteine')}${row('Grassi','grassi')}${row('di cui saturi','saturi',1)}${row('Fibre','fibre')}${row('Sale','sale')}</div>`+
-    (miss.length?`<div class="missn">* Valori mancanti per: ${miss.map(i=>esc(i.nome)).join(', ')}. I totali segnati sono parziali.</div>`:'')}
+    (miss.length?`<div class="missn">* Valori mancanti per: ${miss.map(i=>esc(i.nome)).join(', ')}. I totali segnati sono parziali.</div>`:'')+
+    (tix!=null&&('speechSynthesis' in window)?'<div class="mtts">'+ttsHTML(tix)+'</div>':'')}
 function msgHtml(m,ix){
   if(m.role==='u')return`<div class="msg u">${m.photo?'<span class="chip">foto</span><br>':''}${esc(m.text)}</div>`;
   let h=`<div class="msg a${m.err?' e':''}${m.tot&&!m.err?' rsumw':''}">`;
   if(m.tot&&!m.err){
     if(m.ans&&m.text)h+=`<div class="ansx">${md(m.text)}</div>`;
     const B=ui.box||{items:[],name:'pasto',edit:false};
-    h+=`<div class="card mbox">${mealBoxHTML(B.items,B.name,B.edit)}</div>`;
-    if(m.text&&!m.ans)h+=`<div class="mnote">${md(m.text)}</div>`;
+    h+=`<div class="card mbox">${mealBoxHTML(B.items,B.name,B.edit,ix)}</div>`;
   }else h+=md(m.text);
   if(m.ricetta){const t=sum(m.ricetta.ingredienti);const saved=S.recipes.some(r=>r.src===m.ts);
     h+=`<div class="rc"><b>${esc(m.ricetta.nome)}</b><div class="m">Per porzione: ${f0(t.kcal)} kcal · ${mline(t)}</div><div class="row"><button class="btn sm ghost" data-saverec="${ix}" ${saved?'disabled':''}>${saved?'Salvata':'Salva nel ricettario'}</button></div></div>`}
   if(m.err&&m.rid)h+=`<div class="tts"><button class="tb" data-retry="${ix}">↻ Riprova</button></div>`;
-  if(!m.err&&('speechSynthesis' in window))h+=`<div class="tts"><button class="tb${ttsState(ix)==='play'?' on':''}" data-say="${ix}"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="0.5" y="0.5" width="15" height="15" rx="3.5" fill="#1f4d35"/><path d="M6 4.2v7.6l6-3.8z" fill="#fff"/></svg>Ascolta</button><button class="tb${ttsState(ix)==='pause'?' on':''}" data-pause="${ix}"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="0.5" y="0.5" width="15" height="15" rx="3.5" fill="#1f4d35"/><rect x="5" y="4" width="2" height="8" rx=".6" fill="#fff"/><rect x="9" y="4" width="2" height="8" rx=".6" fill="#fff"/></svg>Pausa</button></div>`;
+  if(!m.err&&!(m.tot&&!m.err)&&('speechSynthesis' in window))h+=ttsHTML(ix);
   return h+'</div>';
 }
 function renderRec(){
@@ -1290,7 +1294,7 @@ $('#pills').addEventListener('click',e=>{const b=e.target.closest('[data-pill]')
 const TTS={key:null,len:0,chunks:[],idx:0,pos:0,playing:false,tok:0};
 function speechText(m){
   const plain=x=>String(x||'').replace(/\*\*/g,'').replace(/[•–]/g,'');
-  let t=plain(m.text)+'. ';
+  let t=m.tot&&!m.err?'':plain(m.text)+'. ';
   if(m.tot&&!m.err&&ui.box&&ui.box.items){m=Object.assign({},m,{tot:sum(ui.box.items),list:ui.box.items.map(i=>({n:i.nome,q:i.quantita,k:i.kcal,miss:KEYS.slice(1).filter(k=>nn(i[k])===null)}))})}
   if(m.tot&&!m.err){
     if(m.list&&m.list.length)t+='Alimenti del pasto: '+m.list.map(i=>i.n+(i.q?', '+i.q.replace(/\bg\b/g,'grammi'):'')).join('; ')+'. ';
@@ -1303,7 +1307,7 @@ function speechText(m){
 function itVoice(){const v=speechSynthesis.getVoices();return v.find(x=>/^it/i.test(x.lang)&&/google/i.test(x.name))||v.find(x=>/^it/i.test(x.lang))}
 /* Ascolta/Pausa (v98): lettura a frasi; la Pausa ricorda la frase per 1 ora (solo l'ultimo audio) */
 const TTSK='kalraf28_tts';
-function ttsKey(ix){return (ui.view==='ricette'?'rec':'meal:'+ui.meal)+':'+ix}
+function ttsKey(ix){return (ui.view==='ricette'?'rec':'meal:'+(ui.meal||('h'+ui.dv+':'+ui.hmeal)))+':'+ix}
 function ttsSaved(){try{const o=JSON.parse(localStorage.getItem(TTSK)||'null');if(o&&Date.now()-o.ts<3600000)return o;localStorage.removeItem(TTSK)}catch(e){}return null}
 function ttsSave(o){try{o?localStorage.setItem(TTSK,JSON.stringify(o)):localStorage.removeItem(TTSK)}catch(e){}}
 function ttsState(ix){const k=ttsKey(ix);if(TTS.playing&&TTS.key===k)return'play';const o=ttsSaved();return o&&o.key===k?'pause':''}
@@ -1312,7 +1316,7 @@ function ttsChunks(t){const out=[];
     const w=seg.trim().split(/\s+/).filter(Boolean);for(let i=0;i<w.length;i+=12)out.push(w.slice(i,i+12).join(' '))})});
   return out.filter(x=>/[\p{L}\p{N}]/u.test(x))}
 function ttsMark(){document.querySelectorAll('.tts .tb.on').forEach(x=>x.classList.remove('on'));
-  document.querySelectorAll('[data-say]').forEach(b=>{const st=ttsState(+b.dataset.say);if(st==='play')b.classList.add('on');const p=b.parentNode.querySelector('[data-pause]');if(p&&st==='pause')p.classList.add('on')})}
+  document.querySelectorAll('[data-say]').forEach(b=>{const sv=b.dataset.say,st=ttsState(sv==='box'?sv:+sv);if(st==='play')b.classList.add('on');const p=b.parentNode.querySelector('[data-pause]');if(p&&st==='pause')p.classList.add('on')})}
 function ttsStop(c=true){TTS.tok++;TTS.playing=false;if(c)try{speechSynthesis.cancel()}catch(e){}}
 function ttsPlay(i,off=0){const tok=TTS.tok;
   if(i>=TTS.chunks.length){TTS.playing=false;ttsSave(null);ttsMark();return}
@@ -1323,9 +1327,9 @@ function ttsPlay(i,off=0){const tok=TTS.tok;
   speechSynthesis.speak(u)}
 document.addEventListener('click',e=>{
   const p=e.target.closest('[data-pause]'),b=e.target.closest('[data-say]');if(!p&&!b)return;e.stopPropagation();
-  if(p){const k=ttsKey(+p.dataset.pause);if(TTS.playing&&TTS.key===k){ttsStop();ttsSave({key:k,len:TTS.len,idx:TTS.idx,pos:TTS.pos||0,ts:Date.now()});ttsMark()}return}
-  const ix=+b.dataset.say,k=ttsKey(ix);if(TTS.playing&&TTS.key===k)return;
-  const chat=ui.view==='ricette'?S.recChat:(ui.meal?ensureMeal(ui.meal).chat:[]),m=chat[ix];if(!m)return;
+  if(p){const pv=p.dataset.pause,k=ttsKey(pv==='box'?pv:+pv);if(TTS.playing&&TTS.key===k){ttsStop();ttsSave({key:k,len:TTS.len,idx:TTS.idx,pos:TTS.pos||0,ts:Date.now()});ttsMark()}return}
+  const ix=b.dataset.say==='box'?'box':+b.dataset.say,k=ttsKey(ix);if(TTS.playing&&TTS.key===k)return;
+  const chat=ui.view==='ricette'?S.recChat:(ui.meal?ensureMeal(ui.meal).chat:(ui.dv!==null&&ui.hmeal&&histDay(ui.dv)?histDay(ui.dv).meals[ui.hmeal].chat:[])),m=ix==='box'?{role:'a',text:'',tot:{}}:chat[ix];if(!m)return;
   const txt=speechText(m),chunks=ttsChunks(txt);if(!chunks.length)return;
   const o=ttsSaved();let start=0,off=0;if(o&&o.key===k&&o.len===txt.length&&o.idx<chunks.length){start=o.idx;off=Math.min(o.pos||0,chunks[start].length-1);off=Math.max(0,chunks[start].lastIndexOf(' ',off)+1)}
   const busy=!!(speechSynthesis.speaking||speechSynthesis.pending);ttsStop(busy);ttsSave(null);
