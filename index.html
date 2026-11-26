@@ -75,9 +75,13 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 .it .q{font-size:13px;color:var(--mute)}
 .it .k{font-weight:600;white-space:nowrap;text-align:right}
 .it .m{grid-column:1/3;font-size:13px;color:var(--mute)}
+.it.it2{grid-template-columns:minmax(0,1fr) auto 36px;grid-template-areas:'n n n' 'q k x' 'm m m';row-gap:2px}
+.it.it2 .n{grid-area:n}.it.it2 .q{grid-area:q;align-self:center}.it.it2 .k{grid-area:k}.it.it2 .x{grid-area:x}.it.it2 .m{grid-area:m;margin-top:4px}
+.it.it2 .qq{font-size:16px;font-weight:600;color:var(--ink);margin-right:.5em}
+.it.it2 .src{white-space:nowrap}
 .x{width:44px;height:44px;border-radius:12px;color:var(--mute);font-size:22px;line-height:1}
 .x:active{background:var(--soft)}
-.flink{font:inherit;color:inherit;text-align:left;padding:0;text-decoration:underline;text-decoration-color:var(--brand2);text-decoration-thickness:2px;text-underline-offset:3px}
+.flink{font:inherit;color:inherit;text-align:left;padding:0}
 .flink span{margin-left:6px;font-size:.85em;color:light-dark(#2c6a49,#7cc79a);text-decoration:none;display:inline-block}
 #mealItems .x{width:30px;height:30px;border-radius:50%;border:1px solid #ff4d3a;background:var(--brand);color:#fff;font-size:24px;font-weight:400;display:grid;place-items:center;padding:0 0 3px;justify-self:center;align-self:center}
 #mealItems .x:active{background:var(--brand2)}
@@ -346,7 +350,7 @@ details.card summary::-webkit-details-marker{display:none}
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 54 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 55 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -719,7 +723,7 @@ function renderMeal(){
     $('#mealChat').innerHTML=ui.busy?'<div class="typing">Sto calcolando<i></i><i></i><i></i></div>':'';return}
   $('#mealTabs').innerHTML=started.map(k=>`<button data-meal="${k}" class="${k===ui.meal?'on':''}">${mealName(k)}<small>${f0(sum(ensureMeal(k).items).kcal)} kcal</small></button>`).join('');
   const m=S.day.meals[ui.meal],t=sum(m.items);
-  $('#mealItems').innerHTML=(m.items.length?'<div class="lt">Lista alimenti</div>'+m.items.map((i,ix)=>`<div class="it"><div><div class="n">${foodLink(i)}</div><div class="q">${esc(i.quantita)}${srcTag(i)}</div></div><div class="k">${f0(i.kcal)} kcal</div><button class="x" data-del="${ix}" aria-label="Elimina ${esc(i.nome)}">×</button><div class="m">${mline(i)}</div></div>`).join('')+
+  $('#mealItems').innerHTML=(m.items.length?'<div class="lt">Lista alimenti</div>'+m.items.map((i,ix)=>`<div class="it it2"><div class="n">${foodLink(i)}</div><div class="q"><span class="qq">${esc(i.quantita)}</span>${srcTag(i)}</div><div class="k">${f0(i.kcal)} kcal</div><button class="x" data-del="${ix}" aria-label="Elimina ${esc(i.nome)}">×</button><div class="m">${mline(i)}</div></div>`).join('')+
     `<div class="tot"><span>Totale ${mealName(ui.meal).toLowerCase()}</span><span>${f0(t.kcal)} kcal</span><small>${mline(t)}</small></div>`
     :`<div class="empty">Ancora niente. Scrivi cosa hai mangiato o allega una foto: il conteggio si aggiorna da solo, e se correggi qualcosa in chat vale sempre l'ultima versione.</div>`);
   $('#mealChat').innerHTML=m.chat.map(msgHtml).join('')+(ui.busy?'<div class="typing">Sto calcolando<i></i><i></i><i></i></div>':'');
