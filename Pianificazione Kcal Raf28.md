@@ -223,10 +223,9 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
 
 ## ✅ COSE DA FARE
 
-### Da sistemare alla prossima rigenerazione dell'APK (non urgente)
-- **Blocco in verticale:** l'app non ruota in orizzontale e non si può usare a schermo diviso. Soluzione: togliere `orientation` dal manifest e rigenerare l'APK (stesso keystore, **version code 4**). Rimandato dall'utente il 26/11.
-  - **Idea dell'utente:** interruttore **"Blocca in verticale" sì/no** nelle Impostazioni, con `screen.orientation.lock()` / `unlock()`.
-- **Barra in basso tagliata (visto una volta, 25/11):** corretto nella v52 con l'altezza misurata in JavaScript. Da verificare sul telefono.
-
 ### Futuro
 1. Eventuale APK "autonoma" con tutto il codice dentro (Capacitor o simili): servirebbe solo per il Play Store o per non dipendere da GitHub. Richiede di rifare il login Google per Drive e la dettatura.
+
+### Note
+- **Blocco in verticale** (da sistemare alla prossima rigenerazione dell'APK, non urgente): l'app non ruota in orizzontale e non si può usare a schermo diviso. Soluzione: togliere `orientation` dal manifest e rigenerare l'APK (stesso keystore, **version code 4**). Rimandato dall'utente il 26/11.
+  - **Idea dell'utente:** interruttore **"Blocca in verticale" sì/no** nelle Impostazioni, con `screen.orientation.lock()` / `unlock()`.
