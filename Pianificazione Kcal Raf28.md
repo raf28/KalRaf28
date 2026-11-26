@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 106 (26/11/2026, sera).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 107 (26/11/2026, sera).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **106**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **107**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -232,6 +232,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **Modifica di una giornata archiviata (v104):** durante la modifica la barra marrone "Giornata archiviata" resta visibile sopra il pasto (elemento `#editBar`), con "Modifica giornata" disattivato a sinistra e **"Salva"** a destra (tasti di default). Frecce ‹ › disattivate e "Fine modifiche" in testata tolto. "Salva" rimette la giornata nello storico, mostra "Aggiornamento salvato" e torna alla giornata attuale.
   - **Fine Modifiche (v105):** il tasto "Salva" si chiama **"Fine Modifiche"**. Durante la modifica entrambe le frecce sono disattivate; premendo "Fine Modifiche" compare "Aggiornamento salvato" e si **resta sulla giornata appena modificata** (in sola lettura), con le frecce riattivate dove si può andare (› verso oggi sempre, ‹ solo se ci sono giornate più vecchie).
   - **Salva (v106):** il tasto torna a chiamarsi **"Salva"**; testo della barra in modifica: "Stai modificando una giornata archiviata." / "Tocca «Salva» per registrare le modifiche.". Dopo "Salva" si resta sulla giornata (comportamento della v105).
+  - **Frecce ↑ ↓ (v107):** lo sfondo dei due cerchi è trasparente al 50% (bordo e freccia invariati), in chiaro e in scuro.
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
