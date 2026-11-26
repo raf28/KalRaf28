@@ -46,7 +46,7 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 .histbar .mbtn{white-space:nowrap}
 .histbar>div{flex:1 1 150px}
 .pill{border:1px solid rgba(255,255,255,.45);border-radius:99px;padding:8px 14px;color:#fff;font-size:14px;min-height:40px}
-#closeDay{background:var(--brand);border:1px solid #ff4d3a;min-height:40px;padding:8px 14px;font-size:14px;white-space:nowrap}
+#closeDay{background:var(--brand);border:0;min-height:40px;padding:8px 14px;font-size:14px;white-space:nowrap}
 .kc{display:flex;align-items:baseline;gap:8px;margin:18px 0 8px;flex-wrap:wrap}
 .kc b{font-size:46px;line-height:1;font-weight:700}
 .kc .of{font-size:17px;opacity:.85}
@@ -109,7 +109,7 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 .x:active{background:var(--soft)}
 .flink{font:inherit;color:inherit;text-align:left;padding:0}
 .flink span{margin-left:6px;font-size:.85em;color:light-dark(#2c6a49,#7cc79a);text-decoration:none;display:inline-block}
-#mealItems .x{width:30px;height:30px;border-radius:50%;border:1px solid #ff4d3a;background:var(--brand);color:#fff;font-size:24px;font-weight:400;display:grid;place-items:center;padding:0 0 3px;justify-self:center;align-self:center}
+#mealItems .x{width:30px;height:30px;border-radius:50%;border:0;background:var(--brand);color:#fff;font-size:24px;font-weight:400;display:grid;place-items:center;padding:0 0 3px;justify-self:center;align-self:center}
 #mealItems .x:active{background:var(--brand2)}
 .tot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;padding-top:9px;border-top:2px solid var(--line);font-weight:600}
 .tot small{font-weight:400;color:var(--mute);font-size:13px;width:100%}
@@ -174,7 +174,7 @@ details.food summary .kv{white-space:nowrap;color:var(--mute);font-size:14px}
 .lb{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.94);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:calc(env(safe-area-inset-top) + 56px) 10px calc(env(safe-area-inset-bottom) + 16px)}
 .lb img{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px;touch-action:pinch-zoom}
 .lb .cap{color:#fff;font-size:14px;margin-top:10px;opacity:.85}
-.lb .lbx{position:absolute;top:calc(env(safe-area-inset-top) + 10px);right:12px;width:40px;height:40px;border-radius:50%;border:1px solid #ff4d3a;background:var(--brand);color:#fff;font-size:26px;line-height:1;display:grid;place-items:center;padding:0 0 3px}
+.lb .lbx{position:absolute;top:calc(env(safe-area-inset-top) + 10px);right:12px;width:40px;height:40px;border-radius:50%;border:0;background:var(--brand);color:#fff;font-size:26px;line-height:1;display:grid;place-items:center;padding:0 0 3px}
 .slot .sb{display:flex;flex-direction:column;gap:6px;margin-top:6px}
 .slot .sb .btn{width:100%}
 .slot{width:150px;border:1px dashed var(--line);border-radius:12px;padding:8px;text-align:center;font-size:13px;color:var(--mute)}
@@ -203,7 +203,7 @@ details.food summary .kv{white-space:nowrap;color:var(--mute);font-size:14px}
 .mbar b{font-size:17px;text-transform:uppercase;letter-spacing:.03em}
 .mbar b .mk{margin-left:8px;font-weight:700;text-transform:none;letter-spacing:0}
 .mbar small{display:block;font-size:12px;opacity:.85}
-.mbar .mbtn{min-height:40px;padding:8px 14px;border-radius:99px;border:1px solid #ff4d3a;color:#fff;font-size:14px;font-weight:400;background:var(--brand);white-space:nowrap}
+.mbar .mbtn{min-height:40px;padding:8px 14px;border-radius:99px;border:0;color:#fff;font-size:14px;font-weight:400;background:var(--brand);white-space:nowrap}
 .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 /* compositore */
 .comp{border-top:1px solid var(--line);background:var(--card);padding:8px 10px}
@@ -286,7 +286,7 @@ details.card summary::-webkit-details-marker{display:none}
 /* barra dei pasti staccata dal campo di scrittura */
 .mdock .mrow{margin:0 auto}
 .mdock .seg{padding:0;gap:6px}
-.mdock .seg button{flex:0 0 112px;min-height:46px;padding:4px 6px;border-radius:12px;font-size:14px;font-weight:500;line-height:1.15;text-align:center}
+.mdock .seg button{flex:0 0 96px;min-height:46px;padding:4px 6px;border-radius:12px;font-size:14px;font-weight:500;line-height:1.15;text-align:center}
 .mdock .seg button small{font-size:12px}
 .mdock .seg button.vuoto{border-style:dashed;opacity:.85}
 .mdock .sarr{top:0;bottom:0}
@@ -421,7 +421,7 @@ details.card summary::-webkit-details-marker{display:none}
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 70 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 71 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -479,7 +479,7 @@ const mealName=k=>isSnack(k)?'Spuntino '+snackN(k):k==='spuntino'?'Spuntino':(ME
 const orderKeys=keys=>[...BASE.filter(k=>keys.includes(k)),...keys.filter(isSnack).sort((a,b)=>snackN(a)-snackN(b))];
 const snacksOf=d=>orderKeys(Object.keys(d.meals)).filter(isSnack).filter(k=>{const m=d.meals[k];return m.items.length||m.chat.length});
 const visibleMeals=()=>(S.day.order||[]).slice();
-const MAXSN=10;
+const MAXSN=9;
 function addMeal(k){const o=S.day.order;
   if(k==='spuntino'){const n=o.filter(isSnack).length;if(n>=MAXSN){toast('Massimo '+MAXSN+' spuntini');return}k='spuntino'+(n+1);S.day.meals[k]={items:[],chat:[]}}
   else if(o.includes(k)){ui.toTop=k!==ui.meal;ui.meal=k;render();return}
