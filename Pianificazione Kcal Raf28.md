@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 100 (26/11/2026, sera).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 101 (26/11/2026, sera).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **100**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **101**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -226,6 +226,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **Ascolta / Pausa (v98):** icone disegnate (non più emoji): triangolino del play nel colore della scritta, quadratino della pausa verde scuro `#1f4d35` con le due lineette bianche. Il tasto attivo (Ascolta mentre legge, Pausa quando è in pausa) diventa verde pieno con scritta e triangolino bianchi. La lettura avviene **frase per frase**; Pausa ferma e ricorda la frase interrotta, Ascolta **riprende dall'inizio di quella frase**. Il punto di pausa si salva sul telefono (`localStorage` chiave `kalraf28_tts`, non nel backup) per **1 ora** e solo per l'ultimo audio: avviare un'altra risposta lo dimentica; a fine lettura si riparte dall'inizio.
   - **Ascolta / Pausa (v99):** anche il play ha il quadratino verde scuro con il triangolino bianco, come la pausa. Corretta la ripresa dopo la pausa: nella v98 l'app chiamava sempre `speechSynthesis.cancel()` subito prima di `speak()`, e su Android la nuova lettura veniva ignorata. Ora `cancel()` si chiama solo se sta già parlando, con un'attesa di 250 ms prima di ripartire.
   - **Ascolta / Pausa (v100):** il testo si legge a pezzi più corti (si spezza anche su virgole e a capo, massimo 12 parole per pezzo), così una pausa successiva riprende davvero dal nuovo punto e non dal pezzo lungo precedente. Se il telefono segnala la parola che sta leggendo (`onboundary`), la ripresa parte dalla **parola esatta**; altrimenti dall'inizio del pezzo interrotto.
+  - **Data nella testata (v101):** su due righe, "Giovedì 26" sopra e il mese in MAIUSCOLO sotto ("NOVEMBRE"), stessa grandezza del testo (14 px); frecce ‹ › più grandi (32 px invece di 26).
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
