@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 112 (26/11/2026, sera).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 113 (26/11/2026, sera).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **112**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **113**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -238,6 +238,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **Aggiungi un pasto (v110):** pillole con la forma delle schede Alimenti (raggio 34 px, alte 58 px), piene di verde `#2c6a49` con scritte bianche; pasti già aggiunti sbiaditi e non toccabili; più spazio sopra e sotto l'elenco; "Annulla" a sinistra come tasto di default.
   - **Alimenti (v111):** le pillole chiuse hanno lo sfondo verde `#22804f` (uguale in chiaro e in scuro), il bordo verde scuro di prima e tutte le scritte bianche (nome, kcal, "per …"); la scheda aperta resta con lo sfondo normale.
   - **Alimenti (v112):** il cerchio + di "Aggiungi alimento" è identico a quello del Diario (46 px, bianco, + e bordo da 2 px nel verde del microfono). Il tasto **Indietro di Android** (tasto o gesto) con una scheda alimento aperta la **chiude** invece di cambiare schermata (ogni apertura aggiunge un passo nella cronologia, che si toglie da solo se la scheda si chiude toccando il nome o "Annulla").
+  - **Alimenti (v113):** tolto il riquadro azzurro che lampeggiava al tocco (`-webkit-tap-highlight-color: transparent` su tutta l'app). La chiusura della scheda con il gesto Indietro usa **CloseWatcher** (Chrome 120+), senza passare dalla cronologia: niente più schermata che scorre con lo swipe da sinistra. Se CloseWatcher manca si usa ancora la cronologia (v112).
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 

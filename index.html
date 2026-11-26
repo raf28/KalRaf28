@@ -418,6 +418,8 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
 #closeDay,#sheet .row>.btn.dg,.btn.bdef,.mbar #mealDel{width:150px;height:40px;padding:3px 10px;white-space:nowrap;text-align:center;flex:none}
 #sheet .btn.dg.new,.head:not(.editing) #closeDay,.mbar #mealDel{background:#2f8f5c}
 .mbar #mealDel{line-height:1.15}
+/* v113: niente riquadro azzurro al tocco */
+*{-webkit-tap-highlight-color:transparent}
 </style>
 </head>
 <body>
@@ -535,7 +537,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 112 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 113 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -849,7 +851,7 @@ function renderPhoto(){$('#prev').hidden=!ui.photo;if(ui.photo)$('#prevImg').src
 /* ---------- render ---------- */
 function applyTheme(){const th=(S.settings&&S.settings.theme)||'auto';document.documentElement.style.colorScheme=th==='light'?'light':th==='dark'?'dark':'light dark';document.querySelectorAll('[data-thm]').forEach(b=>b.classList.toggle('on',b.dataset.thm===th))}
 function updSeg(){[['mealTabs','segw'],['psc','pillw']].forEach(([a,b])=>{const s=$('#'+a),w=$('#'+b);if(!s||!w)return;const max=s.scrollWidth-s.clientWidth;w.classList.toggle('cl',!s.hidden&&s.scrollLeft>4);w.classList.toggle('cr',!s.hidden&&s.scrollLeft<max-4)})}
-function render(){applyTheme();requestAnimationFrame(updSeg);
+function render(){applyTheme();if(ui.view!=='alimenti')fdKill();requestAnimationFrame(updSeg);
   ['diario','alimenti','ricette','pasti','storico','impost'].forEach(v=>$('#v-'+v).hidden=ui.view!==v);
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===ui.view));
   const chatView=ui.view==='diario'||(ui.view==='ricette'&&ui.rec==='chat');
@@ -1092,7 +1094,8 @@ if(S.foods.filter(f=>fixMacros(f)).length){try{localStorage.setItem(KEY,JSON.str
 function foodsCtx(){if(!S.foods.length)return'';return'\nAlimenti salvati dall\'utente (JSON, valori riferiti a "riferimento"): '+JSON.stringify(S.foods.map(f=>{const o={id:f.id,nome:f.nome,riferimento:f.riferimento};FKEYS.forEach(([k])=>{if(f[k]!==null&&f[k]!==undefined)o[k]=f[k]});if(f.note)o.note=f.note;return o}))}
 const letterOf=n=>{const c=String(n||'').normalize('NFD').replace(/[̀-ͯ]/g,'').trim().charAt(0).toUpperCase();return/[A-Z]/.test(c)?c:'#'};
 const fval=(v,u,k)=>v===null||v===undefined||v===''?'—':(u==='kcal'?f0(v)+' kcal':fk(k,v)+' '+u);
-function renderFoods(){
+function fdKill(){document.querySelectorAll('details.food').forEach(d=>{if(d._cw){try{d._cw.destroy()}catch(e){}d._cw=null}})}
+function renderFoods(){fdKill();
   const q=($('#foodQ').value||'').trim().toLowerCase();
   const list=S.foods.filter(f=>!q||(f.nome+' '+(f.note||'')).toLowerCase().includes(q)).sort((a,b)=>a.nome.localeCompare(b.nome,'it',{sensitivity:'base'}));
   if(!S.foods.length){$('#foodList').innerHTML='<div class="card"><div class="empty">Nessun alimento salvato. Usa «+ Aggiungi alimento»: detta o scrivi i valori, oppure fotografa la tabella nutrizionale. Il Diario userà questi valori quando li nomini.</div></div>';return}
@@ -1106,9 +1109,13 @@ function renderFoods(){
     <div class="row between"><button class="btn sm ghost" data-collapse>Annulla</button><span class="row" style="margin:0"><button class="btn sm ghost" data-editfood="${esc(f.id)}">Modifica</button><button class="btn sm ghost" data-delfood="${esc(f.id)}">Elimina</button></span></div></details>`});
   $('#foodList').innerHTML=h;const c=$('#foodCnt');if(c)c.textContent=S.foods.length+(S.foods.length===1?' salvato':' salvati');
   document.querySelectorAll('details.food').forEach(d=>d.addEventListener('toggle',()=>{
-    if(d.open){loadFoodPhotos(d.dataset.fid);try{history.pushState(Object.assign({},history.state||{},{fd:1}),'')}catch(e){}}
-    else if(d.dataset.pop)delete d.dataset.pop;
-    else if(history.state&&history.state.fd){fdSkip=true;history.back()}}));
+    if(d.open){loadFoodPhotos(d.dataset.fid);
+      /* v113: con CloseWatcher il gesto Indietro chiude la scheda senza passare dalla cronologia (niente animazione di pagina che scorre) */
+      if('CloseWatcher' in window){try{const w=new CloseWatcher();d._cw=w;w.onclose=()=>{d._cw=null;if(d.open){d.dataset.pop='1';d.open=false}};return}catch(e){}}
+      try{history.pushState(Object.assign({},history.state||{},{fd:1}),'')}catch(e){}return}
+    if(d.dataset.pop){delete d.dataset.pop;if(d._cw){try{d._cw.destroy()}catch(e){}d._cw=null}return}
+    if(d._cw){const w=d._cw;d._cw=null;try{w.destroy()}catch(e){}return}
+    if(history.state&&history.state.fd){fdSkip=true;history.back()}}));
 }
 async function loadFoodPhotos(id,box0){
   const f=S.foods.find(x=>x.id===id),box=box0||document.querySelector(`[data-ph="${CSS.escape(id)}"]`);if(!f||!box||!f.foto)return;
