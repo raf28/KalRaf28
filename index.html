@@ -72,6 +72,7 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 .comp .seg button small{font-size:12px}
 .comp .seg button.vuoto{border-style:dashed;opacity:.85}
 .comp .seg button.vuoto small{opacity:.7}
+.comp .seg button.addsn{border-color:#e0ad12;color:light-dark(#7a5a00,#f4c430);opacity:1}
 .comp .sarr{top:0;bottom:8px}
 .comp .sarr.l{left:-10px;background:linear-gradient(90deg,var(--card) 55%,transparent)}
 .comp .sarr.r{right:-10px;background:linear-gradient(270deg,var(--card) 55%,transparent)}
@@ -384,7 +385,7 @@ details.card summary::-webkit-details-marker{display:none}
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 60 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 61 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -753,9 +754,10 @@ $('#dNext').onclick=()=>{if(S.parked){finishEdit();return}ui.dv=ui.dv>0?ui.dv-1:
 function renderMeal(){
   $('#mealBar').classList.remove('histbar');
   const started=orderKeys(Object.keys(S.day.meals)).filter(k=>{const m=S.day.meals[k];return m.items.length||m.chat.length});
+  const newSnBtn=()=>`<button data-newsn="1" class="vuoto addsn" title="Chiude ${mealName(S.day.curSnack)} e ne apre uno nuovo">+ Spuntino<small>nuovo</small></button>`;
   const allK=()=>orderKeys([...new Set([...visibleMeals(),...started,...(ui.meal?[ui.meal]:[])])]);
   if(!ui.meal){$('#mealTabs').hidden=false;$('#mealBar').hidden=true;
-    $('#mealTabs').innerHTML=allK().map(k=>`<button data-meal="${k}" class="${started.includes(k)?'':'vuoto'}">${mealName(k)}<small>${f0(sum(S.day.meals[k].items).kcal)} kcal</small></button>`).join('');
+    $('#mealTabs').innerHTML=allK().map(k=>`<button data-meal="${k}" class="${started.includes(k)?'':'vuoto'}">${mealName(k)}<small>${f0(sum(S.day.meals[k].items).kcal)} kcal</small></button>`).join('')+newSnBtn();
     $('#mealItems').innerHTML=`<div class="empty">${started.length?'Tocca un pasto qui sopra per rivederlo, oppure ':''}<b>scegli un pasto qui sotto</b>, sopra il campo di scrittura (Colazione, Pranzo, Cena o Spuntino), e scrivi, detta o fotografa cosa hai mangiato.</div>`;
     $('#mealChat').innerHTML='';return}
   const m0=ensureMeal(ui.meal),isStarted=started.includes(ui.meal);
@@ -764,10 +766,10 @@ function renderMeal(){
   const bar=$('#mealBar');bar.hidden=false;
   {const cl=isClosed(ui.meal),sn=isSnack(ui.meal);bar.innerHTML=`<div><b>${mealName(ui.meal)}<span class="mk">${f0(sum(m0.items).kcal)} kcal</span></b>${cl?'<small>chiuso · stai modificando</small>':''}</div>${isStarted?`<button class="mbtn" id="mealDel">${sn?'Elimina spuntino':'Svuota pasto'}</button>`:'<small>nuovo</small>'}`}
   if(!isStarted){
-    $('#mealTabs').innerHTML=tabsK.map(k=>`<button data-meal="${k}" class="${k===ui.meal?'on':started.includes(k)?'':'vuoto'}">${mealName(k)}<small>${f0(sum(ensureMeal(k).items).kcal)} kcal</small></button>`).join('');
+    $('#mealTabs').innerHTML=tabsK.map(k=>`<button data-meal="${k}" class="${k===ui.meal?'on':started.includes(k)?'':'vuoto'}">${mealName(k)}<small>${f0(sum(ensureMeal(k).items).kcal)} kcal</small></button>`).join('')+newSnBtn();
     $('#mealItems').innerHTML=`<div class="empty">Scrivi, detta o fotografa cosa hai mangiato a <b>${mealName(ui.meal).toLowerCase()}</b>: il conteggio si aggiorna da solo, e se correggi qualcosa in chat vale sempre l'ultima versione.</div>`;
     $('#mealChat').innerHTML=ui.busy?'<div class="typing">Sto calcolando<i></i><i></i><i></i></div>':'';return}
-  $('#mealTabs').innerHTML=tabsK.map(k=>`<button data-meal="${k}" class="${k===ui.meal?'on':started.includes(k)?'':'vuoto'}">${mealName(k)}<small>${f0(sum(ensureMeal(k).items).kcal)} kcal</small></button>`).join('');
+  $('#mealTabs').innerHTML=tabsK.map(k=>`<button data-meal="${k}" class="${k===ui.meal?'on':started.includes(k)?'':'vuoto'}">${mealName(k)}<small>${f0(sum(ensureMeal(k).items).kcal)} kcal</small></button>`).join('')+newSnBtn();
   const m=S.day.meals[ui.meal],t=sum(m.items);
   $('#mealItems').innerHTML=(m.items.length?'<div class="lt">Lista alimenti</div>'+m.items.map((i,ix)=>`<div class="it it2"><div class="n">${foodLink(i)}</div><div class="q"><span class="qq">${esc(i.quantita)}</span>${srcTag(i)}</div><div class="k">${f0(i.kcal)} kcal</div><button class="x" data-del="${ix}" aria-label="Elimina ${esc(i.nome)}">×</button><div class="m">${mline(i)}</div></div>`).join('')+
     `<div class="tot"><span>Totale ${mealName(ui.meal).toLowerCase()}</span><span>${f0(t.kcal)} kcal</span><small>${mline(t)}</small></div>`
@@ -838,6 +840,8 @@ document.addEventListener('click',e=>{
   if(b.hasAttribute('data-collapse')){const d=b.closest('details');if(d){d.open=false;d.scrollIntoView({block:'nearest'})}return}
   if(b.dataset.v){go(b.dataset.v);return}
   if(b.dataset.meal){ui.meal=b.dataset.meal;render();return}
+  if(b.dataset.newsn){const cs=S.day.curSnack;if(!ensureMeal(cs).items.length){ui.meal=cs;render();showMealBar();toast(mealName(cs)+' è ancora vuoto: scrivi qui cosa hai mangiato');return}
+    S.day.meals[cs].closed=true;const nx='spuntino'+(snackN(cs)+1);S.day.curSnack=nx;ensureMeal(nx);ui.meal=nx;save();render();showMealBar();toast(mealName(cs)+' chiuso · ora '+mealName(nx));return}
   if(b.dataset.retry!==undefined){if(ui.busy)return;const inRec=ui.view==='ricette',chat=inRec?S.recChat:ensureMeal(ui.meal).chat,m=chat[+b.dataset.retry];if(!m)return;
     const R=ui.retry[m.rid]||{kind:inRec?'rec':'meal',key:ui.meal,text:m.rtext||'',photo:null};chat.splice(+b.dataset.retry,1);delete ui.retry[m.rid];
     if(R.kind==='rec')runRec(R.text,R.photo);else runMeal(R.key||ui.meal,R.text,R.photo);return}
