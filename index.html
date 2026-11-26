@@ -421,8 +421,8 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
 /* Storico (v132): stesso stile della sezione Alimenti */
 #v-storico.vh{padding-top:0}
 #v-storico .hhead{position:sticky;top:0;z-index:4}
-#v-storico .hhead::after{content:'';position:absolute;left:0;right:0;top:100%;height:46px;background:linear-gradient(to top,transparent 0,color-mix(in srgb,var(--bg) 70%,transparent) 24px,var(--bg) 46px);pointer-events:none;opacity:0;transition:opacity .15s}
-#v-storico .hhead.stuck::after{opacity:1}
+#v-storico .hhead h2{font-size:20px}
+#v-storico #hfadeB{display:none}
 #v-storico .wrap{padding-left:6px;padding-right:6px;padding-top:14px}
 #v-storico details.hday{border:4px solid var(--brand);border-radius:34px;padding:12px 22px;margin-bottom:10px}
 #v-storico details.hday[open]{border-radius:28px}
@@ -436,7 +436,7 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
 #v-storico details.hday .dot{box-shadow:0 0 0 2px #fff}
 /* Storico (v133): giornata aperta più leggibile */
 #v-storico details.hday[open] .hm{color:var(--ink);font-size:inherit}
-#v-storico details.hday[open] > div > b{text-transform:uppercase;letter-spacing:.03em}
+#v-storico details.hday[open] b.ht{text-transform:uppercase;letter-spacing:.03em;color:light-dark(var(--brand),#4cc184)}
 /* Impostazioni (v121): bordo dei blocchi nel verde del tasto «Applica e torna al Diario» */
 #v-impost .card{border-color:var(--brand2)}
 /* Diario (v120): barra del pasto uguale alla barra dei pasti in basso */
@@ -529,7 +529,7 @@ window.addEventListener('error',()=>hideSplash());</script>
     </section>
 
     <section id="v-storico" class="vh" hidden>
-      <div class="ahead hhead"><div class="in"><div class="aht"><h2>Storico</h2><span class="acnt" id="histCnt"></span></div></div></div>
+      <div class="ahead hhead"><div class="in"><div class="aht"><h2>Storico Giornate Alimentari</h2><span class="acnt" id="histCnt"></span></div></div></div>
       <div class="wrap"><div id="histList"></div><div class="dfadeB" id="hfadeB" aria-hidden="true"></div></div>
     </section>
 
@@ -590,7 +590,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 133</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 134</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1047,9 +1047,10 @@ function renderHist(){fdKill();
   {const c=$('#histCnt');if(c)c.textContent=S.history.length===1?'1 giornata':S.history.length+' giornate'}
   $('#histList').innerHTML=S.history.length?S.history.map((h,ix)=>{const t=h.tot,max=h.target+h.margin,st=t.kcal<=h.target?'ok':t.kcal<=max?'warn':'bad';const d=new Date(h.start);
     return`<details class="card hday"><summary><span class="nm"><span class="dot" style="background:var(--${st})"></span>${(s=>s.charAt(0).toUpperCase()+s.slice(1))(d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'}))}</span><span class="kv"><b>${f0(t.kcal)} kcal</b><small>su ${f0(h.target)}</small></span></summary>
-    <div class="hm" style="margin-top:6px">${mline(t)}</div>
+    <div style="margin-top:12px"><b class="ht">Riepilogo:</b> <span class="hm">${f0(t.kcal)} kcal</span></div>
+    <div class="hm" style="margin-top:2px">${mline(t)}</div>
     <div class="hm" style="margin-top:4px">Aperta: ${fdt(h.start)}${h.end?` · Chiusa: ${fdt(h.end)}`:''}</div>
-    ${orderKeys(Object.keys(h.meals).map(k=>k==='spuntino'?'spuntino1':k)).map(k=>{const l=mealName(k);const it=(h.meals[k]||(k==='spuntino1'?h.meals.spuntino:null)||[]);if(!it.length)return'';const mt=sum(it);return`<div style="margin-top:10px"><b>${l}</b> <span class="hm">${f0(mt.kcal)} kcal</span>${it.map(i=>`<div class="hm">• ${esc(i.nome)} ${esc(i.quantita)} — ${f0(i.kcal)} kcal</div>`).join('')}</div>`}).join('')}
+    ${orderKeys(Object.keys(h.meals).map(k=>k==='spuntino'?'spuntino1':k)).map(k=>{const l=mealName(k);const it=(h.meals[k]||(k==='spuntino1'?h.meals.spuntino:null)||[]);if(!it.length)return'';const mt=sum(it);return`<div style="margin-top:10px"><b class="ht">${l}:</b> <span class="hm">${f0(mt.kcal)} kcal</span>${it.map(i=>`<div class="hm">• ${esc(i.nome)} ${esc(i.quantita)} — ${f0(i.kcal)} kcal</div>`).join('')}</div>`}).join('')}
     <div class="row between" style="margin-top:14px"><button class="btn sm ghost std2" data-collapse>Annulla</button><button class="btn sm ghost std2" data-delhist="${ix}">Elimina</button></div></details>`}).join('')
     :'<div class="empty">Qui trovi le giornate chiuse (conservate per il periodo scelto nelle Impostazioni). Usa «Nuova Giornata Alimentare» nel Diario quando hai finito di mangiare.</div>';
   document.querySelectorAll('#histList details.hday').forEach(d=>bindCloseDetails(d));
