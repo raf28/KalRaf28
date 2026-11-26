@@ -77,11 +77,13 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 .it .m{grid-column:1/3;font-size:13px;color:var(--mute)}
 .x{width:44px;height:44px;border-radius:12px;color:var(--mute);font-size:22px;line-height:1}
 .x:active{background:var(--soft)}
+#mealItems .x{width:30px;height:30px;border-radius:50%;border:1px solid #ff4d3a;background:var(--brand);color:#fff;font-size:24px;font-weight:400;display:grid;place-items:center;padding:0 0 3px;justify-self:center;align-self:center}
+#mealItems .x:active{background:var(--brand2)}
 .tot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;padding-top:9px;border-top:2px solid var(--line);font-weight:600}
 .tot small{font-weight:400;color:var(--mute);font-size:13px;width:100%}
 .empty{color:var(--mute);font-size:15px;padding:6px 0}
 #mealItems:has(.it){border:1px solid var(--brand2)}
-.lt{text-align:center;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:light-dark(#2c6a49,#7cc79a);margin:-2px 0 6px}
+.lt{text-align:center;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:light-dark(#17201a,#fff);margin:-2px 0 6px}
 /* chat */
 .chat{display:flex;flex-direction:column;gap:8px}
 .msg{max-width:88%;padding:9px 13px;border-radius:16px;font-size:15.5px;white-space:normal;overflow-wrap:anywhere}
@@ -341,7 +343,7 @@ details.card summary::-webkit-details-marker{display:none}
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 49 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 50 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
