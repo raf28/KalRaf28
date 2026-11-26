@@ -1,6 +1,6 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 40 e all'installazione come APK Android (25/11/2026, sera).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 57 (26/11/2026).*
 
 ---
 
@@ -177,7 +177,20 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`.
 - **Stessa sera:** APK generata con PWABuilder e installata sul Pixel; creato il repository `raf28.github.io` con `assetlinks.json`: l'app si apre come app vera, senza barra. Claude ha ora l'accesso in scrittura al repository KalRaf28.
 - **Icona ridisegnata:** "Kcal" più grande, bordo bianco più spesso intorno alle lettere e uguale intorno al cerchio; versione maskable pensata per il ritaglio a cerchio di Android. APK rigenerata con lo stesso keystore (versione 1.0.1, version code 2) e installata sopra.
 
-**Stato:** online, **collaudo in corso dal 25/11/2026**.
+- **26/11 mattina (v41–v57), ritocchi grafici e funzioni:**
+  - barra del pasto con nome in maiuscolo e kcal accanto ("PRANZO 412 kcal");
+  - "Svuota pasto" e "Chiudi giornata" identici (pillola verde scuro, bordo rosso sottile);
+  - testata con data per esteso dentro una pillola verde, frecce piccole bianche, senza ora (apertura e chiusura della giornata visibili nello Storico);
+  - "Restano … kcal"; nei riquadri dei macro il nome sopra e il valore sotto, stesso bianco e stessa grandezza;
+  - riquadro "Lista alimenti" con cornice verde e titolo; riga dell'alimento ridisegnata (nome su tutta la larghezza, quantità in bianco, kcal e X nel cerchio sotto); conferma prima di eliminare un alimento;
+  - riepilogo in chat incorniciato di verde;
+  - alimenti "valore sicuro" con ⓘ: toccandoli si apre la scheda dell'alimento con foto; foto a tutto schermo toccandole (Diario e Alimenti);
+  - aggiornamenti immediati (il service worker non usa più la cache HTTP di 10 minuti);
+  - risolto il bug della barra in basso che spariva dopo il "trascina per aggiornare" (v52);
+  - tolto il pulsante Preimpostati (v53);
+  - scelta dell'aspetto in Impostazioni: come il telefono / chiaro / scuro, salvata anche nel backup (v57).
+
+**Stato:** online, **collaudo in corso dal 25/11/2026**. Interfaccia del Diario rifinita il 26/11.
 
 ---
 
