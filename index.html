@@ -35,7 +35,8 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 .head .in{max-width:720px;margin:0 auto}
 .dayline{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;opacity:.9}
 .dnav{display:flex;align-items:center;gap:6px;min-width:0}
-.arw{width:40px;height:40px;flex:none;border-radius:50%;border:2px solid #fff;color:#fff;font-size:26px;font-weight:600;line-height:1;display:grid;place-items:center;padding:0 0 3px}
+.arw{width:26px;height:26px;flex:none;border-radius:50%;border:2px solid #fff;color:#fff;font-size:18px;font-weight:600;line-height:1;display:grid;place-items:center;padding:0 0 2px}
+.dayline{background:var(--brand2);border-radius:99px;padding:6px 6px 6px 10px;opacity:1;box-shadow:0 3px 10px rgba(0,0,0,.12)}
 #dayLabel{font-size:14px;line-height:1.2;min-width:0}
 #dayLabel::first-letter{text-transform:uppercase}
 .arw:disabled{opacity:.4}
@@ -45,7 +46,7 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 .histbar .mbtn{white-space:nowrap}
 .histbar>div{flex:1 1 150px}
 .pill{border:1px solid rgba(255,255,255,.45);border-radius:99px;padding:8px 14px;color:#fff;font-size:14px;min-height:40px}
-#closeDay{border:2px solid #ff4d3a;min-height:40px;padding:8px 14px;font-size:14px;white-space:nowrap}
+#closeDay{background:var(--brand);border:2px solid #ff4d3a;min-height:40px;padding:8px 14px;font-size:14px;white-space:nowrap}
 .kc{display:flex;align-items:baseline;gap:8px;margin:10px 0 8px;flex-wrap:wrap}
 .kc b{font-size:46px;line-height:1;font-weight:700}
 .kc .of{font-size:17px;opacity:.85}
@@ -338,7 +339,7 @@ details.card summary::-webkit-details-marker{display:none}
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 45 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 46 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
