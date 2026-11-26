@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 120 (26/11/2026, sera).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 121 (26/11/2026, sera).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **120**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **121**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -254,6 +254,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **Alimenti (v118):** sfumatura sopra "Aggiungi alimento" più lunga (46 px invece di 18) e più decisa; barra con ombra più marcata in chiaro e, in scuro, ombra profonda più un alone chiaro di 1 px, così si stacca anche su fondo scuro. Solo nella sezione Alimenti.
   - **Alimenti (v119):** scorrendo, il titolo "Alimenti / N salvati" esce dallo schermo ma la barra **"Cerca un alimento" resta fissa in alto**; la lettera dell'indice si ferma subito sotto di lei, e sotto la lettera ferma c'è la stessa sfumatura della barra in basso (46 px). Le misure si calcolano da sole (`alimSticky()` / `alimStuck()`).
   - **Diario (v120):** la barra del pasto ("PRANZO 412 kcal · Elimina pranzo") ha forma, colore e misure della barra dei pasti in basso (pillola `#1f4d35`, alta 58 px, larga come quella in basso). Tolto lo spazio vuoto sopra la barra dei pasti in basso; scorrendo, il contenuto sfuma sotto la barra del pasto e sopra la barra dei pasti, con la stessa sfumatura degli Alimenti (46 px; `diarioFades()`).
+  - **Impostazioni (v121):** tutti i blocchi hanno il bordo sottile (1 px) nel verde del tasto "Applica e torna al Diario" (`#2c6a49`); sfondo e contenuto invariati.
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
