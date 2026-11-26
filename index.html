@@ -282,6 +282,19 @@ details.card summary::-webkit-details-marker{display:none}
   .seg{padding:10px 0 8px}
 }
 @media(max-width:380px){nav button{font-size:10px}.kc b{font-size:28px}}
+
+/* barra dei pasti staccata dal campo di scrittura */
+.mdock .mrow{margin:0 auto}
+.mdock .seg{padding:0;gap:6px}
+.mdock .seg button{flex:0 0 112px;min-height:46px;padding:4px 6px;border-radius:12px;font-size:14px;font-weight:500;line-height:1.15;text-align:center}
+.mdock .seg button small{font-size:12px}
+.mdock .seg button.vuoto{border-style:dashed;opacity:.85}
+.mdock .sarr{top:0;bottom:0}
+.mdock{background:var(--bg);padding:10px 10px 8px}
+.mdock .mrow{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 8px 6px 6px}
+.mdock .seg button{border-radius:999px}
+.mdock .sarr.l{left:-4px;background:linear-gradient(90deg,var(--card) 55%,transparent)}.mdock .sarr.r{right:-4px;background:linear-gradient(270deg,var(--card) 55%,transparent)}
+.comp{border-top:1px solid var(--line)}
 </style>
 </head>
 <body>
@@ -393,16 +406,16 @@ details.card summary::-webkit-details-marker{display:none}
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 66 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 67 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
   </main>
 
+  <div class="mdock" id="mdock"><div class="mrow" id="mrow"><button class="addm" id="addMeal" aria-label="Aggiungi un pasto">+</button><div class="segw" id="segw"><div class="seg" id="mealTabs"></div><button class="sarr l" data-segs="-1" aria-label="Scorri a sinistra">‹</button><button class="sarr r" data-segs="1" aria-label="Scorri a destra">›</button></div></div></div>
   <div class="comp" id="comp">
     <div class="ctx" id="ctx"></div>
     <div class="pills" id="pills"></div>
-    <div class="mrow" id="mrow"><button class="addm" id="addMeal" aria-label="Aggiungi un pasto">+</button><div class="segw" id="segw"><div class="seg" id="mealTabs"></div><button class="sarr l" data-segs="-1" aria-label="Scorri a sinistra">‹</button><button class="sarr r" data-segs="1" aria-label="Scorri a destra">›</button></div></div>
     <div class="prev" id="prev" hidden><img id="prevImg" alt="Foto allegata"><span>Foto allegata</span><button class="x" id="prevX" aria-label="Rimuovi foto">×</button></div>
     <div class="in">
       <button class="ib" id="bCam" aria-label="Scatta foto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></button>
@@ -713,7 +726,7 @@ function render(){applyTheme();requestAnimationFrame(updSeg);
   $('#send').disabled=ui.busy;
   if(false){}else{$('#msg').disabled=$('#mic').disabled=$('#bCam').disabled=$('#bGal').disabled=false}
   $('#pills').hidden=true; /* barra dei pasti in basso tolta (26/11): la riga dei pasti ora sta sopra il campo di scrittura */
-  $('#mrow').hidden=ui.view!=='diario';$('#addMeal').hidden=ui.dv!==null;$('#ctx').hidden=ui.view==='diario';
+  $('#mdock').hidden=ui.view!=='diario';$('#addMeal').hidden=ui.dv!==null;$('#ctx').hidden=ui.view==='diario';
   $('#comp .in').hidden=false;
   if(ui.view==='diario'&&ui.dv!==null){$('#comp').hidden=false;$('#comp .in').hidden=true;renderHead();renderHistDay();}
   else if(ui.view==='diario'){if(ui.meal)ensureMeal(ui.meal);renderHead();renderMeal();renderPills();$('#msg').placeholder=ui.meal?'Cosa hai mangiato?':'Tocca + per iniziare'}
