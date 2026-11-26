@@ -185,6 +185,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`.
 - ✅ **Già funzionanti:** Diario, Alimenti, Storico, Impostazioni.
 - 🔧 **Da implementare / completare:** **Ricette** (nel codice esiste già una prima versione con chat e ricettario, da rivedere e completare) e **Preimpostati** (oggi solo il segnaposto "Sezione in arrivo").
 - ❓ Ricette e Preimpostati: **da decidere se resteranno** nell'app oppure no.
+- **26/11 (v53):** tolto il pulsante **Preimpostati** dalla barra in basso, in attesa di capire se la sezione può essere utile. La barra ora ha 5 voci (Diario, Alimenti, Ricette, Storico, Impostazioni), più larghe e centrate. La sezione (oggi solo un segnaposto) e la fonte `preimpostato` restano nel codice: per rimetterla basta ripristinare il pulsante `data-v="pasti"` e tornare a 6 colonne.
 
 ## ✅ COSE DA FARE
 
