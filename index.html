@@ -156,7 +156,7 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 .btn.ghost{background:var(--soft);color:var(--ink);border:1.5px solid var(--brand2)}
 .btn.bad{background:var(--bad)}
 .btn.sm{min-height:38px;padding:6px 12px;font-size:14px}
-.applybar{position:sticky;bottom:0;background:linear-gradient(transparent,var(--bg) 30%);padding:18px 14px calc(12px + env(safe-area-inset-bottom))}
+.applybar{position:sticky;bottom:0;z-index:5;background:linear-gradient(transparent,var(--bg) 30%);padding:18px 14px calc(12px + env(safe-area-inset-bottom))}
 .applybar .btn{display:block;width:100%;max-width:692px;margin:0 auto;min-height:52px;font-size:17px;box-shadow:0 4px 14px rgba(0,0,0,.18)}
 .letter{position:sticky;top:0;z-index:1;background:var(--bg);font-weight:700;font-size:20px;color:var(--brand2);padding:10px 2px 4px}
 details.food summary .nm{font-weight:600}
@@ -339,7 +339,7 @@ nav button.on{font-weight:700;color:light-dark(#1f4d35,#fff)}
 .ahead input{width:100%;margin-top:12px;border:0;border-radius:99px;padding:12px 18px;font-size:16px;background:rgba(255,255,255,.14);color:#fff;box-sizing:border-box}
 .ahead input::placeholder{color:rgba(255,255,255,.7)}
 .letter{color:light-dark(#2c6a49,#4cc184)}
-#v-alimenti details.food{border:3px solid var(--brand)}
+#v-alimenti details.food{border:4px solid var(--brand)}
 #v-alimenti details.food summary .kv{color:light-dark(#22804f,#4cc184);font-weight:600}
 #v-alimenti .vt tr.sub td{color:var(--ink)}
 #v-alimenti details.food .hm{color:var(--ink)}
@@ -459,7 +459,7 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 82 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 83 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
