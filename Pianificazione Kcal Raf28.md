@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 142 (26/11/2026, sera).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 143 (26/11/2026, sera).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **142**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **143**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -116,7 +116,7 @@ La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impos
 - **Backup su Google Drive** (vedi 3.9).
 - **Backup su file (v90):** esporta e importa un unico JSON (`diario-kcal-AAAA-MM-GG.json`) con **tutti i dati e le foto degli alimenti** (campo `photos`, le foto in base64), senza la chiave API. L'importazione sostituisce tutti i dati e rimette le foto; i file vecchi senza foto si importano lo stesso e lasciano le foto attuali. È indipendente dal backup su Drive, che non è stato toccato.
 - **Aspetto (v57):** come il telefono / chiaro / scuro (`settings.theme`), salvato anche nel backup.
-- **Sicurezza:** "Blocca con PIN su questo dispositivo".
+- **Sicurezza:** tasto "PIN Applicazione" (blocca l'app con il PIN su questo dispositivo; dalla v143, stesso stile di "Sincronizza").
 - **Reset App:** scollega Google e cancella tutti i dati sul telefono. I backup su Drive restano.
 - In fondo c'è "* I Valori Nutrizionali Generici sono stime del modello" (nel colore arancione dell'etichetta "valore generico" del Diario) e sotto "Versione App: NN" (v132), poi il pulsante "Applica e torna al Diario".
 
@@ -276,6 +276,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **Domande di cucina (v140):** nel prompt `SYS_MEAL` regola fissa con esempi: temperature, tempi e modi di cottura (friggitrice ad aria, forno, padella…), livello del fuoco, preparazione, conservazione, sostituzioni sono sempre "domanda": la lista non si tocca, Gemini risponde da cuoco esperto; citare un alimento in una domanda di cucina non lo aggiunge (se è ambiguo chiede se aggiungerlo).
   - **Titolo della tabella (v141):** "LISTA ALIMENTI – TOTALE KCAL E MACRO", in grassetto, 17 px (come il nome del pasto nella barra), bianco in modalità scura.
   - **Tabella del pasto (v142):** titolo su due righe senza trattino ("LISTA ALIMENTI" / "TOTALE KCAL E MACRO"); riga "Totale kcal PRANZO:" grande come il titolo (17 px, grassetto, bianca in scuro) con il numero delle kcal nel verde dell'etichetta "valore sicuro" (`#2a7a4b` in chiaro, `#5cc58a` in scuro).
+  - **Impostazioni (v143):** il tasto di Sicurezza si chiama "PIN Applicazione" ed è come "Sincronizza" (150 × 40 px, verde scuro); sotto Reset App: "Cancella solo i dati su questo telefono:" e a capo "i backup su Drive restano."
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
