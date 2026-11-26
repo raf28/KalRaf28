@@ -46,7 +46,7 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 .histbar .mbtn{white-space:nowrap}
 .histbar>div{flex:1 1 150px}
 .pill{border:1px solid rgba(255,255,255,.45);border-radius:99px;padding:8px 14px;color:#fff;font-size:14px;min-height:40px}
-#closeDay{background:var(--brand);border:0;min-height:40px;padding:8px 14px;font-size:14px;white-space:nowrap}
+#closeDay{background:var(--brand);border:0;min-height:40px;padding:4px 13px;font-size:13px;line-height:1.15;text-align:center;flex:none;white-space:nowrap}
 .kc{display:flex;align-items:baseline;gap:8px;margin:18px 0 8px;flex-wrap:wrap}
 .kc b{font-size:46px;line-height:1;font-weight:700}
 .kc .of{font-size:17px;opacity:.85}
@@ -414,7 +414,7 @@ window.addEventListener('error',()=>hideSplash());</script>
   <main id="main">
     <section id="v-diario">
       <div class="head"><div class="in">
-        <div class="dayline"><span class="dnav"><button class="arw" id="dPrev" aria-label="Giornata precedente">‹</button><span id="dayLabel"></span><button class="arw" id="dNext" aria-label="Giornata successiva">›</button></span><button class="pill" id="closeDay">Chiudi giornata</button></div>
+        <div class="dayline"><span class="dnav"><button class="arw" id="dPrev" aria-label="Giornata precedente">‹</button><span id="dayLabel"></span><button class="arw" id="dNext" aria-label="Giornata successiva">›</button></span><button class="pill" id="closeDay">Chiudi Giornata<br>Alimentare</button></div>
         <div class="kc"><b id="kNow">0</b><span class="of">/ <span id="kTarget"></span> kcal<span class="bon" id="kBon"></span></span><span class="left" id="kLeft"></span></div>
         <div class="bar"><div class="zone" id="bZone"></div><div class="fill" id="bFill"></div><div class="mk" id="bMk"></div></div>
         <div class="legend"><span>0</span><span id="lgMax"></span></div>
@@ -511,7 +511,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 91 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 92 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -850,7 +850,7 @@ function renderHead(){
   const D=viewDay()||S.day,H=ui.dv!==null;
   const t=sum(dayItems(D)),target=H?D.target:(S.parked&&S.day.target||S.settings.target),margin=H?D.margin:(S.parked&&S.day.margin!=null?S.day.margin:S.settings.margin),max=target+margin;
   $('#dPrev').disabled=!!S.parked||(ui.dv===null?!S.history.length:ui.dv>=S.history.length-1);$('#dNext').disabled=ui.dv===null&&!S.parked;
-  $('#closeDay').hidden=H;document.querySelector('.head').classList.toggle('editing',!!S.parked&&!H);$('#closeDay').textContent=S.parked?'Fine modifiche':'Chiudi giornata';
+  $('#closeDay').hidden=H;document.querySelector('.head').classList.toggle('editing',!!S.parked&&!H);$('#closeDay').innerHTML=S.parked?'Fine<br>modifiche':'Chiudi Giornata<br>Alimentare';
   const scale=Math.max(max*1.12,t.kcal*1.02);
   const st=t.kcal<=target?'ok':t.kcal<=max?'warn':'bad';
   $('#kNow').textContent=f0(t.kcal);$('#kTarget').textContent=f0(target);
@@ -954,7 +954,7 @@ function renderHist(){
     <div class="hm" style="margin-top:4px">Aperta: ${fdt(h.start)}${h.end?` · Chiusa: ${fdt(h.end)}`:''}</div>
     ${orderKeys(Object.keys(h.meals).map(k=>k==='spuntino'?'spuntino1':k)).map(k=>{const l=mealName(k);const it=(h.meals[k]||(k==='spuntino1'?h.meals.spuntino:null)||[]);if(!it.length)return'';const mt=sum(it);return`<div style="margin-top:10px"><b>${l}</b> <span class="hm">${f0(mt.kcal)} kcal</span>${it.map(i=>`<div class="hm">• ${esc(i.nome)} ${esc(i.quantita)} — ${f0(i.kcal)} kcal</div>`).join('')}</div>`}).join('')}
     <div class="row between"><button class="btn sm ghost" data-collapse>Annulla</button><button class="btn sm ghost" data-delhist="${ix}">Elimina giornata</button></div></details>`}).join('')
-    :'<div class="empty">Qui trovi le giornate chiuse (conservate per il periodo scelto nelle Impostazioni). Usa «Chiudi giornata» nel Diario quando hai finito di mangiare.</div>';
+    :'<div class="empty">Qui trovi le giornate chiuse (conservate per il periodo scelto nelle Impostazioni). Usa «Chiudi Giornata Alimentare» nel Diario quando hai finito di mangiare.</div>';
 }
 function renderSet(){
   const s=S.settings;
