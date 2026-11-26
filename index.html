@@ -570,7 +570,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 129 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 130 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1483,10 +1483,10 @@ function gdRender(){
   if(!$('#gdBtns'))return;
   if(!GD.on){$('#gdInfo').textContent='Accedi con il tuo account Google: l\'app salva una copia di tutto (impostazioni e chiave, alimenti con foto, ricette, diario e storico) in una cartella «'+GD_FOLDER+'» del tuo Drive. L\'app vede solo quella cartella.';
     $('#gdBtns').innerHTML='<div class="gdr1"><button class="btn sm aib" id="gdIn">Accedi con Google</button><span class="hm" id="gdStat"></span></div>';return}
-  $('#gdInfo').innerHTML='Collegato'+(GD.email?' come <b>'+esc(GD.email)+'</b>':'')+'. Alimenti, ricette e impostazioni si salvano subito; il diario alla chiusura della giornata e una volta al giorno.';
+  $('#gdInfo').innerHTML='Collegato'+(GD.email?' come <b>'+esc(GD.email)+'</b>':'')+'<br>Alimenti, ricette e impostazioni si salvano subito;<br>il diario alla chiusura della giornata e una volta ogni 24&nbsp;ore.';
   $('#gdBtns').innerHTML='<div class="gdr1"><button class="btn sm aib gdb" id="gdNow"'+(gdBusy?' disabled':'')+'>'+(gdBusy?'Sincronizzo…':'Sincronizza')+'</button><span class="hm" id="gdStat"></span></div><div class="gdr2"><button class="btn sm aib gdb bad" id="gdOut">Scollega</button><button class="btn sm aib gdb" id="gdRes">Ripristina da Drive</button></div>';
-  const last=GD.last?new Date(GD.last).toLocaleString('it-IT',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'mai';
-  $('#gdStat').innerHTML='Ultimo backup: <b>'+last+'</b>';
+  const last=GD.last?(()=>{const d=new Date(GD.last);return d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'})+', '+d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})})():'mai';
+  $('#gdStat').innerHTML='Ultimo backup:<br><b style="white-space:nowrap">'+last+'</b>';
 }
 document.addEventListener('click',e=>{
   const b=e.target.closest('button');const id=b&&b.id;
