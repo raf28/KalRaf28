@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 92 (26/11/2026, sera).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 93 (26/11/2026, sera).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **92**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **93**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -210,6 +210,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - Backup su file con le foto (v90): "Esporta backup" mette nello stesso file JSON anche le foto degli alimenti e "Importa backup" le ripristina. Backup su Drive invariato.
   - Scheda alimento aperta dal Diario (ⓘ nella Lista alimenti, v91): il tasto **"Chiudi"** è in basso a sinistra, verde a pillola come "Modifica" ed "Elimina" della sezione Alimenti. Nelle conferme (es. eliminare un pasto) resta "Annulla".
   - Pulsante "Chiudi giornata" rinominato **"Chiudi Giornata Alimentare"** (v92): testo 13 px su due righe ("Chiudi Giornata" / "Alimentare"), stessa altezza di prima (40 px), testata invariata. In modifica di una giornata archiviata mostra "Fine / modifiche".
+  - **Pulsanti uniformi (v93):** tutti i pulsanti dei pop-up (Chiudi, Annulla, Modifica, Elimina, Salva, Aggiungi, Importa, Chiudi e apri nuova…), quelli delle schede Alimenti e Storico e "Chiudi Giornata Alimentare" hanno lo stesso formato: pillola tonda verde scuro `#1f4d35` (uguale in chiaro e scuro), scritta bianca 14 px non in grassetto, altezza 40 px, come "Elimina pranzo". Solo i pulsanti di **eliminazione definitiva** (conferme di "Elimina", "Cancella tutto") sono **rossi**, per ora. Esclusi i selettori "Compila scheda Automaticamente / Manualmente" e il menu "Aggiungi pasto". Regola CSS in fondo allo stile (commento "v93").
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
