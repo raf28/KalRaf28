@@ -344,6 +344,7 @@ nav button.on{font-weight:700;color:light-dark(#1f4d35,#fff)}
 #v-alimenti .vt tr.sub td{color:var(--ink)}
 #v-alimenti details.food .hm{color:var(--ink)}
 details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radius:99px;min-height:40px;padding:8px 16px;font-weight:500}
+.btn.fiClose{background:var(--brand);color:#fff;border:0;border-radius:99px;min-height:40px;padding:8px 16px;font-weight:500}
 .applybar .btn.addbar{display:flex;align-items:center;justify-content:flex-start;gap:14px;background:var(--brand);border:0;border-radius:999px;padding:6px 18px 6px 6px;min-height:58px;font-size:17px;font-weight:600}
 .addbar .pl{width:46px;height:46px;border-radius:50%;background:#fff;color:var(--brand);font-size:30px;font-weight:400;line-height:1;display:grid;place-items:center;padding:0 0 3px;flex:none}
 .addbar{position:relative}
@@ -510,7 +511,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 90 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 91 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -917,7 +918,7 @@ function foodInfo(id,it){const f=S.foods.find(x=>x.id===id);if(!f)return;
   sheet(`<h3>${esc(f.nome)}</h3><p class="hm" style="margin:0 0 8px">Valore sicuro dalla tua lista <b>Alimenti</b>${it?` · in questo pasto: <b>${esc(it.quantita)}</b> = <b>${f0(it.kcal)} kcal</b>`:''}</p>
   <table class="vt"><tbody><tr><td>Riferimento</td><td>${esc(f.riferimento||'100 g')}</td></tr>${FKEYS.map(([k,l,u])=>`<tr class="${l.startsWith('di cui')?'sub':''}"><td>${l}</td><td>${fval(f[k],u,k)}</td></tr>`).join('')}</tbody></table>
   ${f.note?`<p style="margin:10px 0 0"><b>Note:</b> ${esc(f.note)}</p>`:''}${macroNote(f)?`<p class="hm" style="margin:8px 0 0">${esc(macroNote(f))}</p>`:''}
-  <div class="ph" id="fiPh"></div><div class="row" style="justify-content:flex-end"><button class="btn ghost" id="noSheet">Chiudi</button></div>`);loadFoodPhotos(f.id,$('#fiPh'))}
+  <div class="ph" id="fiPh"></div><div class="row" style="justify-content:flex-start"><button class="btn sm fiClose" id="noSheet">Chiudi</button></div>`);loadFoodPhotos(f.id,$('#fiPh'))}
 function msgHtml(m,ix){
   if(m.role==='u')return`<div class="msg u">${m.photo?'<span class="chip">foto</span><br>':''}${esc(m.text)}</div>`;
   let h=`<div class="msg a${m.err?' e':''}${m.tot&&!m.err?' rsum':''}">`;
