@@ -602,7 +602,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 145</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 146</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1070,7 +1070,7 @@ function renderHist(){fdKill();
     <div class="hm" style="margin-top:2px">${mline(t)}</div>
     <div class="hm" style="margin-top:4px">Aperta: ${fdt(h.start)}${h.end?` · Chiusa: ${fdt(h.end)}`:''}</div>
     ${orderKeys(Object.keys(h.meals).map(k=>k==='spuntino'?'spuntino1':k)).map(k=>{const l=mealName(k);const it=(h.meals[k]||(k==='spuntino1'?h.meals.spuntino:null)||[]);if(!it.length)return'';const mt=sum(it);return`<div style="margin-top:10px"><b class="ht">${l}:</b> <span class="hm">${f0(mt.kcal)} kcal</span>${it.map(i=>`<div class="hm">• ${esc(i.nome)} ${esc(i.quantita)} — ${f0(i.kcal)} kcal</div>`).join('')}</div>`}).join('')}
-    <div class="row between" style="margin-top:14px"><button class="btn sm ghost std2" data-collapse>Annulla</button><button class="btn sm ghost std2" data-delhist="${ix}">Elimina</button></div></details>`}).join('')
+    <div class="row between" style="margin-top:14px"><button class="btn sm ghost std2" data-collapse>Annulla</button><span class="row" style="margin:0"><button class="btn sm ghost std2 bad" data-delhist="${ix}">Elimina</button><button class="btn sm ghost std2" data-edithist="${ix}">Modifica</button></span></div></details>`}).join('')
     :'<div class="empty">Qui trovi le giornate chiuse (conservate per il periodo scelto nelle Impostazioni). Usa «Nuova Giornata Alimentare» nel Diario quando hai finito di mangiare.</div>';
   document.querySelectorAll('#histList details.hday').forEach(d=>bindCloseDetails(d));
 }
@@ -1112,6 +1112,9 @@ document.addEventListener('click',e=>{
   if(b.dataset.saverec!==undefined){const m=S.recChat[+b.dataset.saverec];if(m&&m.ricetta){S.recipes.unshift({id:'r'+Date.now(),src:m.ts,...m.ricetta});save();toast('Ricetta salvata');render()}return}
   if(b.dataset.delrec){S.recipes=S.recipes.filter(r=>r.id!==b.dataset.delrec);save();render();return}
   if(b.dataset.addrec){return addRecipe(b.dataset.addrec)}
+  if(b.dataset.edithist!==undefined){const i=+b.dataset.edithist;if(!S.history[i])return;
+    if(S.parked){toast('Stai già modificando un\'altra giornata: premi «Salva» nel Diario');go('diario');return}
+    ui.view='diario';hpush({v:'diario'});ui.dv=i;ui.hmeal=null;ui.meal=null;ui.toTop=true;render();$('#main').scrollTop=0;return}
   if(b.dataset.delhist!==undefined){const i=+b.dataset.delhist;sheet(`<h3>Eliminare questa giornata?</h3><p class="hm">Non si può annullare.</p><div class="row between"><button class="btn ghost std2" id="noSheet">Annulla</button><button class="btn bad std2" id="okDelH">Elimina</button></div>`);$('#okDelH').onclick=()=>{S.history.splice(i,1);save();closeSheet();render()};return}
   if(b.id==='mealDel'&&ui.meal){const k=ui.meal,sn=isSnack(k),nm=mealName(k),dopo=sn&&S.day.order.filter(isSnack).some(x=>snackN(x)>snackN(k));
     const art=sn?'lo ':k==='pranzo'?'il ':'la ';
@@ -1564,6 +1567,8 @@ async function tryPin(){
 }
 $('#pinGo').onclick=tryPin;$('#pin').addEventListener('keydown',e=>{if(e.key==='Enter')tryPin()});
 function boot(){
+  /* v146: all'avvio e dopo ogni aggiornamento si riparte sempre dal Diario, giornata in corso, nessun pasto selezionato */
+  ui.view='diario';ui.meal=null;ui.dv=null;ui.hmeal=null;try{$('#main').scrollTop=0}catch(e){}
   const locked=PIN_HASH&&!S.unlocked;
   $('#lock').hidden=!locked;$('#app').hidden=locked;
   if(locked){$('#pinErr').textContent='';setTimeout(()=>$('#pin').focus(),50)}else render();
