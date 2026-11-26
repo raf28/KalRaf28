@@ -527,7 +527,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono: i backup su Drive restano.</p>
         </div>
-        <p class="hm">Versione 105 · i valori nutrizionali sono stime del modello.</p>
+        <p class="hm">Versione 106 · i valori nutrizionali sono stime del modello.</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -880,7 +880,7 @@ function renderHead(){
   const d=new Date(D.start);
   {const wd=d.toLocaleDateString('it-IT',{weekday:'long'}),mo=d.toLocaleDateString('it-IT',{month:'long'});$('#dayLabel').innerHTML=(S.parked&&!H?'✎ ':'')+esc(wd.charAt(0).toUpperCase()+wd.slice(1))+' '+d.getDate()+'<br>'+esc(mo.charAt(0).toUpperCase()+mo.slice(1))}
   const eb=$('#editBar');eb.hidden=!(S.parked&&!H);
-  if(!eb.hidden)eb.innerHTML=`<div><b>Giornata archiviata</b><small>stai modificando questa giornata: tocca «Fine Modifiche» per salvare</small><div class="ebtns"><button class="btn bdef" disabled>Modifica giornata</button><button class="btn bdef" id="saveEdit">Fine Modifiche</button></div></div>`;
+  if(!eb.hidden)eb.innerHTML=`<div><b>Giornata archiviata</b><small>Stai modificando una giornata archiviata.<br>Tocca «Salva» per registrare le modifiche.</small><div class="ebtns"><button class="btn bdef" disabled>Modifica giornata</button><button class="btn bdef" id="saveEdit">Salva</button></div></div>`;
 }
 function renderHistDay(){
   const D=histDay(ui.dv);if(!D){ui.dv=null;render();return}
