@@ -776,6 +776,9 @@ html body .btn.std2{font-weight:700!important}
 /* v248: solo modalità scura. Bordo del campo di scrittura bianco; data della pillola nello stesso verde scuro della modalità chiara */
 html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus{border-color:var(--brand)} /* v249: verde dei tasti microfono e invio */
 html:not(.lightmode) .dayline #dayLabel,html:not(.lightmode) .dayline #dayLabel *{color:#fff} /* v249: data di nuovo bianca */
+
+/* v250: interlinea fissa del campo di scrittura, per calcolare le 3 righe */
+.comp textarea{line-height:22px}
 </style>
 </head>
 <body>
@@ -899,7 +902,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 249</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 250</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1733,7 +1736,7 @@ $('#send').onclick=()=>{stopDictation();send()};
    Ora il tocco su Invia non toglie il fuoco al campo: il messaggio parte al primo tocco. */
 ['mousedown','pointerdown'].forEach(ev=>$('#send').addEventListener(ev,e=>{if(document.activeElement===$('#msg'))e.preventDefault()}));
 $('#msg').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&window.matchMedia('(pointer:fine)').matches){e.preventDefault();send()}});
-function autoH(){const t=$('#msg');t.style.height='auto';t.style.height=Math.min(120,t.scrollHeight)+'px'}
+function autoH(){const t=$('#msg');t.style.height='auto';/* v250: al massimo 3 righe, poi si scorre */const cs=getComputedStyle(t),lh=parseFloat(cs.lineHeight)||20,max=Math.round(lh*3+parseFloat(cs.paddingTop)+parseFloat(cs.paddingBottom)+parseFloat(cs.borderTopWidth)+parseFloat(cs.borderBottomWidth));t.style.maxHeight=max+'px';t.style.height=Math.min(max,t.scrollHeight+parseFloat(cs.borderTopWidth)+parseFloat(cs.borderBottomWidth))+'px'}
 $('#msg').addEventListener('input',autoH);
 $('#bCam').onclick=()=>$('#fCam').click();$('#bGal').onclick=()=>$('#fGal').click();
 $('#fCam').onchange=e=>{loadPhoto(e.target.files[0]);e.target.value=''};
