@@ -449,6 +449,8 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
 /* v145: Ascolta/Pausa dentro la tabella del pasto */
 .mtts{margin-top:16px}
 .mtts .tts{margin-top:0}
+/* Impostazioni (v154): Reset App grande ma nello stile degli altri tasti */
+#v-impost #resetApp{display:block;width:80%;max-width:320px;height:48px;min-height:48px;margin:0 auto;padding:0 18px;border-radius:99px;border:0;background:var(--bad);color:#fff;font-size:16px;font-weight:400;box-shadow:none}
 /* Impostazioni (v121): bordo dei blocchi nel verde del tasto «Applica e torna al Diario» */
 #v-impost .card{border-color:var(--brand2)}
 /* Diario (v120): barra del pasto uguale alla barra dei pasti in basso */
@@ -606,10 +608,10 @@ window.addEventListener('error',()=>hideSplash());</script>
           <div class="row"><button class="btn sm aib gdb" id="relock">PIN Applicazione</button></div>
         </div>
         <div class="card">
-          <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
+          <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 153</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 154</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
