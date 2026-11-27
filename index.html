@@ -703,6 +703,9 @@ html:not(.lightmode) #v-alimenti details.food[open] summary,html:not(.lightmode)
 /* v226: "Aggiungi un alimento", scheda di compilazione selezionata nel verde dei tasti fotocamera/microfono, con la sfumatura del 3D */
 .row.modes .btn.sel{background-color:light-dark(#436955,var(--brand))!important;color:#fff!important}
 .row.modes .btn.sel small{color:#fff}
+
+/* v227: in Ricette la barra Ricettario/Crea Ricetta sta sopra la barra di navigazione alla stessa distanza (12 px) e con gli stessi margini laterali (14 px) di "Aggiungi alimento" e "Applica e torna al Diario" */
+.mdock.rdock{padding:0 14px 12px}
 </style>
 </head>
 <body>
@@ -826,7 +829,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 226</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 227</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1205,7 +1208,7 @@ function alimStuck(){const sec=$('#v-alimenti');if(!sec||sec.hidden)return;const
 function render(){applyTheme();requestAnimationFrame(alimSticky);requestAnimationFrame(()=>requestAnimationFrame(()=>{diarioFades();histFades()}));fdKill($('#v-'+ui.view));requestAnimationFrame(updSeg);
   ['diario','alimenti','ricette','pasti','storico','impost'].forEach(v=>$('#v-'+v).hidden=ui.view!==v);
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===ui.view));
-  const chatView=ui.view==='diario'||(ui.view==='ricette'&&ui.rec==='chat');
+  const chatView=ui.view==='diario';/* v227: in Ricette niente campo di scrittura per ora */
   $('#comp').hidden=!chatView;
   $('#send').disabled=ui.busy;
   if(false){}else{$('#msg').disabled=$('#mic').disabled=$('#bCam').disabled=$('#bGal').disabled=false}
