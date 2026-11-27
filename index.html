@@ -798,7 +798,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 215</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 216</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -943,14 +943,14 @@ function closeLb(silent){if(lbCW){const w=lbCW;lbCW=null;try{w.destroy()}catch(e
 /* v198: pagina informazioni (bozza delle spiegazioni, da rivedere con l'utente) */
 function showInfo(){sheet(`<div class="info"><h3>Come funziona Kcal</h3>
 <p class="hm">Un diario per contare kcal e Macro di quello che mangi, con l'aiuto dell'Intelligenza Artificiale.<br>(al momento Gemini)</p>
-<h4>Gesti utili e funzioni</h4><p class="hm">– <b>Trascina verso il basso</b> <b class="ig">per Aggiornare l'App</b>:<br>funziona in tutte le pagine, ma non mentre stai scorrendo la chat del Diario<br>(lì usa il gesto qui sotto)<br>
+<h4>Gesti utili e funzioni</h4><p class="hm">– <b>Trascina verso il basso</b> <b class="ig">per Aggiornare l'App</b>:<br>funziona in tutte le sezioni, ma nel Diario solo quando sei in cima alla pagina.<br>In alternativa usa il gesto qui sotto<br>
 – <b>Tieni Premuto per 1 Secondo</b> uno dei tasti della barra in basso <b class="ig">per Aggiornare l'App</b>:<br>Diario, Alimenti, Ricette, Storico o Impostazioni<br>
 – <b>Swipe a destra o a sinistra</b> <b class="ig">per cambiare sezione</b></p>
 <h5>Nella chat del Diario</h5><p class="hm">– <b>Chiedi il totale</b> all'Intelligenza Artificiale, scrivendo o parlando con il microfono<br>(per esempio <b class="ig">"Dammi il totale delle kcal"</b> o <b class="ig">"Dammi i Macro totali"</b>):<br>in chat compare la tabella di riepilogo <b>Lista alimenti – Totale kcal e Macro</b>, con la cornice, sempre aggiornata.</p>
 <p class="hm" style="margin-top:14px">– <span class="tts ichip"><span class="tb"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="0.5" y="0.5" width="15" height="15" rx="3.5" fill="#1f4d35"/><path d="M6 4.2v7.6l6-3.8z" fill="#fff"/></svg>Ascolta</span></span> legge ad alta voce la risposta dell'Intelligenza Artificiale<br>
 – <span class="tts ichip"><span class="tb"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="0.5" y="0.5" width="15" height="15" rx="3.5" fill="#1f4d35"/><rect x="5" y="4" width="2" height="8" rx=".6" fill="#fff"/><rect x="9" y="4" width="2" height="8" rx=".6" fill="#fff"/></svg>Pausa</span></span> ferma la lettura:<br>toccando di nuovo Ascolta riparte da dove avevi lasciato<br>
 – <b>Tieni premuto Ascolta per 1 secondo</b> per ripartire dall'inizio<br>
-– <span class="tts ichip"><span class="tb tbauto"><span class="auw"><svg viewBox="0 0 26 24" width="22" height="17" aria-hidden="true"><path d="M4 21v-3.2C2.8 16.7 2 15.2 2 13.5 2 10 4.9 7.2 8.4 7.2c3.1 0 5.6 2.1 6.1 5l1.4 2.6-1.4.6v2c0 1-.8 1.7-1.7 1.7H11.2V21z" fill="currentColor"/><path d="M16.8 11.6c.8.8.8 2.2 0 3M18.8 9.8c1.8 1.8 1.8 4.8 0 6.6M20.9 8c2.8 2.8 2.8 7.4 0 10.2" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg><span>AUTO</span></span></span></span> se è acceso, ogni nuova risposta dell'Intelligenza Artificiale viene letta da sola appena arriva,<br>senza toccare Ascolta</p>
+– <span class="tts ichip"><span class="tb tbauto"><span class="auw"><svg viewBox="0 0 26 24" width="22" height="17" aria-hidden="true"><path d="M4 21v-3.2C2.8 16.7 2 15.2 2 13.5 2 10 4.9 7.2 8.4 7.2c3.1 0 5.6 2.1 6.1 5l1.4 2.6-1.4.6v2c0 1-.8 1.7-1.7 1.7H11.2V21z" fill="currentColor"/><path d="M16.8 11.6c.8.8.8 2.2 0 3M18.8 9.8c1.8 1.8 1.8 4.8 0 6.6M20.9 8c2.8 2.8 2.8 7.4 0 10.2" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg><span>AUTO</span></span></span></span> se è acceso, ogni nuova risposta dell'Intelligenza Artificiale viene letta da sola appena arriva, senza toccare Ascolta</p>
 <h4>Diario</h4><p class="hm"><b>Tocca il <span class="iplus" aria-label="+">+</span> per Aggiungere un Pasto</b>,<br>poi scrivi, detta o fotografa cosa hai mangiato:<br>l'Intelligenza Artificiale calcola kcal e Macro e il conteggio della giornata si aggiorna da solo.<br>Se un valore è sbagliato correggilo in chat:<br>vale sempre l'ultimo inserito.<br>A fine giornata tocca <b>Nuova Giornata Alimentare</b> per iniziare un nuovo conteggio.</p>
 <h4>Da dove vengono i valori</h4><p class="hm">Accanto a ogni alimento c'è un'etichetta colorata che dice da dove viene il valore:</p>
 <p class="hm"><span class="src ok">(valore sicuro – Alimenti)</span> preso da un alimento che hai salvato in Alimenti.</p>
