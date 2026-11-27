@@ -663,7 +663,7 @@ html:not(.lightmode) #v-alimenti details.food:not([open]),html:not(.lightmode) #
 
 /* v198: cerchio "i" (informazioni) a destra del titolo in Diario e Impostazioni */
 .head .dht,#v-impost .ihead .aht{justify-content:space-between}
-.infob{width:28px;height:28px;flex:none;border-radius:50%;border:2.5px solid #fff;background:transparent;color:#fff;font-family:inherit;font-size:17px;font-weight:800;line-height:1;display:grid;place-items:center;padding:0;box-sizing:border-box}
+.infob{width:32px;height:32px;flex:none;border-radius:50%;border:3px solid #fff;background:transparent;color:#fff;font:700 18px/1 Georgia,'Times New Roman',serif;font-style:italic;display:grid;place-items:center;padding:0 0 1px;box-sizing:border-box} /* v199: come la prima anteprima (i corsiva, 32 px) */
 .infob:active{transform:scale(.94)}
 .info h4{margin:14px 0 4px;font-size:15px;color:light-dark(#1f4d35,#fff)}
 .info p{margin:0 0 6px}
@@ -790,7 +790,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 198</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 199</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -933,7 +933,7 @@ let lbCW=null;
 function closeLb(silent){if(lbCW){const w=lbCW;lbCW=null;try{w.destroy()}catch(e){}}if(!lbEl)return;lbEl.remove();lbEl=null;if(!silent&&history.state&&history.state.lb){lbSkip=true;history.back()}}
 
 /* v198: pagina informazioni (bozza delle spiegazioni, da rivedere con l'utente) */
-function showInfo(){sheet(`<div class="info"><h3>Come funziona KalRaf28</h3>
+function showInfo(){sheet(`<div class="info"><h3>Come funziona Kcal</h3>
 <p class="hm">Un diario per contare kcal e macro di quello che mangi, con l'aiuto di Gemini.</p>
 <h4>Diario</h4><p class="hm">Tocca il <b>+</b> per aggiungere un pasto, poi scrivi, detta o fotografa cosa hai mangiato: Gemini calcola kcal e macro e il conteggio della giornata si aggiorna da solo. Se un valore è sbagliato, correggilo in chat: vale sempre l'ultima versione. A fine giornata tocca <b>Nuova Giornata Alimentare</b>.</p>
 <h4>Da dove vengono i valori</h4><p class="hm"><b>valore tuo</b> = l'hai dato tu · <b>valore sicuro</b> = da un alimento salvato in Alimenti · <b>da etichetta</b> = letto dalla confezione · <b>valore generico</b> = stima da tabelle · <b>stima da foto</b> = calcolato dalla foto. Se Gemini non conosce un valore non lo inventa: te lo chiede.</p>
