@@ -471,9 +471,9 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
 /* Alimenti (v119): la ricerca resta fissa in alto, le lettere si fermano sotto di lei, sfumatura sotto la lettera ferma */
 #v-alimenti .ahead{position:sticky;top:var(--ahTop,0px);z-index:4}
 #v-alimenti .letter{top:var(--ltTop,0px);z-index:3}
-#v-alimenti .letter.stuck::after{content:'';position:absolute;left:0;right:0;top:100%;height:46px;background:linear-gradient(to top,transparent 0,color-mix(in srgb,var(--bg) 70%,transparent) 24px,var(--bg) 46px);pointer-events:none}
+/* v162: tolta la sfumatura sotto la lettera ferma degli Alimenti */
 /* Alimenti (v118): barra "Aggiungi alimento" più staccata dal contenuto che scorre */
-#v-alimenti .applybar{padding-top:46px;background:linear-gradient(to bottom,transparent 0,color-mix(in srgb,var(--bg) 70%,transparent) 22px,var(--bg) 46px)}
+#v-alimenti .applybar{padding-top:12px;background:var(--bg)} /* v162: senza sfumatura */
 #v-alimenti .applybar .btn.addbar{box-shadow:light-dark(0 6px 18px rgba(0,0,0,.28),0 6px 20px rgba(0,0,0,.75)),light-dark(0 0 0 0 transparent,0 0 0 1px rgba(255,255,255,.14))}
 /* Alimenti (v111, v117): pillole chiuse dello stesso verde della cornice, scritte bianche */
 #v-alimenti details.food:not([open]){background:var(--brand)}
@@ -621,7 +621,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 161</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 162</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>

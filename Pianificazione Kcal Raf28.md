@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 161 (27/11/2026).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 162 (27/11/2026).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **161**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **162**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -49,7 +49,7 @@ KalRaf28 è un diario alimentare personale. Al posto di contare le calorie nelle
 - **Mai spese extra per l'API** oltre all'abbonamento.
 - In futuro forse un'APK.
 
-## 3. Come funziona oggi (v161): sezioni
+## 3. Come funziona oggi (v162): sezioni
 
 La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impostazioni** (Preimpostati tolto nella v53). La voce attiva è evidenziata con una pillola verde `#2f8f5c`.
 
@@ -86,7 +86,7 @@ La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impos
 
 ### 3.4 Alimenti (archivio prodotti di marca)
 - È un elenco alfabetico con la ricerca fissa in alto e, sotto, la lettera dell'indice che si ferma scorrendo (v119); la ricerca è per nome e note.
-- **Grafica (v80–v84, v111–v119):** testata verde con il conteggio e la ricerca a pillola (la ricerca resta fissa scorrendo); schede a pillola alte due righe, piene di verde scuro `#1f4d35` con scritte bianche (nome, kcal, "per …"); aperte tornano con lo sfondo normale e i tasti Annulla / Modifica / Elimina (standard 2). Il tasto Indietro di Android chiude la scheda aperta. Pulsante a pillola "Aggiungi alimento" con il cerchio + come nel Diario e sfumature in alto e in basso.
+- **Grafica (v80–v84, v111–v119):** testata verde con il conteggio e la ricerca a pillola (la ricerca resta fissa scorrendo); schede a pillola alte due righe, piene di verde scuro `#1f4d35` (in chiaro `#436955`, v161) con scritte bianche (nome, kcal, "per …"); aperte tornano con lo sfondo normale e i tasti Annulla / Modifica / Elimina (standard 2). Il tasto Indietro di Android chiude la scheda aperta. Pulsante a pillola "Aggiungi alimento" con il cerchio + come nel Diario; nessuna sfumatura (v162).
 - Ogni scheda contiene nome ("Prodotto – Marca"), riferimento ("100 g", "1 vasetto (170 g)"…), kcal, i macro completi, le note (es. "1 galletta = 8 g") e **tre foto (v86)**: **Confezione 1**, **Confezione 2** e **Tabella valori nutrizionali**, sulla stessa riga, ognuna con fotocamera, galleria e "Rimuovi". Sono salvate in IndexedDB (chiavi `confezione`, `confezione2`, `tabella`).
 - **"Aggiungi alimento":** in alto si sceglie **"Compila scheda Automaticamente"** (predefinito) o **"Compila scheda Manualmente"**.
   - **Automaticamente:** si detta (microfono accanto al campo di testo, con il tasto invio, come nel Diario: v87), si scrive o si fotografa, e dopo 2 secondi di pausa Gemini prepara da solo la scheda (prompt `SYS_FOOD`). Gemini sistema gli errori di dettatura, usa esattamente i valori dati, converte il sodio in sale × 2,5, mette 0 ai macro che mancano se c'è una tabella e lascia vuoti i macro se è indicato solo il valore kcal.
@@ -297,10 +297,11 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **v159:** annullate la v155 e la v157: nella sezione Alimenti le sfumature in alto e in basso tornano a 46 px anche in modalità chiara, identiche a quelle del Diario. Resta la classe `lightmode` su `<html>` (usata dalla v158).
   - **v160:** Alimenti, in chiaro e in scuro: la barra "Cerca un alimento" ha sempre il bordo bianco (2 px), non solo quando la si tocca; toccandola non compare nessuna cornice in più, solo il cursore che lampeggia.
   - **v161:** nella barra "Cerca un alimento" (chiaro e scuro) c'è una lente di ingrandimento stilizzata, nello stesso bianco trasparente della scritta, seguita da un po' di spazio e poi dalla scritta. Solo in modalità chiara, le pillole chiuse di Alimenti e Storico hanno lo sfondo nel verde del tasto microfono (`#436955`); bordo e scritte invariati.
+  - **v162:** sezione Alimenti, in chiaro e in scuro: **tolte del tutto le sfumature** in alto (sotto la lettera ferma) e in basso (sopra "Aggiungi alimento"): ora il taglio è netto. Le sfumature restano **solo nel Diario** (Storico e Ricette non ne hanno).
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
-**Stato:** online, **collaudo in corso dal 25/11/2026**. Il 26/11 sera (v91–v161) è stata rifinita la grafica di Diario, Alimenti, Storico e Impostazioni: interfaccia considerata finita dall'utente; resta da ristrutturare la sezione Ricette (vedi Cose da fare).
+**Stato:** online, **collaudo in corso dal 25/11/2026**. Il 26/11 sera (v91–v162) è stata rifinita la grafica di Diario, Alimenti, Storico e Impostazioni: interfaccia considerata finita dall'utente; resta da ristrutturare la sezione Ricette (vedi Cose da fare).
 
 ---
 
