@@ -480,6 +480,11 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
 /* v161: solo modalità chiara, pillole chiuse di Alimenti e Storico nel verde del tasto microfono */
 html.lightmode #v-alimenti details.food:not([open]),html.lightmode #v-storico details.hday:not([open]){background:#436955}
 #v-alimenti details.food:not([open]) summary,#v-alimenti details.food:not([open]) summary .nm,#v-alimenti details.food:not([open]) summary .kv,#v-alimenti details.food:not([open]) summary .kv small{color:#fff}
+/* v163: solo modalità chiara, pillole degli Alimenti più basse, sfondo bianco, bordo e scritte verde scuro */
+html.lightmode #v-alimenti details.food{padding:5px 22px;border-color:#1f4d35}
+html.lightmode #v-alimenti details.food summary{min-height:42px}
+html.lightmode #v-alimenti details.food:not([open]){background:#fff}
+html.lightmode #v-alimenti details.food:not([open]) summary,html.lightmode #v-alimenti details.food:not([open]) summary .nm,html.lightmode #v-alimenti details.food:not([open]) summary .kv,html.lightmode #v-alimenti details.food:not([open]) summary .kv small{color:#1f4d35}
 /* Aggiungi un pasto (v110): pillole come Alimenti, piene di verde */
 #sheet .addlist{gap:10px;margin:18px 0 28px}
 #sheet .addlist .btn{min-height:58px;padding:10px 22px;border-radius:34px;border:0;background:var(--brand2);color:#fff;font-size:17px;font-weight:600;box-shadow:none}
@@ -621,7 +626,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 162</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 163</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
