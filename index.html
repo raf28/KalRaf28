@@ -706,6 +706,11 @@ html:not(.lightmode) #v-alimenti details.food[open] summary,html:not(.lightmode)
 
 /* v227: in Ricette la barra Ricettario/Crea Ricetta sta sopra la barra di navigazione alla stessa distanza (12 px) e con gli stessi margini laterali (14 px) di "Aggiungi alimento" e "Applica e torna al Diario" */
 .mdock.rdock{padding:0 14px 12px}
+
+/* v229: Ricette. La pillola contenitore ha solo l'ombra (come la pillola "Aggiungi alimento", senza rilievo); i due tasti Ricettario e Crea Ricetta hanno sempre il rilievo 3D medio e l'ombra dei tasti, selezionati o no */
+#rdock .mrow{background-image:none!important;box-shadow:0 2px 5px rgba(0,0,0,.28)!important}
+#rdock .seg button{background-image:linear-gradient(to bottom,rgba(255,255,255,.22),rgba(255,255,255,0) 55%,rgba(0,0,0,.12))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -2px 0 rgba(0,0,0,.18),0 2px 5px rgba(0,0,0,.28)!important}
+#rdock .seg button:active{box-shadow:inset 0 2px 4px rgba(0,0,0,.25)!important;transform:translateY(1px)}
 </style>
 </head>
 <body>
@@ -829,7 +834,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 228</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 229</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
