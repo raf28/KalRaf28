@@ -351,6 +351,8 @@ nav button.on{font-weight:700;color:light-dark(#1f4d35,#fff)}
 /* v160: bordo bianco sempre visibile; al tocco nessuna cornice in più, solo il cursore */
 .ahead input{box-shadow:inset 0 0 0 2px #fff}
 .ahead input:focus,.ahead input:focus-visible{outline:none;box-shadow:inset 0 0 0 2px #fff}
+/* v161: lente di ingrandimento prima di "Cerca un alimento" */
+.ahead input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,.7)' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M15.5 15.5L21 21'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:18px center;background-size:18px 18px;padding-left:48px}
 .letter{color:light-dark(#2c6a49,#4cc184)}
 #v-alimenti details.food{border:4px solid var(--brand)}
 #v-alimenti details.food summary .kv{color:light-dark(#22804f,#4cc184);font-weight:600}
@@ -475,6 +477,8 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
 #v-alimenti .applybar .btn.addbar{box-shadow:light-dark(0 6px 18px rgba(0,0,0,.28),0 6px 20px rgba(0,0,0,.75)),light-dark(0 0 0 0 transparent,0 0 0 1px rgba(255,255,255,.14))}
 /* Alimenti (v111, v117): pillole chiuse dello stesso verde della cornice, scritte bianche */
 #v-alimenti details.food:not([open]){background:var(--brand)}
+/* v161: solo modalità chiara, pillole chiuse di Alimenti e Storico nel verde del tasto microfono */
+html.lightmode #v-alimenti details.food:not([open]),html.lightmode #v-storico details.hday:not([open]){background:#436955}
 #v-alimenti details.food:not([open]) summary,#v-alimenti details.food:not([open]) summary .nm,#v-alimenti details.food:not([open]) summary .kv,#v-alimenti details.food:not([open]) summary .kv small{color:#fff}
 /* Aggiungi un pasto (v110): pillole come Alimenti, piene di verde */
 #sheet .addlist{gap:10px;margin:18px 0 28px}
@@ -617,7 +621,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 160</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 161</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
