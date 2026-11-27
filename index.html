@@ -14,8 +14,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{color-scheme:light dark;
---bg:light-dark(#f4f6f1,#000);--card:light-dark(#fff,#18201b);--ink:light-dark(#17201a,#e8eee9);
---mute:light-dark(#5b6a5f,#97a69b);--line:light-dark(#e0e5dc,#29332c);--soft:light-dark(#eef2ea,#1e2822);
+--bg:light-dark(#f4f6f1,#0b0b0c);--card:light-dark(#fff,#1c1c1e);--ink:light-dark(#17201a,#e8eee9);
+--mute:light-dark(#5b6a5f,#97a69b);--line:light-dark(#e0e5dc,#2c2c2e);--soft:light-dark(#eef2ea,#242426);
 --brand:#1f4d35;--brand2:#2c6a49;--ok:#3a9a62;--warn:#e9a21b;--bad:#d9452b;--me:light-dark(#dcefe2,#23402f)}
 *{box-sizing:border-box;min-width:0}
 html,body{height:100%}
@@ -606,6 +606,15 @@ html:not(.lightmode) #v-alimenti details.food{border-color:#fff}
 html:not(.lightmode) #v-alimenti details.food:not([open]) summary,html:not(.lightmode) #v-alimenti details.food:not([open]) summary .nm,html:not(.lightmode) #v-alimenti details.food:not([open]) summary .kv,html:not(.lightmode) #v-alimenti details.food:not([open]) summary .kv small{color:#fff}
 html:not(.lightmode) #v-alimenti .letter{color:#fff}
 /* v183: modalità scura, i due neri invertiti di nuovo: sfondo dell'app nero assoluto (#000), schede e pillole grigio scuro (#18201b) */
+
+/* v184: modalità scura uniforme. Sfondo nero attenuato (#0b0b0c); schede, finestre, pillole e ovali grigio neutro (#1c1c1e);
+   bordi e scritte bianchi come negli Alimenti anche in Storico, Ricette e Impostazioni */
+html:not(.lightmode) #v-storico details.hday{border-color:#fff}
+html:not(.lightmode) #v-storico details.hday:not([open]) summary,html:not(.lightmode) #v-storico details.hday:not([open]) summary .kv,html:not(.lightmode) #v-storico details.hday:not([open]) summary .kv small{color:#fff}
+html:not(.lightmode) #v-storico details.hday:not([open]) .dot{box-shadow:0 0 0 2px #fff}
+html:not(.lightmode) #v-storico .hlegp{color:#fff}
+html:not(.lightmode) #v-impost .card,html:not(.lightmode) #v-ricette .card,html:not(.lightmode) #v-storico details.hday[open]{border-color:#fff}
+html:not(.lightmode) .dayline #dayLabel,html:not(.lightmode) .dayline #dayLabel *{color:#fff}
 </style>
 </head>
 <body>
@@ -729,7 +738,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 183</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 184</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
