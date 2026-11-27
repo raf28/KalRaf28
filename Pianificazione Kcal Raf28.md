@@ -1,6 +1,6 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 250 (27/11/2026).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 251 (27/11/2026).*
 
 ---
 
