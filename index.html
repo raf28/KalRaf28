@@ -279,6 +279,9 @@ details.card summary::-webkit-details-marker{display:none}
 .shake{animation:sh .35s}
 @keyframes sh{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
 .kc .bon{font-size:.85em;opacity:.8}
+/* v173: titolo "Diario" nella testata, stessa grandezza e posizione del titolo degli Alimenti (24 px, 16 px dal bordo) */
+.head .dht{display:flex;align-items:center;min-height:36px;margin:0 0 12px}.head .dht h2{margin:0;font-size:24px;color:#fff;line-height:36px}
+@media(max-width:600px){.head .dht{margin:6px 4px 12px}}
 @media(max-width:600px){
   .head{padding:calc(env(safe-area-inset-top) + 8px) 12px 10px}
   .dayline{font-size:12.5px}
@@ -572,6 +575,7 @@ window.addEventListener('error',()=>hideSplash());</script>
   <main id="main">
     <section id="v-diario">
       <div class="head"><div class="in">
+        <div class="aht dht"><h2>Diario</h2></div>
         <div class="dayline"><span class="dnav"><button class="arw" id="dPrev" aria-label="Giornata precedente">‹</button><span id="dayLabel"></span><button class="arw" id="dNext" aria-label="Giornata successiva">›</button></span><button class="pill" id="closeDay">Nuova Giornata<br>Alimentare</button></div>
         <div class="kc"><b id="kNow">0</b><span class="of">/ <span id="kTarget"></span> kcal<span class="bon" id="kBon"></span></span><span class="left" id="kLeft"></span></div>
         <div class="bar"><div class="zone" id="bZone"></div><div class="fill" id="bFill"></div><div class="mk" id="bMk"></div></div>
@@ -674,7 +678,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 172</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 173</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -798,7 +802,7 @@ function md(s){return esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/^\s*
 function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}
 let curDead=false;
 function hpush(st){try{history.pushState(st,'')}catch(e){}curDead=false}
-function go(v){if(v===ui.view){render();return}ui.view=v;hpush({v});render();$('#main').scrollTop=0}
+function go(v){if(v===ui.view){render();return}ui.view=v;if(v==='diario')ui.toTop=true;/* v173: tornando al Diario si riparte dall'alto con tutta la testata */hpush({v});render();$('#main').scrollTop=0}
 function sheet(html){const was=!$('#modal').hidden;$('#sheet').innerHTML=html;$('#modal').hidden=false;$('#sheet').scrollTop=0;if(!was){
   /* v149: con CloseWatcher il gesto Indietro chiude la finestra senza passare dalla cronologia (niente schermata che scorre); altrimenti si usa la cronologia */
   if('CloseWatcher' in window){try{const w=new CloseWatcher();sheetCW=w;w.onclose=()=>{if(sheetCW===w){sheetCW=null;closeSheet()}};return}catch(e){}}
