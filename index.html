@@ -793,7 +793,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 204</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 205</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -952,7 +952,14 @@ function showInfo(){sheet(`<div class="info"><h3>Come funziona Kcal</h3>
 <p class="hm"><span class="dot" style="background:var(--ok)"></span>entro l'obiettivo</p>
 <p class="hm"><span class="dot" style="background:var(--warn)"></span>nel margine bonus</p>
 <p class="hm"><span class="dot" style="background:var(--bad)"></span>oltre il bonus</p>
-<h4>Impostazioni</h4><p class="hm">Obiettivo kcal e margine bonus, aspetto chiaro o scuro, modello di Gemini, backup su Google Drive o su file.</p>
+<h4>Impostazioni</h4><p class="hm">– Obiettivo kcal giornaliero e margine bonus<br>
+– Quanti giorni conservare lo Storico<br>
+– Aspetto: chiaro, scuro o come il telefono<br>
+– Intelligenza Artificiale: chiave e modello di Gemini<br>
+– Backup su Google Drive<br>
+– Backup su file: esporta e importa<br>
+– PIN dell'applicazione<br>
+– Reset App</p>
 <h4>Gesti utili</h4><p class="hm">Swipe a destra o a sinistra per cambiare sezione · tieni premuto 1 secondo un tasto della barra in basso per aggiornare l'app · tieni premuto Ascolta per riascoltare dall'inizio.</p>
 <div class="row" style="margin-top:14px"><button class="btn bdef" id="noSheet">Chiudi</button></div></div>`)}
 document.addEventListener('click',e=>{const im=e.target.closest('.ph figure img');if(!im)return;e.preventDefault();e.stopPropagation();const fc=im.closest('figure').querySelector('figcaption');openLb(im.src,fc?fc.textContent:'')},true);
