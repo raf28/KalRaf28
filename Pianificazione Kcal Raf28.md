@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 169 (27/11/2026).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 170 (27/11/2026).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **169**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **170**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -49,7 +49,7 @@ KalRaf28 è un diario alimentare personale. Al posto di contare le calorie nelle
 - **Mai spese extra per l'API** oltre all'abbonamento.
 - In futuro forse un'APK.
 
-## 3. Come funziona oggi (v169): sezioni
+## 3. Come funziona oggi (v170): sezioni
 
 La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impostazioni** (Preimpostati tolto nella v53). La voce attiva è evidenziata con una pillola verde `#2f8f5c`.
 
@@ -310,10 +310,11 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
     - **Modalità scura:** riprese tutte le misure della chiara, tenendo i colori attuali del tema scuro: pillole di Alimenti e Storico più basse, testate verdi di Storico (con la pillola della legenda, qui semitrasparente con bordo bianco come la ricerca), Ricette e Impostazioni, sfumature da 21 px in Alimenti, Storico, Ricette e Impostazioni. Restano solo in chiaro i colori: pillole bianche con bordo e scritte `#1f4d35`, pillola bianca della legenda, messaggi dell'utente nel Diario in `#436955`.
   - **v168: swipe tra le sezioni.** Uno swipe verso sinistra porta alla sezione successiva e verso destra alla precedente, a carosello: Diario → Alimenti → Ricette → Storico → Impostazioni → di nuovo Diario (e al contrario). Vale su tutta l'app tranne vicino ai bordi dello schermo (28 px, per non disturbare il gesto Indietro di Android), sulle barre che scorrono in orizzontale (es. la riga dei pasti quando è piena), sui cursori delle Impostazioni e con una finestra o una foto aperta. Serve uno spostamento orizzontale netto (almeno 70 px, molto più orizzontale che verticale, in meno di 0,7 s), così lo scorrimento normale su e giù non cambia sezione. **Testo del Diario vuoto:** "Tocca il + in basso a sinistra per Aggiungere un Pasto (…)" e "Per Vedere o Modificare un pasto, scorri la barra in basso e Tocca il suo Pulsante Pasto."
   - **v169:** testo del Diario vuoto definitivo, su tre paragrafi: "Tocca il + in basso a sinistra per **Aggiungere un Pasto** (Colazione, Pranzo, Cena o Spuntino), poi scrivi, detta o fotografa cosa hai mangiato." / "Per **Vedere o Modificare** un pasto, scorri la barra in basso e **Tocca il Pulsante dedicato**." / "A fine giornata **Tocca Nuova Giornata Alimentare** in alto: la giornata attuale viene salvata nello Storico e se ne apre una nuova." Swipe più fluido: la sezione nuova entra scorrendo dal lato dello swipe (230 ms, con dissolvenza); soglia dello swipe abbassata a 60 px. Se il telefono ha attivo "riduci animazioni" l'effetto non c'è.
+  - **v170:** terzo paragrafo del Diario vuoto: "A fine giornata **Tocca Nuova Giornata Alimentare** in alto a destra: la giornata attuale viene **Salvata nello Storico** e se ne apre una nuova." **Prova:** il tasto "Nuova Giornata Alimentare" in testata ha un bordo bianco da 2 px, come i cerchi delle frecce ‹ › della data (misure 150 × 40 invariate, in chiaro e in scuro).
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
-**Stato:** online, **collaudo in corso dal 25/11/2026**. Il 26/11 sera (v91–v169) è stata rifinita la grafica di Diario, Alimenti, Storico e Impostazioni: interfaccia considerata finita dall'utente; resta da ristrutturare la sezione Ricette (vedi Cose da fare).
+**Stato:** online, **collaudo in corso dal 25/11/2026**. Il 26/11 sera (v91–v170) è stata rifinita la grafica di Diario, Alimenti, Storico e Impostazioni: interfaccia considerata finita dall'utente; resta da ristrutturare la sezione Ricette (vedi Cose da fare).
 
 ---
 

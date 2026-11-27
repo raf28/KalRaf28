@@ -536,6 +536,8 @@ html.lightmode #v-alimenti details.food:not([open]) summary,html.lightmode #v-al
 .btn.bdef{min-height:40px;border-radius:99px;border:0;color:#fff;font-size:14px;font-weight:400;line-height:1.15;background:var(--brand);box-shadow:none}
 #closeDay,#sheet .row>.btn.dg,.btn.bdef,.mbar #mealDel{width:150px;height:40px;padding:3px 10px;white-space:nowrap;text-align:center;flex:none}
 #sheet .btn.dg.new,.head:not(.editing) #closeDay,.mbar #mealDel{background:#2f8f5c}
+/* v170 (prova): Nuova Giornata Alimentare con il bordo bianco da 2 px come le frecce della data (misure invariate) */
+.head #closeDay{box-shadow:inset 0 0 0 2px #fff}
 .mbar #mealDel{line-height:1.15}
 /* v113: niente riquadro azzurro al tocco */
 *{-webkit-tap-highlight-color:transparent}
@@ -667,7 +669,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 169</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 170</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1083,7 +1085,7 @@ function renderMeal(){
   $('#mealTabs').hidden=!order.length;$('#mealTabs').innerHTML=tabs();
   requestAnimationFrame(()=>{const s=$('#mealTabs'),on=s.querySelector('.on');if(!on)return;const l=on.offsetLeft,r=l+on.offsetWidth;if(l<s.scrollLeft||r>s.scrollLeft+s.clientWidth)s.scrollLeft=Math.max(0,l-(s.clientWidth-on.offsetWidth)/2);updSeg()});
   if(!ui.meal){$('#mealBar').hidden=true;
-    $('#mealItems').innerHTML=`<div class="empty"><b>Tocca il +</b> in basso a sinistra per <b>Aggiungere un Pasto</b> (Colazione, Pranzo, Cena o Spuntino), poi scrivi, detta o fotografa cosa hai mangiato.<br><br>Per <b>Vedere o Modificare</b> un pasto, scorri la barra in basso e <b>Tocca il Pulsante dedicato</b>.<br><br>A fine giornata <b>Tocca Nuova Giornata Alimentare</b> in alto: la giornata attuale viene salvata nello Storico e se ne apre una nuova.</div>`;
+    $('#mealItems').innerHTML=`<div class="empty"><b>Tocca il +</b> in basso a sinistra per <b>Aggiungere un Pasto</b> (Colazione, Pranzo, Cena o Spuntino), poi scrivi, detta o fotografa cosa hai mangiato.<br><br>Per <b>Vedere o Modificare</b> un pasto, scorri la barra in basso e <b>Tocca il Pulsante dedicato</b>.<br><br>A fine giornata <b>Tocca Nuova Giornata Alimentare</b> in alto a destra: la giornata attuale viene <b>Salvata nello Storico</b> e se ne apre una nuova.</div>`;
     $('#mealChat').innerHTML='';return}
   const m0=ensureMeal(ui.meal),isStarted=m0.items.length||m0.chat.length;
   const bar=$('#mealBar');bar.hidden=false;
