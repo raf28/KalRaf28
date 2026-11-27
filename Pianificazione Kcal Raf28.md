@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 181 (27/11/2026).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 182 (27/11/2026).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **181**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **182**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -49,7 +49,7 @@ KalRaf28 è un diario alimentare personale. Al posto di contare le calorie nelle
 - **Mai spese extra per l'API** oltre all'abbonamento.
 - In futuro forse un'APK.
 
-## 3. Come funziona oggi (v181): sezioni
+## 3. Come funziona oggi (v182): sezioni
 
 La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impostazioni** (Preimpostati tolto nella v53). La voce attiva è evidenziata con una pillola verde `#2f8f5c`.
 
@@ -322,10 +322,11 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **v179: modalità scura "ribaltata" dalla chiara.** Regola usata: in chiaro ovali e pillole hanno il fondo della scheda (bianco) con bordo e scritte nel verde scuro del marchio `#1f4d35`; in scuro hanno il fondo della scheda scuro (`var(--card)`, `#18201b`) con bordo e scritte nel verde acceso del tema scuro `#4cc184`. Quindi in scuro: pillola della data (senza bordo, data in `#4cc184`), "Cerca un alimento" (senza bordo, lente e scritta `#4cc184`), legenda dello Storico, pillole di Alimenti e Storico (fondo scuro, bordo e scritte `#4cc184`, pallino con contorno `#4cc184`); messaggi dell'utente nel Diario nel verde del tasto microfono del tema scuro (`#1f4d35`) con testo bianco. Misure, barre e sfumature erano già uguali dalla v167. Ora chiaro e scuro seguono le stesse regole.
   - **v180:** modalità scura, solo Alimenti: bordo e scritte delle pillole nel verde della testata (`#1f4d35`, lo sfondo di "Alimenti · N salvati"); le lettere C, F, G… restano verde acceso `#4cc184`. Verificato che misure delle pillole (60 px) e spessore del bordo (4 px) sono uguali in chiaro e in scuro. Nota: su fondo scuro le scritte `#1f4d35` sono poco leggibili, da valutare sul telefono.
   - **v181:** modalità scura, colori di fondo invertiti per coerenza in tutta l'app: lo **sfondo dell'app** è il grigio scuro `#18201b` (prima era il colore delle schede e delle pillole) e **finestre, schede, pillole e riquadri** (chat del Diario, tabella del pasto, pillole di Alimenti e Storico, ovali delle testate, blocchi delle Impostazioni) sono **nero assoluto** `#000` (variabili `--bg` e `--card` del tema scuro). In chiaro nulla cambia.
+  - **v182:** modalità scura, sezione Alimenti in **bianco**: lente e scritta di "Cerca un alimento", bordo e testo delle pillole (al posto del verde della v180) e lettere dell'indice C, F, G…
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
-**Stato:** online, **collaudo in corso dal 25/11/2026**. Il 26/11 sera (v91–v181) è stata rifinita la grafica di Diario, Alimenti, Storico e Impostazioni: interfaccia considerata finita dall'utente; resta da ristrutturare la sezione Ricette (vedi Cose da fare).
+**Stato:** online, **collaudo in corso dal 25/11/2026**. Il 26/11 sera (v91–v182) è stata rifinita la grafica di Diario, Alimenti, Storico e Impostazioni: interfaccia considerata finita dall'utente; resta da ristrutturare la sezione Ricette (vedi Cose da fare).
 
 ---
 
