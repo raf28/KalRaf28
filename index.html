@@ -665,8 +665,9 @@ html:not(.lightmode) #v-alimenti details.food:not([open]),html:not(.lightmode) #
 .head .dht,#v-impost .ihead .aht{justify-content:space-between}
 .infob{width:32px;height:32px;flex:none;border-radius:50%;border:3px solid #fff;background:transparent;color:#fff;font:700 18px/1 Georgia,'Times New Roman',serif;font-style:italic;display:grid;place-items:center;padding:0 0 1px;box-sizing:border-box} /* v199: come la prima anteprima (i corsiva, 32 px) */
 .infob:active{transform:scale(.94)}
-.info h4{margin:14px 0 4px;font-size:15px;color:light-dark(#1f4d35,#fff)}
-.info p{margin:0 0 6px}
+.info h3{font-size:22px;margin:0 0 8px}
+.info h4{margin:18px 0 6px;font-size:18px;color:light-dark(#1f4d35,#fff)}
+.info p,.info p.hm{margin:0 0 8px;font-size:16.5px;line-height:1.5;color:var(--ink)} /* v200: testo della finestra informazioni più grande */
 </style>
 </head>
 <body>
@@ -790,7 +791,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 199</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 200</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
