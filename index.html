@@ -722,6 +722,9 @@ html:not(.lightmode) #v-alimenti details.food[open] summary,html:not(.lightmode)
 /* v231: tasti delle Impostazioni e delle finestre di conferma con rilievo 3D e ombra più evidenti (come i tasti di Aspetto) */
 #v-impost .btn:not(:disabled),#v-impost .thm button,#sheet .btn:not(:disabled){box-shadow:inset 0 2px 0 rgba(255,255,255,.45),inset 0 -3px 0 rgba(0,0,0,.28),0 4px 10px rgba(0,0,0,.35)!important}
 #v-impost .btn:not(:disabled):active,#v-impost .thm button:active,#sheet .btn:not(:disabled):active{box-shadow:inset 0 3px 5px rgba(0,0,0,.3)!important;transform:translateY(1px)}
+
+/* v232: Diario, riga dei pasti (con il +) e barra del pasto (PRANZO … kcal): sfumatura del colore come le altre pillole contenitore, niente rilievo, ombra più marcata */
+#mdock .mrow,#mealBar:not(.histbar){background-image:linear-gradient(to bottom,rgba(255,255,255,.22),rgba(255,255,255,0) 55%,rgba(0,0,0,.12))!important;box-shadow:0 4px 10px rgba(0,0,0,.35)!important}
 </style>
 </head>
 <body>
@@ -845,7 +848,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 231</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 232</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
