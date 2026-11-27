@@ -603,7 +603,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 150</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 151</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1605,12 +1605,12 @@ document.addEventListener('click',e=>{const a=e.target.closest('[data-segs]');if
 $('#addMeal').onclick=()=>{const o=S.day.order,ns=o.filter(isSnack).length;
   sheet(`<h3>Aggiungi un pasto</h3><div class="addlist">${BASE.map(k=>`<button class="btn ghost" data-addm="${k}" ${o.includes(k)?'disabled':''}>${mealName(k)}<small>${o.includes(k)?'già aggiunto':''}</small></button>`).join('')}<button class="btn ghost" data-addm="spuntino" ${ns>=MAXSN?'disabled':''}>Spuntino<small>${ns>=MAXSN?'massimo '+MAXSN+' raggiunto':'sarà lo Spuntino '+(ns+1)}</small></button></div><div class="row" style="justify-content:flex-start"><button class="btn ghost dg" id="noSheet">Annulla</button></div>`);
   document.querySelectorAll('[data-addm]').forEach(x=>x.onclick=()=>{closeSheet();addMeal(x.dataset.addm)})};
-/* v150: tenendo premuto il tasto della sezione già selezionata (Diario, Alimenti, Ricette, Storico) l'app si aggiorna (riparte dal Diario come ogni aggiornamento) */
-{const nav=$('#nav'),OK=['diario','alimenti','ricette','storico'];let t=null,x0=0,y0=0,fired=false;
+/* v150, v151: tenendo premuto per 1 secondo un qualsiasi tasto della barra in basso (selezionato o no) l'app si aggiorna (riparte dal Diario come ogni aggiornamento) */
+{const nav=$('#nav'),OK=['diario','alimenti','ricette','storico','impost'];let t=null,x0=0,y0=0,fired=false;
  const stop=()=>{clearTimeout(t);t=null};
- nav.addEventListener('pointerdown',e=>{const b=e.target.closest('button[data-v]');fired=false;if(!b||!OK.includes(b.dataset.v)||!b.classList.contains('on'))return;
+ nav.addEventListener('pointerdown',e=>{const b=e.target.closest('button[data-v]');fired=false;if(!b||!OK.includes(b.dataset.v))return;
    x0=e.clientX;y0=e.clientY;stop();t=setTimeout(()=>{t=null;fired=true;try{navigator.vibrate&&navigator.vibrate(30)}catch(err){}
-     const pt=$('#ptr');if(pt){pt.textContent='Aggiornamento…';pt.style.transform='translate(-50%,20px)'}setTimeout(()=>location.reload(),250)},550)});
+     const pt=$('#ptr');if(pt){pt.textContent='Aggiornamento…';pt.style.transform='translate(-50%,20px)'}setTimeout(()=>location.reload(),250)},1000)});
  nav.addEventListener('pointermove',e=>{if(t&&Math.hypot(e.clientX-x0,e.clientY-y0)>10)stop()});
  ['pointerup','pointercancel','pointerleave'].forEach(ev=>nav.addEventListener(ev,stop));
  nav.addEventListener('click',e=>{if(fired){e.preventDefault();e.stopPropagation()}},true);
