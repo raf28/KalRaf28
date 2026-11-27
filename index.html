@@ -741,6 +741,10 @@ html body #v-impost .btn:not(:disabled):active,html body #sheet .btn:not(:disabl
 /* v236: pillole degli elenchi (Alimenti e Storico) con il rilievo 3D di un livello più forte: chiaro da medio a marcato, scuro da marcato a molto marcato */
 html.lightmode #v-alimenti details.food:not([open]),html.lightmode #v-storico details.hday:not([open]){background:linear-gradient(to bottom,#fff 0,#f3f6f4 45%,#d9e3dd 100%)!important;box-shadow:inset 0 -4px 0 rgba(31,77,53,.16),inset 0 3px 2px rgba(255,255,255,.9)!important}
 html:not(.lightmode) #v-alimenti details.food:not([open]),html:not(.lightmode) #v-storico details.hday:not([open]){background:linear-gradient(to bottom,#3e3e42 0,#242427 45%,#0e0e10 100%)!important;box-shadow:inset 0 -5px 0 rgba(0,0,0,.55),inset 0 3px 2px rgba(255,255,255,.2)!important}
+
+/* v237: "rimbalzo" uguale per tutti i tasti (tranne la barra di navigazione in basso): quando si preme il tasto si abbassa e si stringe un poco */
+button:not(nav button):not(:disabled){transition:transform .1s ease}
+button.pressed:not(nav button){transform:translateY(1px) scale(.96)!important}
 </style>
 </head>
 <body>
@@ -864,7 +868,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 236</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 237</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1947,6 +1951,12 @@ try{history.replaceState({v:'diario'},'')}catch(e){}
    const sec=$('#v-'+n);if(sec&&sec.animate&&!matchMedia('(prefers-reduced-motion: reduce)').matches){const fx=(dx<0?1:-1)*Math.min(window.innerWidth*.35,140);
      try{sec.animate([{transform:`translateX(${fx}px)`,opacity:.5},{transform:'translateX(0)',opacity:1}],{duration:180,easing:'cubic-bezier(.2,.8,.2,1)'})}catch(err){}}}
  document.addEventListener('touchcancel',()=>{ok=false},{passive:true});})();
+
+/* v237: effetto pressione uniforme. Aggiunge la classe "pressed" al tocco (anche dove il browser non mostra :active, per esempio nella riga dei pasti che scorre) e la toglie dopo almeno 120 ms */
+(function(){let cur=null,t0=0;const off=()=>{if(!cur)return;const b=cur;cur=null;const w=Math.max(0,120-(Date.now()-t0));setTimeout(()=>b.classList.remove('pressed'),w)};
+ document.addEventListener('pointerdown',e=>{const b=e.target.closest('button');if(!b||b.disabled||b.closest('nav'))return;cur=b;t0=Date.now();b.classList.add('pressed')},{passive:true});
+ ['pointerup','pointercancel','pointerleave'].forEach(ev=>document.addEventListener(ev,off,{passive:true}));
+ document.addEventListener('scroll',off,{passive:true,capture:true});})();
 $('#main').addEventListener('scroll',()=>{alimStuck();diarioFades();histFades()},{passive:true});window.addEventListener('resize',()=>requestAnimationFrame(alimSticky));
 /* altezza dell'app misurata davvero (dopo "trascina per aggiornare" o all'avvio Android a volte dava un'altezza sbagliata e la barra in basso spariva) */
 (function(){const de=document.documentElement;function fitH(){const vv=window.visualViewport,a=document.activeElement,typing=a&&/^(INPUT|TEXTAREA)$/.test(a.tagName);let h=window.innerHeight;if(vv&&!typing)h=Math.min(h,Math.round(vv.height));if(h>200)de.style.setProperty('--appH',h+'px');if(window.scrollY)window.scrollTo(0,0)}
