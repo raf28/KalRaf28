@@ -125,6 +125,8 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 .chat{display:flex;flex-direction:column;gap:8px}
 .msg{max-width:88%;padding:9px 13px;border-radius:16px;font-size:15.5px;white-space:normal;overflow-wrap:anywhere}
 .msg.u{align-self:flex-end;background:var(--me);border-bottom-right-radius:5px}
+/* v158: solo Diario, solo modalità chiara: messaggi dell'utente nel verde dei tasti microfono/fotocamera */
+html.lightmode #v-diario .msg.u{background:#436955;color:#fff}
 .msg.a{align-self:flex-start;background:var(--card);border:1px solid var(--line);border-bottom-left-radius:5px}
 .msg.e{border-color:var(--bad);color:var(--bad)}
 .msg .mt{margin-top:7px;padding-top:7px;border-top:1px dashed var(--line);font-size:13px;color:var(--mute)}
@@ -614,7 +616,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 157</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 158</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
