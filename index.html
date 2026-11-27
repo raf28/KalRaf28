@@ -748,6 +748,10 @@ button.pressed{transform:translateY(1px) scale(.96)!important} /* v238: anche la
 
 /* v238: voce selezionata della barra di navigazione con rilievo 3D e ombra più evidenti */
 nav button.on svg{box-shadow:inset 0 2px 0 rgba(255,255,255,.45),inset 0 -3px 0 rgba(0,0,0,.28),0 4px 10px rgba(0,0,0,.38)!important}
+
+/* v241→v242: la data ha una larghezza fissa (104 px, centrata), così le frecce ‹ › non si spostano al cambiare di giorno e mese (calcolata su "✎ Mercoledì 28 / Settembre") e lo spazio è uguale a destra e a sinistra */
+#dayLabel{width:104px;flex:none;text-align:center}
+.dnav{gap:16px}
 </style>
 </head>
 <body>
@@ -871,7 +875,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 241</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 242</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
