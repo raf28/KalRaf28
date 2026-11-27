@@ -743,7 +743,7 @@ html.lightmode #v-alimenti details.food:not([open]),html.lightmode #v-storico de
 html:not(.lightmode) #v-alimenti details.food:not([open]),html:not(.lightmode) #v-storico details.hday:not([open]){background:linear-gradient(to bottom,#3e3e42 0,#242427 45%,#0e0e10 100%)!important;box-shadow:inset 0 -5px 0 rgba(0,0,0,.55),inset 0 3px 2px rgba(255,255,255,.2)!important}
 
 /* v237: "rimbalzo" uguale per tutti i tasti (tranne la barra di navigazione in basso): quando si preme il tasto si abbassa e si stringe un poco */
-button:not(:disabled){transition:transform .1s ease}
+button:not(:disabled){transition:transform .08s ease}
 button.pressed{transform:translateY(1px) scale(.96)!important} /* v238: anche la barra di navigazione */
 
 /* v238: voce selezionata della barra di navigazione con rilievo 3D e ombra più evidenti */
@@ -871,7 +871,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 240</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 241</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1956,13 +1956,13 @@ try{history.replaceState({v:'diario'},'')}catch(e){}
  document.addEventListener('touchcancel',()=>{ok=false},{passive:true});})();
 
 /* v237: effetto pressione uniforme. Aggiunge la classe "pressed" al tocco (anche dove il browser non mostra :active, per esempio nella riga dei pasti che scorre) e la toglie dopo almeno 120 ms */
-(function(){let cur=null,t0=0,last=null;const off=()=>{if(!cur)return;const b=cur;cur=null;const w=Math.max(0,120-(Date.now()-t0));setTimeout(()=>b.classList.remove('pressed'),w)};
+(function(){let cur=null,t0=0,last=null;const off=()=>{if(!cur)return;const b=cur;cur=null;const w=Math.max(0,160-(Date.now()-t0));setTimeout(()=>b.classList.remove('pressed'),w)};
  document.addEventListener('pointerdown',e=>{const b=e.target.closest('button');if(!b||b.disabled)return;cur=b;t0=Date.now();b.classList.add('pressed')},{passive:true});
  /* v239: molti tasti (Annulla, Elimina, Salva, Modifica giornata…) chiudono la finestra o ridisegnano la pagina subito, e il rimbalzo non si vedeva.
     Se il tocco è stato molto breve, l'azione parte con un piccolo ritardo (fino a 110 ms) così il tasto fa in tempo a rimbalzare. */
  document.addEventListener('pointerdown',e=>{last=e.target.closest('button')},{passive:true,capture:true});
  document.addEventListener('click',e=>{if(!e.isTrusted)return;const b=e.target.closest('button');if(!b||b.disabled||b.closest('nav')||b!==last)return;
-   const need=110-(Date.now()-t0);if(need<=0)return;e.preventDefault();e.stopImmediatePropagation();const tg=e.target;last=null;
+   const need=160-(Date.now()-t0);if(need<=0)return;e.preventDefault();e.stopImmediatePropagation();const tg=e.target;last=null;
    b.classList.add('pressed');setTimeout(()=>{tg.click();setTimeout(()=>b.classList.remove('pressed'),20)},need)},true);
  ['pointerup','pointercancel','pointerleave'].forEach(ev=>document.addEventListener(ev,off,{passive:true}));
  document.addEventListener('scroll',off,{passive:true,capture:true});})();
