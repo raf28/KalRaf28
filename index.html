@@ -43,7 +43,7 @@ html.lightmode .dayline{background:rgba(255,255,255,.1)}
 #dayLabel::first-letter{text-transform:uppercase}
 .arw:disabled{opacity:.4}
 /* v171: frecce della data piene del verde di Nuova Giornata Alimentare (spente restano più chiare) */
-.arw{background:#2f8f5c}
+.arw{background:#2f8f5c;border:0} /* v175: senza bordo bianco */
 .head.editing{background:#7a5c12}
 .histbar{background:#7a5c12!important;flex-wrap:wrap}
 .histbar b{font-size:15px}
@@ -328,6 +328,10 @@ details.card summary::-webkit-details-marker{display:none}
 .mdock .seg button,.mdock .seg button.on,.mdock .seg button:not(.on){border:0}
 .mdock .mrow{border:0}
 .mdock .seg button:not(.on){background:light-dark(rgba(255,255,255,.16),rgba(0,0,0,.32));color:#fff}
+/* v175: barra delle Ricette, uguale alla barra dei pasti del Diario (senza il +), con due pulsanti per ora segnaposto */
+.rdock .mrow{padding:6px 8px}
+.rdock .seg button{flex:0 0 96px}
+.recsel{font-size:20px;font-weight:700;color:light-dark(#2f8f5c,#4cc184);margin:0 0 12px}
 .mdock .seg button:not(.on) small{color:light-dark(rgba(255,255,255,.8),#b9c6bd)}
 .mdock .sarr.r{right:0;border-radius:0 999px 999px 0}.mdock .sarr.l{border-radius:999px 0 0 999px}
 
@@ -547,7 +551,7 @@ html.lightmode #v-alimenti details.food:not([open]) summary,html.lightmode #v-al
 #closeDay,#sheet .row>.btn.dg,.btn.bdef,.mbar #mealDel{width:150px;height:40px;padding:3px 10px;white-space:nowrap;text-align:center;flex:none}
 #sheet .btn.dg.new,.head:not(.editing) #closeDay,.mbar #mealDel{background:#2f8f5c}
 /* v170 (prova): Nuova Giornata Alimentare con il bordo bianco da 2 px come le frecce della data (misure invariate) */
-.head #closeDay{box-shadow:inset 0 0 0 2px #fff}
+.head #closeDay{box-shadow:none} /* v175: bordo bianco tolto */
 .mbar #mealDel{line-height:1.15}
 /* v113: niente riquadro azzurro al tocco */
 *{-webkit-tap-highlight-color:transparent}
@@ -598,6 +602,7 @@ window.addEventListener('error',()=>hideSplash());</script>
       <div class="ahead hhead ihead"><div class="in"><div class="aht"><h2>Ricette</h2></div></div></div>
       <div class="wrap">
         <h2>Ricette</h2>
+        <div class="recsel" id="recSel" hidden></div>
         <div class="seg" id="recTabs" style="padding-top:0"></div>
         <div id="recChatBox"><div class="chat" id="recChat"></div></div>
         <div id="recBook" hidden></div>
@@ -680,13 +685,14 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 174</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 175</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
   </main>
 
   <div class="mdock" id="mdock"><div class="mrow" id="mrow"><button class="addm" id="addMeal" aria-label="Aggiungi un pasto">+</button><div class="segw" id="segw"><div class="seg" id="mealTabs"></div><button class="sarr l" data-segs="-1" aria-label="Scorri a sinistra">‹</button><button class="sarr r" data-segs="1" aria-label="Scorri a destra">›</button></div></div></div>
+  <div class="mdock rdock" id="rdock" hidden><div class="mrow"><div class="segw"><div class="seg" id="recDockTabs"><button data-rdock="crea">Crea Nuova<br>Ricetta</button><button data-rdock="book">Ricettario</button></div></div></div></div>
   <div class="comp" id="comp">
     <div class="ctx" id="ctx"></div>
     <div class="pills" id="pills"></div>
@@ -787,7 +793,7 @@ normalize();prune();
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Impossibile salvare: esporta un backup')}try{if(typeof gdOnSave==='function')gdOnSave()}catch(e){}}
 
 function guessMeal(){const h=new Date().getHours();if(h>=4&&h<11)return'colazione';if(h>=11&&h<15)return'pranzo';if(h>=15&&h<18){return'spuntino1'}return'cena'}
-const ui={retry:{},view:'diario',meal:null,dv:null,hmeal:null,rec:'chat',photo:null,busy:false};
+const ui={retry:{},rsel:null,view:'diario',meal:null,dv:null,hmeal:null,rec:'chat',photo:null,busy:false};
 
 const nn=v=>(v===null||v===undefined||v==='')?null:num(v);
 const sum=items=>{const t={miss:{},has:{}};KEYS.forEach(k=>t[k]=0);(items||[]).forEach(i=>KEYS.forEach(k=>{const v=nn(i[k]);if(v===null)t.miss[k]=true;else{t[k]+=v;t.has[k]=true}}));return t};
@@ -1025,11 +1031,11 @@ function render(){applyTheme();requestAnimationFrame(alimSticky);requestAnimatio
   $('#send').disabled=ui.busy;
   if(false){}else{$('#msg').disabled=$('#mic').disabled=$('#bCam').disabled=$('#bGal').disabled=false}
   $('#pills').hidden=true; /* barra dei pasti in basso tolta (26/11): la riga dei pasti ora sta sopra il campo di scrittura */
-  $('#mdock').hidden=ui.view!=='diario';$('#addMeal').hidden=ui.dv!==null;$('#ctx').hidden=ui.view==='diario';
+  $('#mdock').hidden=ui.view!=='diario';$('#addMeal').hidden=ui.dv!==null;$('#ctx').hidden=ui.view==='diario'||ui.view==='ricette';$('#rdock').hidden=ui.view!=='ricette';document.querySelectorAll('[data-rdock]').forEach(b=>b.classList.toggle('on',b.dataset.rdock===ui.rsel));{const t=$('#recSel');if(t){t.hidden=!ui.rsel;t.textContent=ui.rsel==='crea'?'Crea Nuova Ricetta':ui.rsel==='book'?'Ricettario':''}}
   $('#comp .in').hidden=false;
   if(ui.view==='diario'&&ui.dv!==null){$('#comp').hidden=false;$('#comp .in').hidden=true;renderHead();renderHistDay();}
   else if(ui.view==='diario'){if(ui.meal)ensureMeal(ui.meal);renderHead();renderMeal();renderPills();$('#msg').placeholder=ui.meal?'Cosa hai mangiato?':'Tocca + per iniziare'}
-  if(ui.view==='ricette'){renderRec();$('#ctx').textContent='Chat ricette · non viene contata nel diario';$('#msg').placeholder='Chiedi un\'idea o una ricetta'}
+  if(ui.view==='ricette'){renderRec();$('#ctx').textContent='Chat ricette · non viene contata nel diario';$('#msg').placeholder=''}
   if(ui.view==='storico')renderHist();
   if(ui.view==='alimenti')renderFoods();
   if(ui.view==='impost'){renderSet();gdRender()}
@@ -1181,6 +1187,7 @@ document.addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;
   if(b.hasAttribute('data-collapse')){const d=b.closest('details');if(d){d.open=false;d.scrollIntoView({block:'nearest'})}return}
   if(b.dataset.v){go(b.dataset.v);return}
+  if(b.dataset.rdock){ui.rsel=ui.rsel===b.dataset.rdock?null:b.dataset.rdock;render();$('#main').scrollTop=0;return}/* v175: per ora segnaposto */
   if(b.dataset.meal){if(b.dataset.meal!==ui.meal)ui.toTop=true;ui.meal=b.dataset.meal;render();return}
   if(b.dataset.newsn){const cs=S.day.curSnack;if(!ensureMeal(cs).items.length){ui.toTop=cs!==ui.meal;ui.meal=cs;render();toast(mealName(cs)+' è ancora vuoto: scrivi qui cosa hai mangiato');return}
     S.day.meals[cs].closed=true;const nx='spuntino'+(snackN(cs)+1);S.day.curSnack=nx;ensureMeal(nx);ui.meal=nx;ui.toTop=true;save();render();toast(mealName(cs)+' chiuso · ora '+mealName(nx));return}
