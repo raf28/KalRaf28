@@ -660,6 +660,13 @@ html.lightmode #v-alimenti details.food:not([open]),html.lightmode #v-storico de
 
 /* v195/v197: solo modalità scura, pillole di Alimenti e Storico nel grigio di partenza (#1c1c1e) con rilievo 3D marcato con rilievo 3D medio (come in chiaro), bordo e scritte bianchi */
 html:not(.lightmode) #v-alimenti details.food:not([open]),html:not(.lightmode) #v-storico details.hday:not([open]){background:linear-gradient(to bottom,#36363a 0,#232326 45%,#121214 100%)!important;box-shadow:inset 0 -4px 0 rgba(0,0,0,.5),inset 0 3px 2px rgba(255,255,255,.16)!important}
+
+/* v198: cerchio "i" (informazioni) a destra del titolo in Diario e Impostazioni */
+.head .dht,#v-impost .ihead .aht{justify-content:space-between}
+.infob{width:28px;height:28px;flex:none;border-radius:50%;border:2.5px solid #fff;background:transparent;color:#fff;font-family:inherit;font-size:17px;font-weight:800;line-height:1;display:grid;place-items:center;padding:0;box-sizing:border-box}
+.infob:active{transform:scale(.94)}
+.info h4{margin:14px 0 4px;font-size:15px;color:light-dark(#1f4d35,#fff)}
+.info p{margin:0 0 6px}
 </style>
 </head>
 <body>
@@ -679,7 +686,7 @@ window.addEventListener('error',()=>hideSplash());</script>
   <main id="main">
     <section id="v-diario">
       <div class="head"><div class="in">
-        <div class="aht dht"><h2>Diario</h2></div>
+        <div class="aht dht"><h2>Diario</h2><button class="infob" data-info aria-label="Informazioni sull'app">i</button></div>
         <div class="dayline"><span class="dnav"><button class="arw" id="dPrev" aria-label="Giornata precedente">‹</button><span id="dayLabel"></span><button class="arw" id="dNext" aria-label="Giornata successiva">›</button></span><button class="pill" id="closeDay">Nuova Giornata<br>Alimentare</button></div>
         <div class="kc"><b id="kNow">0</b><span class="of">/ <span id="kTarget"></span> kcal<span class="bon" id="kBon"></span></span><span class="left" id="kLeft"></span></div>
         <div class="bar"><div class="zone" id="bZone"></div><div class="fill" id="bFill"></div><div class="mk" id="bMk"></div></div>
@@ -726,7 +733,7 @@ window.addEventListener('error',()=>hideSplash());</script>
     </section>
 
     <section id="v-impost" class="vh" hidden>
-      <div class="ahead hhead ihead"><div class="in"><div class="aht"><h2>Impostazioni</h2></div></div></div>
+      <div class="ahead hhead ihead"><div class="in"><div class="aht"><h2>Impostazioni</h2><button class="infob" data-info aria-label="Informazioni sull'app">i</button></div></div></div>
       <div class="wrap">
         <h2>Impostazioni</h2>
         <div class="card">
@@ -783,7 +790,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 197</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 198</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -924,6 +931,17 @@ function openLb(src,cap){closeLb(true);lbEl=document.createElement('div');lbEl.c
   try{history.pushState(Object.assign({},history.state||{},{lb:1}),'')}catch(e){}}
 let lbCW=null;
 function closeLb(silent){if(lbCW){const w=lbCW;lbCW=null;try{w.destroy()}catch(e){}}if(!lbEl)return;lbEl.remove();lbEl=null;if(!silent&&history.state&&history.state.lb){lbSkip=true;history.back()}}
+
+/* v198: pagina informazioni (bozza delle spiegazioni, da rivedere con l'utente) */
+function showInfo(){sheet(`<div class="info"><h3>Come funziona KalRaf28</h3>
+<p class="hm">Un diario per contare kcal e macro di quello che mangi, con l'aiuto di Gemini.</p>
+<h4>Diario</h4><p class="hm">Tocca il <b>+</b> per aggiungere un pasto, poi scrivi, detta o fotografa cosa hai mangiato: Gemini calcola kcal e macro e il conteggio della giornata si aggiorna da solo. Se un valore è sbagliato, correggilo in chat: vale sempre l'ultima versione. A fine giornata tocca <b>Nuova Giornata Alimentare</b>.</p>
+<h4>Da dove vengono i valori</h4><p class="hm"><b>valore tuo</b> = l'hai dato tu · <b>valore sicuro</b> = da un alimento salvato in Alimenti · <b>da etichetta</b> = letto dalla confezione · <b>valore generico</b> = stima da tabelle · <b>stima da foto</b> = calcolato dalla foto. Se Gemini non conosce un valore non lo inventa: te lo chiede.</p>
+<h4>Alimenti</h4><p class="hm">I tuoi prodotti di marca con i valori esatti e le foto. Quando li nomini nel Diario, i valori vengono presi da qui.</p>
+<h4>Storico</h4><p class="hm">Le giornate chiuse. Il pallino dice com'è andata: verde entro l'obiettivo, arancione nel margine bonus, rosso oltre.</p>
+<h4>Impostazioni</h4><p class="hm">Obiettivo kcal e margine bonus, aspetto chiaro o scuro, modello di Gemini, backup su Google Drive o su file.</p>
+<h4>Gesti utili</h4><p class="hm">Swipe a destra o a sinistra per cambiare sezione · tieni premuto 1 secondo un tasto della barra in basso per aggiornare l'app · tieni premuto Ascolta per riascoltare dall'inizio.</p>
+<div class="row" style="margin-top:14px"><button class="btn bdef" id="noSheet">Chiudi</button></div></div>`)}
 document.addEventListener('click',e=>{const im=e.target.closest('.ph figure img');if(!im)return;e.preventDefault();e.stopPropagation();const fc=im.closest('figure').querySelector('figcaption');openLb(im.src,fc?fc.textContent:'')},true);
 window.addEventListener('popstate',e=>{if(lbSkip){lbSkip=false;return}if(fdSkip){fdSkip=false;return}if(lbEl){closeLb(true);return}const st=e.state||{v:'diario'};
   if(!$('#modal').hidden){closeSheet(true);if(st.dead)history.back();if(!st.sheet)return}
@@ -1285,6 +1303,7 @@ document.addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;
   if(b.hasAttribute('data-collapse')){const d=b.closest('details');if(d){d.open=false;d.scrollIntoView({block:'nearest'})}return}
   if(b.dataset.v){go(b.dataset.v);return}
+  if(b.hasAttribute('data-info')){showInfo();return}
   if(b.dataset.rdock){ui.rsel=ui.rsel===b.dataset.rdock?null:b.dataset.rdock;render();$('#main').scrollTop=0;return}/* v175: per ora segnaposto */
   if(b.dataset.meal){if(b.dataset.meal!==ui.meal)ui.toTop=true;ui.meal=b.dataset.meal;render();return}
   if(b.dataset.newsn){const cs=S.day.curSnack;if(!ensureMeal(cs).items.length){ui.toTop=cs!==ui.meal;ui.meal=cs;render();toast(mealName(cs)+' è ancora vuoto: scrivi qui cosa hai mangiato');return}
