@@ -668,6 +668,7 @@ html:not(.lightmode) #v-alimenti details.food:not([open]),html:not(.lightmode) #
 .info h3{font-size:22px;margin:0 0 8px}
 .info h4{margin:18px 0 6px;font-size:18px;color:light-dark(#1f4d35,#fff)}
 .info p,.info p.hm{margin:0 0 8px;font-size:16.5px;line-height:1.5;color:var(--ink)} /* v200: testo della finestra informazioni più grande */
+.info .src{font-size:inherit;font-weight:700} /* v202: etichette colorate leggibili come il testo */
 </style>
 </head>
 <body>
@@ -791,7 +792,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 201</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 202</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -937,7 +938,13 @@ function closeLb(silent){if(lbCW){const w=lbCW;lbCW=null;try{w.destroy()}catch(e
 function showInfo(){sheet(`<div class="info"><h3>Come funziona Kcal</h3>
 <p class="hm">Un diario per contare kcal e Macro di quello che mangi, con l'aiuto dell'Intelligenza Artificiale (al momento Gemini).</p>
 <h4>Diario</h4><p class="hm">Tocca il <b>+</b> per aggiungere un pasto, poi scrivi, detta o fotografa cosa hai mangiato: l'Intelligenza Artificiale calcola kcal e Macro e il conteggio della giornata si aggiorna da solo. Se un valore è sbagliato correggilo in chat: vale sempre l'ultimo inserito. A fine giornata tocca <b>Nuova Giornata Alimentare</b> per iniziare un nuovo conteggio.</p>
-<h4>Da dove vengono i valori</h4><p class="hm"><b>valore tuo</b> = l'hai dato tu · <b>valore sicuro</b> = da un alimento salvato in Alimenti · <b>da etichetta</b> = letto dalla confezione · <b>valore generico</b> = stima da tabelle · <b>stima da foto</b> = calcolato dalla foto. Se Gemini non conosce un valore non lo inventa: te lo chiede.</p>
+<h4>Da dove vengono i valori</h4><p class="hm">Accanto a ogni alimento c'è un'etichetta colorata che dice da dove viene il valore:</p>
+<p class="hm"><span class="src ok">(valore sicuro – Alimenti)</span> preso da un alimento che hai salvato in Alimenti.</p>
+<p class="hm"><span class="src ok">(valore tuo)</span> l'hai scritto tu.</p>
+<p class="hm"><span class="src ok">(da etichetta)</span> letto dalla tabella nutrizionale della confezione.</p>
+<p class="hm"><span class="src gen">(valore generico)</span> stimato dall'Intelligenza Artificiale con le tabelle nutrizionali.</p>
+<p class="hm"><span class="src gen">(stima da foto)</span> stimato dall'Intelligenza Artificiale guardando la foto.</p>
+<p class="hm"><span class="src nf">(non trovato – cercare manualmente l'alimento)</span> l'Intelligenza Artificiale non conosce l'alimento: non inventa nulla e ti chiede i valori.</p>
 <h4>Alimenti</h4><p class="hm">I tuoi prodotti di marca con i valori esatti e le foto. Quando li nomini nel Diario, i valori vengono presi da qui.</p>
 <h4>Storico</h4><p class="hm">Le giornate chiuse. Il pallino dice com'è andata: verde entro l'obiettivo, arancione nel margine bonus, rosso oltre.</p>
 <h4>Impostazioni</h4><p class="hm">Obiettivo kcal e margine bonus, aspetto chiaro o scuro, modello di Gemini, backup su Google Drive o su file.</p>
