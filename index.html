@@ -486,6 +486,11 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
 *{-webkit-tap-highlight-color:transparent}
 nav button{-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
 .tts .tb{-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
+/* v153: pulsante AUTO tondo, alto come Ascolta/Pausa */
+.tts .tb.tbauto{width:34px;height:34px;min-height:34px;padding:0;border-radius:50%;display:inline-grid;place-items:center;flex:none}
+.tbauto .auw{display:flex;flex-direction:column;align-items:center;line-height:1}
+.tbauto .auw svg{display:block;transform:scaleX(-1);margin-top:-2px}
+.tbauto .auw span{font-size:7px;font-weight:800;letter-spacing:.04em;margin-top:-1px}
 </style>
 </head>
 <body>
@@ -604,7 +609,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 152</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 153</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -890,6 +895,7 @@ async function runMeal(key,text,photo){
     else meal.chat.push({role:'a',text:out.reply||'',ans:!!out.domanda,tot:sum(meal.items),list:meal.items.map(i=>({n:i.nome,q:i.quantita,k:i.kcal,miss:KEYS.slice(1).filter(k=>i[k]===null||i[k]===undefined)}))});
   }catch(e){const rid='r'+Date.now();ui.retry[rid]={kind:'meal',key,text,photo};meal.chat.push({role:'a',text:e.message,err:true,rid,rtext:text})}
   ui.busy=false;save();render();
+  {const last=meal.chat[meal.chat.length-1];if(last&&!last.err&&ui.view==='diario'&&ui.meal===key)autoSpeak('#mealChat [data-say="'+(meal.chat.length-1)+'"]')}
 }
 async function sendRec(text,photo){
   S.recChat.push({role:'u',text,photo:!!photo});resetComposer();
@@ -908,6 +914,7 @@ async function runRec(text,photo){
   }catch(e){const rid='r'+Date.now();ui.retry[rid]={kind:'rec',text,photo};S.recChat.push({role:'a',text:e.message,err:true,rid,rtext:text})}
   if(S.recChat.length>200)S.recChat=S.recChat.slice(-200);
   ui.busy=false;save();render();
+  {const last=S.recChat[S.recChat.length-1];if(last&&!last.err&&ui.view==='ricette')autoSpeak('#recChat [data-say="'+(S.recChat.length-1)+'"]')}
 }
 
 /* ---------- foto ---------- */
@@ -1036,7 +1043,7 @@ function foodInfo(id,it){const f=S.foods.find(x=>x.id===id);if(!f)return;
   ${f.note?`<p style="margin:10px 0 0"><b>Note:</b> ${esc(f.note)}</p>`:''}${macroNote(f)?`<p class="hm" style="margin:8px 0 0">${esc(macroNote(f))}</p>`:''}
   <div class="ph" id="fiPh"></div><div class="row" style="justify-content:flex-start"><button class="btn sm fiClose" id="noSheet">Chiudi</button></div>`);loadFoodPhotos(f.id,$('#fiPh'))}
 /* v139: tabella unica del pasto (Lista alimenti + totale + macro), usata in alto e nei riepiloghi della chat (sempre aggiornata) */
-function ttsHTML(ix){return `<div class="tts"><button class="tb${ttsState(ix)==='play'?' on':''}" data-say="${ix}"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="0.5" y="0.5" width="15" height="15" rx="3.5" fill="#1f4d35"/><path d="M6 4.2v7.6l6-3.8z" fill="#fff"/></svg>Ascolta</button><button class="tb${ttsState(ix)==='pause'?' on':''}" data-pause="${ix}"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="0.5" y="0.5" width="15" height="15" rx="3.5" fill="#1f4d35"/><rect x="5" y="4" width="2" height="8" rx=".6" fill="#fff"/><rect x="9" y="4" width="2" height="8" rx=".6" fill="#fff"/></svg>Pausa</button></div>`}
+function ttsHTML(ix){return `<div class="tts"><button class="tb${ttsState(ix)==='play'?' on':''}" data-say="${ix}"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="0.5" y="0.5" width="15" height="15" rx="3.5" fill="#1f4d35"/><path d="M6 4.2v7.6l6-3.8z" fill="#fff"/></svg>Ascolta</button><button class="tb${ttsState(ix)==='pause'?' on':''}" data-pause="${ix}"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="0.5" y="0.5" width="15" height="15" rx="3.5" fill="#1f4d35"/><rect x="5" y="4" width="2" height="8" rx=".6" fill="#fff"/><rect x="9" y="4" width="2" height="8" rx=".6" fill="#fff"/></svg>Pausa</button><button class="tb tbauto${S.settings&&S.settings.autoRead?' on':''}" data-autoread aria-label="Lettura automatica" aria-pressed="${S.settings&&S.settings.autoRead?'true':'false'}"><span class="auw"><svg viewBox="0 0 26 24" width="22" height="17" aria-hidden="true"><path d="M4 21v-3.2C2.8 16.7 2 15.2 2 13.5 2 10 4.9 7.2 8.4 7.2c3.1 0 5.6 2.1 6.1 5l1.4 2.6-1.4.6v2c0 1-.8 1.7-1.7 1.7H11.2V21z" fill="currentColor"/><path d="M16.8 11.6c.8.8.8 2.2 0 3M18.8 9.8c1.8 1.8 1.8 4.8 0 6.6M20.9 8c2.8 2.8 2.8 7.4 0 10.2" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg><span>AUTO</span></span></button></div>`}
 function mealBoxHTML(items,name,edit,tix){if(!items||!items.length)return'<div class="empty">Nessun alimento in questo pasto.</div>';
   const t=sum(items),row=(l,k,sub)=>`<div class="sr${sub?' sub':''}"><span>${l}${t.miss[k]&&t.has[k]?'<span class="ast">*</span>':''}</span><b>${fv(t,k,'g')}</b></div>`;
   const miss=items.filter(i=>KEYS.slice(1).some(k=>nn(i[k])===null));
@@ -1324,7 +1331,7 @@ function ttsChunks(t){const out=[];
   String(t).split(/\n+/).forEach(line=>{(line.match(/.+?(?:[.!?;:,](?=\s|$)|$)/g)||[]).forEach(seg=>{
     const w=seg.trim().split(/\s+/).filter(Boolean);for(let i=0;i<w.length;i+=12)out.push(w.slice(i,i+12).join(' '))})});
   return out.filter(x=>/[\p{L}\p{N}]/u.test(x))}
-function ttsMark(){document.querySelectorAll('.tts .tb.on').forEach(x=>x.classList.remove('on'));
+function ttsMark(){document.querySelectorAll('.tts .tb.on:not([data-autoread])').forEach(x=>x.classList.remove('on'));
   document.querySelectorAll('[data-say]').forEach(b=>{const sv=b.dataset.say,st=ttsState(sv==='box'?sv:+sv);if(st==='play')b.classList.add('on');const p=b.parentNode.querySelector('[data-pause]');if(p&&st==='pause')p.classList.add('on')})}
 function ttsStop(c=true){TTS.tok++;TTS.playing=false;if(c)try{speechSynthesis.cancel()}catch(e){}}
 function ttsPlay(i,off=0){const tok=TTS.tok;
@@ -1351,6 +1358,13 @@ function ttsStartBtn(b,fromStart){
   /* su Android, speak() subito dopo cancel() viene spesso ignorato: piccola attesa */
   const tok=TTS.tok;if(busy)setTimeout(()=>{if(tok===TTS.tok)ttsPlay(start,off)},250);else ttsPlay(start,off);
 }
+/* v153: lettura automatica (AUTO): impostazione unica salvata (settings.autoRead, anche nei backup) */
+document.addEventListener('click',e=>{const b=e.target.closest('[data-autoread]');if(!b)return;e.stopPropagation();
+  S.settings.autoRead=!S.settings.autoRead;save();
+  document.querySelectorAll('[data-autoread]').forEach(x=>{x.classList.toggle('on',!!S.settings.autoRead);x.setAttribute('aria-pressed',S.settings.autoRead?'true':'false')});
+  toast(S.settings.autoRead?'Lettura automatica attiva':'Lettura automatica disattivata')},true);
+function autoSpeak(sel){if(!S.settings||!S.settings.autoRead||!('speechSynthesis' in window))return;
+  requestAnimationFrame(()=>{const b=document.querySelector(sel);if(b)ttsStartBtn(b,true)})}
 /* v152: tenendo premuto Ascolta per 1 secondo l'audio riparte dall'inizio */
 let ttsLongFired=false;
 {let t=null,x0=0,y0=0;const stop=()=>{clearTimeout(t);t=null};
