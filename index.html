@@ -449,6 +449,9 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
 /* v145: Ascolta/Pausa dentro la tabella del pasto */
 .mtts{margin-top:16px}
 .mtts .tts{margin-top:0}
+/* Alimenti (v155): solo in modalità chiara sfumature dimezzate (23 px) */
+html.lightmode #v-alimenti .letter.stuck::after{height:23px;background:linear-gradient(to top,transparent 0,color-mix(in srgb,var(--bg) 70%,transparent) 12px,var(--bg) 23px)}
+html.lightmode #v-alimenti .applybar{padding-top:23px;background:linear-gradient(to bottom,transparent 0,color-mix(in srgb,var(--bg) 70%,transparent) 11px,var(--bg) 23px)}
 /* Impostazioni (v154): Reset App grande ma nello stile degli altri tasti */
 #v-impost #resetApp{display:block;width:80%;max-width:320px;height:48px;min-height:48px;margin:0 auto;padding:0 18px;border-radius:99px;border:0;background:var(--bad);color:#fff;font-size:16px;font-weight:400;box-shadow:none}
 /* Impostazioni (v121): bordo dei blocchi nel verde del tasto «Applica e torna al Diario» */
@@ -611,7 +614,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 154</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 155</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -933,7 +936,10 @@ async function loadPhoto(file){
 function renderPhoto(){$('#prev').hidden=!ui.photo;if(ui.photo)$('#prevImg').src=ui.photo.url}
 
 /* ---------- render ---------- */
-function applyTheme(){const th=(S.settings&&S.settings.theme)||'auto';document.documentElement.style.colorScheme=th==='light'?'light':th==='dark'?'dark':'light dark';document.querySelectorAll('[data-thm]').forEach(b=>b.classList.toggle('on',b.dataset.thm===th))}
+function applyTheme(){const th=(S.settings&&S.settings.theme)||'auto';document.documentElement.style.colorScheme=th==='light'?'light':th==='dark'?'dark':'light dark';
+  /* v155: classe per la modalità chiara effettiva (serve a ritocchi solo in chiaro) */
+  try{const lt=th==='light'||(th==='auto'&&!matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('lightmode',lt)}catch(e){}
+document.querySelectorAll('[data-thm]').forEach(b=>b.classList.toggle('on',b.dataset.thm===th))}
 function updSeg(){[['mealTabs','segw'],['psc','pillw']].forEach(([a,b])=>{const s=$('#'+a),w=$('#'+b);if(!s||!w)return;const max=s.scrollWidth-s.clientWidth;w.classList.toggle('cl',!s.hidden&&s.scrollLeft>4);w.classList.toggle('cr',!s.hidden&&s.scrollLeft<max-4)})}
 /* v119: misure per la barra di ricerca fissa e le lettere degli Alimenti */
 function alimSticky(){const sec=$('#v-alimenti');if(!sec||sec.hidden)return;const ah=sec.querySelector('.ahead'),q=$('#foodQ');if(!ah||!q)return;
@@ -1645,6 +1651,7 @@ $('#addMeal').onclick=()=>{const o=S.day.order,ns=o.filter(isSnack).length;
  ['pointerup','pointercancel','pointerleave'].forEach(ev=>nav.addEventListener(ev,stop));
  nav.addEventListener('click',e=>{if(fired){e.preventDefault();e.stopPropagation()}},true);
  nav.addEventListener('contextmenu',e=>{if(e.target.closest('button[data-v]'))e.preventDefault()});}
+try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>applyTheme())}catch(e){}
 boot();hideSplash();
 }
 </script>
