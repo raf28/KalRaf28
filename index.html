@@ -791,7 +791,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 200</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 201</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -935,8 +935,8 @@ function closeLb(silent){if(lbCW){const w=lbCW;lbCW=null;try{w.destroy()}catch(e
 
 /* v198: pagina informazioni (bozza delle spiegazioni, da rivedere con l'utente) */
 function showInfo(){sheet(`<div class="info"><h3>Come funziona Kcal</h3>
-<p class="hm">Un diario per contare kcal e macro di quello che mangi, con l'aiuto di Gemini.</p>
-<h4>Diario</h4><p class="hm">Tocca il <b>+</b> per aggiungere un pasto, poi scrivi, detta o fotografa cosa hai mangiato: Gemini calcola kcal e macro e il conteggio della giornata si aggiorna da solo. Se un valore è sbagliato, correggilo in chat: vale sempre l'ultima versione. A fine giornata tocca <b>Nuova Giornata Alimentare</b>.</p>
+<p class="hm">Un diario per contare kcal e Macro di quello che mangi, con l'aiuto dell'Intelligenza Artificiale (al momento Gemini).</p>
+<h4>Diario</h4><p class="hm">Tocca il <b>+</b> per aggiungere un pasto, poi scrivi, detta o fotografa cosa hai mangiato: l'Intelligenza Artificiale calcola kcal e Macro e il conteggio della giornata si aggiorna da solo. Se un valore è sbagliato correggilo in chat: vale sempre l'ultimo inserito. A fine giornata tocca <b>Nuova Giornata Alimentare</b> per iniziare un nuovo conteggio.</p>
 <h4>Da dove vengono i valori</h4><p class="hm"><b>valore tuo</b> = l'hai dato tu · <b>valore sicuro</b> = da un alimento salvato in Alimenti · <b>da etichetta</b> = letto dalla confezione · <b>valore generico</b> = stima da tabelle · <b>stima da foto</b> = calcolato dalla foto. Se Gemini non conosce un valore non lo inventa: te lo chiede.</p>
 <h4>Alimenti</h4><p class="hm">I tuoi prodotti di marca con i valori esatti e le foto. Quando li nomini nel Diario, i valori vengono presi da qui.</p>
 <h4>Storico</h4><p class="hm">Le giornate chiuse. Il pallino dice com'è andata: verde entro l'obiettivo, arancione nel margine bonus, rosso oltre.</p>
