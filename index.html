@@ -667,7 +667,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 167</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 168</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1083,7 +1083,7 @@ function renderMeal(){
   $('#mealTabs').hidden=!order.length;$('#mealTabs').innerHTML=tabs();
   requestAnimationFrame(()=>{const s=$('#mealTabs'),on=s.querySelector('.on');if(!on)return;const l=on.offsetLeft,r=l+on.offsetWidth;if(l<s.scrollLeft||r>s.scrollLeft+s.clientWidth)s.scrollLeft=Math.max(0,l-(s.clientWidth-on.offsetWidth)/2);updSeg()});
   if(!ui.meal){$('#mealBar').hidden=true;
-    $('#mealItems').innerHTML=`<div class="empty"><b>Tocca il +</b> in basso a sinistra per <b>aggiungere un pasto</b> (Colazione, Pranzo, Cena o Spuntino), poi scrivi, detta o fotografa cosa hai mangiato.<br><br>Per <b>rivedere o modificare</b> un pasto o uno spuntino, scorri la barra in basso e <b>tocca il suo pulsante</b>.</div>`;
+    $('#mealItems').innerHTML=`<div class="empty"><b>Tocca il +</b> in basso a sinistra per <b>Aggiungere un Pasto</b> (Colazione, Pranzo, Cena o Spuntino), poi scrivi, detta o fotografa cosa hai mangiato.<br><br>Per <b>Vedere o Modificare</b> un pasto, scorri la barra in basso e <b>Tocca il suo Pulsante Pasto</b>.</div>`;
     $('#mealChat').innerHTML='';return}
   const m0=ensureMeal(ui.meal),isStarted=m0.items.length||m0.chat.length;
   const bar=$('#mealBar');bar.hidden=false;
@@ -1683,6 +1683,20 @@ try{history.replaceState({v:'diario'},'')}catch(e){}
  new MutationObserver(()=>requestAnimationFrame(upd)).observe(mn,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden','open']});
  U.onclick=()=>mn.scrollTo({top:0,behavior:'smooth'});D.onclick=()=>mn.scrollTo({top:mn.scrollHeight,behavior:'smooth'});
  window.updJump=upd;setTimeout(upd,300);}
+/* v168: swipe orizzontale per cambiare sezione (Diario → Alimenti → Ricette → Storico → Impostazioni → di nuovo Diario, a carosello).
+   Funziona su tutta l'app tranne vicino ai bordi dello schermo (gesto Indietro di Android), sulle barre che scorrono in orizzontale,
+   sui cursori e quando è aperta una finestra o una foto. */
+(function(){const ORD=['diario','alimenti','ricette','storico','impost'],EDGE=28;let sx=0,sy=0,st=0,ok=false;
+ function hScroll(el){for(;el&&el!==document.body;el=el.parentElement){if(el.matches&&el.matches('input[type=range]'))return true;const cs=getComputedStyle(el);if(/(auto|scroll)/.test(cs.overflowX)&&el.scrollWidth>el.clientWidth+2)return true}return false}
+ document.addEventListener('touchstart',e=>{ok=false;if(e.touches.length!==1)return;const t=e.touches[0],W=window.innerWidth,H=window.innerHeight;
+   if(t.clientX<EDGE||t.clientX>W-EDGE||t.clientY<EDGE||t.clientY>H-EDGE)return;
+   if(!$('#app')||$('#app').hidden||!$('#modal').hidden||lbEl)return;if(hScroll(e.target))return;
+   sx=t.clientX;sy=t.clientY;st=Date.now();ok=true},{passive:true});
+ document.addEventListener('touchend',e=>{if(!ok)return;ok=false;const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;
+   if(Date.now()-st>700||Math.abs(dx)<70||Math.abs(dx)<Math.abs(dy)*1.8)return;
+   const a=document.activeElement;if(a&&/^(INPUT|TEXTAREA)$/.test(a.tagName)&&a.contains(e.target))return;
+   const i=Math.max(0,ORD.indexOf(ui.view)),n=ORD[(i+(dx<0?1:-1)+ORD.length)%ORD.length];go(n)},{passive:true});
+ document.addEventListener('touchcancel',()=>{ok=false},{passive:true});})();
 $('#main').addEventListener('scroll',()=>{alimStuck();diarioFades();histFades()},{passive:true});window.addEventListener('resize',()=>requestAnimationFrame(alimSticky));
 /* altezza dell'app misurata davvero (dopo "trascina per aggiornare" o all'avvio Android a volte dava un'altezza sbagliata e la barra in basso spariva) */
 (function(){const de=document.documentElement;function fitH(){const vv=window.visualViewport,a=document.activeElement,typing=a&&/^(INPUT|TEXTAREA)$/.test(a.tagName);let h=window.innerHeight;if(vv&&!typing)h=Math.min(h,Math.round(vv.height));if(h>200)de.style.setProperty('--appH',h+'px');if(window.scrollY)window.scrollTo(0,0)}

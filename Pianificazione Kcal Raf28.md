@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 167 (27/11/2026).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 168 (27/11/2026).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **167**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **168**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -49,7 +49,7 @@ KalRaf28 è un diario alimentare personale. Al posto di contare le calorie nelle
 - **Mai spese extra per l'API** oltre all'abbonamento.
 - In futuro forse un'APK.
 
-## 3. Come funziona oggi (v167): sezioni
+## 3. Come funziona oggi (v168): sezioni
 
 La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impostazioni** (Preimpostati tolto nella v53). La voce attiva è evidenziata con una pillola verde `#2f8f5c`.
 
@@ -134,6 +134,7 @@ La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impos
 - La pagina **`privacy.html`** è l'informativa richiesta da Google per la schermata di consenso OAuth (contatto: raf28g@gmail.com).
 
 ### 3.10 Altro
+- **Swipe a sinistra/destra** (v168) per passare da una sezione all'altra, a carosello.
 - "Trascina in basso per aggiornare" ricarica la pagina (solo quando si è in cima). In più (v150–v151), **tenendo premuto per 1 secondo un qualsiasi tasto della barra in basso** (Diario, Alimenti, Ricette, Storico o Impostazioni, selezionato o no) il telefono vibra e l'app si aggiorna da qualunque punto, anche a metà di una chat; il tocco normale resta invariato. Come ogni aggiornamento, riparte dal Diario sulla giornata in corso senza pasti selezionati.
 - Le frecce rotonde ↑ ↓ portano in cima o in fondo.
 - Il tasto/gesto Indietro di Android chiude prima le finestre (pop-up come "Aggiungi un pasto", conferme, foto a tutto schermo) e le schede aperte (Alimenti, Storico), poi torna alla sezione precedente. Dalla v149 finestre, foto e schede usano **CloseWatcher** (Chrome 120+): si chiudono senza passare dalla cronologia, quindi niente schermata che scorre con lo swipe da sinistra; se CloseWatcher non c'è si usa la cronologia come prima.
@@ -307,10 +308,11 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
     - **Storico:** frecce ↑ ↓ alla stessa altezza del Diario (come Alimenti e Impostazioni), sfumatura sotto la testata verde e sfumatura in basso sopra la barra di navigazione, pronte per quando le giornate sono tante.
     - **Ricette:** solo il titolo uniformato (testata verde); il resto della sezione è da definire.
     - **Modalità scura:** riprese tutte le misure della chiara, tenendo i colori attuali del tema scuro: pillole di Alimenti e Storico più basse, testate verdi di Storico (con la pillola della legenda, qui semitrasparente con bordo bianco come la ricerca), Ricette e Impostazioni, sfumature da 21 px in Alimenti, Storico, Ricette e Impostazioni. Restano solo in chiaro i colori: pillole bianche con bordo e scritte `#1f4d35`, pillola bianca della legenda, messaggi dell'utente nel Diario in `#436955`.
+  - **v168: swipe tra le sezioni.** Uno swipe verso sinistra porta alla sezione successiva e verso destra alla precedente, a carosello: Diario → Alimenti → Ricette → Storico → Impostazioni → di nuovo Diario (e al contrario). Vale su tutta l'app tranne vicino ai bordi dello schermo (28 px, per non disturbare il gesto Indietro di Android), sulle barre che scorrono in orizzontale (es. la riga dei pasti quando è piena), sui cursori delle Impostazioni e con una finestra o una foto aperta. Serve uno spostamento orizzontale netto (almeno 70 px, molto più orizzontale che verticale, in meno di 0,7 s), così lo scorrimento normale su e giù non cambia sezione. **Testo del Diario vuoto:** "Tocca il + in basso a sinistra per Aggiungere un Pasto (…)" e "Per Vedere o Modificare un pasto, scorri la barra in basso e Tocca il suo Pulsante Pasto."
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
-**Stato:** online, **collaudo in corso dal 25/11/2026**. Il 26/11 sera (v91–v167) è stata rifinita la grafica di Diario, Alimenti, Storico e Impostazioni: interfaccia considerata finita dall'utente; resta da ristrutturare la sezione Ricette (vedi Cose da fare).
+**Stato:** online, **collaudo in corso dal 25/11/2026**. Il 26/11 sera (v91–v168) è stata rifinita la grafica di Diario, Alimenti, Storico e Impostazioni: interfaccia considerata finita dall'utente; resta da ristrutturare la sezione Ricette (vedi Cose da fare).
 
 ---
 
