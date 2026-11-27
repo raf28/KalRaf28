@@ -578,6 +578,20 @@ html.lightmode .ahead input#foodQ{background-color:#fff;color:#1f4d35;box-shadow
 html.lightmode .ahead input#foodQ::placeholder{color:#1f4d35;opacity:.75}
 html.lightmode .ahead input#foodQ:focus{box-shadow:none}
 html.lightmode #v-storico .hlegp{box-shadow:none}
+
+/* v179: modalità scura "ribaltata" dalla chiara. In chiaro: ovali e pillole hanno il fondo della scheda (bianco) e bordo/scritte
+   nel verde scuro del marchio. In scuro: fondo della scheda scuro (var(--card)) e bordo/scritte nel verde acceso del tema scuro (#4cc184) */
+html:not(.lightmode) .dayline{background:var(--card);box-shadow:0 3px 10px rgba(0,0,0,.35)}
+html:not(.lightmode) .dayline #dayLabel,html:not(.lightmode) .dayline #dayLabel *{color:#4cc184}
+html:not(.lightmode) .ahead input#foodQ{background-color:var(--card);color:#4cc184;box-shadow:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234cc184' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M15.5 15.5L21 21'/%3E%3C/svg%3E")}
+html:not(.lightmode) .ahead input#foodQ::placeholder{color:#4cc184;opacity:.75}
+html:not(.lightmode) .ahead input#foodQ:focus{box-shadow:none}
+html:not(.lightmode) #v-storico .hlegp{background:var(--card);color:#4cc184;box-shadow:none}
+html:not(.lightmode) #v-alimenti details.food,html:not(.lightmode) #v-storico details.hday{border-color:#4cc184}
+html:not(.lightmode) #v-alimenti details.food:not([open]),html:not(.lightmode) #v-storico details.hday:not([open]){background:var(--card)}
+html:not(.lightmode) #v-alimenti details.food:not([open]) summary,html:not(.lightmode) #v-alimenti details.food:not([open]) summary .nm,html:not(.lightmode) #v-alimenti details.food:not([open]) summary .kv,html:not(.lightmode) #v-alimenti details.food:not([open]) summary .kv small,html:not(.lightmode) #v-storico details.hday:not([open]) summary,html:not(.lightmode) #v-storico details.hday:not([open]) summary .kv{color:#4cc184}
+html:not(.lightmode) #v-storico details.hday:not([open]) .dot{box-shadow:0 0 0 2px #4cc184}
+html:not(.lightmode) #v-diario .msg.u{background:var(--brand);color:#fff}
 </style>
 </head>
 <body>
@@ -701,7 +715,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 178</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 179</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
