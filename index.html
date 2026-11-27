@@ -679,9 +679,9 @@ html:not(.lightmode) #v-alimenti details.food:not([open]),html:not(.lightmode) #
 /* v217/v218: frecce di scorrimento della riga dei pasti senza riquadro: le pillole sfumano verso il bordo e la freccia bianca sta sopra */
 .mdock .sarr{background:none!important;border-radius:0!important;box-shadow:none!important;width:30px;text-shadow:0 1px 4px rgba(0,0,0,.55)}
 .mdock .sarr.l{left:0}.mdock .sarr.r{right:0}
-.mdock .segw.cl .seg{-webkit-mask-image:linear-gradient(90deg,transparent 0,transparent 20px,#000 32px);mask-image:linear-gradient(90deg,transparent 0,transparent 20px,#000 32px)}
-.mdock .segw.cr .seg{-webkit-mask-image:linear-gradient(270deg,transparent 0,transparent 20px,#000 32px);mask-image:linear-gradient(270deg,transparent 0,transparent 20px,#000 32px)}
-.mdock .segw.cl.cr .seg{-webkit-mask-image:linear-gradient(90deg,transparent 0,transparent 20px,#000 32px,#000 calc(100% - 32px),transparent calc(100% - 20px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,transparent 20px,#000 32px,#000 calc(100% - 32px),transparent calc(100% - 20px),transparent 100%)}
+.mdock .segw.cl .seg{-webkit-mask-image:linear-gradient(90deg,transparent 0,transparent 7px,#000 44px);mask-image:linear-gradient(90deg,transparent 0,transparent 7px,#000 44px)}
+.mdock .segw.cr .seg{-webkit-mask-image:linear-gradient(270deg,transparent 0,transparent 7px,#000 44px);mask-image:linear-gradient(270deg,transparent 0,transparent 7px,#000 44px)}
+.mdock .segw.cl.cr .seg{-webkit-mask-image:linear-gradient(90deg,transparent 0,transparent 7px,#000 44px,#000 calc(100% - 44px),transparent calc(100% - 7px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,transparent 7px,#000 44px,#000 calc(100% - 44px),transparent calc(100% - 7px),transparent 100%)}
 </style>
 </head>
 <body>
@@ -805,7 +805,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 218</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 219</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
