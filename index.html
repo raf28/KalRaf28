@@ -765,6 +765,10 @@ nav button.on svg{box-shadow:inset 0 2px 0 rgba(255,255,255,.45),inset 0 -3px 0 
 
 /* v245: anche i tasti standard 2 (Annulla/Modifica/Elimina delle pillole aperte di Alimenti e Storico) in grassetto */
 html body .btn.std2{font-weight:700!important}
+
+/* v246: campo di scrittura con il bordo verde sempre visibile (2 px, come quando è attivo) e nessuna cornice in più al tocco */
+.comp textarea{border:2px solid light-dark(#1f4d35,#2c6a49)}
+.comp textarea:focus,.comp textarea:focus-visible{outline:none;border-color:light-dark(#1f4d35,#2c6a49)}
 </style>
 </head>
 <body>
@@ -888,7 +892,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 245</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 246</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1718,6 +1722,9 @@ function dictate(ta,btn,onEnd){if(!ta||!btn)return;btn.onclick=e=>{e.preventDefa
 dictate($('#msg'),$('#mic'));
 function stopDictation(){if(rec){const r=rec;rec=null;r.onresult=null;r.onend=null;try{r.abort()}catch(e){}document.querySelectorAll('.rec').forEach(x=>x.classList.remove('rec'))}}
 $('#send').onclick=()=>{stopDictation();send()};
+/* v246: con la tastiera aperta, toccando Invia il campo di scrittura perdeva il fuoco, la tastiera si chiudeva, la pagina si spostava e il tocco andava perso.
+   Ora il tocco su Invia non toglie il fuoco al campo: il messaggio parte al primo tocco. */
+['mousedown','pointerdown'].forEach(ev=>$('#send').addEventListener(ev,e=>{if(document.activeElement===$('#msg'))e.preventDefault()}));
 $('#msg').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&window.matchMedia('(pointer:fine)').matches){e.preventDefault();send()}});
 function autoH(){const t=$('#msg');t.style.height='auto';t.style.height=Math.min(120,t.scrollHeight)+'px'}
 $('#msg').addEventListener('input',autoH);
@@ -1980,7 +1987,7 @@ try{history.replaceState({v:'diario'},'')}catch(e){}
  document.addEventListener('pointerdown',e=>{last=e.target.closest('button')},{passive:true,capture:true});
  document.addEventListener('click',e=>{if(!e.isTrusted)return;const b=e.target.closest('button');if(!b||b.disabled||b.closest('nav')||b!==last)return;
    const need=160-(Date.now()-t0);if(need<=0)return;e.preventDefault();e.stopImmediatePropagation();const tg=e.target;last=null;
-   b.classList.add('pressed');setTimeout(()=>{tg.click();setTimeout(()=>b.classList.remove('pressed'),20)},need)},true);
+   b.classList.add('pressed');setTimeout(()=>{/* v246: il tocco può essere sull'icona (SVG), che non ha .click(): si invia l'evento click direttamente */tg.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,view:window}));setTimeout(()=>b.classList.remove('pressed'),20)},need)},true);
  ['pointerup','pointercancel','pointerleave'].forEach(ev=>document.addEventListener(ev,off,{passive:true}));
  document.addEventListener('scroll',off,{passive:true,capture:true});})();
 $('#main').addEventListener('scroll',()=>{alimStuck();diarioFades();histFades()},{passive:true});window.addEventListener('resize',()=>requestAnimationFrame(alimSticky));
