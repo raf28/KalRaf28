@@ -592,6 +592,10 @@ html:not(.lightmode) #v-alimenti details.food:not([open]),html:not(.lightmode) #
 html:not(.lightmode) #v-alimenti details.food:not([open]) summary,html:not(.lightmode) #v-alimenti details.food:not([open]) summary .nm,html:not(.lightmode) #v-alimenti details.food:not([open]) summary .kv,html:not(.lightmode) #v-alimenti details.food:not([open]) summary .kv small,html:not(.lightmode) #v-storico details.hday:not([open]) summary,html:not(.lightmode) #v-storico details.hday:not([open]) summary .kv{color:#4cc184}
 html:not(.lightmode) #v-storico details.hday:not([open]) .dot{box-shadow:0 0 0 2px #4cc184}
 html:not(.lightmode) #v-diario .msg.u{background:var(--brand);color:#fff}
+
+/* v180: solo modalità scura, Alimenti: bordo e scritte delle pillole nel verde della testata (var(--brand)); le lettere restano verde acceso */
+html:not(.lightmode) #v-alimenti details.food{border-color:var(--brand)}
+html:not(.lightmode) #v-alimenti details.food:not([open]) summary,html:not(.lightmode) #v-alimenti details.food:not([open]) summary .nm,html:not(.lightmode) #v-alimenti details.food:not([open]) summary .kv,html:not(.lightmode) #v-alimenti details.food:not([open]) summary .kv small{color:var(--brand)}
 </style>
 </head>
 <body>
@@ -715,7 +719,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 179</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 180</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
