@@ -474,6 +474,17 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
 /* v162: tolta la sfumatura sotto la lettera ferma degli Alimenti */
 /* Alimenti (v118): barra "Aggiungi alimento" più staccata dal contenuto che scorre */
 #v-alimenti .applybar{padding-top:12px;background:var(--bg)} /* v162: senza sfumatura */
+/* v164: solo modalità chiara. Impostazioni con testata verde come lo Storico e sfumatura sotto (uguale a quella in basso);
+   Alimenti con la stessa sfumatura in basso e sotto la lettera ferma */
+.ihead{display:none}
+html.lightmode #v-impost .ihead{display:block;position:sticky;top:0;z-index:4}
+html.lightmode #v-impost .ihead h2{font-size:20px}
+html.lightmode #v-impost .ihead::after{content:'';position:absolute;left:0;right:0;top:100%;height:21px;background:linear-gradient(var(--bg),transparent);pointer-events:none}
+html.lightmode #v-impost.vh{padding-top:0}
+html.lightmode #v-impost>.wrap>h2{display:none}
+html.lightmode #v-impost>.wrap{padding-top:22px}
+html.lightmode #v-alimenti .applybar{padding-top:18px;background:linear-gradient(transparent,var(--bg) 30%)}
+html.lightmode #v-alimenti .letter.stuck::after{content:'';position:absolute;left:0;right:0;top:100%;height:21px;background:linear-gradient(var(--bg),transparent);pointer-events:none}
 #v-alimenti .applybar .btn.addbar{box-shadow:light-dark(0 6px 18px rgba(0,0,0,.28),0 6px 20px rgba(0,0,0,.75)),light-dark(0 0 0 0 transparent,0 0 0 1px rgba(255,255,255,.14))}
 /* Alimenti (v111, v117): pillole chiuse dello stesso verde della cornice, scritte bianche */
 #v-alimenti details.food:not([open]){background:var(--brand)}
@@ -570,6 +581,7 @@ window.addEventListener('error',()=>hideSplash());</script>
     </section>
 
     <section id="v-impost" class="vh" hidden>
+      <div class="ahead hhead ihead"><div class="in"><div class="aht"><h2>Impostazioni</h2></div></div></div>
       <div class="wrap">
         <h2>Impostazioni</h2>
         <div class="card">
@@ -626,7 +638,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 163</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 164</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
