@@ -696,6 +696,13 @@ html:not(.lightmode) #v-alimenti details.food[open] summary,html:not(.lightmode)
 
 /* v225: "Applica e torna al Diario" con la stessa forma a pillola e lo stesso verde dei tasti delle Impostazioni (misura e scritta invariate; il 3D è già dalla v187) */
 #apply{border-radius:99px;border:0;background-color:var(--brand)!important;color:#fff;font-weight:400}
+
+/* v226: Ricette, barra in basso: Ricettario a sinistra e Crea Ricetta a destra, un po' verso il centro */
+.rdock .seg{justify-content:space-evenly;width:100%}
+.rdock .seg button{flex:0 0 120px}
+/* v226: "Aggiungi un alimento", scheda di compilazione selezionata nel verde dei tasti fotocamera/microfono, con la sfumatura del 3D */
+.row.modes .btn.sel{background-color:light-dark(#436955,var(--brand))!important;color:#fff!important}
+.row.modes .btn.sel small{color:#fff}
 </style>
 </head>
 <body>
@@ -819,14 +826,14 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 225</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 226</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
   </main>
 
   <div class="mdock" id="mdock"><div class="mrow" id="mrow"><button class="addm" id="addMeal" aria-label="Aggiungi un pasto">+</button><div class="segw" id="segw"><div class="seg" id="mealTabs"></div><button class="sarr l" data-segs="-1" aria-label="Scorri a sinistra">‹</button><button class="sarr r" data-segs="1" aria-label="Scorri a destra">›</button></div></div></div>
-  <div class="mdock rdock" id="rdock" hidden><div class="mrow"><div class="segw"><div class="seg" id="recDockTabs"><button data-rdock="crea">Crea Nuova<br>Ricetta</button><button data-rdock="book">Ricettario</button></div></div></div></div>
+  <div class="mdock rdock" id="rdock" hidden><div class="mrow"><div class="segw"><div class="seg" id="recDockTabs"><button data-rdock="book">Ricettario</button><button data-rdock="crea">Crea Ricetta</button></div></div></div></div>
   <div class="comp" id="comp">
     <div class="ctx" id="ctx"></div>
     <div class="pills" id="pills"></div>
@@ -1203,7 +1210,7 @@ function render(){applyTheme();requestAnimationFrame(alimSticky);requestAnimatio
   $('#send').disabled=ui.busy;
   if(false){}else{$('#msg').disabled=$('#mic').disabled=$('#bCam').disabled=$('#bGal').disabled=false}
   $('#pills').hidden=true; /* barra dei pasti in basso tolta (26/11): la riga dei pasti ora sta sopra il campo di scrittura */
-  $('#mdock').hidden=ui.view!=='diario';$('#addMeal').hidden=ui.dv!==null;$('#ctx').hidden=ui.view==='diario'||ui.view==='ricette';$('#rdock').hidden=ui.view!=='ricette';document.querySelectorAll('[data-rdock]').forEach(b=>b.classList.toggle('on',b.dataset.rdock===ui.rsel));{const t=$('#recSel');if(t){t.hidden=!ui.rsel;t.textContent=ui.rsel==='crea'?'Crea Nuova Ricetta':ui.rsel==='book'?'Ricettario':''}}
+  $('#mdock').hidden=ui.view!=='diario';$('#addMeal').hidden=ui.dv!==null;$('#ctx').hidden=ui.view==='diario'||ui.view==='ricette';$('#rdock').hidden=ui.view!=='ricette';document.querySelectorAll('[data-rdock]').forEach(b=>b.classList.toggle('on',b.dataset.rdock===ui.rsel));{const t=$('#recSel');if(t){t.hidden=!ui.rsel;t.textContent=ui.rsel==='crea'?'Crea Ricetta':ui.rsel==='book'?'Ricettario':''}}
   $('#comp .in').hidden=false;
   if(ui.view==='diario'&&ui.dv!==null){$('#comp').hidden=false;$('#comp .in').hidden=true;renderHead();renderHistDay();}
   else if(ui.view==='diario'){if(ui.meal)ensureMeal(ui.meal);renderHead();renderMeal();renderPills();$('#msg').placeholder=ui.meal?'Cosa hai mangiato?':'Tocca + per iniziare'}
@@ -1390,7 +1397,7 @@ document.addEventListener('click',e=>{
     $('#okMealDel').onclick=()=>{deleteMeal(k);save();closeSheet();render();toast(nm+(k==='colazione'||k==='cena'?' eliminata':' eliminato'))};return}
   if(b.id==='noSheet'){closeSheet();return}
   if(b.id==='impRec'){return importRecipes()}
-  if(b.id==='addFood'){return addFoodStart()}
+  if(b.id==='addFood'){if(e.target.closest('.pl'))return addFoodStart();return}/* v226: si apre solo toccando il cerchio + */
   if(b.dataset.editfood){const f=S.foods.find(x=>x.id===b.dataset.editfood);if(f)foodForm(f,false);return}
   if(b.dataset.delfood){const id=b.dataset.delfood;const f=S.foods.find(x=>x.id===id);sheet(`<h3>Eliminare «${esc(f?f.nome:'')}»?</h3><p class="hm">Verranno eliminate anche le sue foto. Non si può annullare.</p><div class="row between"><button class="btn ghost std2" id="noSheet">Annulla</button><button class="btn bad std2" id="okDelF">Elimina</button></div>`);$('#okDelF').onclick=async()=>{if(f)for(const k of Object.values(f.foto||{}))await IDB.del(k);S.foods=S.foods.filter(x=>x.id!==id);save();closeSheet();render();toast('Alimento eliminato')};return}
   if(b.id==='recClear'){S.recChat=[];save();render();return}
