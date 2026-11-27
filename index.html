@@ -682,6 +682,9 @@ html:not(.lightmode) #v-alimenti details.food:not([open]),html:not(.lightmode) #
 .mdock .segw.cl .seg{-webkit-mask-image:linear-gradient(90deg,transparent 0,transparent 7px,#000 44px);mask-image:linear-gradient(90deg,transparent 0,transparent 7px,#000 44px)}
 .mdock .segw.cr .seg{-webkit-mask-image:linear-gradient(270deg,transparent 0,transparent 7px,#000 44px);mask-image:linear-gradient(270deg,transparent 0,transparent 7px,#000 44px)}
 .mdock .segw.cl.cr .seg{-webkit-mask-image:linear-gradient(90deg,transparent 0,transparent 7px,#000 44px,#000 calc(100% - 44px),transparent calc(100% - 7px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,transparent 7px,#000 44px,#000 calc(100% - 44px),transparent calc(100% - 7px),transparent 100%)}
+
+/* v220: etichetta kcal del Diario: bianca sotto l'obiettivo, gialla nel bonus, rossa (schiarita per leggersi sul verde) oltre il bonus */
+.kc .left.warn{color:var(--warn)}.kc .left.bad{color:#ff7a62}
 </style>
 </head>
 <body>
@@ -805,7 +808,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 219</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 220</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1212,7 +1215,7 @@ function renderHead(){
   const scale=Math.max(max*1.12,t.kcal*1.02);
   const st=t.kcal<=target?'ok':t.kcal<=max?'warn':'bad';
   $('#kNow').textContent=f0(t.kcal);$('#kTarget').textContent=f0(target);
-  $('#kLeft').textContent=st==='ok'?`Restano ${f0(target-t.kcal)} kcal`:st==='warn'?`Bonus: ${f0(max-t.kcal)} kcal rimaste`:`Oltre di ${f0(t.kcal-max)} kcal`;
+  $('#kLeft').textContent=st==='ok'?`Restano ${f0(target-t.kcal)} kcal`:st==='warn'?`Bonus di ${f0(t.kcal-target)} kcal`:`Oltre di ${f0(t.kcal-max)} kcal`;$('#kLeft').className='left'+(st==='warn'?' warn':st==='ok'?'':' bad');
   const fill=$('#bFill');fill.style.width=Math.min(100,t.kcal/scale*100)+'%';fill.style.background=`var(--${st})`;
   $('#bZone').style.left=target/scale*100+'%';$('#bZone').style.width=margin/scale*100+'%';
   $('#bMk').style.left=target/scale*100+'%';
