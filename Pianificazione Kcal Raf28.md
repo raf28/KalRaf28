@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 188 (27/11/2026).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 189 (27/11/2026).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **188**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **189**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -49,7 +49,7 @@ KalRaf28 è un diario alimentare personale. Al posto di contare le calorie nelle
 - **Mai spese extra per l'API** oltre all'abbonamento.
 - In futuro forse un'APK.
 
-## 3. Come funziona oggi (v188): sezioni
+## 3. Come funziona oggi (v189): sezioni
 
 La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impostazioni** (Preimpostati tolto nella v53). La voce attiva è evidenziata con una pillola verde `#2f8f5c`.
 
@@ -329,10 +329,11 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **v186:** modalità scura. Le frecce ˄ ˅ dentro i pulsanti rotondi ↑ ↓ sono bianche (oltre al contorno); la cornice della tabella del pasto ("Lista alimenti / Totale kcal e macro", anche nelle tabelle in chat) è bianca invece che verde; sfondo dell'app ancora un po' meno nero: `#111112`.
   - **v187: tasti 3D e ombre** (variante "D" delle anteprime, in chiaro e in scuro). **Tasti** da premere (tasto di default e standard 2, "Nuova Giornata Alimentare", frecce della data, "Elimina pranzo", pasto selezionato, tasti delle finestre e delle schede, tasti delle Impostazioni e di Aspetto, "Applica e torna al Diario", Reset App, fotocamera/galleria/microfono/invio): leggera luce in alto, filo scuro in basso e piccola ombra; quando si premono si "abbassano" di 1 px. Cerchi bianchi del + con una sfumatura leggera e ombra. **Pillole e ovali** (data, barra del pasto, barra dei pasti e delle Ricette, pillole di Alimenti e Storico, ricerca, legenda): ombra morbida intorno (più forte in scuro); riquadri dei macro con un'ombra leggera. Tutte le regole sono in fondo allo stile (commento "v187: TASTI 3D E OMBRE"): per tornare indietro basta togliere quel blocco. Versione chiara approvata dall'utente.
   - **v188:** effetto 3D e ombra esteso a: X verdi della tabella del pasto, voce selezionata della barra in basso (Diario, Alimenti…; quelle non selezionate restano piatte), pasti **non** selezionati della riga dei pasti (rilievo più leggero) e cerchio del + (ombra più marcata, "si abbassa" quando premuto). Chiaro e scuro (commento "v188" in fondo allo stile).
+  - **v189:** "Aggiungi alimento" (sezione Alimenti) è un tasto, quindi ha lo stesso rilievo 3D e la stessa ombra degli altri tasti (prima aveva un'ombra più vecchia e diversa). **Regola confermata:** rilievo 3D solo su ciò che si preme; le pillole "contenitore" (data, barra dei pasti, barra delle Ricette, ricerca, legenda) hanno solo l'ombra.
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
-**Stato:** online, **collaudo in corso dal 25/11/2026**. Il 26/11 sera (v91–v188) è stata rifinita la grafica di Diario, Alimenti, Storico e Impostazioni: interfaccia considerata finita dall'utente; resta da ristrutturare la sezione Ricette (vedi Cose da fare).
+**Stato:** online, **collaudo in corso dal 25/11/2026**. Il 26/11 sera (v91–v189) è stata rifinita la grafica di Diario, Alimenti, Storico e Impostazioni: interfaccia considerata finita dall'utente; resta da ristrutturare la sezione Ricette (vedi Cose da fare).
 
 ---
 
