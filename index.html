@@ -793,7 +793,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 206</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 207</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -938,6 +938,13 @@ function closeLb(silent){if(lbCW){const w=lbCW;lbCW=null;try{w.destroy()}catch(e
 /* v198: pagina informazioni (bozza delle spiegazioni, da rivedere con l'utente) */
 function showInfo(){sheet(`<div class="info"><h3>Come funziona Kcal</h3>
 <p class="hm">Un diario per contare kcal e Macro di quello che mangi, con l'aiuto dell'Intelligenza Artificiale (al momento Gemini).</p>
+<h4>Gesti utili</h4><p class="hm">– <b>Trascina verso il basso</b> per aggiornare l'app: funziona solo quando la pagina è già tutta in cima, non mentre stai scorrendo un elenco o una chat<br>
+– Per aggiornare da qualunque punto <b>tieni premuto per 1 secondo</b> uno dei tasti della barra in basso: Diario, Alimenti, Ricette, Storico o Impostazioni<br>
+– <b>Swipe a destra o a sinistra</b> per cambiare sezione<br>
+– <b>Ascolta</b> legge ad alta voce la risposta dell'Intelligenza Artificiale<br>
+– <b>Pausa</b> ferma la lettura: toccando di nuovo Ascolta riparte da dove avevi lasciato<br>
+– <b>Tieni premuto Ascolta per 1 secondo</b> per ripartire dall'inizio<br>
+– <b>AUTO</b>: se è acceso, ogni nuova risposta dell'Intelligenza Artificiale viene letta da sola appena arriva, senza toccare Ascolta</p>
 <h4>Diario</h4><p class="hm">Tocca il <b>+</b> per aggiungere un pasto, poi scrivi, detta o fotografa cosa hai mangiato: l'Intelligenza Artificiale calcola kcal e Macro e il conteggio della giornata si aggiorna da solo. Se un valore è sbagliato correggilo in chat: vale sempre l'ultimo inserito. A fine giornata tocca <b>Nuova Giornata Alimentare</b> per iniziare un nuovo conteggio.</p>
 <h4>Da dove vengono i valori</h4><p class="hm">Accanto a ogni alimento c'è un'etichetta colorata che dice da dove viene il valore:</p>
 <p class="hm"><span class="src ok">(valore sicuro – Alimenti)</span> preso da un alimento che hai salvato in Alimenti.</p>
@@ -948,10 +955,12 @@ function showInfo(){sheet(`<div class="info"><h3>Come funziona Kcal</h3>
 <p class="hm"><span class="src nf">(non trovato – cercare manualmente l'alimento)</span> l'Intelligenza Artificiale non conosce l'alimento: non inventa nulla e ti chiede i valori.</p>
 <h4>Alimenti</h4><p class="hm">I tuoi prodotti di marca con i valori esatti e le foto. Quando li nomini nel Diario, i valori vengono presi da qui.</p>
 <p class="hm">Per aggiungerne uno tocca <b>Aggiungi alimento</b>. Con <b>Compila scheda Automaticamente</b> basta fotografare la confezione e la tabella nutrizionale: l'Intelligenza Artificiale compila la scheda da sola, e poi puoi aggiungere indicazioni o note scrivendo o parlando nella chat (per esempio "1 galletta = 8 g"). Con <b>Compila scheda Manualmente</b> inserisci tu tutti i valori.</p>
+<h4>Ricette</h4><div style="height:56px"></div>
 <h4>Storico</h4><p class="hm">Le giornate chiuse. Il pallino dice com'è andata:</p>
 <p class="hm"><span class="dot" style="background:var(--ok)"></span>entro l'obiettivo</p>
 <p class="hm"><span class="dot" style="background:var(--warn)"></span>nel margine bonus</p>
 <p class="hm"><span class="dot" style="background:var(--bad)"></span>oltre il bonus</p>
+<p class="hm">Una giornata chiusa si può ancora modificare: aprila nello Storico e tocca <b>Modifica</b>, oppure nel Diario torna indietro con la freccia <b>‹</b> e tocca <b>Modifica giornata</b>. Alla fine tocca <b>Salva</b>.</p>
 <h4>Impostazioni</h4><p class="hm">– Obiettivo kcal giornaliero e margine bonus<br>
 – Quanti giorni conservare lo Storico<br>
 – Aspetto: chiaro, scuro o come il telefono<br>
@@ -960,13 +969,6 @@ function showInfo(){sheet(`<div class="info"><h3>Come funziona Kcal</h3>
 – Backup su file: esporta e importa<br>
 – PIN dell'applicazione<br>
 – Reset App</p>
-<h4>Gesti utili</h4><p class="hm">– <b>Trascina verso il basso</b> per aggiornare l'app: funziona solo quando la pagina è già tutta in cima, non mentre stai scorrendo un elenco o una chat<br>
-– Per aggiornare da qualunque punto <b>tieni premuto per 1 secondo</b> uno dei tasti della barra in basso: Diario, Alimenti, Ricette, Storico o Impostazioni<br>
-– <b>Swipe a destra o a sinistra</b> per cambiare sezione<br>
-– <b>Ascolta</b> legge ad alta voce la risposta dell'Intelligenza Artificiale<br>
-– <b>Pausa</b> ferma la lettura: toccando di nuovo Ascolta riparte da dove avevi lasciato<br>
-– <b>Tieni premuto Ascolta per 1 secondo</b> per ripartire dall'inizio<br>
-– <b>AUTO</b>: se è acceso, ogni nuova risposta dell'Intelligenza Artificiale viene letta da sola appena arriva, senza toccare Ascolta</p>
 <div class="row" style="margin-top:14px"><button class="btn bdef" id="noSheet">Chiudi</button></div></div>`)}
 document.addEventListener('click',e=>{const im=e.target.closest('.ph figure img');if(!im)return;e.preventDefault();e.stopPropagation();const fc=im.closest('figure').querySelector('figcaption');openLb(im.src,fc?fc.textContent:'')},true);
 window.addEventListener('popstate',e=>{if(lbSkip){lbSkip=false;return}if(fdSkip){fdSkip=false;return}if(lbEl){closeLb(true);return}const st=e.state||{v:'diario'};
