@@ -733,6 +733,10 @@ html:not(.lightmode) .dayline,html:not(.lightmode) .ahead input#foodQ,html:not(.
 /* v234: tasti di Aspetto (Come il Telefono / Chiaro / Scuro) con il rilievo 3D di un livello più leggero (quello standard dei tasti) */
 #v-impost .thm button{box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -2px 0 rgba(0,0,0,.18),0 2px 5px rgba(0,0,0,.28)!important}
 #v-impost .thm button:active{box-shadow:inset 0 2px 4px rgba(0,0,0,.25)!important}
+
+/* v234: correzione, la regola della v231 non arrivava a tutti i tasti (altre regole più specifiche la superavano) */
+html body #v-impost .btn:not(:disabled),html body #sheet .btn:not(:disabled){box-shadow:inset 0 2px 0 rgba(255,255,255,.45),inset 0 -3px 0 rgba(0,0,0,.28),0 4px 10px rgba(0,0,0,.35)!important}
+html body #v-impost .btn:not(:disabled):active,html body #sheet .btn:not(:disabled):active{box-shadow:inset 0 3px 5px rgba(0,0,0,.3)!important}
 </style>
 </head>
 <body>
