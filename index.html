@@ -625,6 +625,16 @@ html:not(.lightmode) .arw{background:#2f8f5c}
 /* v186: modalità scura. Frecce ↑ ↓ bianche anche dentro; cornice della tabella del pasto (Lista alimenti) bianca; sfondo un po' meno nero (#111112) */
 html:not(.lightmode) .jmp button{color:#fff}
 html:not(.lightmode) #mealItems:has(.it),html:not(.lightmode) .mbox{border-color:#fff}
+
+/* v187: TASTI 3D E OMBRE (chiaro e scuro).
+   Tasti: luce in alto, filo scuro in basso e piccola ombra, così si capisce che si possono premere; premuti si "abbassano".
+   Pillole e ovali: ombra morbida intorno, come se galleggiassero sopra lo sfondo. */
+.btn.bdef:not(:disabled),.btn.std2:not(:disabled),.head #closeDay,.mbar #mealDel,.btn.dg:not(:disabled),#sheet .btn:not(:disabled),details .btn:not(:disabled),#v-impost .btn.aib:not(:disabled),#apply,#resetApp,.thm button,.arw:not(:disabled),.mdock .seg button.on,.comp .ib:not(:disabled),.ib.send:not(:disabled),.sl3b button:not(:disabled),#sheet .ib:not(:disabled){background-image:linear-gradient(to bottom,rgba(255,255,255,.22),rgba(255,255,255,0) 55%,rgba(0,0,0,.12))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -2px 0 rgba(0,0,0,.18),0 2px 5px rgba(0,0,0,.28)!important}
+.btn.bdef:not(:disabled):active,.btn.std2:not(:disabled):active,.head #closeDay:active,.mbar #mealDel:active,.btn.dg:not(:disabled):active,#sheet .btn:not(:disabled):active,details .btn:not(:disabled):active,#v-impost .btn.aib:not(:disabled):active,#apply:active,#resetApp:active,.thm button:active,.arw:not(:disabled):active,.mdock .seg button.on:active,.comp .ib:not(:disabled):active,.ib.send:not(:disabled):active,.sl3b button:not(:disabled):active,#sheet .ib:not(:disabled):active{box-shadow:inset 0 2px 4px rgba(0,0,0,.25)!important;transform:translateY(1px)}
+.mdock .addm,.addbar .pl{background-image:linear-gradient(to bottom,#fff,#e6ece8)!important;box-shadow:inset 0 0 0 2px light-dark(#436955,var(--brand)),0 2px 5px rgba(0,0,0,.28)!important}
+.dayline,#mealBar:not(.histbar),.mdock .mrow,#v-alimenti details.food:not([open]),#v-storico details.hday:not([open]),.ahead input#foodQ,#v-storico .hlegp{box-shadow:0 6px 16px rgba(0,0,0,.30),0 2px 4px rgba(0,0,0,.18)!important}
+html:not(.lightmode) .dayline,html:not(.lightmode) #mealBar:not(.histbar),html:not(.lightmode) .mdock .mrow,html:not(.lightmode) #v-alimenti details.food:not([open]),html:not(.lightmode) #v-storico details.hday:not([open]),html:not(.lightmode) .ahead input#foodQ,html:not(.lightmode) #v-storico .hlegp{box-shadow:0 6px 18px rgba(0,0,0,.6),0 2px 4px rgba(0,0,0,.4)!important}
+.macros div{box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 2px 6px rgba(0,0,0,.22)}
 </style>
 </head>
 <body>
@@ -748,7 +758,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 186</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 187</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
