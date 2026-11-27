@@ -615,6 +615,12 @@ html:not(.lightmode) #v-storico details.hday:not([open]) .dot{box-shadow:0 0 0 2
 html:not(.lightmode) #v-storico .hlegp{color:#fff}
 html:not(.lightmode) #v-impost .card,html:not(.lightmode) #v-ricette .card,html:not(.lightmode) #v-storico details.hday[open]{border-color:#fff}
 html:not(.lightmode) .dayline #dayLabel,html:not(.lightmode) .dayline #dayLabel *{color:#fff}
+
+/* v185: modalità scura. Cursori di Obiettivo kcal e Margine bonus: Chrome in modalità scura schiarisce da solo il colore,
+   quindi lo forziamo al verde brillante #2f8f5c come il tasto selezionato di Aspetto. Frecce ↑ ↓ con il contorno bianco */
+html:not(.lightmode) .f input[type=range]{color-scheme:light;accent-color:#2f8f5c}
+html:not(.lightmode) .jmp button{border-color:#fff}
+html:not(.lightmode) .arw{background:#2f8f5c}
 </style>
 </head>
 <body>
@@ -738,7 +744,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 184</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 185</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
