@@ -772,6 +772,10 @@ html body .btn.std2{font-weight:700!important}
 
 /* v247: niente barretta di scorrimento nel campo di scrittura (si sovrapponeva alla cornice arrotondata); il testo lungo scorre comunque col dito */
 .comp textarea{scrollbar-width:none}.comp textarea::-webkit-scrollbar{display:none}
+
+/* v248: solo modalità scura. Bordo del campo di scrittura bianco; data della pillola nello stesso verde scuro della modalità chiara */
+html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus{border-color:#fff}
+html:not(.lightmode) .dayline #dayLabel,html:not(.lightmode) .dayline #dayLabel *{color:#1f4d35}
 </style>
 </head>
 <body>
@@ -895,7 +899,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 247</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 248</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
