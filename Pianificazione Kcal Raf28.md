@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 187 (27/11/2026).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 188 (27/11/2026).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **187**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **188**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -49,7 +49,7 @@ KalRaf28 è un diario alimentare personale. Al posto di contare le calorie nelle
 - **Mai spese extra per l'API** oltre all'abbonamento.
 - In futuro forse un'APK.
 
-## 3. Come funziona oggi (v187): sezioni
+## 3. Come funziona oggi (v188): sezioni
 
 La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impostazioni** (Preimpostati tolto nella v53). La voce attiva è evidenziata con una pillola verde `#2f8f5c`.
 
@@ -327,11 +327,12 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **v184: modalità scura uniforme (scelta "A" dell'anteprima dei grigi).** Sfondo dell'app nero attenuato `#0b0b0c` (meno duro del nero assoluto); schede, finestre, pillole e ovali grigio neutro `#1c1c1e` (non più tendente al verde); anche linee e riquadri secondari in grigio neutro (`--line` `#2c2c2e`, `--soft` `#242426`). Come negli Alimenti, bordi e scritte **bianchi** anche nello Storico (pillole, kcal, contorno del pallino, legenda), nei blocchi delle Impostazioni, nelle schede delle Ricette e nella data del Diario. Confermata dall'utente.
   - **v185:** modalità scura. Cursori di Obiettivo kcal e Margine bonus forzati al verde brillante `#2f8f5c` (lo stesso del tasto selezionato in Aspetto): Chrome in modalità scura schiarisce da solo il colore dei cursori, per questo sul telefono sembrava diverso (`color-scheme: light` sul cursore). Frecce rotonde ↑ ↓ con il contorno bianco. Frecce ‹ › della data confermate nel verde di "Nuova Giornata Alimentare" `#2f8f5c` (più spente solo quando non si possono usare). Con questa versione chiaro e scuro sono uniformati.
   - **v186:** modalità scura. Le frecce ˄ ˅ dentro i pulsanti rotondi ↑ ↓ sono bianche (oltre al contorno); la cornice della tabella del pasto ("Lista alimenti / Totale kcal e macro", anche nelle tabelle in chat) è bianca invece che verde; sfondo dell'app ancora un po' meno nero: `#111112`.
-  - **v187: tasti 3D e ombre** (variante "D" delle anteprime, in chiaro e in scuro). **Tasti** da premere (tasto di default e standard 2, "Nuova Giornata Alimentare", frecce della data, "Elimina pranzo", pasto selezionato, tasti delle finestre e delle schede, tasti delle Impostazioni e di Aspetto, "Applica e torna al Diario", Reset App, fotocamera/galleria/microfono/invio): leggera luce in alto, filo scuro in basso e piccola ombra; quando si premono si "abbassano" di 1 px. Cerchi bianchi del + con una sfumatura leggera e ombra. **Pillole e ovali** (data, barra del pasto, barra dei pasti e delle Ricette, pillole di Alimenti e Storico, ricerca, legenda): ombra morbida intorno (più forte in scuro); riquadri dei macro con un'ombra leggera. Tutte le regole sono in fondo allo stile (commento "v187: TASTI 3D E OMBRE"): per tornare indietro basta togliere quel blocco.
+  - **v187: tasti 3D e ombre** (variante "D" delle anteprime, in chiaro e in scuro). **Tasti** da premere (tasto di default e standard 2, "Nuova Giornata Alimentare", frecce della data, "Elimina pranzo", pasto selezionato, tasti delle finestre e delle schede, tasti delle Impostazioni e di Aspetto, "Applica e torna al Diario", Reset App, fotocamera/galleria/microfono/invio): leggera luce in alto, filo scuro in basso e piccola ombra; quando si premono si "abbassano" di 1 px. Cerchi bianchi del + con una sfumatura leggera e ombra. **Pillole e ovali** (data, barra del pasto, barra dei pasti e delle Ricette, pillole di Alimenti e Storico, ricerca, legenda): ombra morbida intorno (più forte in scuro); riquadri dei macro con un'ombra leggera. Tutte le regole sono in fondo allo stile (commento "v187: TASTI 3D E OMBRE"): per tornare indietro basta togliere quel blocco. Versione chiara approvata dall'utente.
+  - **v188:** effetto 3D e ombra esteso a: X verdi della tabella del pasto, voce selezionata della barra in basso (Diario, Alimenti…; quelle non selezionate restano piatte), pasti **non** selezionati della riga dei pasti (rilievo più leggero) e cerchio del + (ombra più marcata, "si abbassa" quando premuto). Chiaro e scuro (commento "v188" in fondo allo stile).
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
-**Stato:** online, **collaudo in corso dal 25/11/2026**. Il 26/11 sera (v91–v187) è stata rifinita la grafica di Diario, Alimenti, Storico e Impostazioni: interfaccia considerata finita dall'utente; resta da ristrutturare la sezione Ricette (vedi Cose da fare).
+**Stato:** online, **collaudo in corso dal 25/11/2026**. Il 26/11 sera (v91–v188) è stata rifinita la grafica di Diario, Alimenti, Storico e Impostazioni: interfaccia considerata finita dall'utente; resta da ristrutturare la sezione Ricette (vedi Cose da fare).
 
 ---
 
