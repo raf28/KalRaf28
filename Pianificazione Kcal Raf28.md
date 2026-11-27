@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 164 (27/11/2026).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 165 (27/11/2026).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **164**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **165**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -49,7 +49,7 @@ KalRaf28 è un diario alimentare personale. Al posto di contare le calorie nelle
 - **Mai spese extra per l'API** oltre all'abbonamento.
 - In futuro forse un'APK.
 
-## 3. Come funziona oggi (v164): sezioni
+## 3. Come funziona oggi (v165): sezioni
 
 La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impostazioni** (Preimpostati tolto nella v53). La voce attiva è evidenziata con una pillola verde `#2f8f5c`.
 
@@ -300,10 +300,11 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **v162:** sezione Alimenti, in chiaro e in scuro: **tolte del tutto le sfumature** in alto (sotto la lettera ferma) e in basso (sopra "Aggiungi alimento"): ora il taglio è netto. Le sfumature restano **solo nel Diario** (Storico e Ricette non ne hanno).
   - **v163:** Alimenti, solo in modalità chiara: le pillole chiuse sono più basse (padding 5 px invece di 12, circa 60 px invece di 78; due righe ci stanno comode), con sfondo **bianco** e bordo e scritte nello stesso verde scuro `#1f4d35` (variante A dell'anteprima). Scheda aperta e modalità scura invariate.
   - **v164:** solo in modalità chiara. **Impostazioni:** testata verde fissa in alto con il titolo "Impostazioni", alta come quella dello Storico; sotto la testata la stessa sfumatura che c'è in basso sopra "Applica e torna al Diario" (circa 21 px). **Alimenti:** tornano le sfumature, ma nello stile di quella delle Impostazioni: in basso sopra "Aggiungi alimento" (come la barra "Applica") e in alto sotto la lettera ferma (21 px). In modalità scura tutto invariato (Impostazioni con il titolo semplice, Alimenti senza sfumature).
+  - **v165:** **Storico:** sotto la testata c'è la **legenda dei pallini** (in chiaro e in scuro): verde "Entro l'obiettivo", arancione "Nel margine bonus", rosso "Oltre il bonus". Solo in modalità chiara: le pillole delle giornate sono uguali a quelle degli Alimenti (più basse, sfondo bianco, bordo e scritte `#1f4d35`, pallino con contorno verde) e ci sono le sfumature da 21 px sotto la testata e in basso. **Ricette** (solo in chiaro): testata verde con il titolo "Ricette", alta come in Storico e Impostazioni, con le stesse sfumature sotto la testata e in basso, già pronte per quando la sezione verrà ristrutturata.
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
-**Stato:** online, **collaudo in corso dal 25/11/2026**. Il 26/11 sera (v91–v164) è stata rifinita la grafica di Diario, Alimenti, Storico e Impostazioni: interfaccia considerata finita dall'utente; resta da ristrutturare la sezione Ricette (vedi Cose da fare).
+**Stato:** online, **collaudo in corso dal 25/11/2026**. Il 26/11 sera (v91–v165) è stata rifinita la grafica di Diario, Alimenti, Storico e Impostazioni: interfaccia considerata finita dall'utente; resta da ristrutturare la sezione Ricette (vedi Cose da fare).
 
 ---
 
@@ -328,7 +329,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
 1. Eventuale APK "autonoma" con tutto il codice dentro (Capacitor o simili): servirebbe solo per il Play Store o per non dipendere da GitHub. Richiede di rifare il login Google per Drive e la dettatura.
 2. Possibilità di agganciare altri "cervelli" AI usando gli abbonamenti Pro (ChatGPT, Gemini Pro, Claude Pro), quando renderanno disponibile questa funzione nelle app di terze parti.
 3. Possibilità di agganciare un'AI locale come "cervello" (per esempio Gemini Nano sul telefono), quando sarà possibile farlo.
-4. **Legenda del pallino colorato nello Storico** (idea, 26/11/2026): verde = entro l'obiettivo kcal, giallo/arancione = nel margine bonus, rosso = oltre il bonus. Da mostrare prima o poi nell'app (per esempio una riga piccola sotto il titolo dello Storico).
+4. ✅ *Fatta nella v165.* **Legenda del pallino colorato nello Storico** (idea, 26/11/2026): verde = entro l'obiettivo kcal, giallo/arancione = nel margine bonus, rosso = oltre il bonus. Da mostrare prima o poi nell'app (per esempio una riga piccola sotto il titolo dello Storico).
 
 ### Cose da vedere per far utilizzare l'applicazione ad altre persone
 *Ipotesi del 26/11/2026: passare la stessa APK a un'amica, che usa una sua chiave API Gemini.*

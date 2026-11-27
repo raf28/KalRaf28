@@ -485,11 +485,30 @@ html.lightmode #v-impost>.wrap>h2{display:none}
 html.lightmode #v-impost>.wrap{padding-top:22px}
 html.lightmode #v-alimenti .applybar{padding-top:18px;background:linear-gradient(transparent,var(--bg) 30%)}
 html.lightmode #v-alimenti .letter.stuck::after{content:'';position:absolute;left:0;right:0;top:100%;height:21px;background:linear-gradient(var(--bg),transparent);pointer-events:none}
+/* v165: legenda dei pallini dello Storico (chiaro e scuro) */
+#v-storico .hleg{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 16px;font-size:13px;color:var(--mute);margin:0 0 12px}
+#v-storico .hleg .dot{margin-right:6px;vertical-align:-1px}
+/* v165: solo modalità chiara. Ricette con testata verde come Storico e Impostazioni; sfumature (21 px) sotto la testata
+   e in basso in Storico e Ricette; pillole dello Storico uguali a quelle degli Alimenti */
+html.lightmode #v-ricette .ihead{display:block;position:sticky;top:0;z-index:4}
+html.lightmode #v-ricette .ihead h2{font-size:20px}
+html.lightmode #v-ricette .ihead::after,html.lightmode #v-storico .hhead::after{content:'';position:absolute;left:0;right:0;top:100%;height:21px;background:linear-gradient(var(--bg),transparent);pointer-events:none}
+html.lightmode #v-ricette.vh{padding-top:0}
+html.lightmode #v-ricette>.wrap>h2{display:none}
+html.lightmode #v-ricette>.wrap{padding-top:22px}
+.lfadeB{display:none}
+html.lightmode #v-ricette .lfadeB,html.lightmode #v-storico #hfadeB{display:block;position:sticky;bottom:0;z-index:2;height:21px;margin-top:0;opacity:1;pointer-events:none;background:linear-gradient(transparent,var(--bg))}
+html.lightmode #v-storico .wrap{padding-top:22px}
+html.lightmode #v-storico details.hday{padding:5px 22px;border-color:#1f4d35}
+html.lightmode #v-storico details.hday summary{min-height:42px}
+html.lightmode #v-storico details.hday:not([open]){background:#fff}
+html.lightmode #v-storico details.hday:not([open]) summary,html.lightmode #v-storico details.hday:not([open]) summary .kv{color:#1f4d35}
+html.lightmode #v-storico details.hday:not([open]) .dot{box-shadow:0 0 0 2px #1f4d35}
 #v-alimenti .applybar .btn.addbar{box-shadow:light-dark(0 6px 18px rgba(0,0,0,.28),0 6px 20px rgba(0,0,0,.75)),light-dark(0 0 0 0 transparent,0 0 0 1px rgba(255,255,255,.14))}
 /* Alimenti (v111, v117): pillole chiuse dello stesso verde della cornice, scritte bianche */
 #v-alimenti details.food:not([open]){background:var(--brand)}
 /* v161: solo modalità chiara, pillole chiuse di Alimenti e Storico nel verde del tasto microfono */
-html.lightmode #v-alimenti details.food:not([open]),html.lightmode #v-storico details.hday:not([open]){background:#436955}
+html.lightmode #v-alimenti details.food:not([open]){background:#436955}
 #v-alimenti details.food:not([open]) summary,#v-alimenti details.food:not([open]) summary .nm,#v-alimenti details.food:not([open]) summary .kv,#v-alimenti details.food:not([open]) summary .kv small{color:#fff}
 /* v163: solo modalità chiara, pillole degli Alimenti più basse, sfondo bianco, bordo e scritte verde scuro */
 html.lightmode #v-alimenti details.food{padding:5px 22px;border-color:#1f4d35}
@@ -555,11 +574,13 @@ window.addEventListener('error',()=>hideSplash());</script>
     </section>
 
     <section id="v-ricette" class="vh" hidden>
+      <div class="ahead hhead ihead"><div class="in"><div class="aht"><h2>Ricette</h2></div></div></div>
       <div class="wrap">
         <h2>Ricette</h2>
         <div class="seg" id="recTabs" style="padding-top:0"></div>
         <div id="recChatBox"><div class="chat" id="recChat"></div></div>
         <div id="recBook" hidden></div>
+        <div class="lfadeB" aria-hidden="true"></div>
       </div>
     </section>
 
@@ -577,7 +598,7 @@ window.addEventListener('error',()=>hideSplash());</script>
 
     <section id="v-storico" class="vh" hidden>
       <div class="ahead hhead"><div class="in"><div class="aht"><h2>Storico Giornate Alimentari</h2><span class="acnt" id="histCnt"></span></div></div></div>
-      <div class="wrap"><div id="histList"></div><div class="dfadeB" id="hfadeB" aria-hidden="true"></div></div>
+      <div class="wrap"><div class="hleg"><span><span class="dot" style="background:var(--ok)"></span>Entro l'obiettivo</span><span><span class="dot" style="background:var(--warn)"></span>Nel margine bonus</span><span><span class="dot" style="background:var(--bad)"></span>Oltre il bonus</span></div><div id="histList"></div><div class="dfadeB" id="hfadeB" aria-hidden="true"></div></div>
     </section>
 
     <section id="v-impost" class="vh" hidden>
@@ -638,7 +659,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 164</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 165</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
