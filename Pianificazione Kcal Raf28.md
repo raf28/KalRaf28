@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 151 (26/11/2026, sera).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 152 (26/11/2026, sera).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **151**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **152**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -49,7 +49,7 @@ KalRaf28 è un diario alimentare personale. Al posto di contare le calorie nelle
 - **Mai spese extra per l'API** oltre all'abbonamento.
 - In futuro forse un'APK.
 
-## 3. Come funziona oggi (v151): sezioni
+## 3. Come funziona oggi (v152): sezioni
 
 La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impostazioni** (Preimpostati tolto nella v53). La voce attiva è evidenziata con una pillola verde `#2f8f5c`.
 
@@ -75,7 +75,7 @@ La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impos
 - Le fonti `ricetta` e `preimpostato` esistono già nel codice. La seconda è pronta per la sezione futura.
 - **Domande** ("sei sicuro del sale?") e **domande di cucina** (temperature, tempi, cotture, fuoco, sostituzioni; v140): risponde senza modificare la lista (`domanda: true`).
 - **Riepilogo** solo su richiesta esplicita ("dammi il totale"): dalla v139 mostra in chat la stessa tabella del pasto della "Lista alimenti" (alimenti con X, totale kcal, macro), sempre aggiornata. I valori mancanti sono segnati con *.
-- Ogni risposta ha i pulsanti **▶︎ Ascolta / ⏸ Pausa** per la lettura ad alta voce in italiano.
+- Ogni risposta ha i pulsanti **▶︎ Ascolta / ⏸ Pausa** per la lettura ad alta voce in italiano (frase per frase; Pausa ricorda il punto per 1 ora; tenendo premuto Ascolta 1 secondo riparte dall'inizio, v152).
 - Gemini riceve solo gli ultimi 10 messaggi della chat del pasto come storia.
 
 ### 3.3 Affidabilità delle chiamate (dalla v33)
@@ -287,10 +287,11 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **v149:** corretto il gesto Indietro sulle finestre (es. "Aggiungi un pasto" aperto con il +, conferme, "Nuova Giornata Alimentare") e sulle foto a tutto schermo: si chiudono in modo fluido, senza la schermata che scorre (CloseWatcher, come già per le schede di Alimenti e Storico).
   - **v150:** aggiornamento con pressione prolungata (≈0,5 s) sul tasto della sezione già selezionata nella barra in basso (Diario, Alimenti, Ricette, Storico): vibrazione e ricarica, che riporta al Diario come ogni aggiornamento. Il tocco normale resta invariato; premere a lungo un tasto non selezionato non fa nulla di speciale.
   - **v151:** la pressione prolungata per aggiornare vale su **tutti** i tasti della barra in basso, compresa Impostazioni, selezionati o no, e dura **1 secondo**.
+  - **v152:** tenendo premuto **Ascolta** per 1 secondo il telefono vibra e la lettura **riparte dall'inizio** (anche se era in corso o in pausa); niente selezione del testo né menu sui tasti Ascolta/Pausa. Il tocco normale resta invariato (avvia o riprende dalla pausa).
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
-**Stato:** online, **collaudo in corso dal 25/11/2026**. Il 26/11 sera (v91–v151) è stata rifinita la grafica di Diario, Alimenti, Storico e Impostazioni: interfaccia considerata finita dall'utente; resta da ristrutturare la sezione Ricette (vedi Cose da fare).
+**Stato:** online, **collaudo in corso dal 25/11/2026**. Il 26/11 sera (v91–v152) è stata rifinita la grafica di Diario, Alimenti, Storico e Impostazioni: interfaccia considerata finita dall'utente; resta da ristrutturare la sezione Ricette (vedi Cose da fare).
 
 ---
 

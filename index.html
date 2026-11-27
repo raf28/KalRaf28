@@ -485,6 +485,7 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
 /* v113: niente riquadro azzurro al tocco */
 *{-webkit-tap-highlight-color:transparent}
 nav button{-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
+.tts .tb{-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
 </style>
 </head>
 <body>
@@ -603,7 +604,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp" style="width:100%">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 151</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 152</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1335,16 +1336,29 @@ function ttsPlay(i,off=0){const tok=TTS.tok;
   speechSynthesis.speak(u)}
 document.addEventListener('click',e=>{
   const p=e.target.closest('[data-pause]'),b=e.target.closest('[data-say]');if(!p&&!b)return;e.stopPropagation();
-  if(p){const pv=p.dataset.pause,k=ttsKey(pv==='box'?pv:+pv);if(TTS.playing&&TTS.key===k){ttsStop();ttsSave({key:k,len:TTS.len,idx:TTS.idx,pos:TTS.pos||0,ts:Date.now()});ttsMark()}return}
-  const ix=b.dataset.say==='box'?'box':+b.dataset.say,k=ttsKey(ix);if(TTS.playing&&TTS.key===k)return;
+  if(b&&ttsLongFired){ttsLongFired=false;e.preventDefault();return}
+  if(b)ttsStartBtn(b,false);else ttsPauseBtn(p);
+},true);
+function ttsPauseBtn(p){
+  const pv=p.dataset.pause,k=ttsKey(pv==='box'?pv:+pv);if(TTS.playing&&TTS.key===k){ttsStop();ttsSave({key:k,len:TTS.len,idx:TTS.idx,pos:TTS.pos||0,ts:Date.now()});ttsMark()}}
+function ttsStartBtn(b,fromStart){
+  const ix=b.dataset.say==='box'?'box':+b.dataset.say,k=ttsKey(ix);if(TTS.playing&&TTS.key===k&&!fromStart)return;
   const chat=ui.view==='ricette'?S.recChat:(ui.meal?ensureMeal(ui.meal).chat:(ui.dv!==null&&ui.hmeal&&histDay(ui.dv)?histDay(ui.dv).meals[ui.hmeal].chat:[])),m=ix==='box'?{role:'a',text:'',tot:{}}:chat[ix];if(!m)return;
   const txt=speechText(m),chunks=ttsChunks(txt);if(!chunks.length)return;
-  const o=ttsSaved();let start=0,off=0;if(o&&o.key===k&&o.len===txt.length&&o.idx<chunks.length){start=o.idx;off=Math.min(o.pos||0,chunks[start].length-1);off=Math.max(0,chunks[start].lastIndexOf(' ',off)+1)}
+  const o=fromStart?null:ttsSaved();let start=0,off=0;if(o&&o.key===k&&o.len===txt.length&&o.idx<chunks.length){start=o.idx;off=Math.min(o.pos||0,chunks[start].length-1);off=Math.max(0,chunks[start].lastIndexOf(' ',off)+1)}
   const busy=!!(speechSynthesis.speaking||speechSynthesis.pending);ttsStop(busy);ttsSave(null);
   Object.assign(TTS,{key:k,len:txt.length,chunks,playing:true});ttsMark();
   /* su Android, speak() subito dopo cancel() viene spesso ignorato: piccola attesa */
   const tok=TTS.tok;if(busy)setTimeout(()=>{if(tok===TTS.tok)ttsPlay(start,off)},250);else ttsPlay(start,off);
-},true);
+}
+/* v152: tenendo premuto Ascolta per 1 secondo l'audio riparte dall'inizio */
+let ttsLongFired=false;
+{let t=null,x0=0,y0=0;const stop=()=>{clearTimeout(t);t=null};
+ document.addEventListener('pointerdown',e=>{const b=e.target.closest('[data-say]');ttsLongFired=false;if(!b)return;x0=e.clientX;y0=e.clientY;stop();
+   t=setTimeout(()=>{t=null;ttsLongFired=true;try{navigator.vibrate&&navigator.vibrate(30)}catch(err){}ttsStartBtn(b,true)},1000)},true);
+ document.addEventListener('pointermove',e=>{if(t&&Math.hypot(e.clientX-x0,e.clientY-y0)>10)stop()},true);
+ ['pointerup','pointercancel'].forEach(ev=>document.addEventListener(ev,stop,true));
+ document.addEventListener('contextmenu',e=>{if(e.target.closest('.tts .tb'))e.preventDefault()},true);}
 if('speechSynthesis' in window){speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>{}}
 /* dettatura */
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null;
