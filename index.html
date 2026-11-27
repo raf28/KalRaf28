@@ -685,6 +685,14 @@ html:not(.lightmode) #v-alimenti details.food:not([open]),html:not(.lightmode) #
 
 /* v220: etichetta kcal del Diario: bianca sotto l'obiettivo, gialla nel bonus, rossa (schiarita per leggersi sul verde) oltre il bonus */
 .kc .left.warn{color:var(--warn)}.kc .left.bad{color:#ff7a62}
+
+/* v221: aprendo una pillola di Alimenti o Storico i colori del titolo (nome, kcal, "per …"/"su …") restano quelli della pillola chiusa */
+html.lightmode #v-alimenti details.food[open] summary,html.lightmode #v-alimenti details.food[open] summary .nm,html.lightmode #v-alimenti details.food[open] summary .kv,html.lightmode #v-alimenti details.food[open] summary .kv small,html.lightmode #v-storico details.hday[open] summary,html.lightmode #v-storico details.hday[open] summary .kv,html.lightmode #v-storico details.hday[open] summary .kv small{color:#1f4d35}
+html:not(.lightmode) #v-alimenti details.food[open] summary,html:not(.lightmode) #v-alimenti details.food[open] summary .nm,html:not(.lightmode) #v-alimenti details.food[open] summary .kv,html:not(.lightmode) #v-alimenti details.food[open] summary .kv small,html:not(.lightmode) #v-storico details.hday[open] summary,html:not(.lightmode) #v-storico details.hday[open] summary .kv,html:not(.lightmode) #v-storico details.hday[open] summary .kv small{color:#fff}
+/* v221: nello Storico aperto, sotto la data, l'etichetta come nel Diario: Restano / Bonus di / Oltre di */
+.hstat{margin-top:10px}
+.hleft{display:inline-block;font-size:14px;font-weight:600;padding:4px 12px;border-radius:99px;background:light-dark(var(--soft),rgba(255,255,255,.10));color:var(--ink)}
+.hleft.warn{color:light-dark(#a8740a,var(--warn))}.hleft.bad{color:light-dark(var(--bad),#ff7a62)}
 </style>
 </head>
 <body>
@@ -808,7 +816,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 220</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 221</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1320,6 +1328,7 @@ function renderHist(){fdKill();
   {const c=$('#histCnt');if(c)c.textContent=S.history.length===1?'1 giornata':S.history.length+' giornate'}
   $('#histList').innerHTML=S.history.length?S.history.map((h,ix)=>{const t=h.tot,max=h.target+h.margin,st=t.kcal<=h.target?'ok':t.kcal<=max?'warn':'bad';const d=new Date(h.start);
     return`<details class="card hday"><summary><span class="nm"><span class="dot" style="background:var(--${st})"></span>${(s=>s.charAt(0).toUpperCase()+s.slice(1))(d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'}))}</span><span class="kv"><b>${f0(t.kcal)} kcal</b><small>su ${f0(h.target)}</small></span></summary>
+    <div class="hstat"><span class="hleft ${st==='ok'?'':st==='warn'?'warn':'bad'}">${st==='ok'?`Restano ${f0(h.target-t.kcal)} kcal`:st==='warn'?`Bonus di ${f0(t.kcal-h.target)} kcal`:`Oltre di ${f0(t.kcal-max)} kcal`}</span></div>
     <div style="margin-top:12px"><b class="ht">Riepilogo:</b> <span class="hm">${f0(t.kcal)} kcal</span></div>
     <div class="hm" style="margin-top:2px">${mline(t)}</div>
     <div class="hm" style="margin-top:4px">Aperta: ${fdt(h.start)}${h.end?` · Chiusa: ${fdt(h.end)}`:''}</div>
