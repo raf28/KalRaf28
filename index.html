@@ -871,13 +871,13 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 239</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 240</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
   </main>
 
-  <div class="mdock" id="mdock"><div class="mrow" id="mrow"><button class="addm" id="addMeal" aria-label="Aggiungi un pasto">+</button><div class="segw" id="segw"><div class="seg" id="mealTabs"></div><button class="sarr l" data-segs="-1" aria-label="Scorri a sinistra">‹</button><button class="sarr r" data-segs="1" aria-label="Scorri a destra">›</button></div></div></div>
+  <div class="mdock" id="mdock"><div class="mrow" id="mrow"><button class="addm" id="addMeal" aria-label="Aggiungi un Pasto">+</button><div class="segw" id="segw"><div class="seg" id="mealTabs"></div><button class="sarr l" data-segs="-1" aria-label="Scorri a sinistra">‹</button><button class="sarr r" data-segs="1" aria-label="Scorri a destra">›</button></div></div></div>
   <div class="mdock rdock" id="rdock" hidden><div class="mrow"><div class="segw"><div class="seg" id="recDockTabs"><button data-rdock="book">Ricettario</button><button data-rdock="crea">Crea Ricetta</button></div></div></div></div>
   <div class="comp" id="comp">
     <div class="ctx" id="ctx"></div>
@@ -1975,7 +1975,7 @@ if('serviceWorker' in navigator&&location.protocol==='https:')window.addEventLis
 $('#mealTabs').addEventListener('scroll',updSeg,{passive:true});window.addEventListener('resize',updSeg);
 document.addEventListener('click',e=>{const a=e.target.closest('[data-segs]');if(!a)return;e.stopPropagation();const s=$('#'+(a.dataset.segt||'mealTabs'));s.scrollBy({left:+a.dataset.segs*s.clientWidth*.7,behavior:'smooth'})},true);
 $('#addMeal').onclick=()=>{const o=S.day.order,ns=o.filter(isSnack).length;
-  sheet(`<h3>Aggiungi un pasto</h3><div class="addlist">${BASE.map(k=>`<button class="btn ghost" data-addm="${k}" ${o.includes(k)?'disabled':''}>${mealName(k)}<small>${o.includes(k)?'già aggiunto':''}</small></button>`).join('')}<button class="btn ghost" data-addm="spuntino" ${ns>=MAXSN?'disabled':''}>Spuntino<small>${ns>=MAXSN?'massimo '+MAXSN+' raggiunto':'sarà lo Spuntino '+(ns+1)}</small></button></div><div class="row" style="justify-content:flex-start"><button class="btn ghost dg" id="noSheet">Annulla</button></div>`);
+  sheet(`<h3>Aggiungi un Pasto</h3><div class="addlist">${BASE.map(k=>`<button class="btn ghost" data-addm="${k}" ${o.includes(k)?'disabled':''}>${mealName(k)}<small>${o.includes(k)?'già aggiunto':''}</small></button>`).join('')}<button class="btn ghost" data-addm="spuntino" ${ns>=MAXSN?'disabled':''}>Spuntino<small>${ns>=MAXSN?'massimo '+MAXSN+' raggiunto':'sarà lo Spuntino '+(ns+1)}</small></button></div><div class="row" style="justify-content:flex-start"><button class="btn ghost dg" id="noSheet">Annulla</button></div>`);
   document.querySelectorAll('[data-addm]').forEach(x=>x.onclick=()=>{closeSheet();addMeal(x.dataset.addm)})};
 /* v150, v151: tenendo premuto per 1 secondo un qualsiasi tasto della barra in basso (selezionato o no) l'app si aggiorna (riparte dal Diario come ogni aggiornamento) */
 {const nav=$('#nav'),OK=['diario','alimenti','ricette','storico','impost'];let t=null,x0=0,y0=0,fired=false;
