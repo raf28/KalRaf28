@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 171 (27/11/2026).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 172 (27/11/2026).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **171**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **172**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -49,7 +49,7 @@ KalRaf28 è un diario alimentare personale. Al posto di contare le calorie nelle
 - **Mai spese extra per l'API** oltre all'abbonamento.
 - In futuro forse un'APK.
 
-## 3. Come funziona oggi (v171): sezioni
+## 3. Come funziona oggi (v172): sezioni
 
 La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impostazioni** (Preimpostati tolto nella v53). La voce attiva è evidenziata con una pillola verde `#2f8f5c`.
 
@@ -105,7 +105,7 @@ La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impos
 - Pulsante tolto dalla barra (v53). Nel codice resta solo il segnaposto "Sezione in arrivo." (vedi Stato delle sezioni).
 
 ### 3.7 Storico
-- Titolo "Storico Giornate Alimentari" con il conteggio. È l'elenco delle giornate chiuse, nello stile degli Alimenti (v132–v148): pillole verde scuro con pallino colorato, data e kcal "su obiettivo". Aperta mostra "RIEPILOGO: N kcal", macro, orari, poi COLAZIONE / PRANZO / SPUNTINO… con gli alimenti, e i tasti Annulla … Modifica, Elimina (rosso). "Modifica" porta al Diario su quella giornata. Il tasto Indietro di Android chiude la giornata aperta.
+- Titolo "Storico Giornate Alimentari" con il conteggio. È l'elenco delle giornate chiuse, nello stile degli Alimenti (v132–v148): pillole verde scuro con pallino colorato, data e kcal "su obiettivo". Aperta mostra "RIEPILOGO: N kcal", macro, orari, poi COLAZIONE / PRANZO / SPUNTINO… con gli alimenti, e i tasti Annulla … Modifica, Elimina (rosso). "Modifica" porta al Diario su quella giornata. Dalla v172 anche "Elimina" è verde: rosso solo nella conferma. Il tasto Indietro di Android chiude la giornata aperta.
 - 🟢🟡🔴 **Significato del pallino colorato** (nota da riusare in futuro, per esempio in una legenda nell'app): **verde** = la giornata è rimasta entro l'obiettivo kcal; **giallo/arancione** = ha superato l'obiettivo ma è rimasta nel margine bonus; **rosso** = ha superato anche il bonus (stessi colori della barra kcal del Diario). Il colore si calcola con l'obiettivo e il margine salvati in quella giornata.
 - Si conservano al massimo 400 giornate. Le più vecchie del periodo scelto vengono eliminate in automatico.
 
@@ -311,11 +311,12 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **v168: swipe tra le sezioni.** Uno swipe verso sinistra porta alla sezione successiva e verso destra alla precedente, a carosello: Diario → Alimenti → Ricette → Storico → Impostazioni → di nuovo Diario (e al contrario). Vale su tutta l'app tranne vicino ai bordi dello schermo (28 px, per non disturbare il gesto Indietro di Android), sulle barre che scorrono in orizzontale (es. la riga dei pasti quando è piena), sui cursori delle Impostazioni e con una finestra o una foto aperta. Serve uno spostamento orizzontale netto (almeno 70 px, molto più orizzontale che verticale, in meno di 0,7 s), così lo scorrimento normale su e giù non cambia sezione. **Testo del Diario vuoto:** "Tocca il + in basso a sinistra per Aggiungere un Pasto (…)" e "Per Vedere o Modificare un pasto, scorri la barra in basso e Tocca il suo Pulsante Pasto."
   - **v169:** testo del Diario vuoto definitivo, su tre paragrafi: "Tocca il + in basso a sinistra per **Aggiungere un Pasto** (Colazione, Pranzo, Cena o Spuntino), poi scrivi, detta o fotografa cosa hai mangiato." / "Per **Vedere o Modificare** un pasto, scorri la barra in basso e **Tocca il Pulsante dedicato**." / "A fine giornata **Tocca Nuova Giornata Alimentare** in alto: la giornata attuale viene salvata nello Storico e se ne apre una nuova." Swipe più fluido: la sezione nuova entra scorrendo dal lato dello swipe (230 ms, con dissolvenza); soglia dello swipe abbassata a 60 px. Se il telefono ha attivo "riduci animazioni" l'effetto non c'è.
   - **v170:** terzo paragrafo del Diario vuoto: "A fine giornata **Tocca Nuova Giornata Alimentare** in alto a destra: la giornata attuale viene **Salvata nello Storico** e se ne apre una nuova." **Prova:** il tasto "Nuova Giornata Alimentare" in testata ha un bordo bianco da 2 px, come i cerchi delle frecce ‹ › della data (misure 150 × 40 invariate, in chiaro e in scuro). Confermato dall'utente: si tiene.
-  - **v171:** frecce ‹ › della data piene del verde di "Nuova Giornata Alimentare" (`#2f8f5c`), più chiare quando non si possono usare. **X per togliere un alimento** (Lista alimenti e tabelle in chat): più piccola (24 px invece di 30) e verde `#2f8f5c` invece che rossa; la conferma "Elimina" resta rossa. **Rimuovi foto** (Aggiungi/Modifica alimento): ora chiede conferma con una finestrella sopra la scheda: "Eliminare la foto?" / "Sei sicuro di voler eliminare la foto? Verrà cancellata.", con Annulla ed Elimina (rosso), formato standard 2 (funzione `miniConfirm()`). **Swipe:** la sezione cambia appena il dito ha percorso 60 px, senza aspettare che si stacchi dallo schermo; animazione d'ingresso più corta (180 ms). Valgono in chiaro e in scuro.
+  - **v171:** frecce ‹ › della data piene del verde di "Nuova Giornata Alimentare" (`#2f8f5c`), più chiare quando non si possono usare. **X per togliere un alimento** (Lista alimenti e tabelle in chat): più piccola (24 px invece di 30) e verde `#2f8f5c` invece che rossa; la conferma "Elimina" resta rossa. **Rimuovi foto** (Aggiungi/Modifica alimento): ora chiede conferma con una finestrella sopra la scheda: "Eliminare la foto?" / "Sei sicuro di voler eliminare la foto? Verrà cancellata.", con Annulla ed Elimina (rosso), formato standard 2 (funzione `miniConfirm()`). **Swipe:** la sezione cambia appena il dito ha percorso 60 px, senza aspettare che si stacchi dallo schermo; animazione d'ingresso più corta (180 ms). Valgono in chiaro e in scuro. Lo swipe così è confermato dall'utente.
+  - **v172:** conferma Rimuovi foto su due righe: "Sei sicuro di voler eliminare la foto?" / "Verrà cancellata definitivamente.". Nello Storico, nella giornata aperta, il tasto **Elimina** è verde come Annulla e Modifica: rosso resta solo il tasto della conferma definitiva nel pop-up. **Regola:** il rosso si usa solo per il tasto che elimina davvero (quello della conferma).
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
-**Stato:** online, **collaudo in corso dal 25/11/2026**. Il 26/11 sera (v91–v171) è stata rifinita la grafica di Diario, Alimenti, Storico e Impostazioni: interfaccia considerata finita dall'utente; resta da ristrutturare la sezione Ricette (vedi Cose da fare).
+**Stato:** online, **collaudo in corso dal 25/11/2026**. Il 26/11 sera (v91–v172) è stata rifinita la grafica di Diario, Alimenti, Storico e Impostazioni: interfaccia considerata finita dall'utente; resta da ristrutturare la sezione Ricette (vedi Cose da fare).
 
 ---
 

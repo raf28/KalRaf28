@@ -674,7 +674,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 171</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 172</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1151,7 +1151,7 @@ function renderHist(){fdKill();
     <div class="hm" style="margin-top:2px">${mline(t)}</div>
     <div class="hm" style="margin-top:4px">Aperta: ${fdt(h.start)}${h.end?` · Chiusa: ${fdt(h.end)}`:''}</div>
     ${orderKeys(Object.keys(h.meals).map(k=>k==='spuntino'?'spuntino1':k)).map(k=>{const l=mealName(k);const it=(h.meals[k]||(k==='spuntino1'?h.meals.spuntino:null)||[]);if(!it.length)return'';const mt=sum(it);return`<div style="margin-top:10px"><b class="ht">${l}:</b> <span class="hm">${f0(mt.kcal)} kcal</span>${it.map(i=>`<div class="hm">• ${esc(i.nome)} ${esc(i.quantita)} — ${f0(i.kcal)} kcal</div>`).join('')}</div>`}).join('')}
-    <div class="row between" style="margin-top:14px"><button class="btn sm ghost std2" data-collapse>Annulla</button><span class="row" style="margin:0"><button class="btn sm ghost std2" data-edithist="${ix}">Modifica</button><button class="btn sm ghost std2 bad" data-delhist="${ix}">Elimina</button></span></div></details>`}).join('')
+    <div class="row between" style="margin-top:14px"><button class="btn sm ghost std2" data-collapse>Annulla</button><span class="row" style="margin:0"><button class="btn sm ghost std2" data-edithist="${ix}">Modifica</button><button class="btn sm ghost std2" data-delhist="${ix}">Elimina</button></span></div></details>`}).join('')
     :'<div class="empty">Qui trovi le giornate chiuse (conservate per il periodo scelto nelle Impostazioni). Usa «Nuova Giornata Alimentare» nel Diario quando hai finito di mangiare.</div>';
   document.querySelectorAll('#histList details.hday').forEach(d=>bindCloseDetails(d));
 }
@@ -1301,9 +1301,9 @@ const PHK=['confezione','confezione2','tabella'];
 const PHL={tabella:'Tabella valori nutrizionali',confezione:'Confezione 1',confezione2:'Confezione 2',confezione3:'Confezione 3'};
 function slotsHtml(ph){const L=[['confezione','Foto confezione 1'],['confezione2','Foto confezione 2'],['tabella','Foto tabella valori nutrizionali']];
   return`<div class="ph3">${L.map(([k,l])=>`<div class="sl3"><div class="sl3i">${ph[k]?`<img alt="${l}" src="${esc(ph[k])}">`:'<span>nessuna foto</span>'}</div><div class="sl3l">${l}</div><div class="sl3b"><button data-slot="${k}" data-cam="1" aria-label="Scatta foto: ${l}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></button><button data-slot="${k}" aria-label="Scegli file: ${l}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.8"/><path d="M21 16l-5-5-9 9"/></svg></button></div><button class="sl3r btn std2" data-unslot="${k}" ${ph[k]?'':'disabled'}>Rimuovi</button></div>`).join('')}</div>`}
-function bindSlots(ph,redraw){document.querySelectorAll('[data-slot]').forEach(b=>b.onclick=async()=>{const d=await pickImage(!!b.dataset.cam);if(d){ph[b.dataset.slot]=d;redraw()}});document.querySelectorAll('[data-unslot]').forEach(b=>b.onclick=()=>miniConfirm('Eliminare la foto?','Sei sicuro di voler eliminare la foto? Verrà cancellata.',()=>{ph[b.dataset.unslot]=null;const c=['confezione','confezione2','confezione3'].map(k=>ph[k]).filter(Boolean);['confezione','confezione2','confezione3'].forEach((k,i)=>ph[k]=c[i]||null);redraw()}))}
+function bindSlots(ph,redraw){document.querySelectorAll('[data-slot]').forEach(b=>b.onclick=async()=>{const d=await pickImage(!!b.dataset.cam);if(d){ph[b.dataset.slot]=d;redraw()}});document.querySelectorAll('[data-unslot]').forEach(b=>b.onclick=()=>miniConfirm('Eliminare la foto?','Sei sicuro di voler eliminare la foto?\nVerrà cancellata definitivamente.',()=>{ph[b.dataset.unslot]=null;const c=['confezione','confezione2','confezione3'].map(k=>ph[k]).filter(Boolean);['confezione','confezione2','confezione3'].forEach((k,i)=>ph[k]=c[i]||null);redraw()}))}
 /* v171: piccola conferma sopra una finestra già aperta (es. Rimuovi foto in Modifica alimento) */
-function miniConfirm(title,text,onYes){const o=document.createElement('div');o.className='modal cfm';o.innerHTML=`<div class="sheet"><h3>${esc(title)}</h3><p class="hm">${esc(text)}</p><div class="row between"><button class="btn std2" data-c="no">Annulla</button><button class="btn std2 bad" data-c="yes">Elimina</button></div></div>`;
+function miniConfirm(title,text,onYes){const o=document.createElement('div');o.className='modal cfm';o.innerHTML=`<div class="sheet"><h3>${esc(title)}</h3><p class="hm">${esc(text).replace(/\n/g,'<br>')}</p><div class="row between"><button class="btn std2" data-c="no">Annulla</button><button class="btn std2 bad" data-c="yes">Elimina</button></div></div>`;
   let cw=null;const close=()=>{if(cw){const w=cw;cw=null;try{w.destroy()}catch(e){}}o.remove()};
   try{if(window.CloseWatcher){cw=new CloseWatcher();cw.onclose=()=>{cw=null;o.remove()}}}catch(e){}
   o.onclick=e=>{if(e.target===o){close();return}const b=e.target.closest('[data-c]');if(!b)return;close();if(b.dataset.c==='yes')onYes()};document.body.appendChild(o)}
