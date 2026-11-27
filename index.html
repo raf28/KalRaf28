@@ -41,6 +41,9 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 html.lightmode .dayline{background:rgba(255,255,255,.1)}
 /* v176: bordo bianco da 2 px tutto intorno alla pillola della data, verso l'esterno (non toglie spazio all'interno) */
 .dayline{box-shadow:0 0 0 2px #fff,0 3px 10px rgba(0,0,0,.12)}
+/* v177: solo modalità chiara, pillola della data tutta bianca, senza bordo, con la data in verde scuro */
+html.lightmode .dayline{background:#fff;box-shadow:0 3px 10px rgba(0,0,0,.12)}
+html.lightmode .dayline #dayLabel,html.lightmode .dayline #dayLabel *{color:#1f4d35}
 #dayLabel{font-size:14px;line-height:1.2;min-width:0}
 #dayLabel::first-letter{text-transform:uppercase}
 .arw:disabled{opacity:.4}
@@ -687,7 +690,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 176</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 177</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
