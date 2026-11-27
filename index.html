@@ -711,6 +711,13 @@ html:not(.lightmode) #v-alimenti details.food[open] summary,html:not(.lightmode)
 #rdock .mrow{background-image:none!important;box-shadow:0 2px 5px rgba(0,0,0,.28)!important}
 #rdock .seg button{background-image:linear-gradient(to bottom,rgba(255,255,255,.22),rgba(255,255,255,0) 55%,rgba(0,0,0,.12))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -2px 0 rgba(0,0,0,.18),0 2px 5px rgba(0,0,0,.28)!important}
 #rdock .seg button:active{box-shadow:inset 0 2px 4px rgba(0,0,0,.25)!important;transform:translateY(1px)}
+
+/* v230: pillole contenitore "Aggiungi Alimento" e Ricette: sfumatura del colore, nessun rilievo, ombra un po' più marcata.
+   "Applica e torna al Diario": sfumatura, rilievo 3D più evidente e la stessa ombra */
+.applybar .btn.addbar,#v-alimenti .applybar .btn.addbar,#rdock .mrow{background-image:linear-gradient(to bottom,rgba(255,255,255,.22),rgba(255,255,255,0) 55%,rgba(0,0,0,.12))!important;box-shadow:0 4px 10px rgba(0,0,0,.35)!important}
+.applybar .btn.addbar:active{box-shadow:0 4px 10px rgba(0,0,0,.35)!important;transform:none}
+#apply{background-image:linear-gradient(to bottom,rgba(255,255,255,.22),rgba(255,255,255,0) 55%,rgba(0,0,0,.12))!important;box-shadow:inset 0 2px 0 rgba(255,255,255,.45),inset 0 -3px 0 rgba(0,0,0,.28),0 4px 10px rgba(0,0,0,.35)!important}
+#apply:active{box-shadow:inset 0 3px 5px rgba(0,0,0,.3)!important;transform:translateY(1px)}
 </style>
 </head>
 <body>
@@ -764,7 +771,7 @@ window.addEventListener('error',()=>hideSplash());</script>
         <input type="search" id="foodQ" placeholder="Cerca un alimento" autocomplete="off"></div></div>
       <div class="wrap">
         <div id="foodList"></div></div>
-      <div class="applybar"><button class="btn addbar" id="addFood"><span class="pl">+</span>Aggiungi alimento</button></div>
+      <div class="applybar"><button class="btn addbar" id="addFood"><span class="pl">+</span>Aggiungi Alimento</button></div>
     </section>
 
     <section id="v-pasti" class="vh" hidden>
@@ -834,7 +841,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 229</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 230</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -996,7 +1003,7 @@ function showInfo(){sheet(`<div class="info"><h3>Come funziona Kcal</h3>
 <p class="hm"><span class="src gen">(stima da foto)</span> stimato dall'Intelligenza Artificiale guardando la foto.</p>
 <p class="hm"><span class="src nf">(non trovato – cercare manualmente l'alimento)</span><br>l'Intelligenza Artificiale non conosce l'alimento:<br>non inventa nulla e ti chiede i valori.</p>
 <h4>Alimenti</h4><p class="hm">I tuoi prodotti di marca con i valori esatti e le foto.<br>Quando li nomini nel Diario, i valori vengono presi da qui.</p>
-<p class="hm">Per aggiungerne uno tocca <b>Aggiungi alimento</b>.<br>Con <b>Compila scheda Automaticamente</b> basta fotografare la confezione e la tabella nutrizionale:<br>l'Intelligenza Artificiale compila la scheda da sola,<br>poi puoi aggiungere indicazioni o note scrivendo o parlando nella chat (per esempio "1 galletta = 8 g").<br>Con <b>Compila scheda Manualmente</b> inserisci tu tutti i valori.</p>
+<p class="hm">Per aggiungerne uno tocca <b>Aggiungi Alimento</b>.<br>Con <b>Compila scheda Automaticamente</b> basta fotografare la confezione e la tabella nutrizionale:<br>l'Intelligenza Artificiale compila la scheda da sola,<br>poi puoi aggiungere indicazioni o note scrivendo o parlando nella chat (per esempio "1 galletta = 8 g").<br>Con <b>Compila scheda Manualmente</b> inserisci tu tutti i valori.</p>
 <h4>Ricette</h4><div style="height:56px"></div>
 <h4>Storico</h4><p class="hm">Le giornate chiuse, il pallino dice com'è andata:</p>
 <p class="hm"><span class="dot" style="background:var(--ok)"></span>entro l'obiettivo</p>
