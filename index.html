@@ -669,6 +669,7 @@ html:not(.lightmode) #v-alimenti details.food:not([open]),html:not(.lightmode) #
 .info h4{margin:18px 0 6px;font-size:18px;color:light-dark(#1f4d35,#fff)}
 .info p,.info p.hm{margin:0 0 8px;font-size:16.5px;line-height:1.5;color:var(--ink)} /* v200: testo della finestra informazioni più grande */
 .info .src{font-size:inherit;font-weight:700} /* v202: etichette colorate leggibili come il testo */
+.info .dot{width:13px;height:13px;margin:0 10px 0 4px;vertical-align:-1px} /* v203: legenda dei pallini nella finestra informazioni */
 </style>
 </head>
 <body>
@@ -792,7 +793,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 202</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 203</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -946,7 +947,10 @@ function showInfo(){sheet(`<div class="info"><h3>Come funziona Kcal</h3>
 <p class="hm"><span class="src gen">(stima da foto)</span> stimato dall'Intelligenza Artificiale guardando la foto.</p>
 <p class="hm"><span class="src nf">(non trovato – cercare manualmente l'alimento)</span> l'Intelligenza Artificiale non conosce l'alimento: non inventa nulla e ti chiede i valori.</p>
 <h4>Alimenti</h4><p class="hm">I tuoi prodotti di marca con i valori esatti e le foto. Quando li nomini nel Diario, i valori vengono presi da qui.</p>
-<h4>Storico</h4><p class="hm">Le giornate chiuse. Il pallino dice com'è andata: verde entro l'obiettivo, arancione nel margine bonus, rosso oltre.</p>
+<h4>Storico</h4><p class="hm">Le giornate chiuse. Il pallino dice com'è andata:</p>
+<p class="hm"><span class="dot" style="background:var(--ok)"></span>entro l'obiettivo</p>
+<p class="hm"><span class="dot" style="background:var(--warn)"></span>nel margine bonus</p>
+<p class="hm"><span class="dot" style="background:var(--bad)"></span>oltre il bonus</p>
 <h4>Impostazioni</h4><p class="hm">Obiettivo kcal e margine bonus, aspetto chiaro o scuro, modello di Gemini, backup su Google Drive o su file.</p>
 <h4>Gesti utili</h4><p class="hm">Swipe a destra o a sinistra per cambiare sezione · tieni premuto 1 secondo un tasto della barra in basso per aggiornare l'app · tieni premuto Ascolta per riascoltare dall'inizio.</p>
 <div class="row" style="margin-top:14px"><button class="btn bdef" id="noSheet">Chiudi</button></div></div>`)}
