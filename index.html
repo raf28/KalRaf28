@@ -40,6 +40,8 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 #dayLabel{font-size:14px;line-height:1.2;min-width:0}
 #dayLabel::first-letter{text-transform:uppercase}
 .arw:disabled{opacity:.4}
+/* v171: frecce della data piene del verde di Nuova Giornata Alimentare (spente restano più chiare) */
+.arw{background:#2f8f5c}
 .head.editing{background:#7a5c12}
 .histbar{background:#7a5c12!important;flex-wrap:wrap}
 .histbar b{font-size:15px}
@@ -114,6 +116,8 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 .flink{font:inherit;color:inherit;text-align:left;padding:0}
 .flink span{margin-left:6px;font-size:.85em;color:light-dark(#2c6a49,#7cc79a);text-decoration:none;display:inline-block}
 #mealItems .x,.mbox .x{width:30px;height:30px;border-radius:50%;border:0;background:var(--bad);color:#fff;font-size:24px;font-weight:400;display:grid;place-items:center;padding:0 0 3px;justify-self:center;align-self:center}
+/* v171: X più piccola e verde (la conferma di eliminazione resta rossa) */
+#mealItems .x,.mbox .x{width:24px;height:24px;font-size:20px;padding:0 0 2px;background:#2f8f5c}
 #mealItems .x:active,.mbox .x:active{background:color-mix(in srgb,var(--bad) 75%,#000)}
 .tot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;padding-top:9px;border-top:2px solid var(--line);font-weight:600}
 .tot small{font-weight:400;color:var(--mute);font-size:13px;width:100%}
@@ -263,6 +267,7 @@ details.card summary::-webkit-details-marker{display:none}
 .hm{font-size:13px;color:var(--mute)}
 /* modale */
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:20}
+.modal.cfm{z-index:25}.modal.cfm .sheet h3{margin-top:0}
 .sheet{background:var(--card);width:100%;max-width:560px;border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));max-height:88dvh;overflow-y:auto}
 .sheet h3{margin:0 0 8px;font-size:19px}
 .toast{position:fixed;left:50%;bottom:130px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;z-index:30;max-width:90vw}
@@ -669,7 +674,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 170</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 171</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1296,7 +1301,12 @@ const PHK=['confezione','confezione2','tabella'];
 const PHL={tabella:'Tabella valori nutrizionali',confezione:'Confezione 1',confezione2:'Confezione 2',confezione3:'Confezione 3'};
 function slotsHtml(ph){const L=[['confezione','Foto confezione 1'],['confezione2','Foto confezione 2'],['tabella','Foto tabella valori nutrizionali']];
   return`<div class="ph3">${L.map(([k,l])=>`<div class="sl3"><div class="sl3i">${ph[k]?`<img alt="${l}" src="${esc(ph[k])}">`:'<span>nessuna foto</span>'}</div><div class="sl3l">${l}</div><div class="sl3b"><button data-slot="${k}" data-cam="1" aria-label="Scatta foto: ${l}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></button><button data-slot="${k}" aria-label="Scegli file: ${l}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.8"/><path d="M21 16l-5-5-9 9"/></svg></button></div><button class="sl3r btn std2" data-unslot="${k}" ${ph[k]?'':'disabled'}>Rimuovi</button></div>`).join('')}</div>`}
-function bindSlots(ph,redraw){document.querySelectorAll('[data-slot]').forEach(b=>b.onclick=async()=>{const d=await pickImage(!!b.dataset.cam);if(d){ph[b.dataset.slot]=d;redraw()}});document.querySelectorAll('[data-unslot]').forEach(b=>b.onclick=()=>{ph[b.dataset.unslot]=null;const c=['confezione','confezione2','confezione3'].map(k=>ph[k]).filter(Boolean);['confezione','confezione2','confezione3'].forEach((k,i)=>ph[k]=c[i]||null);redraw()})}
+function bindSlots(ph,redraw){document.querySelectorAll('[data-slot]').forEach(b=>b.onclick=async()=>{const d=await pickImage(!!b.dataset.cam);if(d){ph[b.dataset.slot]=d;redraw()}});document.querySelectorAll('[data-unslot]').forEach(b=>b.onclick=()=>miniConfirm('Eliminare la foto?','Sei sicuro di voler eliminare la foto? Verrà cancellata.',()=>{ph[b.dataset.unslot]=null;const c=['confezione','confezione2','confezione3'].map(k=>ph[k]).filter(Boolean);['confezione','confezione2','confezione3'].forEach((k,i)=>ph[k]=c[i]||null);redraw()}))}
+/* v171: piccola conferma sopra una finestra già aperta (es. Rimuovi foto in Modifica alimento) */
+function miniConfirm(title,text,onYes){const o=document.createElement('div');o.className='modal cfm';o.innerHTML=`<div class="sheet"><h3>${esc(title)}</h3><p class="hm">${esc(text)}</p><div class="row between"><button class="btn std2" data-c="no">Annulla</button><button class="btn std2 bad" data-c="yes">Elimina</button></div></div>`;
+  let cw=null;const close=()=>{if(cw){const w=cw;cw=null;try{w.destroy()}catch(e){}}o.remove()};
+  try{if(window.CloseWatcher){cw=new CloseWatcher();cw.onclose=()=>{cw=null;o.remove()}}}catch(e){}
+  o.onclick=e=>{if(e.target===o){close();return}const b=e.target.closest('[data-c]');if(!b)return;close();if(b.dataset.c==='yes')onYes()};document.body.appendChild(o)}
 function addFoodStart(){foodSheet(null)}
 function foodForm(f){foodSheet(f)}
 async function foodSheet(f){
@@ -1694,13 +1704,16 @@ try{history.replaceState({v:'diario'},'')}catch(e){}
    if(t.clientX<EDGE||t.clientX>W-EDGE||t.clientY<EDGE||t.clientY>H-EDGE)return;
    if(!$('#app')||$('#app').hidden||!$('#modal').hidden||lbEl)return;if(hScroll(e.target))return;
    sx=t.clientX;sy=t.clientY;st=Date.now();ok=true},{passive:true});
- document.addEventListener('touchend',e=>{if(!ok)return;ok=false;const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;
-   if(Date.now()-st>700||Math.abs(dx)<60||Math.abs(dx)<Math.abs(dy)*1.8)return;
-   const a=document.activeElement;if(a&&/^(INPUT|TEXTAREA)$/.test(a.tagName)&&a.contains(e.target))return;
+ function fire(e,t,end){const dx=t.clientX-sx,dy=t.clientY-sy;if(Date.now()-st>700||Math.abs(dx)<60||Math.abs(dx)<Math.abs(dy)*1.8)return false;
+   const a=document.activeElement;if(a&&/^(INPUT|TEXTAREA)$/.test(a.tagName)&&a.contains(e.target))return false;ok=false;nav(dx);return true}
+ /* v171: la sezione cambia appena il dito ha fatto abbastanza strada, senza aspettare che si stacchi dallo schermo */
+ document.addEventListener('touchmove',e=>{if(ok)fire(e,e.touches[0])},{passive:true});
+ document.addEventListener('touchend',e=>{if(!ok)return;fire(e,e.changedTouches[0]);ok=false},{passive:true});
+ function nav(dx){
    const i=Math.max(0,ORD.indexOf(ui.view)),n=ORD[(i+(dx<0?1:-1)+ORD.length)%ORD.length];go(n);
    /* v169: la nuova sezione entra scorrendo dal lato dello swipe, per un passaggio più fluido */
    const sec=$('#v-'+n);if(sec&&sec.animate&&!matchMedia('(prefers-reduced-motion: reduce)').matches){const fx=(dx<0?1:-1)*Math.min(window.innerWidth*.35,140);
-     try{sec.animate([{transform:`translateX(${fx}px)`,opacity:.35},{transform:'translateX(0)',opacity:1}],{duration:230,easing:'cubic-bezier(.2,.8,.2,1)'})}catch(err){}}},{passive:true});
+     try{sec.animate([{transform:`translateX(${fx}px)`,opacity:.5},{transform:'translateX(0)',opacity:1}],{duration:180,easing:'cubic-bezier(.2,.8,.2,1)'})}catch(err){}}}
  document.addEventListener('touchcancel',()=>{ok=false},{passive:true});})();
 $('#main').addEventListener('scroll',()=>{alimStuck();diarioFades();histFades()},{passive:true});window.addEventListener('resize',()=>requestAnimationFrame(alimSticky));
 /* altezza dell'app misurata davvero (dopo "trascina per aggiornare" o all'avvio Android a volte dava un'altezza sbagliata e la barra in basso spariva) */
