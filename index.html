@@ -829,7 +829,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 227</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 228</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1215,7 +1215,7 @@ function render(){applyTheme();requestAnimationFrame(alimSticky);requestAnimatio
   $('#pills').hidden=true; /* barra dei pasti in basso tolta (26/11): la riga dei pasti ora sta sopra il campo di scrittura */
   $('#mdock').hidden=ui.view!=='diario';$('#addMeal').hidden=ui.dv!==null;$('#ctx').hidden=ui.view==='diario'||ui.view==='ricette';$('#rdock').hidden=ui.view!=='ricette';document.querySelectorAll('[data-rdock]').forEach(b=>b.classList.toggle('on',b.dataset.rdock===ui.rsel));{const t=$('#recSel');if(t){t.hidden=!ui.rsel;t.textContent=ui.rsel==='crea'?'Crea Ricetta':ui.rsel==='book'?'Ricettario':''}}
   $('#comp .in').hidden=false;
-  if(ui.view==='diario'&&ui.dv!==null){$('#comp').hidden=false;$('#comp .in').hidden=true;renderHead();renderHistDay();}
+  if(ui.view==='diario'&&ui.dv!==null){$('#comp').hidden=true;/* v228: giornata archiviata, niente striscia vuota del campo di scrittura */$('#comp .in').hidden=true;renderHead();renderHistDay();}
   else if(ui.view==='diario'){if(ui.meal)ensureMeal(ui.meal);renderHead();renderMeal();renderPills();$('#msg').placeholder=ui.meal?'Cosa hai mangiato?':'Tocca + per iniziare'}
   if(ui.view==='ricette'){renderRec();$('#ctx').textContent='Chat ricette · non viene contata nel diario';$('#msg').placeholder=''}
   if(ui.view==='storico')renderHist();
