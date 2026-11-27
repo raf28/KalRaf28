@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 165 (27/11/2026).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 166 (27/11/2026).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **165**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **166**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -49,7 +49,7 @@ KalRaf28 è un diario alimentare personale. Al posto di contare le calorie nelle
 - **Mai spese extra per l'API** oltre all'abbonamento.
 - In futuro forse un'APK.
 
-## 3. Come funziona oggi (v165): sezioni
+## 3. Come funziona oggi (v166): sezioni
 
 La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impostazioni** (Preimpostati tolto nella v53). La voce attiva è evidenziata con una pillola verde `#2f8f5c`.
 
@@ -301,10 +301,11 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **v163:** Alimenti, solo in modalità chiara: le pillole chiuse sono più basse (padding 5 px invece di 12, circa 60 px invece di 78; due righe ci stanno comode), con sfondo **bianco** e bordo e scritte nello stesso verde scuro `#1f4d35` (variante A dell'anteprima). Scheda aperta e modalità scura invariate.
   - **v164:** solo in modalità chiara. **Impostazioni:** testata verde fissa in alto con il titolo "Impostazioni", alta come quella dello Storico; sotto la testata la stessa sfumatura che c'è in basso sopra "Applica e torna al Diario" (circa 21 px). **Alimenti:** tornano le sfumature, ma nello stile di quella delle Impostazioni: in basso sopra "Aggiungi alimento" (come la barra "Applica") e in alto sotto la lettera ferma (21 px). In modalità scura tutto invariato (Impostazioni con il titolo semplice, Alimenti senza sfumature).
   - **v165:** **Storico:** sotto la testata c'è la **legenda dei pallini** (in chiaro e in scuro): verde "Entro l'obiettivo", arancione "Nel margine bonus", rosso "Oltre il bonus". Solo in modalità chiara: le pillole delle giornate sono uguali a quelle degli Alimenti (più basse, sfondo bianco, bordo e scritte `#1f4d35`, pallino con contorno verde) e ci sono le sfumature da 21 px sotto la testata e in basso. **Ricette** (solo in chiaro): testata verde con il titolo "Ricette", alta come in Storico e Impostazioni, con le stesse sfumature sotto la testata e in basso, già pronte per quando la sezione verrà ristrutturata.
+  - **v166:** **Alimenti:** le frecce rotonde ↑ ↓ sono alla stessa altezza che hanno nel Diario (prima stavano sopra "Aggiungi alimento", troppo in basso); vale in chiaro e in scuro. **Storico** (solo in chiaro): la testata verde è alta come quella degli Alimenti e contiene, al posto della ricerca, una pillola tutta bianca della stessa forma e misura di "Cerca un alimento" con dentro la legenda dei pallini (in scuro la legenda resta sotto la testata). **Nota dell'utente:** le modifiche di questa serie (v158–v166) sono pensate per la modalità chiara; più avanti si riadatterà tutto anche alla modalità scura.
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
-**Stato:** online, **collaudo in corso dal 25/11/2026**. Il 26/11 sera (v91–v165) è stata rifinita la grafica di Diario, Alimenti, Storico e Impostazioni: interfaccia considerata finita dall'utente; resta da ristrutturare la sezione Ricette (vedi Cose da fare).
+**Stato:** online, **collaudo in corso dal 25/11/2026**. Il 26/11 sera (v91–v166) è stata rifinita la grafica di Diario, Alimenti, Storico e Impostazioni: interfaccia considerata finita dall'utente; resta da ristrutturare la sezione Ricette (vedi Cose da fare).
 
 ---
 
