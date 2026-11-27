@@ -6,15 +6,17 @@
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **216**.
+> Sto sviluppando **Kcal** (nome del repository e del progetto: **KalRaf28**; titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **216**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
 > L'app è installata sul mio Pixel come **APK Android** (TWA creata con PWABuilder, package `io.github.raf28.kalraf28`, nome KalRaf28, icona "Kcal"). L'APK carica l'app da GitHub Pages, quindi ogni modifica pubblicata su KalRaf28 arriva da sola sul telefono. Il secondo repository **raf28.github.io** contiene solo `.well-known/assetlinks.json` (verifica che toglie la barra dell'indirizzo) e non va toccato.
 >
-> Come lavoriamo: per ogni modifica grafica voglio **prima un'anteprima (immagine)** e solo dopo la mia conferma ("implementa") la modifica va pubblicata. Rispondimi sempre in italiano.
+> Come lavoriamo: per ogni modifica grafica voglio **prima un'anteprima (immagine)** e solo dopo la mia conferma ("implementa") la modifica va pubblicata; se nel messaggio dico già "implementa" si pubblica direttamente. Le anteprime le fai con Playwright sul codice vero (chiaro e scuro) e me le mandi come immagini. Dopo ogni versione aggiorni questo documento **sia su GitHub sia nel progetto Claude "Kcal"** (versione attuale, sezione 3 e cronologia). Rispondimi sempre in italiano.
 >
-> Prima di tutto leggi il codice attuale dal repository (è pubblico: https://github.com/raf28/kalraf28) e questo documento di pianificazione. Poi riprendiamo dalla lista **"Cose da fare"** in fondo al documento.
+> Le **regole grafiche definitive** (colori chiaro/scuro, tasti, pillole, ovali, testate, sfumature, 3D e ombre) sono nella sezione **3.16**: ogni nuova schermata (per esempio le Ricette) va fatta seguendo quelle regole.
+>
+> Prima di tutto leggi il codice attuale dal repository (è pubblico: https://github.com/raf28/kalraf28) e questo documento di pianificazione. Poi riprendiamo dalla lista **"Cose da fare"** in fondo al documento: la prossima cosa da fare è la **sezione Ricette** (la grafica di tutto il resto è finita).
 >
 > Regole fisse:
 > - Non devo **mai** pagare l'API oltre al mio abbonamento Google AI Pro: si usano solo il livello gratuito e modelli Flash/Flash-Lite, e una chiave di un progetto senza fatturazione.
@@ -54,7 +56,7 @@ KalRaf28 è un diario alimentare personale. Al posto di contare le calorie nelle
 La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impostazioni** (Preimpostati tolto nella v53). La voce attiva è evidenziata con una pillola verde `#2f8f5c`.
 
 ### 3.1 Diario
-- **Testata verde:** in alto il titolo "Diario" (v173), poi una pillola con la data su due righe ("Giovedì 26" / "Novembre", v102), le frecce ‹ › (32 px) per sfogliare le giornate e "Nuova Giornata Alimentare" (tasto di default, verde chiaro, v94); poi kcal consumate / obiettivo (+bonus) e una barra colorata: verde fino all'obiettivo, gialla nella zona bonus (a righe), rossa oltre. Accanto c'è l'etichetta "Restano X kcal", "Bonus: X rimaste" oppure "Oltre di X". Sotto ci sono i riquadri dei macro con il nome sopra e il valore sotto (stesso bianco e stessa grandezza).
+- **Testata verde:** in alto il titolo "Diario" (v173) con a destra il cerchio **ⓘ** che apre la finestra "Come funziona Kcal" (v198–v216, vedi 3.10), poi una pillola con la data su due righe ("Giovedì 26" / "Novembre", v102), le frecce ‹ › (32 px) per sfogliare le giornate e "Nuova Giornata Alimentare" (tasto di default, verde chiaro, v94); poi kcal consumate / obiettivo (+bonus) e una barra colorata: verde fino all'obiettivo, gialla nella zona bonus (a righe), rossa oltre. Accanto c'è l'etichetta "Restano X kcal", "Bonus: X rimaste" oppure "Oltre di X". Sotto ci sono i riquadri dei macro con il nome sopra e il valore sotto (stesso bianco e stessa grandezza).
 - **Frecce ‹ ›** per sfogliare le giornate archiviate. Una giornata archiviata si apre in sola lettura e con **"Modifica giornata"** si può riaprire. Durante la modifica la testata diventa marrone/oro, le frecce si disattivano e la barra "Giornata archiviata" mostra "Salva" (v106); al termine la giornata torna nello storico al suo posto.
 - **Riga dei pasti (v63)**, sopra il campo di scrittura: una pillola verde con il cerchio **+** bianco a sinistra e i pasti aggiunti (larghi 96 px; quello scelto è verde chiaro con scritta bianca, v108). Il **+** apre "Aggiungi Colazione / Pranzo / Cena / Spuntino": colazione, pranzo e cena uno ciascuno, spuntini numerati fino a **9**. I pasti compaiono **nell'ordine in cui sono stati aggiunti** (`day.order`).
 - **Ogni pasto** ha una barra fissa in alto a pillola, uguale alla riga dei pasti ("PRANZO 412 kcal", v120), con **"Elimina pranzo/cena/…"** (verde chiaro; con conferma; eliminando uno spuntino in mezzo i successivi vengono rinumerati); poi la **tabella del pasto** "LISTA ALIMENTI / TOTALE KCAL E MACRO" (v139–v147) con cornice verde: alimenti (nome, quantità, fonte, kcal, macro, X rossa con conferma; ⓘ sugli alimenti "valore sicuro" apre la scheda con le foto), "Totale kcal PRANZO: N kcal", tabella dei macro e Ascolta/Pausa; infine la chat con Gemini. Scorrendo, il contenuto sfuma sotto la barra del pasto e sopra la riga dei pasti.
@@ -96,6 +98,7 @@ La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impos
 - Nel Diario, quando l'utente nomina un alimento salvato, Gemini lo collega con il suo `alimento_id` e i grammi (o il numero di pezzi). L'app poi **ricalcola i valori con precisione dalla scheda**.
 
 ### 3.5 Ricette
+- **Stato grafico (v165–v175):** testata verde con il titolo "Ricette" come le altre sezioni; sopra il campo di scrittura c'è la stessa barra verde dei pasti del Diario con due pulsanti **segnaposto** "Crea Nuova Ricetta" e "Ricettario" (selezionandoli compare solo il titolo verde corrispondente). Il campo di scrittura non ha testo d'esempio. Sotto è rimasta la vecchia versione (chat + ricettario) descritta qui sotto: tutta la sezione è **da ristrutturare** (vedi Cose da fare).
 - Due schede: **Chat** e **Ricettario (N)**.
 - La **Chat** è un consulente di cucina per la dieta (prompt `SYS_REC`) che non conta nel diario. Quando propone una ricetta concreta compare il riquadro **"Salva nel ricettario"**. Il pulsante "Nuova conversazione" svuota la chat, che tiene al massimo 200 messaggi.
 - Il **Ricettario** mostra kcal e macro per porzione e l'elenco degli ingredienti. Ha i pulsanti **"Aggiungi a un pasto"** (si sceglie il pasto e le porzioni da 0,5 a 10, a passi di 0,5) ed **"Elimina"**.
@@ -105,7 +108,7 @@ La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impos
 - Pulsante tolto dalla barra (v53). Nel codice resta solo il segnaposto "Sezione in arrivo." (vedi Stato delle sezioni).
 
 ### 3.7 Storico
-- Titolo "Storico Giornate Alimentari" con il conteggio. È l'elenco delle giornate chiuse, nello stile degli Alimenti (v132–v148): pillole verde scuro con pallino colorato, data e kcal "su obiettivo". Aperta mostra "RIEPILOGO: N kcal", macro, orari, poi COLAZIONE / PRANZO / SPUNTINO… con gli alimenti, e i tasti Annulla … Modifica, Elimina (rosso). "Modifica" porta al Diario su quella giornata. Dalla v172 anche "Elimina" è verde: rosso solo nella conferma. Il tasto Indietro di Android chiude la giornata aperta.
+- Titolo "Storico Giornate Alimentari" (24 px come gli altri titoli; il conteggio delle giornate è stato tolto per scelta dell'utente). Sotto il titolo, nella testata, l'ovale con la **legenda dei pallini**. È l'elenco delle giornate chiuse, nello stile degli Alimenti (v132–v148, regole in 3.16): pillole con pallino colorato, data e kcal "su obiettivo". Aperta mostra "RIEPILOGO: N kcal", macro, orari, poi COLAZIONE / PRANZO / SPUNTINO… con gli alimenti, e i tasti Annulla … Modifica, Elimina (rosso). "Modifica" porta al Diario su quella giornata. Dalla v172 anche "Elimina" è verde: rosso solo nella conferma. Il tasto Indietro di Android chiude la giornata aperta.
 - 🟢🟡🔴 **Significato del pallino colorato** (nota da riusare in futuro, per esempio in una legenda nell'app): **verde** = la giornata è rimasta entro l'obiettivo kcal; **giallo/arancione** = ha superato l'obiettivo ma è rimasta nel margine bonus; **rosso** = ha superato anche il bonus (stessi colori della barra kcal del Diario). Il colore si calcola con l'obiettivo e il margine salvati in quella giornata.
 - Si conservano al massimo 400 giornate. Le più vecchie del periodo scelto vengono eliminate in automatico.
 
@@ -119,7 +122,7 @@ La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impos
 - **Aspetto (v57, v125):** "Come il Telefono" / "Chiaro" / "Scuro" (`settings.theme`), salvato anche nel backup; tasti verde scuro, quello scelto verde chiaro con ✓.
 - **Sicurezza:** tasto "PIN Applicazione" (blocca l'app con il PIN su questo dispositivo; dalla v143, stesso stile di "Sincronizza").
 - **Reset App:** scollega Google e cancella tutti i dati sul telefono ("Cancella solo i dati su questo telefono: / i backup su Drive restano.").
-- Tutti i blocchi hanno il bordo verde `#2c6a49` (v121).
+- Testata verde con il titolo "Impostazioni" e il cerchio **ⓘ** a destra (v164, v198). Tutti i blocchi hanno il bordo verde `#2c6a49` in chiaro e bianco in scuro.
 - In fondo c'è "* I Valori Nutrizionali Generici sono stime del modello" (nel colore arancione dell'etichetta "valore generico" del Diario) e sotto "Versione App: NN" (v132), poi il pulsante "Applica e torna al Diario".
 
 ### 3.9 Backup su Google Drive (v34–v38) ✅
@@ -134,7 +137,8 @@ La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impos
 - La pagina **`privacy.html`** è l'informativa richiesta da Google per la schermata di consenso OAuth (contatto: raf28g@gmail.com).
 
 ### 3.10 Altro
-- **Swipe a sinistra/destra** (v168) per passare da una sezione all'altra, a carosello.
+- **Swipe a sinistra/destra** (v168–v171) per passare da una sezione all'altra, a carosello (Diario → Alimenti → Ricette → Storico → Impostazioni → Diario); la sezione cambia appena il dito ha fatto 60 px, con un'animazione di 180 ms. Non vale vicino ai bordi dello schermo, sulle barre che scorrono di lato, sui cursori e con una finestra aperta. Tornando al Diario si riparte sempre dall'alto.
+- **Finestra "Come funziona Kcal"** (cerchio ⓘ in Diario e Impostazioni, funzione `showInfo()`, v198–v216): spiegazioni scritte con l'utente, in quest'ordine: introduzione, **Gesti utili e funzioni** (trascina per aggiornare, pressione lunga sulla barra, swipe; nella chat del Diario: chiedere il totale, Ascolta, Pausa, pressione lunga su Ascolta, AUTO, con i pulsanti veri disegnati), Diario, Da dove vengono i valori (etichette colorate vere), Alimenti, **Ricette (vuota, da scrivere quando la sezione sarà fatta)**, Storico (legenda dei pallini, modifica delle giornate, frecce ‹ ›), Impostazioni (elenco). Testo grande (16,5 px), a capo dopo ogni punto e nei punti naturali delle frasi, frasi chiave in grassetto verde, simboli ⊕ ‹ › nel cerchio.
 - "Trascina in basso per aggiornare" ricarica la pagina (solo quando si è in cima). In più (v150–v151), **tenendo premuto per 1 secondo un qualsiasi tasto della barra in basso** (Diario, Alimenti, Ricette, Storico o Impostazioni, selezionato o no) il telefono vibra e l'app si aggiorna da qualunque punto, anche a metà di una chat; il tocco normale resta invariato. Come ogni aggiornamento, riparte dal Diario sulla giornata in corso senza pasti selezionati.
 - Le frecce rotonde ↑ ↓ portano in cima o in fondo.
 - Il tasto/gesto Indietro di Android chiude prima le finestre (pop-up come "Aggiungi un pasto", conferme, foto a tutto schermo) e le schede aperte (Alimenti, Storico), poi torna alla sezione precedente. Dalla v149 finestre, foto e schede usano **CloseWatcher** (Chrome 120+): si chiudono senza passare dalla cronologia, quindi niente schermata che scorre con lo swipe da sinistra; se CloseWatcher non c'è si usa la cronologia come prima.
@@ -176,6 +180,19 @@ Formato più piccolo, per le sezioni dove il tasto di default non ci sta (prima 
 - **scritta:** bianca, **14 px**, non in grassetto, centrata, una sola parola (Annulla, Modifica, Elimina, Salva, Rimuovi…);
 - **colore:** verde scuro **`#1f4d35`**, uguale in chiaro e in scuro; rosso `var(--bad)` solo per le eliminazioni definitive.
 - **Nel codice:** classe `btn std2` (commento "TASTO STANDARD 2" nello stile).
+
+### 3.16 🎨 Regole grafiche definitive (27/11/2026, v216)
+Valgono per tutte le sezioni e per quelle future (Ricette). Nel codice le regole per il solo tema chiaro usano `html.lightmode …`, quelle per il solo tema scuro `html:not(.lightmode) …`.
+- **Testate:** verde `#1f4d35`, titolo 24 px in grassetto a 16 px dal bordo, riga del titolo alta 36 px. Sotto il titolo c'è un **ovale** di 52 px di altezza, largo uguale in tutte le sezioni: pillola della data (Diario), "Cerca un alimento" (Alimenti), legenda (Storico). Chiaro: ovale bianco senza bordo, scritte e lente `#1f4d35`. Scuro: ovale grigio scuro (`--card`) senza bordo, con scritte e lente bianche.
+- **Colori di fondo:** chiaro `--bg #f4f6f1`, schede `--card #fff`. Scuro: sfondo nero attenuato `--bg #111112`, schede/finestre/pillole `--card #1c1c1e` (grigio neutro, non verdastro), linee `#2c2c2e`.
+- **Verdi:** `#1f4d35` (testate, tasti normali), `#2f8f5c` (tasti in evidenza: "Nuova Giornata Alimentare", "Elimina pranzo", pasto/voce selezionata, frecce della data, cursori), `#436955` (tasti microfono/fotocamera in chiaro e messaggi dell'utente nel Diario in chiaro), `#4cc184`/`#5cc58a` (verdi accesi del tema scuro e valori "sicuri").
+- **Rosso** (`--bad`) solo per il tasto che **elimina davvero** (quello della conferma); tutti gli altri Elimina e le X sono verdi.
+- **Pillole degli elenchi** (Alimenti, Storico): alte 60 px (padding 5 px), bordo 4 px. Chiaro: bianche con bordo e scritte `#1f4d35` e rilievo 3D **medio**. Scuro: grigio `#1c1c1e` con bordo e scritte **bianche** e rilievo 3D **marcato**. Nessuna ombra esterna. Lettere dell'indice bianche in scuro.
+- **3D e ombre (v187–v197):** rilievo 3D (luce in alto, filo scuro in basso, piccola ombra, si "abbassa" quando premuto) **solo su ciò che si preme** (tasti, pasti selezionati e no, X, voce selezionata della barra in basso, "Aggiungi alimento", pillole degli elenchi). I **contenitori** (pillola della data, barra del pasto, barra dei pasti e delle Ricette, ovali delle testate) hanno solo un'ombra morbida. Il tasto **+** è un cerchio bianco "bombato" senza bordo con + verde scuro.
+- **Sfumature** (21 px) sotto le testate e sopra le barre in basso in Alimenti, Storico, Ricette e Impostazioni; nel Diario sotto la barra del pasto e sopra la riga dei pasti.
+- **Frecce ↑ ↓** trasparenti: alla stessa altezza del Diario in tutte le sezioni; in scuro contorno e freccia bianchi.
+- **Tasti standard:** tasto di default 150 × 40 (3.14), standard 2 90 × 40 (3.15).
+- **Finestra informazioni:** cerchio ⓘ 32 px, bordo 3 px, "i" corsiva con le grazie.
 
 ## 4. Struttura dei dati (localStorage `diario_kcal_v1`)
 
@@ -360,12 +377,12 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
-**Stato:** online, **collaudo in corso dal 25/11/2026**. Il 26/11 sera (v91–v216) è stata rifinita la grafica di Diario, Alimenti, Storico e Impostazioni: interfaccia considerata finita dall'utente; resta da ristrutturare la sezione Ricette (vedi Cose da fare).
+**Stato:** online, **collaudo in corso dal 25/11/2026**. Tra il 26/11 sera e il 27/11 mattina (v91–v216) è stata rifinita tutta la grafica di Diario, Alimenti, Storico e Impostazioni, in chiaro e in scuro, con le regole della sezione 3.16, e scritta la finestra "Come funziona Kcal": **la grafica è considerata definitiva dall'utente**. Resta da fare solo la sezione Ricette (e, quando si rigenera l'APK, lo sblocco della rotazione: vedi Note).
 
 ---
 
 ## 📋 STATO DELLE SEZIONI (25/11/2026, valutazione dell'utente)
-- ✅ **Già funzionanti:** Diario, Alimenti, Storico, Impostazioni.
+- ✅ **Già funzionanti e con grafica definitiva (27/11, v216):** Diario, Alimenti, Storico, Impostazioni.
 - 🔧 **Da implementare / completare:** **Ricette** (nel codice esiste già una prima versione con chat e ricettario, da rivedere e completare) e **Preimpostati** (oggi solo il segnaposto "Sezione in arrivo").
 - ❓ Ricette e Preimpostati: **da decidere se resteranno** nell'app oppure no.
 - **26/11 (v53):** tolto il pulsante **Preimpostati** dalla barra in basso, in attesa di capire se la sezione può essere utile. La barra ora ha 5 voci (Diario, Alimenti, Ricette, Storico, Impostazioni), più larghe e centrate. La sezione (oggi solo un segnaposto) e la fonte `preimpostato` restano nel codice: per rimetterla basta ripristinare il pulsante `data-v="pasti"` e tornare a 6 colonne.
@@ -373,7 +390,9 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
 ## ✅ COSE DA FARE
 
 ### Da implementare
-1. **Sezione Ricette, da ristrutturare** (non urgente, da fare in un secondo momento). Come dovrà funzionare:
+**Restano solo due cose (27/11/2026):** la sezione Ricette (qui sotto) e la gestione verticale/orizzontale dell'app (vedi Note in fondo).
+
+1. **Sezione Ricette, da ristrutturare** (è la prossima cosa da fare). Esistono già la testata verde e la barra in basso con i pulsanti segnaposto "Crea Nuova Ricetta" e "Ricettario" (v175): vanno collegati alle nuove schermate, seguendo le regole grafiche della sezione 3.16. Alla fine va scritto anche il paragrafo **Ricette** nella finestra "Come funziona Kcal" (oggi vuoto). Come dovrà funzionare:
    - **Chat per creare le ricette.** Si danno a Gemini gli ingredienti con le dosi e si indica in quante **porzioni** si divide la ricetta (es. un impasto da cui escono 4 piadine = 4 porzioni). A ogni ingrediente aggiunto o modificato si vede sempre, aggiornato:
      - il **totale della ricetta**: elenco di tutti gli ingredienti con le quantità, kcal totali e macro totali;
      - sotto, la **singola porzione**: ingredienti con le quantità per porzione, kcal e macro di una porzione (totale diviso per il numero di porzioni).
@@ -405,5 +424,5 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
 **In sintesi:** l'uso da parte di un'altra persona è fattibile. Prima vanno sistemati il PIN (condividerlo o cambiare il sistema) e, se serve il backup su Drive, l'aggiunta del suo account agli utenti di prova su Google Cloud.
 
 ### Note
-- **Blocco in verticale** (da sistemare alla prossima rigenerazione dell'APK, non urgente): l'app non ruota in orizzontale e non si può usare a schermo diviso. Soluzione: togliere `orientation` dal manifest e rigenerare l'APK (stesso keystore, **version code 4**). Rimandato dall'utente il 26/11.
+- 📌 **Ancora da fare** (insieme alle Ricette). **Blocco in verticale** (da sistemare alla prossima rigenerazione dell'APK, non urgente): l'app non ruota in orizzontale e non si può usare a schermo diviso. Soluzione: togliere `orientation` dal manifest e rigenerare l'APK (stesso keystore, **version code 4**). Rimandato dall'utente il 26/11.
   - **Idea dell'utente:** interruttore **"Blocca in verticale" sì/no** nelle Impostazioni, con `screen.orientation.lock()` / `unlock()`.
