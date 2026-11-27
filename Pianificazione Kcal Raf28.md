@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 205 (27/11/2026).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 206 (27/11/2026).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **205**.
+> Sto sviluppando **KalRaf28** (titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **206**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -49,7 +49,7 @@ KalRaf28 è un diario alimentare personale. Al posto di contare le calorie nelle
 - **Mai spese extra per l'API** oltre all'abbonamento.
 - In futuro forse un'APK.
 
-## 3. Come funziona oggi (v205): sezioni
+## 3. Come funziona oggi (v206): sezioni
 
 La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impostazioni** (Preimpostati tolto nella v53). La voce attiva è evidenziata con una pillola verde `#2f8f5c`.
 
@@ -346,10 +346,11 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **v203:** nella finestra informazioni, paragrafo Storico: "Le giornate chiuse. Il pallino dice com'è andata:" seguito dalla legenda uno sotto l'altro con i pallini colorati veri (verde entro l'obiettivo, arancione nel margine bonus, rosso oltre il bonus). Paragrafo Impostazioni approvato così com'è.
   - **v204:** paragrafo Alimenti della finestra informazioni: aggiunta la spiegazione di "Aggiungi alimento": con "Compila scheda Automaticamente" si fotografano confezione e tabella e l'IA compila la scheda, poi si possono dare indicazioni o note scrivendo o parlando in chat (es. "1 galletta = 8 g"); con "Compila scheda Manualmente" si inseriscono tutti i valori a mano.
   - **v205:** paragrafo Impostazioni della finestra informazioni come elenco a trattini: obiettivo kcal e margine bonus, giorni dello Storico, aspetto, Intelligenza Artificiale (chiave e modello), backup su Google Drive, backup su file, PIN, Reset App.
+  - **v206:** paragrafo "Gesti utili" come elenco a trattini: trascina in basso per aggiornare (solo quando la pagina è già in cima, non mentre si scorre); pressione di 1 secondo su un tasto della barra in basso (Diario, Alimenti, Ricette, Storico, Impostazioni) per aggiornare da qualunque punto; swipe a destra/sinistra per cambiare sezione; Ascolta; Pausa (riprende da dove si era lasciato); pressione di 1 secondo su Ascolta per ripartire dall'inizio; AUTO (lettura automatica delle nuove risposte). Testo della finestra informazioni completato con l'utente.
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
-**Stato:** online, **collaudo in corso dal 25/11/2026**. Il 26/11 sera (v91–v205) è stata rifinita la grafica di Diario, Alimenti, Storico e Impostazioni: interfaccia considerata finita dall'utente; resta da ristrutturare la sezione Ricette (vedi Cose da fare).
+**Stato:** online, **collaudo in corso dal 25/11/2026**. Il 26/11 sera (v91–v206) è stata rifinita la grafica di Diario, Alimenti, Storico e Impostazioni: interfaccia considerata finita dall'utente; resta da ristrutturare la sezione Ricette (vedi Cose da fare).
 
 ---
 

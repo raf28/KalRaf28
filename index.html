@@ -793,7 +793,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 205</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 206</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -960,7 +960,13 @@ function showInfo(){sheet(`<div class="info"><h3>Come funziona Kcal</h3>
 – Backup su file: esporta e importa<br>
 – PIN dell'applicazione<br>
 – Reset App</p>
-<h4>Gesti utili</h4><p class="hm">Swipe a destra o a sinistra per cambiare sezione · tieni premuto 1 secondo un tasto della barra in basso per aggiornare l'app · tieni premuto Ascolta per riascoltare dall'inizio.</p>
+<h4>Gesti utili</h4><p class="hm">– <b>Trascina verso il basso</b> per aggiornare l'app: funziona solo quando la pagina è già tutta in cima, non mentre stai scorrendo un elenco o una chat<br>
+– Per aggiornare da qualunque punto <b>tieni premuto per 1 secondo</b> uno dei tasti della barra in basso: Diario, Alimenti, Ricette, Storico o Impostazioni<br>
+– <b>Swipe a destra o a sinistra</b> per cambiare sezione<br>
+– <b>Ascolta</b> legge ad alta voce la risposta dell'Intelligenza Artificiale<br>
+– <b>Pausa</b> ferma la lettura: toccando di nuovo Ascolta riparte da dove avevi lasciato<br>
+– <b>Tieni premuto Ascolta per 1 secondo</b> per ripartire dall'inizio<br>
+– <b>AUTO</b>: se è acceso, ogni nuova risposta dell'Intelligenza Artificiale viene letta da sola appena arriva, senza toccare Ascolta</p>
 <div class="row" style="margin-top:14px"><button class="btn bdef" id="noSheet">Chiudi</button></div></div>`)}
 document.addEventListener('click',e=>{const im=e.target.closest('.ph figure img');if(!im)return;e.preventDefault();e.stopPropagation();const fc=im.closest('figure').querySelector('figcaption');openLb(im.src,fc?fc.textContent:'')},true);
 window.addEventListener('popstate',e=>{if(lbSkip){lbSkip=false;return}if(fdSkip){fdSkip=false;return}if(lbEl){closeLb(true);return}const st=e.state||{v:'diario'};
