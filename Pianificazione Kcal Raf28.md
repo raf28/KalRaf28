@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 223 (27/11/2026).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 224 (27/11/2026).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **Kcal** (nome del repository e del progetto: **KalRaf28**; titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **223**.
+> Sto sviluppando **Kcal** (nome del repository e del progetto: **KalRaf28**; titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **224**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -51,7 +51,7 @@ KalRaf28 è un diario alimentare personale. Al posto di contare le calorie nelle
 - **Mai spese extra per l'API** oltre all'abbonamento.
 - In futuro forse un'APK.
 
-## 3. Come funziona oggi (v223): sezioni
+## 3. Come funziona oggi (v224): sezioni
 
 La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impostazioni** (Preimpostati tolto nella v53). La voce attiva è evidenziata con una pillola verde `#2f8f5c`.
 
@@ -382,10 +382,11 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **v221:** aprendo una pillola di Alimenti o Storico il titolo (nome/data, kcal, "per …"/"su …") mantiene i colori della pillola chiusa (verde scuro `#1f4d35` in chiaro, bianco in scuro) invece di diventare verde acceso. Nello **Storico aperto**, sotto la data, c'è l'etichetta come nel Diario: "Restano X kcal" (neutra), "Bonus di X kcal" (gialla) o "Oltre di X kcal" (rossa), calcolata con obiettivo e margine di quella giornata (classe `.hleft`).
   - **v222:** nello Storico aperto "Restano X kcal" è **verde**, dello stesso verde del pallino (`--ok`), così l'etichetta riprende il colore del pallino; nel Diario resta bianca.
   - **v223 (definitiva):** l'etichetta dello Storico aperto è uguale a quella del Diario, in chiaro e in scuro: sfondo nello stesso verde della pillolina del Diario (colore pieno `#3e6651`, cioè il bianco al 14% sul verde della testata), scritta **bianca** per "Restano X kcal", **gialla** (`--warn`) per "Bonus di X kcal", **rossa** (`#ff7a62`) per "Oltre di X kcal".
+  - **v224:** in modalità chiara il pallino colorato dello Storico resta uguale anche con la giornata aperta (contorno verde scuro da 2 px); prima, aprendo la pillola, il contorno diventava bianco su fondo bianco e il pallino sembrava più piccolo.
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
-**Stato:** online, **collaudo in corso dal 25/11/2026**. Tra il 26/11 sera e il 27/11 mattina (v91–v223) è stata rifinita tutta la grafica di Diario, Alimenti, Storico e Impostazioni, in chiaro e in scuro, con le regole della sezione 3.16, e scritta la finestra "Come funziona Kcal": **la grafica è considerata definitiva dall'utente**. Resta da fare solo la sezione Ricette (e, quando si rigenera l'APK, lo sblocco della rotazione: vedi Note).
+**Stato:** online, **collaudo in corso dal 25/11/2026**. Tra il 26/11 sera e il 27/11 mattina (v91–v224) è stata rifinita tutta la grafica di Diario, Alimenti, Storico e Impostazioni, in chiaro e in scuro, con le regole della sezione 3.16, e scritta la finestra "Come funziona Kcal": **la grafica è considerata definitiva dall'utente**. Resta da fare solo la sezione Ricette (e, quando si rigenera l'APK, lo sblocco della rotazione: vedi Note).
 
 ---
 
