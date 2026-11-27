@@ -651,6 +651,9 @@ nav button.on svg{background-image:linear-gradient(to bottom,rgba(255,255,255,.2
 
 /* v190: tasto + (barra dei pasti e "Aggiungi alimento") bianco bombato, senza bordo, con ombra più forte; + verde scuro */
 .mdock .addm,.addbar .pl{background:radial-gradient(circle at 35% 30%,#fff 0,#f3f6f4 45%,#cfd9d3 100%)!important;color:#1f4d35!important;box-shadow:inset 0 -3px 0 rgba(0,0,0,.12),0 4px 10px rgba(0,0,0,.45)!important}
+
+/* v191: niente ombra sulle pillole degli alimenti (Alimenti) e delle giornate (Storico), in chiaro e in scuro */
+#v-alimenti details.food,#v-storico details.hday,#v-alimenti details.food:not([open]),#v-storico details.hday:not([open]),html:not(.lightmode) #v-alimenti details.food:not([open]),html:not(.lightmode) #v-storico details.hday:not([open]){box-shadow:none!important}
 </style>
 </head>
 <body>
@@ -774,7 +777,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 190</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 191</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
