@@ -798,7 +798,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 214</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 215</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -942,7 +942,7 @@ function closeLb(silent){if(lbCW){const w=lbCW;lbCW=null;try{w.destroy()}catch(e
 
 /* v198: pagina informazioni (bozza delle spiegazioni, da rivedere con l'utente) */
 function showInfo(){sheet(`<div class="info"><h3>Come funziona Kcal</h3>
-<p class="hm">Un diario per contare kcal e Macro di quello che mangi,<br>con l'aiuto dell'Intelligenza Artificiale<br>(al momento Gemini).</p>
+<p class="hm">Un diario per contare kcal e Macro di quello che mangi, con l'aiuto dell'Intelligenza Artificiale.<br>(al momento Gemini)</p>
 <h4>Gesti utili e funzioni</h4><p class="hm">– <b>Trascina verso il basso</b> <b class="ig">per Aggiornare l'App</b>:<br>funziona in tutte le pagine, ma non mentre stai scorrendo la chat del Diario<br>(lì usa il gesto qui sotto)<br>
 – <b>Tieni Premuto per 1 Secondo</b> uno dei tasti della barra in basso <b class="ig">per Aggiornare l'App</b>:<br>Diario, Alimenti, Ricette, Storico o Impostazioni<br>
 – <b>Swipe a destra o a sinistra</b> <b class="ig">per cambiare sezione</b></p>
@@ -960,9 +960,9 @@ function showInfo(){sheet(`<div class="info"><h3>Come funziona Kcal</h3>
 <p class="hm"><span class="src gen">(stima da foto)</span> stimato dall'Intelligenza Artificiale guardando la foto.</p>
 <p class="hm"><span class="src nf">(non trovato – cercare manualmente l'alimento)</span><br>l'Intelligenza Artificiale non conosce l'alimento:<br>non inventa nulla e ti chiede i valori.</p>
 <h4>Alimenti</h4><p class="hm">I tuoi prodotti di marca con i valori esatti e le foto.<br>Quando li nomini nel Diario, i valori vengono presi da qui.</p>
-<p class="hm">Per aggiungerne uno tocca <b>Aggiungi alimento</b>.<br>Con <b>Compila scheda Automaticamente</b> basta fotografare la confezione e la tabella nutrizionale:<br>l'Intelligenza Artificiale compila la scheda da sola,<br>poi puoi aggiungere indicazioni o note scrivendo o parlando nella chat<br>(per esempio "1 galletta = 8 g").<br>Con <b>Compila scheda Manualmente</b> inserisci tu tutti i valori.</p>
+<p class="hm">Per aggiungerne uno tocca <b>Aggiungi alimento</b>.<br>Con <b>Compila scheda Automaticamente</b> basta fotografare la confezione e la tabella nutrizionale:<br>l'Intelligenza Artificiale compila la scheda da sola,<br>poi puoi aggiungere indicazioni o note scrivendo o parlando nella chat (per esempio "1 galletta = 8 g").<br>Con <b>Compila scheda Manualmente</b> inserisci tu tutti i valori.</p>
 <h4>Ricette</h4><div style="height:56px"></div>
-<h4>Storico</h4><p class="hm">Le giornate chiuse.<br>Il pallino dice com'è andata:</p>
+<h4>Storico</h4><p class="hm">Le giornate chiuse, il pallino dice com'è andata:</p>
 <p class="hm"><span class="dot" style="background:var(--ok)"></span>entro l'obiettivo</p>
 <p class="hm"><span class="dot" style="background:var(--warn)"></span>nel margine bonus</p>
 <p class="hm"><span class="dot" style="background:var(--bad)"></span>oltre il bonus</p>
