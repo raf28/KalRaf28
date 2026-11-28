@@ -798,6 +798,11 @@ html:not(.lightmode) .comp textarea{border:4px solid #436955;box-shadow:0 2px 5p
 /* v262: in scuro il bordo usa il verde del tasto microfono (#1f4d35), con la stessa sfumatura del chiaro (in alto ×1,22 = #265e41, in basso ×0,78 = #183c29) */
 /* v268: in scuro l'interno del campo usa il bianco attenuato del tasto + (#e6ece8), come il bordo delle pillole scure */
 html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,html:not(.lightmode) .comp textarea:focus-visible{outline:none;border-color:transparent;background:linear-gradient(#e6ece8,#e6ece8) padding-box,linear-gradient(to bottom,#265e41,#1f4d35 50%,#183c29) border-box}
+/* v273: ora del pasto nella tabella e nello Storico */
+.mbox .mora,#mealItems .mora{font-size:15px;margin:2px 0 8px;color:var(--ink)}
+.mora b{color:light-dark(#2a7a4b,#5cc58a)}
+#v-storico .hora{margin-left:16px;color:var(--ink);font-size:inherit}
+#v-storico details.hday[open] b.hm{font-weight:700}
 /* v267: bordo del campo di scrittura raddoppiato a 8px (chiaro e scuro, colori invariati); spazio interno ridotto (3px sopra e sotto, 8px ai lati) così il campo resta alto 44px, a filo con i tasti */
 .comp textarea,html.lightmode .comp textarea,html:not(.lightmode) .comp textarea{border-width:8px!important;padding:3px 8px!important} /* spazio ai lati da 12 a 8px: «Tocca + per iniziare» resta su una riga */
 /* v272: campo di scrittura a pillola (angoli 22px = metà dell'altezza), in chiaro e in scuro; con più righe resta un rettangolo molto arrotondato */
@@ -927,7 +932,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 272</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 273</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -997,7 +1002,22 @@ function deleteMeal(k){const o=S.day.order;
   const sn=o.filter(isSnack).sort((a,b)=>snackN(a)-snackN(b)),keep=sn.filter(x=>x!==k),map={},ms={};
   keep.forEach((x,i)=>{map[x]='spuntino'+(i+1);ms[map[x]]=S.day.meals[x]});
   sn.forEach(x=>delete S.day.meals[x]);Object.assign(S.day.meals,ms);
-  S.day.order=o.filter(x=>x!==k).map(x=>map[x]||x);ui.meal=null}
+  S.day.order=o.filter(x=>x!==k).map(x=>map[x]||x);ui.meal=null;reorderDay(S.day)}
+/* v273: ORA DEL PASTO. meal.ora = "HH:MM" (fine del pasto), meal.oraFissa = true se l'ha detta l'utente a Gemini.
+   In automatico l'ora è quella dell'ultima modifica alla lista degli alimenti; un'ora detta a Gemini resta fissa.
+   I pasti si ordinano per ora e gli spuntini vengono rinumerati per ora (Spuntino 1 = il più presto). Le ore prima delle 4:00 contano come dopo mezzanotte. */
+const nowHM=()=>{const d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
+const oraMin=o=>{if(!o||!/^\d{1,2}:\d{2}$/.test(o))return null;const[h,m]=o.split(':').map(Number);const v=h*60+m;return v<240?v+1440:v};
+function sortByTime(keys,meals){const t=keys.map((k,i)=>({k,i,m:oraMin((meals[k]||{}).ora)}));
+  return[...t.filter(x=>x.m!==null).sort((a,b)=>a.m-b.m||a.i-b.i),...t.filter(x=>x.m===null)].map(x=>x.k)}
+function reorderDay(D){D=D||S.day;if(!D||!Array.isArray(D.order))return{};
+  const ord=sortByTime(D.order.filter(k=>D.meals[k]),D.meals);
+  const sn=[...ord.filter(isSnack),...Object.keys(D.meals).filter(k=>isSnack(k)&&!ord.includes(k))],map={},ms={};
+  sn.forEach((k,i)=>{map[k]='spuntino'+(i+1);ms[map[k]]=D.meals[k]});sn.forEach(k=>delete D.meals[k]);Object.assign(D.meals,ms);
+  D.order=ord.map(k=>map[k]||k);if(D===S.day&&ui.meal&&map[ui.meal])ui.meal=map[ui.meal];return map}
+function touchMeal(meal,before){/* da chiamare dopo una modifica alla lista: aggiorna l'ora automatica e riordina */
+  if(JSON.stringify(meal.items)!==before&&!meal.oraFissa)meal.ora=meal.items.length?nowHM():null;reorderDay(S.day)}
+const keyOf=meal=>Object.keys(S.day.meals).find(k=>S.day.meals[k]===meal);
 const isClosed=k=>false;
 function deleteSnack(k){
   const keys=orderKeys(Object.keys(S.day.meals)).filter(isSnack),wasCur=k===S.day.curSnack,cur=S.day.curSnack;
@@ -1044,6 +1064,8 @@ const sum=items=>{const t={miss:{},has:{}};KEYS.forEach(k=>t[k]=0);(items||[]).f
 const fk=(k,v)=>k==='sale'?(Math.round(v*100)/100).toLocaleString('it-IT'):f1(v);
 const fv=(t,k,u)=>{const v=t[k];if(v===null||v===undefined)return'—';if(t.miss&&t.miss[k])return t.has&&t.has[k]?'≥'+fk(k,v)+u:'—';return fk(k,v)+u};
 const dayItems=d=>Object.values(d.meals).flatMap(m=>m.items||[]);
+/* v273: macro uno sotto l'altro (di cui zuccheri / saturi sulla stessa riga) */
+const mlines=t=>NUTR.slice(1).map(([k,l,u])=>`${l} ${fv(t,k,u)}`+(SUB[k]?` (di cui ${SUB[k][1]} ${fv(t,SUB[k][0],u)})`:'')).join('<br>');
 const mline=t=>NUTR.slice(1).map(([k,l,u])=>`${l} ${fv(t,k,u)}`+(SUB[k]?` (di cui ${SUB[k][1]} ${fv(t,SUB[k][0],u)})`:'')).join(' · ');
 const clean=i=>{const o={nome:String(i.nome||'Alimento'),quantita:String(i.quantita||'')};o.kcal=num(i.kcal);KEYS.slice(1).forEach(k=>o[k]=nn(i[k]));if(i.imposto)o.imposto=true;if(i.alimento_id){o.alimento_id=String(i.alimento_id);o.grammi=nn(i.grammi);o.fattore=nn(i.fattore)}if(i.dalAlimenti)o.dalAlimenti=true;const F=['utente','etichetta','generico','foto','non_trovato','alimenti','ricetta','preimpostato'];o.fonte=F.includes(i.fonte)?i.fonte:(i.dalAlimenti?'alimenti':i.imposto?'utente':i.stima?'generico':'generico');if(i.imposto)o.fonte='utente';
   if(o.fonte==='non_trovato'){o.kcal=0;KEYS.slice(1).forEach(k=>o[k]=null)}return o};
@@ -1124,7 +1146,7 @@ $('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeSheet()})
 /* ---------- Gemini ---------- */
 const NUMN={type:'NUMBER',nullable:true};
 const ITEM={type:'OBJECT',properties:{nome:{type:'STRING'},quantita:{type:'STRING'},kcal:{type:'NUMBER'},proteine:NUMN,carboidrati:NUMN,zuccheri:NUMN,grassi:NUMN,saturi:NUMN,fibre:NUMN,sale:NUMN,imposto:{type:'BOOLEAN'},alimento_id:{type:'STRING',nullable:true},grammi:NUMN,fattore:NUMN,fonte:{type:'STRING',enum:['utente','etichetta','generico','foto','non_trovato','alimenti']}},required:['nome','quantita','kcal','proteine','carboidrati','zuccheri','grassi','saturi','fibre','sale']};
-const SCHEMA_MEAL={type:'OBJECT',properties:{reply:{type:'STRING'},domanda:{type:'BOOLEAN'},riepilogo:{type:'BOOLEAN'},items:{type:'ARRAY',items:ITEM}},required:['reply','domanda','riepilogo','items']};
+const SCHEMA_MEAL={type:'OBJECT',properties:{reply:{type:'STRING'},domanda:{type:'BOOLEAN'},riepilogo:{type:'BOOLEAN'},ora:{type:'STRING',nullable:true},items:{type:'ARRAY',items:ITEM}},required:['reply','domanda','riepilogo','items']};
 const SCHEMA_REC={type:'OBJECT',properties:{reply:{type:'STRING'},ricetta:{type:'OBJECT',nullable:true,properties:{nome:{type:'STRING'},porzioni:{type:'NUMBER'},ingredienti:{type:'ARRAY',items:ITEM}},required:['nome','porzioni','ingredienti']}},required:['reply']};
 const SYS_MEAL=`Sei l'assistente di un diario alimentare per il conteggio di kcal e macronutrienti. L'utente ti descrive o fotografa gli alimenti di UN pasto (anche etichette nutrizionali).
 In ogni messaggio ricevi la LISTA ATTUALE degli alimenti del pasto in JSON. Devi restituire in "items" SEMPRE la lista COMPLETA e aggiornata del pasto, non solo le novità:
@@ -1148,6 +1170,7 @@ VALORI IMPOSTI DALL'UTENTE (hanno sempre la precedenza, mai ricalcolarli o "corr
 - se dà il totale dell'intero pasto (es. "il pranzo completo era 700 kcal"), la lista diventa UNA sola voce con quel totale (nome tipo "Pranzo completo"), sostituendo le voci precedenti; macro a null se non dati.
 DOMANDE: se il messaggio dell'utente è una domanda o una richiesta di spiegazione (es. "sei sicuro del sale?", "perché così tante calorie?", "quanto sale ha il parmigiano?") e non chiede di aggiungere/togliere/correggere alimenti, metti "domanda": true, lascia la lista invariata e rispondi in "reply" in modo completo e chiaro, usando i dati della lista attuale e della conversazione: spiega da dove vengono i valori (fonte, valori per 100 g, proporzione sulla quantità), voce per voce se serve, e se ti accorgi di un errore dillo e proponi la correzione chiedendo conferma. Altrimenti "domanda": false.
 DOMANDE DI CUCINA (regola fissa): anche le domande e i consigli pratici di cucina sono SEMPRE "domanda": true, e la lista resta identica. Rientrano qui: temperature, tempi e modi di cottura (friggitrice ad aria, forno, padella, piastra, bollitura, vapore, microonde), quanto tenere il fuoco alto o basso, come preparare, condire, conservare o scongelare un alimento, sostituzioni di ingredienti, quanto olio o sale usare, se un alimento è cotto o crudo, ricette e idee. Esempi: "a quanti gradi cuocio la cipolla nella friggitrice ad aria?", "quanti minuti per il petto di pollo in friggitrice?", "come tengo il fuoco in padella per le uova?", "a che temperatura il forno per le verdure?", "quanto deve bollire la pasta integrale?", "con cosa posso sostituire il burro?", "come conservo il riso cotto?". Rispondi in "reply" in modo pratico e preciso (gradi, minuti, livello del fuoco, consigli), come un cuoco esperto. Citare un alimento in una domanda di cucina NON significa averlo mangiato: non aggiungerlo, non toglierlo e non modificare nessuna voce. Se non è chiaro se l'utente lo ha mangiato o chiede solo un consiglio, rispondi al consiglio e chiedi alla fine se vuole aggiungerlo al pasto, sempre con "domanda": true.
+ORA DEL PASTO: se l'utente dice a che ora ha mangiato o finito QUESTO pasto (es. "il pranzo l'ho finito alle 13:30", "lo spuntino l'ho fatto alle 16", "ho cenato verso le otto e mezza di sera", "l'ho mangiato un'ora fa" se l'ora attuale è indicata), metti in "ora" l'orario nel formato HH:MM a 24 ore ("le otto di sera" = "20:00", "mezzogiorno e mezzo" = "12:30", "mezzanotte e un quarto" = "00:15") e confermalo brevemente nel reply (es. "Ora del pranzo: 13:30"). Se è solo un'indicazione dell'ora, la lista degli alimenti resta identica. In tutti gli altri casi "ora": null. Non inventare mai un'ora: se è ambigua (es. "alle 8" senza dire mattina o sera, quando non è chiaro dal pasto) chiedi conferma e metti null.
 RIEPILOGO: metti "riepilogo": true SOLO se l'utente chiede esplicitamente il totale, il riepilogo o i macro del pasto (es. "dammi il totale", "riepilogo", "quanto fa in tutto?", "quanti macro?"); in quel caso l'app mostra il riepilogo completo. Altrimenti "riepilogo": false.
 Per gli aggiornamenti, in "reply" scrivi in italiano, breve: cosa hai aggiunto o cambiato, con quantità e kcal della singola voce (es. "Aggiunto: pasta integrale 70 g, 245 kcal"), ed eventuali ipotesi. Non scrivere i totali del pasto: li mostra l'app solo su richiesta.`;
 const SYS_REC=`Sei un cuoco e consulente nutrizionale che aiuta una persona che segue una dieta. Rispondi in italiano, in modo pratico e conciso: idee, ricette, varianti più leggere, sostituzioni.
@@ -1247,16 +1270,18 @@ async function sendMeal(text,photo){
 async function runMeal(key,text,photo){
   const meal=ensureMeal(key);ui.busy=true;save();render();
   const hist=histOf(meal.chat.slice(0,-1));
-  const cur={role:'user',parts:[{text:`Pasto: ${mealName(key)}.\nLista attuale degli alimenti (JSON): ${JSON.stringify(meal.items)}${foodsCtx()}\n\nMessaggio dell'utente: ${text||'(vedi foto)'}`}]};
+  const cur={role:'user',parts:[{text:`Pasto: ${mealName(key)}. Ora attuale: ${nowHM()}.${meal.ora?` Ora del pasto registrata: ${meal.ora}.`:''}\nLista attuale degli alimenti (JSON): ${JSON.stringify(meal.items)}${foodsCtx()}\n\nMessaggio dell'utente: ${text||'(vedi foto)'}`}]};
   if(photo)cur.parts.push({inlineData:{mimeType:'image/jpeg',data:photo.b64}});
   try{
-    const out=await gemini(SYS_MEAL,toContents(hist,cur),SCHEMA_MEAL);
+    const out=await gemini(SYS_MEAL,toContents(hist,cur),SCHEMA_MEAL);const before=JSON.stringify(meal.items);
     if(!out.domanda)meal.items=(Array.isArray(out.items)?out.items:[]).map(clean).map(linkFood);
+    {const o=typeof out.ora==='string'&&out.ora.trim().match(/^(\d{1,2})[:.](\d{2})$/);if(o&&+o[1]<24&&+o[2]<60){meal.ora=o[1].padStart(2,'0')+':'+o[2];meal.oraFissa=true}}
+    touchMeal(meal,before);
     if(!out.riepilogo)meal.chat.push({role:'a',text:out.reply||'Fatto.'});
     else meal.chat.push({role:'a',text:out.reply||'',ans:!!out.domanda,tot:sum(meal.items),list:meal.items.map(i=>({n:i.nome,q:i.quantita,k:i.kcal,miss:KEYS.slice(1).filter(k=>i[k]===null||i[k]===undefined)}))});
   }catch(e){const rid='r'+Date.now();ui.retry[rid]={kind:'meal',key,text,photo};meal.chat.push({role:'a',text:e.message,err:true,rid,rtext:text})}
   ui.busy=false;save();render();
-  {const last=meal.chat[meal.chat.length-1];if(last&&!last.err&&ui.view==='diario'&&ui.meal===key)autoSpeak('#mealChat [data-say="'+(meal.chat.length-1)+'"]')}
+  {const k2=keyOf(meal)||key;const last=meal.chat[meal.chat.length-1];if(last&&!last.err&&ui.view==='diario'&&ui.meal===k2)autoSpeak('#mealChat [data-say="'+(meal.chat.length-1)+'"]')}
 }
 async function sendRec(text,photo){
   S.recChat.push({role:'u',text,photo:!!photo});resetComposer();
@@ -1326,7 +1351,7 @@ function render(){applyTheme();requestAnimationFrame(alimSticky);requestAnimatio
   if(chatView)requestAnimationFrame(()=>{const m=$('#main');if(ui.toTop){ui.toTop=false;m.scrollTop=0}else m.scrollTop=m.scrollHeight});
 }
 function histDay(i){const h=S.history[i];if(!h)return null;const meals={};
-  if(h.full)Object.keys(h.full).forEach(k=>{meals[k]={items:h.full[k].items||[],chat:h.full[k].chat||[],closed:h.full[k].closed}});
+  if(h.full)Object.keys(h.full).forEach(k=>{meals[k]={items:h.full[k].items||[],chat:h.full[k].chat||[],closed:h.full[k].closed,ora:h.full[k].ora}});
   else Object.keys(h.meals||{}).forEach(k=>{meals[k==='spuntino'?'spuntino1':k]={items:h.meals[k]||[],chat:[]}});
   return{start:h.start,end:h.end,meals,order:h.order,target:h.target,margin:h.margin}}
 function viewDay(){return ui.dv===null?S.day:histDay(ui.dv)}
@@ -1352,7 +1377,7 @@ function renderHead(){
 }
 function renderHistDay(){
   const D=histDay(ui.dv);if(!D){ui.dv=null;render();return}
-  const keys=(Array.isArray(D.order)?D.order.filter(k=>D.meals[k]):orderKeys(Object.keys(D.meals))).filter(k=>D.meals[k].items.length);
+  const keys=sortByTime((Array.isArray(D.order)?D.order.filter(k=>D.meals[k]):orderKeys(Object.keys(D.meals))).filter(k=>D.meals[k].items.length),D.meals);
   if(!keys.includes(ui.hmeal))ui.hmeal=keys[0]||null;
   $('#mealTabs').hidden=!keys.length;
   $('#mealTabs').innerHTML=keys.map(k=>`<button data-hmeal="${k}" class="${k===ui.hmeal?'on':''}">${mealName(k)}<small>${f0(sum(D.meals[k].items).kcal)} kcal</small></button>`).join('');
@@ -1360,8 +1385,8 @@ function renderHistDay(){
   bar.innerHTML=`<div><b>Giornata archiviata</b><small>tocca «Modifica giornata» per correggerla</small><button class="btn bdef" id="reopenDay">Modifica giornata</button></div>`;
   if(!ui.hmeal){$('#mealItems').innerHTML='<div class="empty">Nessun alimento in questa giornata.</div>';$('#mealChat').innerHTML='';return}
   const m=D.meals[ui.hmeal],t=sum(m.items);
-  ui.box={items:m.items,name:mealName(ui.hmeal),edit:false};
-  $('#mealItems').innerHTML=mealBoxHTML(m.items,mealName(ui.hmeal),false,'box');
+  ui.box={items:m.items,name:mealName(ui.hmeal),edit:false,ora:m.ora};
+  $('#mealItems').innerHTML=mealBoxHTML(m.items,mealName(ui.hmeal),false,'box',m.ora);
   $('#mealChat').innerHTML=m.chat.map(msgHtml).join('');
 }
 function packDay(d){const meals={};orderKeys(Object.keys(d.meals)).forEach(k=>{if(d.meals[k].items.length)meals[k]=d.meals[k].items});
@@ -1395,8 +1420,8 @@ function renderMeal(){
     $('#mealItems').innerHTML=`<div class="empty">Scrivi, detta o fotografa cosa hai mangiato a <b>${mealName(ui.meal).toLowerCase()}</b>: il conteggio si aggiorna da solo, e se correggi qualcosa in chat vale sempre l'ultima versione.</div>`;
     $('#mealChat').innerHTML=ui.busy?'<div class="typing">Sto calcolando<i></i><i></i><i></i></div>':'';return}
   const m=S.day.meals[ui.meal],t=sum(m.items);
-  ui.box={items:m.items,name:mealName(ui.meal),edit:true};
-  $('#mealItems').innerHTML=(m.items.length?mealBoxHTML(m.items,mealName(ui.meal),true,'box')
+  ui.box={items:m.items,name:mealName(ui.meal),edit:true,ora:m.ora};
+  $('#mealItems').innerHTML=(m.items.length?mealBoxHTML(m.items,mealName(ui.meal),true,'box',m.ora)
     :`<div class="empty">Ancora niente. Scrivi cosa hai mangiato o allega una foto: il conteggio si aggiorna da solo, e se correggi qualcosa in chat vale sempre l'ultima versione.</div>`);
   $('#mealChat').innerHTML=m.chat.map(msgHtml).join('')+(ui.busy?'<div class="typing">Sto calcolando<i></i><i></i><i></i></div>':'');
 }
@@ -1408,10 +1433,10 @@ function foodInfo(id,it){const f=S.foods.find(x=>x.id===id);if(!f)return;
   <div class="ph" id="fiPh"></div><div class="row" style="justify-content:flex-start"><button class="btn sm fiClose" id="noSheet">Chiudi</button></div>`);loadFoodPhotos(f.id,$('#fiPh'))}
 /* v139: tabella unica del pasto (Lista alimenti + totale + macro), usata in alto e nei riepiloghi della chat (sempre aggiornata) */
 function ttsHTML(ix){return `<div class="tts"><button class="tb${ttsState(ix)==='play'?' on':''}" data-say="${ix}"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="0.5" y="0.5" width="15" height="15" rx="3.5" fill="#1f4d35"/><path d="M6 4.2v7.6l6-3.8z" fill="#fff"/></svg>Ascolta</button><button class="tb${ttsState(ix)==='pause'?' on':''}" data-pause="${ix}"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="0.5" y="0.5" width="15" height="15" rx="3.5" fill="#1f4d35"/><rect x="5" y="4" width="2" height="8" rx=".6" fill="#fff"/><rect x="9" y="4" width="2" height="8" rx=".6" fill="#fff"/></svg>Pausa</button><button class="tb tbauto${autoOn()?' on':''}" data-autoread aria-label="Lettura automatica" aria-pressed="${autoOn()?'true':'false'}"><span class="auw"><svg viewBox="0 0 26 24" width="22" height="17" aria-hidden="true"><path d="M4 21v-3.2C2.8 16.7 2 15.2 2 13.5 2 10 4.9 7.2 8.4 7.2c3.1 0 5.6 2.1 6.1 5l1.4 2.6-1.4.6v2c0 1-.8 1.7-1.7 1.7H11.2V21z" fill="currentColor"/><path d="M16.8 11.6c.8.8.8 2.2 0 3M18.8 9.8c1.8 1.8 1.8 4.8 0 6.6M20.9 8c2.8 2.8 2.8 7.4 0 10.2" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg><span>AUTO</span></span></button></div>`}
-function mealBoxHTML(items,name,edit,tix){if(!items||!items.length)return'<div class="empty">Nessun alimento in questo pasto.</div>';
+function mealBoxHTML(items,name,edit,tix,ora){if(!items||!items.length)return'<div class="empty">Nessun alimento in questo pasto.</div>';
   const t=sum(items),row=(l,k,sub)=>`<div class="sr${sub?' sub':''}"><span>${l}${t.miss[k]&&t.has[k]?'<span class="ast">*</span>':''}</span><b>${fv(t,k,'g')}</b></div>`;
   const miss=items.filter(i=>KEYS.slice(1).some(k=>nn(i[k])===null));
-  return'<div class="lt">Lista alimenti<br>Totale kcal e macro</div>'+items.map((i,ix)=>`<div class="it it2"><div class="n">${edit?foodLink(i):esc(i.nome)}</div><div class="q"><span class="qq">${esc(i.quantita)}</span>${srcTag(i)}</div><div class="k">${f0(i.kcal)} kcal</div>${edit?`<button class="x" data-del="${ix}" aria-label="Elimina ${esc(i.nome)}">×</button>`:'<span></span>'}<div class="m">${mline(i)}</div></div>`).join('')+
+  return'<div class="lt">Lista alimenti<br>Totale kcal e macro</div>'+(ora?`<div class="mora">Ora del pasto: <b>${esc(ora)}</b></div>`:'')+items.map((i,ix)=>`<div class="it it2"><div class="n">${edit?foodLink(i):esc(i.nome)}</div><div class="q"><span class="qq">${esc(i.quantita)}</span>${srcTag(i)}</div><div class="k">${f0(i.kcal)} kcal</div>${edit?`<button class="x" data-del="${ix}" aria-label="Elimina ${esc(i.nome)}">×</button>`:'<span></span>'}<div class="m">${mline(i)}</div></div>`).join('')+
     `<div class="sumt">Totale kcal ${esc(name.toUpperCase())}: <b>${f0(t.kcal)} kcal</b></div><div class="sml">${row('Carboidrati','carboidrati')}${row('di cui zuccheri','zuccheri',1)}${row('Proteine','proteine')}${row('Grassi','grassi')}${row('di cui saturi','saturi',1)}${row('Fibre','fibre')}${row('Sale','sale')}</div>`+
     (miss.length?`<div class="missn">* Valori mancanti per: ${miss.map(i=>esc(i.nome)).join(', ')}. I totali segnati sono parziali.</div>`:'')+
     (tix!=null&&('speechSynthesis' in window)?'<div class="mtts">'+ttsHTML(tix)+'</div>':'')}
@@ -1421,7 +1446,7 @@ function msgHtml(m,ix){
   if(m.tot&&!m.err){
     if(m.ans&&m.text)h+=`<div class="ansx">${md(m.text)}</div>`;
     const B=ui.box||{items:[],name:'pasto',edit:false};
-    h+=`<div class="card mbox">${mealBoxHTML(B.items,B.name,B.edit,ix)}</div>`;
+    h+=`<div class="card mbox">${mealBoxHTML(B.items,B.name,B.edit,ix,B.ora)}</div>`;
   }else h+=md(m.text);
   if(m.ricetta){const t=sum(m.ricetta.ingredienti);const saved=S.recipes.some(r=>r.src===m.ts);
     h+=`<div class="rc"><b>${esc(m.ricetta.nome)}</b><div class="m">Per porzione: ${f0(t.kcal)} kcal · ${mline(t)}</div><div class="row"><button class="btn sm ghost" data-saverec="${ix}" ${saved?'disabled':''}>${saved?'Salvata':'Salva nel ricettario'}</button></div></div>`}
@@ -1444,10 +1469,10 @@ function renderHist(){fdKill();
   $('#histList').innerHTML=S.history.length?S.history.map((h,ix)=>{const t=h.tot,max=h.target+h.margin,st=t.kcal<=h.target?'ok':t.kcal<=max?'warn':'bad';const d=new Date(h.start);
     return`<details class="card hday"><summary><span class="nm"><span class="dot" style="background:var(--${st})"></span>${(s=>s.charAt(0).toUpperCase()+s.slice(1))(d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'}))}</span><span class="kv"><b>${f0(t.kcal)} kcal</b><small>su ${f0(h.target)}</small></span></summary>
     <div class="hstat"><span class="hleft ${st==='ok'?'ok':st==='warn'?'warn':'bad'}">${st==='ok'?`Restano ${f0(h.target-t.kcal)} kcal`:st==='warn'?`Bonus di ${f0(t.kcal-h.target)} kcal`:`Oltre di ${f0(t.kcal-max)} kcal`}</span></div>
-    <div style="margin-top:12px"><b class="ht">Riepilogo:</b> <span class="hm">${f0(t.kcal)} kcal</span></div>
-    <div class="hm" style="margin-top:2px">${mline(t)}</div>
-    <div class="hm" style="margin-top:4px">Aperta: ${fdt(h.start)}${h.end?` · Chiusa: ${fdt(h.end)}`:''}</div>
-    ${orderKeys(Object.keys(h.meals).map(k=>k==='spuntino'?'spuntino1':k)).map(k=>{const l=mealName(k);const it=(h.meals[k]||(k==='spuntino1'?h.meals.spuntino:null)||[]);if(!it.length)return'';const mt=sum(it);return`<div style="margin-top:10px"><b class="ht">${l}:</b> <span class="hm">${f0(mt.kcal)} kcal</span>${it.map(i=>`<div class="hm">• ${esc(i.nome)} ${esc(i.quantita)} — ${f0(i.kcal)} kcal</div>`).join('')}</div>`}).join('')}
+    <div style="margin-top:12px"><b class="ht">Riepilogo:</b> <b class="hm">${f0(t.kcal)} kcal</b></div>
+    <div class="hm hmac" style="margin-top:2px">${mlines(t)}</div>
+    <div class="hm" style="margin-top:12px">Aperta: ${fdt(h.start)}${h.end?`<br>Chiusa: ${fdt(h.end)}`:''}</div>
+    ${(()=>{const F=h.full||{},ks=orderKeys(Object.keys(h.meals).map(k=>k==='spuntino'?'spuntino1':k));return sortByTime(ks,F)})().map(k=>{const l=mealName(k);const it=(h.meals[k]||(k==='spuntino1'?h.meals.spuntino:null)||[]);if(!it.length)return'';const mt=sum(it),ora=h.full&&h.full[k]&&h.full[k].ora;return`<div style="margin-top:10px"><b class="ht">${l}:</b> <b class="hm">${f0(mt.kcal)} kcal</b>${ora?`<span class="hora">ore ${esc(ora)}</span>`:''}${it.map(i=>`<div class="hm">• ${esc(i.nome)} ${esc(i.quantita)} — ${f0(i.kcal)} kcal</div>`).join('')}</div>`}).join('')}
     <div class="row between" style="margin-top:14px"><button class="btn sm ghost std2" data-collapse>Annulla</button><span class="row" style="margin:0"><button class="btn sm ghost std2" data-edithist="${ix}">Modifica</button><button class="btn sm ghost std2" data-delhist="${ix}">Elimina</button></span></div></details>`}).join('')
     :'<div class="empty">Qui trovi le giornate chiuse (conservate per il periodo scelto nelle Impostazioni). Usa «Nuova Giornata Alimentare» nel Diario quando hai finito di mangiare.</div>';
   document.querySelectorAll('#histList details.hday').forEach(d=>bindCloseDetails(d));
@@ -1488,7 +1513,7 @@ document.addEventListener('click',e=>{
   if(b.dataset.foodinfo){const it=(S.day.meals[ui.meal]||{items:[]}).items.find(x=>x.alimento_id===b.dataset.foodinfo);foodInfo(b.dataset.foodinfo,it);return}
   if(b.dataset.del!==undefined){const k=ui.meal,ix=+b.dataset.del,m=S.day.meals[k],it=m.items[ix];if(!it)return;
     sheet(`<h3>Eliminare questo alimento?</h3><p class="hm"><b>${esc(it.nome)}</b> ${esc(it.quantita)} — ${f0(it.kcal)} kcal verrà tolto da ${mealName(k).toLowerCase()}.</p><div class="row between"><button class="btn ghost dg" id="noSheet">Annulla</button><button class="btn bad dg" id="okItemDel">Elimina</button></div>`);
-    $('#okItemDel').onclick=()=>{const mm=S.day.meals[k],j=mm.items.indexOf(it);if(j>=0){mm.items.splice(j,1);mm.chat.push({role:'u',text:`(Ho eliminato a mano: ${it.nome})`});save()}closeSheet();render();toast('Alimento eliminato')};return}
+    $('#okItemDel').onclick=()=>{const mm=S.day.meals[k],j=mm.items.indexOf(it);if(j>=0){const bf=JSON.stringify(mm.items);mm.items.splice(j,1);mm.chat.push({role:'u',text:`(Ho eliminato a mano: ${it.nome})`});touchMeal(mm,bf);save()}closeSheet();render();toast('Alimento eliminato')};return}
   if(b.dataset.saverec!==undefined){const m=S.recChat[+b.dataset.saverec];if(m&&m.ricetta){S.recipes.unshift({id:'r'+Date.now(),src:m.ts,...m.ricetta});save();toast('Ricetta salvata');render()}return}
   if(b.dataset.delrec){S.recipes=S.recipes.filter(r=>r.id!==b.dataset.delrec);save();render();return}
   if(b.dataset.addrec){return addRecipe(b.dataset.addrec)}
@@ -1517,7 +1542,7 @@ function addRecipe(id){
     document.querySelectorAll('[data-pm]').forEach(x=>x.onclick=()=>{meal=x.dataset.pm;draw()});
     $('#pm').onclick=()=>{p=Math.max(.5,p-.5);draw()};$('#pp').onclick=()=>{p=Math.min(10,p+.5);draw()};
     $('#okAdd').onclick=()=>{const t=sum(r.ingredienti);const it={nome:'Ricetta: '+r.nome,quantita:f1(p)+(p===1?' porzione':' porzioni'),fonte:'ricetta'};KEYS.forEach(k=>it[k]=(t.miss[k]&&!t.has[k])?null:t[k]*p);
-      if(!S.day.order.includes(meal))S.day.order.push(meal);const m=ensureMeal(meal);m.items.push(it);m.chat.push({role:'u',text:`(Aggiunta dal ricettario: ${r.nome}, ${it.quantita})`});save();closeSheet();ui.meal=meal;go('diario');toast('Aggiunta a '+mealName(meal))}};
+      if(!S.day.order.includes(meal))S.day.order.push(meal);const m=ensureMeal(meal),bf=JSON.stringify(m.items);m.items.push(it);m.chat.push({role:'u',text:`(Aggiunta dal ricettario: ${r.nome}, ${it.quantita})`});touchMeal(m,bf);save();closeSheet();ui.meal=keyOf(m)||meal;go('diario');toast('Aggiunta a '+mealName(meal))}};
   draw();
 }
 function importRecipes(){
