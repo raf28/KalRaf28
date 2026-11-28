@@ -404,9 +404,9 @@ nav button.on{font-weight:700;color:light-dark(#1f4d35,#fff)}
 .rpor1 .lt .rp1{text-transform:uppercase}
 /* v302: ricetta aperta: sopra, a sinistra «+A» (Trasforma una porzione in alimento) e a destra Condividi, tondi con la scritta sotto; sotto Annulla, Modifica (al centro), Elimina */
 #recList .rshr{display:flex;justify-content:space-between;align-items:flex-start;margin:16px 0 14px}
-#recList .rsc{display:flex;flex-direction:column;align-items:center;gap:6px;width:150px;text-align:center}
+#recList .rsc{display:flex;flex-direction:column;align-items:center;gap:6px;width:auto;text-align:center}
 #recList .rsc small{font-size:12px;font-weight:600;line-height:1.25;color:var(--ink)}
-#recList .rsc:first-child{align-items:flex-start;text-align:left}#recList .rsc:last-child{align-items:flex-end;text-align:right}
+
 #recList .rcirc{width:44px!important;min-width:44px!important;max-width:44px!important;height:44px!important;padding:0!important;border-radius:50%!important;display:grid!important;place-items:center}
 #recList .rcirc .pa{font-size:17px;font-weight:800;letter-spacing:-.02em}
 #recList .rbt3{flex-wrap:nowrap}
@@ -1080,7 +1080,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 303</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 304</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1865,7 +1865,7 @@ function renderRecipes(){fdKill();
     h+=`<details class="card food" data-rid="${esc(r.id)}"><summary><span class="nm">${esc(r.nome)}</span><span class="kv"><b>${f0(t.kcal)} kcal</b><small>per porzione</small></span></summary>
     ${r.items?`<div class="mbox rview">${mealBoxHTML(r.items,'ricetta',false,null,null,null,{title:recTitle(r),sumLabel:'Totale kcal RICETTA'})}</div>${recNoteBox(r,false).replace('card mbox rnotebox','mbox rview rnotebox')}${(r.porzioni||1)>1?`<div class="mbox rview rpor1">${porzBox(r.items,r.porzioni||1,r)}</div>`:''}`
       :(ing.length?`<div class="hm" style="margin-top:8px">${ing.map(i=>`• ${esc(i.nome)} ${esc(i.quantita||'')} — ${f0(i.kcal)} kcal`).join('<br>')}</div>`:'')}
-    <div class="rshr"><div class="rsc"><button class="btn std2 rcirc" data-rec2food="${esc(r.id)}" aria-label="Trasforma una porzione in alimento"><span class="pa">+A</span></button><small>Trasforma una porzione<br>in alimento</small></div><div class="rsc"><button class="btn std2 rcirc" data-sharerecipe="${esc(r.id)}" aria-label="Condividi ricetta">${SHARE_SVG}</button><small>Condividi<br>ricetta</small></div></div>
+    <div class="rshr"><div class="rsc"><button class="btn std2 rcirc" data-rec2food="${esc(r.id)}" aria-label="Trasforma una porzione in alimento"><span class="pa">+A</span></button><small>1 Porzione<br>in Alimento</small></div><div class="rsc"><button class="btn std2 rcirc" data-sharerecipe="${esc(r.id)}" aria-label="Condividi ricetta">${SHARE_SVG}</button><small>Condividi<br>Ricetta</small></div></div>
     <div class="row between rbt3"><button class="btn sm ghost std2" data-collapse>Annulla</button><button class="btn sm ghost std2" data-editrecipe="${esc(r.id)}">Modifica</button><button class="btn sm ghost std2" data-delrecipe="${esc(r.id)}">Elimina</button></div></details>`});
   $('#recList').innerHTML=h;
   document.querySelectorAll('#recList details.food').forEach(d=>bindCloseDetails(d));
