@@ -29,6 +29,9 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 .jmp button{pointer-events:auto;width:42px;height:42px;border-radius:50%;background:color-mix(in srgb,var(--card) 50%,transparent);color:var(--brand2);border:1.5px solid var(--brand2);box-shadow:0 3px 10px rgba(0,0,0,.18);display:grid;place-items:center}
 .jmp button svg{width:22px;height:22px}
 .ptr{position:fixed;left:50%;top:0;transform:translate(-50%,-60px);z-index:25;background:var(--card);color:var(--brand2);border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:13.5px;font-weight:600;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.15);pointer-events:none;transition:opacity .2s}
+/* v378: «Trascina / Rilascia / Aggiornamento…» sono messaggi come gli altri: pillola verde, scritta bianca, stessa altezza fissa dei messaggi (202 px dal fondo), chiaro e scuro */
+.ptr,html:not(.lightmode) .ptr{top:auto!important;bottom:202px!important;transform:translateX(-50%)!important;opacity:0;background:#2f8f5c!important;background-image:linear-gradient(to bottom,rgba(255,255,255,.18),rgba(255,255,255,0) 55%,rgba(0,0,0,.1))!important;color:#fff!important;border:0!important;border-radius:99px!important;padding:11px 22px!important;font-size:14px!important;font-weight:600!important;box-shadow:0 4px 12px rgba(0,0,0,.3)!important;z-index:30!important}
+.ptr.on{opacity:1}
 .wrap{max-width:720px;margin:0 auto;padding:0 14px 18px}
 /* testata */
 .head{background:var(--brand);color:#fff;padding:calc(env(safe-area-inset-top) + 14px) 16px 16px}
@@ -1026,7 +1029,6 @@ html:not(.lightmode) .scur{background:#fff}
 #foodQ:placeholder-shown:not(:focus)+.scur,#recQ:placeholder-shown:not(:focus)+.scur{display:block}
 #foodQ:focus::placeholder,#recQ:focus::placeholder{color:transparent!important}
 /* v336: solo in scuro: messaggi a comparsa neri; in chiaro tornano verdi con scritta bianca. v334: messaggi a comparsa neri con la scritta nel verde di «Nuova Giornata Alimentare» (#2f8f5c) */
-html:not(.lightmode) .toast{background:#000!important;background-image:none!important;color:#2f8f5c!important;box-shadow:0 4px 12px rgba(0,0,0,.45)}
 /* v337: Aggiungi/Modifica Alimento: bordo grosso (8 px, come il campo del Diario) su blocchi e campi; in chiaro finestra e blocchi nel bianco attenuato #e6ece8, campi #f4f6f1 */
 .foodsheet .card,.foodsheet .card input,.foodsheet .card textarea,.foodsheet .card select{border:4px solid transparent!important}
 html.lightmode #sheet.foodsheet{background:#e6ece8}
@@ -1271,7 +1273,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 377</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 378</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1422,7 +1424,7 @@ function srcTag(i){const f=i.fonte||(i.dalAlimenti?'alimenti':i.imposto?'utente'
 function md(s){return esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/^\s*[-*•]\s+/gm,'• ').replace(/\n/g,'<br>')}
 
 /* v302: il messaggio compare sempre un po' sopra la barra più alta in basso (riga dei pasti con il +, «Aggiungi Alimento/Ricetta», «Applica…», campo di scrittura delle ricette), senza sovrapporsi */
-function toastBottom(){let top=innerHeight;document.querySelectorAll('#mrow,.applybar>.btn,#modal:not([hidden]) .rcomp,#modal:not([hidden]) .rbtns').forEach(e=>{if(!e.offsetParent&&getComputedStyle(e).position!=='fixed')return;const r=e.getBoundingClientRect();if(r.height>0&&r.top>innerHeight*.45&&r.top<top)top=r.top});return top<innerHeight?Math.round(innerHeight-top+14):130}
+function toastBottom(){return 202} /* v378: altezza fissa, quella del Diario, in tutte le sezioni */
 function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;d.style.bottom=toastBottom()+'px';document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}
 let curDead=false;
 function hpush(st){try{history.pushState(st,'')}catch(e){}curDead=false}
@@ -2642,9 +2644,9 @@ function boot(){
 /* trascina in basso per aggiornare */
 {const mn=$('#main'),ptr=$('#ptr');let y0=null,dy=0;const TH=80;
  mn.addEventListener('touchstart',e=>{if(mn.scrollTop<=0&&$('#modal').hidden&&e.touches.length===1){y0=e.touches[0].clientY;dy=0}else y0=null},{passive:true});
- mn.addEventListener('touchmove',e=>{if(y0===null)return;dy=e.touches[0].clientY-y0;if(dy<=0||mn.scrollTop>0){ptr.style.transform='translate(-50%,-60px)';return}
-   const d=Math.min(dy*0.5,90);ptr.style.transform=`translate(-50%,${d-50}px)`;ptr.textContent=dy>TH?'↻ Rilascia per aggiornare':'↓ Trascina per aggiornare'},{passive:true});
- mn.addEventListener('touchend',()=>{if(y0!==null&&dy>TH&&mn.scrollTop<=0){ptr.textContent='Aggiornamento…';ptr.style.transform='translate(-50%,20px)';setTimeout(()=>location.reload(),150)}else ptr.style.transform='translate(-50%,-60px)';y0=null;dy=0});
+ mn.addEventListener('touchmove',e=>{if(y0===null)return;dy=e.touches[0].clientY-y0;if(dy<=0||mn.scrollTop>0){ptr.classList.remove('on');return}
+   ptr.classList.toggle('on',dy>20);ptr.textContent=dy>TH?'↻ Rilascia per aggiornare':'↓ Trascina per aggiornare'},{passive:true});
+ mn.addEventListener('touchend',()=>{if(y0!==null&&dy>TH&&mn.scrollTop<=0){ptr.textContent='Aggiornamento…';ptr.classList.add('on');setTimeout(()=>location.reload(),150)}else ptr.classList.remove('on');y0=null;dy=0});
 }
 try{history.replaceState({v:'diario'},'')}catch(e){}
 /* frecce su/giù */
@@ -2705,7 +2707,7 @@ $('#addMeal').onclick=()=>{const o=S.day.order,ns=o.filter(isSnack).length;
  const stop=()=>{clearTimeout(t);t=null};
  nav.addEventListener('pointerdown',e=>{const b=e.target.closest('button[data-v]');fired=false;if(!b||!OK.includes(b.dataset.v))return;
    x0=e.clientX;y0=e.clientY;stop();t=setTimeout(()=>{t=null;fired=true;try{navigator.vibrate&&navigator.vibrate(30)}catch(err){}
-     const pt=$('#ptr');if(pt){pt.textContent='Aggiornamento…';pt.style.transform='translate(-50%,20px)'}setTimeout(()=>location.reload(),250)},1000)});
+     const pt=$('#ptr');if(pt){pt.textContent='Aggiornamento…';pt.classList.add('on')}setTimeout(()=>location.reload(),250)},1000)});
  nav.addEventListener('pointermove',e=>{if(t&&Math.hypot(e.clientX-x0,e.clientY-y0)>10)stop()});
  ['pointerup','pointercancel','pointerleave'].forEach(ev=>nav.addEventListener(ev,stop));
  nav.addEventListener('click',e=>{if(fired){e.preventDefault();e.stopPropagation()}},true);

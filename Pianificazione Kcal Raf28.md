@@ -1,6 +1,6 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 377 (28/11/2026).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 378 (28/11/2026).*
 
 ---
 
@@ -55,7 +55,7 @@ KalRaf28 è un diario alimentare personale. Al posto di contare le calorie nelle
 - **Mai spese extra per l'API** oltre all'abbonamento.
 - In futuro forse un'APK.
 
-## 3. Come funziona oggi (v377): sezioni
+## 3. Come funziona oggi (v378): sezioni
 
 La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impostazioni** (Preimpostati tolto nella v53). La voce attiva è evidenziata con una pillola verde `#2f8f5c`.
 
@@ -492,6 +492,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **v277:** ordine dei pasti più sicuro per quelli salvati tra la v273 e la v275 (con l'ora ma senza data): il loro giorno è quello di apertura della giornata, o il successivo se l'ora viene prima dell'apertura, invece della regola fissa delle 4:00. Provato con l'orologio simulato alle 18:00: colazione 08:00, spuntino 10:30, spuntino 16:00 nell'ordine giusto.
   - **v278: sezione Ricette con la grafica degli Alimenti.** Testata con titolo e conteggio ("N salvate"), ricerca "Cerca una ricetta", elenco alfabetico con le lettere, pillole, frecce e pillola "Aggiungi Ricetta" con il +, identici agli Alimenti in chiaro e in scuro (62 regole CSS duplicate per `#v-ricette`; `alimSticky()` / `alimStuck()` valgono per entrambe le sezioni). Il + apre la finestra "Aggiungi Ricetta" con Annulla e Salva disattivato. Tolte la barra Ricettario / Crea Ricetta e la vecchia chat. Nella finestra degli Alimenti il titolo ora è "Aggiungi Alimento" (e "Modifica Alimento").
   - **v375:** **Modalità scura: il bordino sottilissimo (1 px) è bianco `#fff` ovunque** (Impostazioni: campi numerici, chiave API e tendine; finestre «vuote»; bolle di risposta dell'IA nelle chat; Aggiungi/Modifica Alimento; nome della ricetta nascosto). **In chiaro resta verde `#2c6a49`.** Aggiorna lo standard «bordino sottilissimo»: chiaro verde #2c6a49, scuro bianco #fff, sempre 1 px.
+  - **v378: STANDARD dei messaggi di notifica.** Tutti i messaggi a comparsa (toast: conferme, avvisi, errori, «Lettura AUTO Attiva/Disattivata», backup, ecc.) e i messaggi di aggiornamento («Trascina per aggiornare», «Rilascia per aggiornare», «Aggiornamento…», classe `.ptr`) sono **identici in chiaro e in scuro**: pillola verde `#2f8f5c` con sfumatura dei tasti, scritta bianca 14 px semi-grassetto, alta 43 px, **sempre alla stessa altezza fissa: 202 px dal fondo dello schermo** (la posizione che avevano nel Diario), in tutte le sezioni (`toastBottom()` restituisce 202). Tolto lo stile nero con scritta verde in scuro. «Aggiornamento…» non è più in alto ma a quell'altezza. Gli errori restano con lo stesso aspetto degli altri (nessuna distinzione di colore).
   - **v377:** **Annullata la prova v376** (bordino bianco 1 px su campo Diario, chat Ricetta, pillola data, Cerca alimento/ricetta, legenda Storico): l'utente la rifiuta, si torna all'aspetto della v375. Il blocco CSS è stato rimosso.
   - **v374:** **Aggiungi/Modifica Alimento in scuro:** il bordino sottilissimo (1 px) di chat, riquadri foto e campi è **bianco** (#fff) invece che verde. In chiaro resta verde #2c6a49 (il bianco non si vedrebbe). Eccezione alla regola «bordino = #2c6a49 in chiaro e scuro».
   - **v373:** **Aggiungi/Modifica Alimento in scuro:** il bordino sottilissimo di chat, riquadri foto e campi è nello stesso verde della modalità chiara, **#2c6a49**, 1 px (era #2d5c43). Ora il bordino sottilissimo è identico (1 px #2c6a49) in chiaro e in scuro in tutta l'app.
@@ -603,7 +604,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
 ## ✅ COSE DA FARE
 
 ### Da implementare
-**Da fare per concludere (stato v377, 28/11/2026):** resta solo l'**uniformità dei caratteri** (primo punto qui sotto) con un ultimo ricontrollo generale; la coerenza grafica della modalità scura è conclusa (decisione dell'utente). Poi, se si vorrà, la rotazione.
+**Da fare per concludere (stato v378, 28/11/2026):** resta solo l'**uniformità dei caratteri** (primo punto qui sotto) con un ultimo ricontrollo generale; la coerenza grafica della modalità scura è conclusa (decisione dell'utente). Poi, se si vorrà, la rotazione.
 
 **Da controllare (aggiunte il 28/11/2026, v362):**
 - **Standard minimo dei caratteri piccoli e coerenza dei caratteri più grossi (modalità chiara):** stabilire una grandezza minima per i testi piccoli (oggi nell'app ce ne sono di 12,5, 13, 14, 14,5, 15 px: per esempio «per 1 galletta», le etichette «(valore sicuro)», i sottotitoli dei tasti) e verificare che i testi più grossi (16, 16,5, 17 px) siano coerenti tra loro in tutta l'app, non solo in Impostazioni, nelle pillole aperte, nelle finestre vuote e nelle info. Poi applicare lo standard a ogni sezione.
