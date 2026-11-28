@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 259 (28/11/2026).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 260 (28/11/2026).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **Kcal** (nome del repository e del progetto: **KalRaf28**; titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **259**.
+> Sto sviluppando **Kcal** (nome del repository e del progetto: **KalRaf28**; titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **260**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -53,7 +53,7 @@ KalRaf28 è un diario alimentare personale. Al posto di contare le calorie nelle
 - **Mai spese extra per l'API** oltre all'abbonamento.
 - In futuro forse un'APK.
 
-## 3. Come funziona oggi (v259): sezioni
+## 3. Come funziona oggi (v260): sezioni
 
 La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impostazioni** (Preimpostati tolto nella v53). La voce attiva è evidenziata con una pillola verde `#2f8f5c`.
 
@@ -81,6 +81,7 @@ La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impos
 - **Domande** ("sei sicuro del sale?") e **domande di cucina** (temperature, tempi, cotture, fuoco, sostituzioni; v140): risponde senza modificare la lista (`domanda: true`).
 - **Riepilogo** solo su richiesta esplicita ("dammi il totale"): dalla v139 mostra in chat la stessa tabella del pasto della "Lista alimenti" (alimenti con X, totale kcal, macro), sempre aggiornata. I valori mancanti sono segnati con *.
 - Ogni risposta ha i pulsanti **▶︎ Ascolta / ⏸ Pausa** per la lettura ad alta voce in italiano (frase per frase; **dalla v259 Pausa ricorda il punto delle ultime 3 risposte, senza scadenza**: alla quarta si cancella la più vecchia, una risposta ascoltata fino in fondo esce dall'elenco, e se si avvia un'altra risposta mentre una sta leggendo il punto di quella interrotta viene salvato come una pausa; tutto solo sul telefono, `localStorage` `kalraf28_tts`, niente Drive né backup; tenendo premuto Ascolta 1 secondo riparte dall'inizio, v152; pulsante AUTO per la lettura automatica delle nuove risposte, v153). **Dalla v257 AUTO è salvato solo sul telefono** (`localStorage` chiave `kalraf28_autoread`): resta acceso o spento dopo la chiusura dell'app, ma non entra nelle impostazioni, nei backup su file e non fa partire la sincronizzazione con Google Drive. Toccandolo compare il messaggio **"Lettura AUTO Attiva"** o **"Lettura AUTO Disattivata"**, sempre della stessa larghezza (quella del testo più lungo), con la scritta centrata (v258).
+- **Microfono e lettura (v260):** toccando il microfono mentre una risposta viene letta (da AUTO o da Ascolta) la lettura si ferma e il suo punto si salva come Pausa; parte la dettatura. Con il microfono acceso AUTO non parla mai (la voce finirebbe nella dettatura): la risposta arrivata resta in attesa. Spento il microfono, se nel campo c'è testo da inviare si aspetta l'invio e AUTO leggerà la risposta nuova; se il campo è vuoto legge quella in attesa. Vale per tutti i microfoni (Diario, Aggiungi Alimento, Ricette).
 - Gemini riceve solo gli ultimi 10 messaggi della chat del pasto come storia.
 
 ### 3.3 Affidabilità delle chiamate (dalla v33)
@@ -422,10 +423,11 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **v257: corretto il tasto AUTO.** (1) **Bug:** dalla v239 (tocco rapido con piccolo ritardo per far vedere il rimbalzo) il tasto AUTO riceveva due volte lo stesso tocco, quello vero e quello ritardato, quindi si accendeva e si spegneva subito: restava sempre spento e compariva "Lettura automatica disattivata". Ora il controllo del tocco ritardato ascolta su `window` in fase di cattura, quindi parte prima di tutti gli altri ascoltatori e il tocco arriva una volta sola. (2) **Niente più sincronizzazione su Drive:** ogni tocco su AUTO salvava i dati due volte e faceva partire il backup su Google Drive (se il permesso era scaduto, poteva comparire per un attimo la pagina di accesso di Google). Ora AUTO è salvato solo sul telefono (`kalraf28_autoread`), resta dopo la chiusura dell'app e non viene sincronizzato né messo nei backup; il vecchio valore viene spostato da solo alla prima apertura.
   - **v258:** messaggi del tasto AUTO: "Lettura AUTO Attiva" e "Lettura AUTO Disattivata" (AUTO in maiuscolo, A e D maiuscole); le due finestrelle hanno la stessa larghezza, quella di "Lettura AUTO Disattivata", con il testo centrato.
   - **v259: Ascolta / Pausa ricorda le ultime 3 risposte.** Prima si ricordava il punto di una sola pausa, per 1 ora. Ora l'app tiene i punti delle **ultime 3 risposte** messe in pausa, **senza scadenza**: alla quarta si cancella la più vecchia; una risposta ascoltata fino alla fine viene tolta; avviando un'altra risposta mentre una legge, il punto di quella interrotta viene salvato come pausa. La chiave contiene anche la giornata, così le pause di giorni diversi non si confondono; se il testo della risposta è cambiato si riparte dall'inizio. Solo sul telefono (`kalraf28_tts`), niente Drive né backup; nessun consumo di API (la voce è quella del telefono).
+  - **v260: microfono e lettura senza sovrapposizioni.** Toccando il microfono mentre una risposta viene letta (AUTO o Ascolta), la lettura si ferma e il punto si salva come Pausa (nell'elenco delle ultime 3), poi parte la dettatura. Se una risposta arriva mentre il microfono è acceso, AUTO non parla: resta in attesa. Spento il microfono, con testo da inviare nel campo si aspetta l'invio (dopo l'invio AUTO legge la risposta nuova, quella in attesa viene lasciata); con il campo vuoto legge subito quella in attesa. Funzioni `ttsInterrupt()`, `autoAfterMic()`, variabile `autoPend`.
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
-**Stato:** online, **collaudo in corso dal 25/11/2026**. Tra il 26/11 sera e la notte del 28/11 (v91–v259) è stata rifinita tutta la grafica di Diario, Alimenti, Storico e Impostazioni, in chiaro e in scuro, con le regole della sezione 3.16, e scritta la finestra "Come funziona Kcal": **la grafica è considerata definitiva dall'utente**. Resta da fare solo la sezione Ricette (e, quando si rigenera l'APK, lo sblocco della rotazione: vedi Note).
+**Stato:** online, **collaudo in corso dal 25/11/2026**. Tra il 26/11 sera e la notte del 28/11 (v91–v260) è stata rifinita tutta la grafica di Diario, Alimenti, Storico e Impostazioni, in chiaro e in scuro, con le regole della sezione 3.16, e scritta la finestra "Come funziona Kcal": **la grafica è considerata definitiva dall'utente**. Resta da fare solo la sezione Ricette (e, quando si rigenera l'APK, lo sblocco della rotazione: vedi Note).
 
 ---
 
@@ -438,7 +440,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
 ## ✅ COSE DA FARE
 
 ### Da implementare
-**Situazione al 28/11/2026 (v259):**
+**Situazione al 28/11/2026 (v260):**
 0. **Subito, nella prossima chat:** un paio di piccoli bug e 2-3 ritocchi grafici che l'utente spiegherà a voce (non sono descritti qui). Possibile ritocco già individuato: in modalità scura il campo di scrittura del Diario è alto 46 px con bordo 2 px, mentre in chiaro (v253) è alto 44 px come i tasti, con bordo 4 px.
 1. Poi la sezione Ricette (qui sotto).
 2. La gestione verticale/orizzontale dell'app (vedi Note in fondo).

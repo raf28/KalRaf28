@@ -914,7 +914,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 259</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 260</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1205,7 +1205,7 @@ function toContents(hist,cur){
 const histOf=chat=>chat.filter(m=>!m.err).slice(-10).map(m=>({role:m.role==='u'?'user':'model',parts:[{text:(m.photo?'[foto allegata] ':'')+(m.text||'')+(m.list?'\n[Lista pasto: '+m.list.map(i=>i.n+' '+i.q+' '+Math.round(i.k)+' kcal').join('; ')+']':'')}]}));
 
 /* ---------- invio ---------- */
-async function send(){
+async function send(){autoPend=null;/* v260: dopo un invio AUTO legge la risposta nuova, non quella rimasta in attesa */
   const text=$('#msg').value.trim();const photo=ui.photo;
   if((!text&&!photo)||ui.busy)return;
   if(ui.view==='diario')return sendMeal(text,photo);
@@ -1739,7 +1739,10 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-autoread]'
   toast(on?'Lettura AUTO Attiva':'Lettura AUTO Disattivata');const ts=document.querySelectorAll('.toast'),d=ts[ts.length-1];
   if(d){const m=document.createElement('div');m.className='toast';m.style.visibility='hidden';m.textContent='Lettura AUTO Disattivata';document.body.appendChild(m);
     d.style.width=m.getBoundingClientRect().width+'px';d.style.boxSizing='border-box';d.style.textAlign='center';m.remove()}},true);
-function autoSpeak(sel){if(!autoOn()||!('speechSynthesis' in window))return;
+/* v260: con il microfono acceso AUTO non parla (la voce finirebbe nella dettatura): la risposta resta in attesa.
+   Spento il microfono: se nel campo c'è testo da inviare si aspetta l'invio (e poi si legge la risposta nuova); se il campo è vuoto si legge quella in attesa. */
+let autoPend=null;
+function autoSpeak(sel){if(!autoOn()||!('speechSynthesis' in window))return;if(rec){autoPend=sel;return}autoPend=null;
   requestAnimationFrame(()=>{const b=document.querySelector(sel);if(b)ttsStartBtn(b,true)})}
 /* v152: tenendo premuto Ascolta per 1 secondo l'audio riparte dall'inizio */
 let ttsLongFired=false;
@@ -1752,14 +1755,19 @@ let ttsLongFired=false;
 if('speechSynthesis' in window){speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>{}}
 /* dettatura */
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null;
+/* v260: toccando il microfono mentre una risposta viene letta (da AUTO o da Ascolta), la lettura si ferma e il suo punto si salva come una Pausa */
+function ttsInterrupt(){try{if(TTS.playing&&TTS.key){ttsPut({key:TTS.key,len:TTS.len,idx:TTS.idx,pos:TTS.pos||0,ts:Date.now()});ttsStop(true);ttsMark()}}catch(e){}}
+function autoAfterMic(ta){const sel=autoPend;if(!sel)return;if(ta&&ta.value.trim())return;/* c'è un messaggio da inviare: si leggerà la risposta nuova */
+  autoPend=null;setTimeout(()=>autoSpeak(sel),150)}
 function dictate(ta,btn,onEnd){if(!ta||!btn)return;btn.onclick=e=>{e.preventDefault();e.stopPropagation();
   if(!SR){toast('Dettatura non supportata da questo browser: usa il microfono della tastiera');return}
   if(rec){rec.stop();return}
+  ttsInterrupt();
   const r=new SR();rec=r;r.lang='it-IT';r.interimResults=true;r.continuous=true;
   const base=ta.value?ta.value.replace(/\s*$/,' '):'';
   r.onresult=ev=>{let t='';for(let i=0;i<ev.results.length;i++)t+=ev.results[i][0].transcript;ta.value=base+t;ta.dispatchEvent(new Event('input'))};
   r.onerror=ev=>{if(ev.error==='not-allowed')toast('Consenti l\'uso del microfono a Chrome per dettare')};
-  r.onend=()=>{if(rec===r)rec=null;btn.classList.remove('rec');if(onEnd)onEnd()};
+  r.onend=()=>{if(rec===r)rec=null;btn.classList.remove('rec');if(onEnd)onEnd();autoAfterMic(ta)};
   try{r.start();btn.classList.add('rec')}catch(err){rec=null;toast('Impossibile avviare il microfono')}
 }}
 dictate($('#msg'),$('#mic'));
