@@ -914,7 +914,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 257</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 258</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1725,7 +1725,10 @@ function autoSet(v){try{localStorage.setItem(AUTO_KEY,v?'1':'0')}catch(e){}}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-autoread]');if(!b)return;e.stopPropagation();
   const on=!autoOn();autoSet(on);/* niente save(): nessuna sincronizzazione con Drive */
   document.querySelectorAll('[data-autoread]').forEach(x=>{x.classList.toggle('on',on);x.setAttribute('aria-pressed',on?'true':'false')});
-  toast(on?'Lettura automatica attiva':'Lettura automatica disattivata')},true);
+  /* v258: messaggi «Lettura AUTO Attiva» / «Lettura AUTO Disattivata», stessa larghezza (quella del testo più lungo) */
+  toast(on?'Lettura AUTO Attiva':'Lettura AUTO Disattivata');const ts=document.querySelectorAll('.toast'),d=ts[ts.length-1];
+  if(d){const m=document.createElement('div');m.className='toast';m.style.visibility='hidden';m.textContent='Lettura AUTO Disattivata';document.body.appendChild(m);
+    d.style.width=m.getBoundingClientRect().width+'px';d.style.boxSizing='border-box';d.style.textAlign='center';m.remove()}},true);
 function autoSpeak(sel){if(!autoOn()||!('speechSynthesis' in window))return;
   requestAnimationFrame(()=>{const b=document.querySelector(sel);if(b)ttsStartBtn(b,true)})}
 /* v152: tenendo premuto Ascolta per 1 secondo l'audio riparte dall'inizio */
