@@ -1044,7 +1044,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 282</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 283</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1313,6 +1313,7 @@ NOME: se l'utente dice il nome della ricetta (es. "è il panino palloncino", "ch
 PORZIONI: se l'utente dice in quante porzioni si divide la ricetta (es. "vengono 6 panini", "per 4 persone", "6 porzioni"), metti il numero intero (da 1 a 99) in "porzioni"; altrimenti "porzioni": null. Non dividere tu le quantità: le porzioni le calcola l'app.
 NOTE: modifica le note SOLO se l'utente lo chiede esplicitamente (es. "nelle note scrivi…", "aggiungi alle note…", "togli dalle note…"): in quel caso metti in "note" il testo COMPLETO aggiornato delle note (quelle attuali più la modifica). In tutti gli altri casi "note": null.
 DOMANDE: se il messaggio è una domanda o un consiglio di cucina (tempi e temperature di cottura, lievitazione, sostituzioni, quanto olio usare, come conservare…) o una domanda sui valori, metti "domanda": true, lascia la lista identica e rispondi in modo pratico da cuoco esperto. Citare un ingrediente in una domanda non lo aggiunge.
+LISTA E TOTALE: se l'utente chiede la lista degli ingredienti, il totale o i valori della ricetta, metti "domanda": true, lascia la lista identica e rispondi elencando brevemente gli ingredienti con le quantità (i totali di kcal e macro e la porzione li mostra l'app nelle tabelle in alto). Se la lista è VUOTA dillo chiaramente: "Nella ricetta non ci sono ancora ingredienti: dimmeli con le quantità."
 In "reply" scrivi in italiano, breve: cosa hai aggiunto o cambiato (es. "Aggiunta farina 0 500 g, 1700 kcal"), le porzioni o il nome se li hai impostati, ed eventuali ipotesi. Non scrivere i totali: li mostra l'app.`;
 const SYS_REC=`Sei un cuoco e consulente nutrizionale che aiuta una persona che segue una dieta. Rispondi in italiano, in modo pratico e conciso: idee, ricette, varianti più leggere, sostituzioni.
 Quando proponi UNA ricetta concreta, compila "ricetta" con nome, porzioni e la lista degli ingredienti con quantità e valori nutrizionali (kcal, proteine, carboidrati, grassi, fibre, sale in g) (compresi zuccheri e grassi saturi) PER UNA PORZIONE. Altrimenti lascia "ricetta" a null.
@@ -1780,7 +1781,7 @@ function bindSlots(ph,redraw){document.querySelectorAll('[data-slot]').forEach(b
 /* v171: piccola conferma sopra una finestra già aperta (es. Rimuovi foto in Modifica alimento) */
 /* v281: conferma di uscita per Aggiungi/Modifica Alimento e Ricetta: a sinistra «Esci senza salvare» (rosso), a destra «Salva» (verde) */
 function exitConfirm(onExit,onSave,canSave){if(document.querySelector('.modal.cfm'))return;const o=document.createElement('div');o.className='modal cfm';
-  o.innerHTML=`<div class="sheet"><h3>Vuoi uscire senza salvare?</h3><p class="hm">Se esci adesso, quello che hai inserito andrà perso.</p><div class="row between"><button class="btn bdef bad" data-c="exit">Esci senza<br>salvare</button><button class="btn bdef new" data-c="save" ${canSave?'':'disabled'}>Salva</button></div>${canSave?'':'<p class="hm" style="margin:8px 0 0;font-size:13px">Per salvare serve almeno un ingrediente (o, negli alimenti, il nome).</p>'}</div>`;
+  o.innerHTML=`<div class="sheet"><h3>Vuoi uscire senza salvare?</h3><p class="hm">Se esci adesso, quello che hai inserito andrà perso.</p><div class="row between"><button class="btn bdef bad" data-c="exit">Esci senza<br>salvare</button><button class="btn bdef new" data-c="save" ${canSave?'':'disabled'}>Salva</button></div>${canSave?'':'<p class="hm" style="margin:8px 0 0;font-size:13px">Non c\'è ancora niente da salvare.</p>'}</div>`;
   document.body.appendChild(o);const done=()=>o.remove();
   o.addEventListener('click',e=>{if(e.target===o){done();return}const b=e.target.closest('[data-c]');if(!b||b.disabled)return;done();if(b.dataset.c==='exit')onExit();else onSave()})}
 function miniConfirm(title,text,onYes,yesL){const o=document.createElement('div');o.className='modal cfm';o.innerHTML=`<div class="sheet"><h3>${esc(title)}</h3><p class="hm">${esc(text).replace(/\n/g,'<br>')}</p><div class="row between"><button class="btn std2" data-c="no">Annulla</button><button class="btn std2 bad" data-c="yes">${esc(yesL||'Elimina')}</button></div></div>`;
@@ -1834,7 +1835,8 @@ function recJmp(){const b=$('#rBody'),U=$('#rUp'),D=$('#rDn');if(!b||!U)return;c
   const sh=$('#sheet').getBoundingClientRect(),br=b.getBoundingClientRect();$('.rjmp').style.bottom=(sh.bottom-br.bottom+12)+'px'}
 const recDirty=()=>RD&&JSON.stringify([RD.nome,RD.porzioni,RD.items,RD.note,RD.chat.length])!==RD.base;
 /* v282: Salva si attiva appena c'è almeno un ingrediente (il nome, se manca, lo propone l'IA o lo mette l'app) */
-const recOk=()=>!!(RD&&RD.items.length);
+/* v283: si può salvare appena c'è qualcosa: un ingrediente, il nome, le note o le porzioni cambiate */
+const recOk=()=>!!(RD&&(RD.items.length||RD.nome.trim()||(RD.note||'').trim()||RD.porzioni>1));
 function recCanSave(){const b=$('#rrSave');if(b)b.disabled=!recOk()}
 function recWire(bodyOnly){
   document.querySelectorAll('#rBody [data-rdel]').forEach(x=>x.onclick=e=>{e.stopPropagation();const it=RD.items[+x.dataset.rdel];if(!it)return;
@@ -1848,6 +1850,7 @@ function recWire(bodyOnly){
   $('#rrSave').onclick=recSave;
   $('#rName').oninput=e=>{RD.nome=e.target.value;recCanSave()};
   $('#rMinus').onclick=()=>{RD.porzioni=Math.max(1,RD.porzioni-1);recRefresh()};
+  $('#rName').addEventListener('input',recCanSave);
   $('#rPlus').onclick=()=>{RD.porzioni=Math.min(99,RD.porzioni+1);recRefresh()};
   $('#rCancel').onclick=recExit;
   recCanSave()}
