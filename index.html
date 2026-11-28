@@ -1266,7 +1266,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 369</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 370</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1412,7 +1412,7 @@ const mlines=t=>NUTR.slice(1).map(([k,l,u])=>`${l} ${fv(t,k,u)}`+(SUB[k]?` (di c
 const mline=t=>NUTR.slice(1).map(([k,l,u])=>`${l} ${fv(t,k,u)}`+(SUB[k]?` (di cui ${SUB[k][1]} ${fv(t,SUB[k][0],u)})`:'')).join(' · ');
 const clean=i=>{const o={nome:String(i.nome||'Alimento'),quantita:String(i.quantita||'')};o.kcal=num(i.kcal);KEYS.slice(1).forEach(k=>o[k]=nn(i[k]));if(i.imposto)o.imposto=true;if(i.alimento_id){o.alimento_id=String(i.alimento_id);o.grammi=nn(i.grammi);o.fattore=nn(i.fattore)}if(i.dalAlimenti)o.dalAlimenti=true;const F=['utente','etichetta','generico','foto','non_trovato','alimenti','ricetta'];o.fonte=F.includes(i.fonte)?i.fonte:(i.dalAlimenti?'alimenti':i.imposto?'utente':i.stima?'generico':'generico');if(i.imposto)o.fonte='utente';
   if(o.fonte==='non_trovato'){o.kcal=0;KEYS.slice(1).forEach(k=>o[k]=null)}return o};
-const SRC={alimenti:['ok','Valore Sicuro – Lista Alimenti'],ricetta:['ok','Valore Sicuro – Da Ricetta'],utente:['ok','Valore Tuo – Imposto Da Te'],etichetta:['ok','Da Etichetta'],generico:['gen','Valore Generico'],foto:['gen','Stima Da Foto'],non_trovato:['nf','Non Trovato – Cercare Manualmente l\'Alimento']};
+const SRC={alimenti:['ok','Valore Sicuro – Lista Alimenti'],ricetta:['ok','Valore Sicuro – Da Ricetta'],utente:['ok','Valore Sicuro – Imposto Da Te'],etichetta:['ok','Valore Sicuro – Foto Etichetta'],generico:['gen','Valore Generico'],foto:['gen','Stima Da Foto'],non_trovato:['nf','Non Trovato – Cercare Manualmente l\'Alimento']};
 function srcTag(i){const f=i.fonte||(i.dalAlimenti?'alimenti':i.imposto?'utente':i.stima?'generico':'');const s=SRC[f];return s?` <span class="src ${s[0]}">(${s[1]})</span>`:''}
 function md(s){return esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/^\s*[-*•]\s+/gm,'• ').replace(/\n/g,'<br>')}
 
@@ -1461,8 +1461,8 @@ function showInfo(){sheet(`<div class="info"><h3>Come funziona Kcal</h3>
 <h4>Diario</h4><p class="hm"><b>Tocca il <span class="iplus" aria-label="+">+</span> per Aggiungere un Pasto</b>,<br>poi scrivi, detta o fotografa cosa hai mangiato:<br>l'Intelligenza Artificiale calcola kcal e Macro e il conteggio della giornata si aggiorna da solo.<br>Se un valore è sbagliato correggilo in chat:<br>vale sempre l'ultimo inserito.<br>A fine giornata tocca <b>Nuova Giornata Alimentare</b> per iniziare un nuovo conteggio.</p>
 <h4>Da dove vengono i valori</h4><p class="hm">Accanto a ogni alimento c'è un'etichetta colorata che dice da dove viene il valore:</p>
 <p class="hm"><span class="src ok">(Valore Sicuro – Lista Alimenti)</span> preso da un alimento che hai salvato in Alimenti.</p>
-<p class="hm"><span class="src ok">(Valore Tuo – Imposto Da Te)</span> l'hai scritto tu.</p>
-<p class="hm"><span class="src ok">(Da Etichetta)</span> letto dalla tabella nutrizionale della confezione.</p>
+<p class="hm"><span class="src ok">(Valore Sicuro – Imposto Da Te)</span> l'hai scritto tu.</p>
+<p class="hm"><span class="src ok">(Valore Sicuro – Foto Etichetta)</span> letto dalla tabella nutrizionale della confezione.</p>
 <p class="hm"><span class="src gen">(Valore Generico)</span> stimato dall'Intelligenza Artificiale con le tabelle nutrizionali.</p>
 <p class="hm"><span class="src gen">(Stima Da Foto)</span> stimato dall'Intelligenza Artificiale guardando la foto.</p>
 <p class="hm"><span class="src nf">(Non Trovato – Cercare Manualmente l'Alimento)</span><br>l'Intelligenza Artificiale non conosce l'alimento:<br>non inventa nulla e ti chiede i valori.</p>
