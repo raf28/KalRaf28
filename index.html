@@ -360,6 +360,7 @@ nav button.on{font-weight:700;color:light-dark(#1f4d35,#fff)}
 
 /* Alimenti: stile unificato al Diario (v80) */
 #v-alimenti.vh{padding-top:0}
+#v-ricette.vh{padding-top:0}
 .ahead{background:var(--brand);color:#fff;padding:calc(env(safe-area-inset-top) + 14px) 16px 16px}
 .ahead .in{max-width:720px;margin:0 auto}
 .ahead .aht{display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -374,9 +375,13 @@ nav button.on{font-weight:700;color:light-dark(#1f4d35,#fff)}
 .ahead input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,.7)' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M15.5 15.5L21 21'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:18px center;background-size:18px 18px;padding-left:48px}
 .letter{color:light-dark(#2c6a49,#4cc184)}
 #v-alimenti details.food{border:4px solid var(--brand)}
+#v-ricette details.food{border:4px solid var(--brand)}
 #v-alimenti details.food summary .kv{color:light-dark(#22804f,#4cc184);font-weight:600}
+#v-ricette details.food summary .kv{color:light-dark(#22804f,#4cc184);font-weight:600}
 #v-alimenti .vt tr.sub td{color:var(--ink)}
+#v-ricette .vt tr.sub td{color:var(--ink)}
 #v-alimenti details.food .hm{color:var(--ink)}
+#v-ricette details.food .hm{color:var(--ink)}
 details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radius:99px;min-height:40px;padding:8px 16px;font-weight:500}
 .btn.fiClose{background:var(--brand);color:#fff;border:0;border-radius:99px;min-height:40px;padding:8px 16px;font-weight:500}
 .applybar .btn.addbar{display:flex;align-items:center;justify-content:flex-start;gap:14px;background:var(--brand);border:0;border-radius:999px;padding:6px 18px 6px 6px;min-height:58px;font-size:17px;font-weight:600}
@@ -385,14 +390,23 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
 
 /* Alimenti: schede a pillola, larghe, sempre alte due righe */
 #v-alimenti .wrap{padding-left:6px;padding-right:6px}
+#v-ricette .wrap{padding-left:6px;padding-right:6px}
 #v-alimenti .letter{padding-left:12px}
+#v-ricette .letter{padding-left:12px}
 #v-alimenti details.food{border-radius:34px;padding:12px 22px}
+#v-ricette details.food{border-radius:34px;padding:12px 22px}
 #v-alimenti details.food[open]{border-radius:28px}
+#v-ricette details.food[open]{border-radius:28px}
 #v-alimenti details.food summary{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;min-height:46px}
+#v-ricette details.food summary{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;min-height:46px}
 #v-alimenti details.food summary .nm{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.25}
+#v-ricette details.food summary .nm{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.25}
 #v-alimenti details.food summary .kv{white-space:normal;text-align:right;max-width:44vw;line-height:1.2;display:flex;flex-direction:column;align-items:flex-end}
+#v-ricette details.food summary .kv{white-space:normal;text-align:right;max-width:44vw;line-height:1.2;display:flex;flex-direction:column;align-items:flex-end}
 #v-alimenti details.food summary .kv b{font-size:15px;white-space:nowrap}
+#v-ricette details.food summary .kv b{font-size:15px;white-space:nowrap}
 #v-alimenti details.food summary .kv small{font-size:12.5px;font-weight:500;overflow-wrap:anywhere}
+#v-ricette details.food summary .kv small{font-size:12.5px;font-weight:500;overflow-wrap:anywhere}
 
 .row.modes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0 16px}
 .row.modes .btn{position:relative;width:100%;min-height:62px;white-space:normal;line-height:1.2;padding:8px 10px 8px 26px}
@@ -488,10 +502,13 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
 .dfadeB.on{opacity:1}
 /* Alimenti (v119): la ricerca resta fissa in alto, le lettere si fermano sotto di lei, sfumatura sotto la lettera ferma */
 #v-alimenti .ahead{position:sticky;top:var(--ahTop,0px);z-index:4}
+#v-ricette .ahead{position:sticky;top:var(--ahTop,0px);z-index:4}
 #v-alimenti .letter{top:var(--ltTop,0px);z-index:3}
+#v-ricette .letter{top:var(--ltTop,0px);z-index:3}
 /* v162: tolta la sfumatura sotto la lettera ferma degli Alimenti */
 /* Alimenti (v118): barra "Aggiungi alimento" più staccata dal contenuto che scorre */
-#v-alimenti .applybar{padding-top:12px;background:var(--bg)} /* v162: senza sfumatura */
+#v-alimenti .applybar{padding-top:12px;background:var(--bg)}
+#v-ricette .applybar{padding-top:12px;background:var(--bg)} /* v162: senza sfumatura */
 /* v164: solo modalità chiara. Impostazioni con testata verde come lo Storico e sfumatura sotto (uguale a quella in basso);
    Alimenti con la stessa sfumatura in basso e sotto la lettera ferma */
 #v-impost .ihead{display:block;position:sticky;top:0;z-index:4}
@@ -500,19 +517,17 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
 #v-impost>.wrap>h2{display:none}
 #v-impost>.wrap{padding-top:22px}
 #v-alimenti .applybar{padding-top:18px;background:linear-gradient(transparent,var(--bg) 30%)}
+#v-ricette .applybar{padding-top:18px;background:linear-gradient(transparent,var(--bg) 30%)}
 #v-alimenti .letter.stuck::after{content:'';position:absolute;left:0;right:0;top:100%;height:21px;background:linear-gradient(var(--bg),transparent);pointer-events:none}
+#v-ricette .letter.stuck::after{content:'';position:absolute;left:0;right:0;top:100%;height:21px;background:linear-gradient(var(--bg),transparent);pointer-events:none}
 /* v165: legenda dei pallini dello Storico (chiaro e scuro) */
 #v-storico .hleg{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 16px;font-size:13px;color:var(--mute);margin:0 0 12px}
 #v-storico .hleg .dot{margin-right:6px;vertical-align:-1px}
 /* v165: solo modalità chiara. Ricette con testata verde come Storico e Impostazioni; sfumature (21 px) sotto la testata
    e in basso in Storico e Ricette; pillole dello Storico uguali a quelle degli Alimenti */
-#v-ricette .ihead{display:block;position:sticky;top:0;z-index:4}
-#v-ricette .ihead::after,#v-storico .hhead::after{content:'';position:absolute;left:0;right:0;top:100%;height:21px;background:linear-gradient(var(--bg),transparent);pointer-events:none}
-#v-ricette.vh{padding-top:0}
-#v-ricette>.wrap>h2{display:none}
-#v-ricette>.wrap{padding-top:22px}
+#v-storico .hhead::after{content:'';position:absolute;left:0;right:0;top:100%;height:21px;background:linear-gradient(var(--bg),transparent);pointer-events:none}
 .lfadeB{display:none}
-#v-ricette .lfadeB,#v-storico #hfadeB{display:block;position:sticky;bottom:0;z-index:2;height:21px;margin-top:0;opacity:1;pointer-events:none;background:linear-gradient(transparent,var(--bg))}
+#v-storico #hfadeB{display:block;position:sticky;bottom:0;z-index:2;height:21px;margin-top:0;opacity:1;pointer-events:none;background:linear-gradient(transparent,var(--bg))}
 #v-storico .wrap{padding-top:22px}
 #v-storico details.hday{padding:5px 22px}
 html.lightmode #v-storico details.hday{border-color:#1f4d35}
@@ -531,17 +546,26 @@ html.lightmode #v-storico .hlegp{background:#fff;color:#1f4d35}
 #v-storico .hhead h2{white-space:nowrap}
 #v-storico .hhead #histCnt{display:none}
 #v-alimenti .applybar .btn.addbar{box-shadow:light-dark(0 6px 18px rgba(0,0,0,.28),0 6px 20px rgba(0,0,0,.75)),light-dark(0 0 0 0 transparent,0 0 0 1px rgba(255,255,255,.14))}
+#v-ricette .applybar .btn.addbar{box-shadow:light-dark(0 6px 18px rgba(0,0,0,.28),0 6px 20px rgba(0,0,0,.75)),light-dark(0 0 0 0 transparent,0 0 0 1px rgba(255,255,255,.14))}
 /* Alimenti (v111, v117): pillole chiuse dello stesso verde della cornice, scritte bianche */
 #v-alimenti details.food:not([open]){background:var(--brand)}
+#v-ricette details.food:not([open]){background:var(--brand)}
 /* v161: solo modalità chiara, pillole chiuse di Alimenti e Storico nel verde del tasto microfono */
 html.lightmode #v-alimenti details.food:not([open]){background:#436955}
+html.lightmode #v-ricette details.food:not([open]){background:#436955}
 #v-alimenti details.food:not([open]) summary,#v-alimenti details.food:not([open]) summary .nm,#v-alimenti details.food:not([open]) summary .kv,#v-alimenti details.food:not([open]) summary .kv small{color:#fff}
+#v-ricette details.food:not([open]) summary,#v-ricette details.food:not([open]) summary .nm,#v-ricette details.food:not([open]) summary .kv,#v-ricette details.food:not([open]) summary .kv small{color:#fff}
 /* v163: solo modalità chiara, pillole degli Alimenti più basse, sfondo bianco, bordo e scritte verde scuro */
 #v-alimenti details.food{padding:5px 22px}
+#v-ricette details.food{padding:5px 22px}
 html.lightmode #v-alimenti details.food{border-color:#1f4d35}
+html.lightmode #v-ricette details.food{border-color:#1f4d35}
 #v-alimenti details.food summary{min-height:42px}
+#v-ricette details.food summary{min-height:42px}
 html.lightmode #v-alimenti details.food:not([open]){background:#fff}
+html.lightmode #v-ricette details.food:not([open]){background:#fff}
 html.lightmode #v-alimenti details.food:not([open]) summary,html.lightmode #v-alimenti details.food:not([open]) summary .nm,html.lightmode #v-alimenti details.food:not([open]) summary .kv,html.lightmode #v-alimenti details.food:not([open]) summary .kv small{color:#1f4d35}
+html.lightmode #v-ricette details.food:not([open]) summary,html.lightmode #v-ricette details.food:not([open]) summary .nm,html.lightmode #v-ricette details.food:not([open]) summary .kv,html.lightmode #v-ricette details.food:not([open]) summary .kv small{color:#1f4d35}
 /* Aggiungi un pasto (v110): pillole come Alimenti, piene di verde */
 #sheet .addlist{gap:10px;margin:18px 0 28px}
 #sheet .addlist .btn{min-height:58px;padding:10px 22px;border-radius:34px;border:0;background:var(--brand2);color:#fff;font-size:17px;font-weight:600;box-shadow:none}
@@ -572,11 +596,16 @@ nav button{-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
    Stessa altezza (52 px) e stessa larghezza; la pillola della data non si rimpicciolisce più senza "Nuova Giornata Alimentare" */
 .dayline{min-height:52px;box-sizing:border-box}
 .ahead input#foodQ,#v-storico .hlegp{height:52px;min-height:52px}
-@media(max-width:600px){.ahead input#foodQ,#v-storico .hlegp{width:calc(100% + 8px);margin-left:-4px;margin-right:-4px}}
+.ahead input#recQ{height:52px;min-height:52px}
+@media(max-width:600px){.ahead input#foodQ,#v-storico .hlegp{width:calc(100% + 8px);margin-left:-4px;margin-right:-4px}
+.ahead input#recQ{width:calc(100% + 8px);margin-left:-4px;margin-right:-4px}}
 /* solo modalità chiara: ovale bianco, lente e scritta in verde scuro */
 html.lightmode .ahead input#foodQ{background-color:#fff;color:#1f4d35;box-shadow:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231f4d35' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M15.5 15.5L21 21'/%3E%3C/svg%3E")}
+html.lightmode .ahead input#recQ{background-color:#fff;color:#1f4d35;box-shadow:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231f4d35' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M15.5 15.5L21 21'/%3E%3C/svg%3E")}
 html.lightmode .ahead input#foodQ::placeholder{color:#1f4d35;opacity:.75}
+html.lightmode .ahead input#recQ::placeholder{color:#1f4d35;opacity:.75}
 html.lightmode .ahead input#foodQ:focus{box-shadow:none}
+html.lightmode .ahead input#recQ:focus{box-shadow:none}
 html.lightmode #v-storico .hlegp{box-shadow:none}
 
 /* v179: modalità scura "ribaltata" dalla chiara. In chiaro: ovali e pillole hanno il fondo della scheda (bianco) e bordo/scritte
@@ -584,27 +613,40 @@ html.lightmode #v-storico .hlegp{box-shadow:none}
 html:not(.lightmode) .dayline{background:var(--card);box-shadow:0 3px 10px rgba(0,0,0,.35)}
 html:not(.lightmode) .dayline #dayLabel,html:not(.lightmode) .dayline #dayLabel *{color:#4cc184}
 html:not(.lightmode) .ahead input#foodQ{background-color:var(--card);color:#4cc184;box-shadow:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234cc184' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M15.5 15.5L21 21'/%3E%3C/svg%3E")}
+html:not(.lightmode) .ahead input#recQ{background-color:var(--card);color:#4cc184;box-shadow:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234cc184' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M15.5 15.5L21 21'/%3E%3C/svg%3E")}
 html:not(.lightmode) .ahead input#foodQ::placeholder{color:#4cc184;opacity:.75}
+html:not(.lightmode) .ahead input#recQ::placeholder{color:#4cc184;opacity:.75}
 html:not(.lightmode) .ahead input#foodQ:focus{box-shadow:none}
+html:not(.lightmode) .ahead input#recQ:focus{box-shadow:none}
 html:not(.lightmode) #v-storico .hlegp{background:var(--card);color:#4cc184;box-shadow:none}
 html:not(.lightmode) #v-alimenti details.food,html:not(.lightmode) #v-storico details.hday{border-color:#4cc184}
+html:not(.lightmode) #v-ricette details.food{border-color:#4cc184}
 html:not(.lightmode) #v-alimenti details.food:not([open]),html:not(.lightmode) #v-storico details.hday:not([open]){background:var(--card)}
+html:not(.lightmode) #v-ricette details.food:not([open]){background:var(--card)}
 html:not(.lightmode) #v-alimenti details.food:not([open]) summary,html:not(.lightmode) #v-alimenti details.food:not([open]) summary .nm,html:not(.lightmode) #v-alimenti details.food:not([open]) summary .kv,html:not(.lightmode) #v-alimenti details.food:not([open]) summary .kv small,html:not(.lightmode) #v-storico details.hday:not([open]) summary,html:not(.lightmode) #v-storico details.hday:not([open]) summary .kv{color:#4cc184}
+html:not(.lightmode) #v-ricette details.food:not([open]) summary,html:not(.lightmode) #v-ricette details.food:not([open]) summary .nm,html:not(.lightmode) #v-ricette details.food:not([open]) summary .kv,html:not(.lightmode) #v-ricette details.food:not([open]) summary .kv small{color:#4cc184}
 html:not(.lightmode) #v-storico details.hday:not([open]) .dot{box-shadow:0 0 0 2px #4cc184}
 html:not(.lightmode) #v-diario .msg.u{background:var(--brand);color:#fff}
 
 /* v180: solo modalità scura, Alimenti: bordo e scritte delle pillole nel verde della testata (var(--brand)); le lettere restano verde acceso */
 html:not(.lightmode) #v-alimenti details.food{border-color:var(--brand)}
+html:not(.lightmode) #v-ricette details.food{border-color:var(--brand)}
 html:not(.lightmode) #v-alimenti details.food:not([open]) summary,html:not(.lightmode) #v-alimenti details.food:not([open]) summary .nm,html:not(.lightmode) #v-alimenti details.food:not([open]) summary .kv,html:not(.lightmode) #v-alimenti details.food:not([open]) summary .kv small{color:var(--brand)}
+html:not(.lightmode) #v-ricette details.food:not([open]) summary,html:not(.lightmode) #v-ricette details.food:not([open]) summary .nm,html:not(.lightmode) #v-ricette details.food:not([open]) summary .kv,html:not(.lightmode) #v-ricette details.food:not([open]) summary .kv small{color:var(--brand)}
 
 /* v181: modalità scura, sfondo dell'app = grigio scuro (#18201b, prima colore delle pillole); finestre, schede e pillole = nero assoluto (#000) */
 
 /* v182: modalità scura, Alimenti in bianco: lente e scritta della ricerca, bordo e testo delle pillole, lettere dell'indice */
 html:not(.lightmode) .ahead input#foodQ{color:#fff;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M15.5 15.5L21 21'/%3E%3C/svg%3E")}
+html:not(.lightmode) .ahead input#recQ{color:#fff;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M15.5 15.5L21 21'/%3E%3C/svg%3E")}
 html:not(.lightmode) .ahead input#foodQ::placeholder{color:#fff;opacity:1}
+html:not(.lightmode) .ahead input#recQ::placeholder{color:#fff;opacity:1}
 html:not(.lightmode) #v-alimenti details.food{border-color:#fff}
+html:not(.lightmode) #v-ricette details.food{border-color:#fff}
 html:not(.lightmode) #v-alimenti details.food:not([open]) summary,html:not(.lightmode) #v-alimenti details.food:not([open]) summary .nm,html:not(.lightmode) #v-alimenti details.food:not([open]) summary .kv,html:not(.lightmode) #v-alimenti details.food:not([open]) summary .kv small{color:#fff}
+html:not(.lightmode) #v-ricette details.food:not([open]) summary,html:not(.lightmode) #v-ricette details.food:not([open]) summary .nm,html:not(.lightmode) #v-ricette details.food:not([open]) summary .kv,html:not(.lightmode) #v-ricette details.food:not([open]) summary .kv small{color:#fff}
 html:not(.lightmode) #v-alimenti .letter{color:#fff}
+html:not(.lightmode) #v-ricette .letter{color:#fff}
 /* v183: modalità scura, i due neri invertiti di nuovo: sfondo dell'app nero assoluto (#000), schede e pillole grigio scuro (#18201b) */
 
 /* v184: modalità scura uniforme. Sfondo nero attenuato (#0b0b0c); schede, finestre, pillole e ovali grigio neutro (#1c1c1e);
@@ -633,7 +675,9 @@ html:not(.lightmode) #mealItems:has(.it),html:not(.lightmode) .mbox{border-color
 .btn.bdef:not(:disabled):active,.btn.std2:not(:disabled):active,.head #closeDay:active,.mbar #mealDel:active,.btn.dg:not(:disabled):active,#sheet .btn:not(:disabled):active,details .btn:not(:disabled):active,#v-impost .btn.aib:not(:disabled):active,#apply:active,#resetApp:active,.thm button:active,.arw:not(:disabled):active,.mdock .seg button.on:active,.comp .ib:not(:disabled):active,.ib.send:not(:disabled):active,.sl3b button:not(:disabled):active,#sheet .ib:not(:disabled):active{box-shadow:inset 0 2px 4px rgba(0,0,0,.25)!important;transform:translateY(1px)}
 .mdock .addm,.addbar .pl{background-image:linear-gradient(to bottom,#fff,#e6ece8)!important;box-shadow:inset 0 0 0 2px light-dark(#436955,var(--brand)),0 2px 5px rgba(0,0,0,.28)!important}
 .dayline,#mealBar:not(.histbar),.mdock .mrow,#v-alimenti details.food:not([open]),#v-storico details.hday:not([open]),.ahead input#foodQ,#v-storico .hlegp{box-shadow:0 6px 16px rgba(0,0,0,.30),0 2px 4px rgba(0,0,0,.18)!important}
+#v-ricette details.food:not([open]),.ahead input#recQ{box-shadow:0 6px 16px rgba(0,0,0,.30),0 2px 4px rgba(0,0,0,.18)!important}
 html:not(.lightmode) .dayline,html:not(.lightmode) #mealBar:not(.histbar),html:not(.lightmode) .mdock .mrow,html:not(.lightmode) #v-alimenti details.food:not([open]),html:not(.lightmode) #v-storico details.hday:not([open]),html:not(.lightmode) .ahead input#foodQ,html:not(.lightmode) #v-storico .hlegp{box-shadow:0 6px 18px rgba(0,0,0,.6),0 2px 4px rgba(0,0,0,.4)!important}
+html:not(.lightmode) #v-ricette details.food:not([open]),html:not(.lightmode) .ahead input#recQ{box-shadow:0 6px 18px rgba(0,0,0,.6),0 2px 4px rgba(0,0,0,.4)!important}
 .macros div{box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 2px 6px rgba(0,0,0,.22)}
 
 /* v188: 3D e ombra anche su: X della tabella del pasto, voce selezionata della barra in basso, pasti non selezionati, cerchio del + */
@@ -647,6 +691,7 @@ nav button.on svg{background-image:linear-gradient(to bottom,rgba(255,255,255,.2
 
 /* v189: "Aggiungi alimento" è un tasto: stesso rilievo 3D e stessa ombra degli altri tasti */
 .applybar .btn.addbar,#v-alimenti .applybar .btn.addbar{background-image:linear-gradient(to bottom,rgba(255,255,255,.22),rgba(255,255,255,0) 55%,rgba(0,0,0,.12))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -2px 0 rgba(0,0,0,.18),0 2px 5px rgba(0,0,0,.28)!important}
+#v-ricette .applybar .btn.addbar{background-image:linear-gradient(to bottom,rgba(255,255,255,.22),rgba(255,255,255,0) 55%,rgba(0,0,0,.12))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -2px 0 rgba(0,0,0,.18),0 2px 5px rgba(0,0,0,.28)!important}
 .applybar .btn.addbar:active{box-shadow:inset 0 2px 4px rgba(0,0,0,.25)!important;transform:translateY(1px)}
 
 /* v190: tasto + (barra dei pasti e "Aggiungi alimento") bianco bombato, senza bordo, con ombra più forte; + verde scuro */
@@ -654,12 +699,15 @@ nav button.on svg{background-image:linear-gradient(to bottom,rgba(255,255,255,.2
 
 /* v191: niente ombra sulle pillole degli alimenti (Alimenti) e delle giornate (Storico), in chiaro e in scuro */
 #v-alimenti details.food,#v-storico details.hday,#v-alimenti details.food:not([open]),#v-storico details.hday:not([open]),html:not(.lightmode) #v-alimenti details.food:not([open]),html:not(.lightmode) #v-storico details.hday:not([open]){box-shadow:none!important}
+#v-ricette details.food,#v-ricette details.food:not([open]),html:not(.lightmode) #v-ricette details.food:not([open]){box-shadow:none!important}
 
 /* v192/v194: solo modalità chiara, pillole di Alimenti e Storico con effetto 3D medio (cuscinetto bombato), senza ombra esterna */
 html.lightmode #v-alimenti details.food:not([open]),html.lightmode #v-storico details.hday:not([open]){background:linear-gradient(to bottom,#fff 0,#f7f9f8 50%,#e3ebe6 100%)!important;box-shadow:inset 0 -3px 0 rgba(31,77,53,.10),inset 0 2px 0 #fff!important}
+html.lightmode #v-ricette details.food:not([open]){background:linear-gradient(to bottom,#fff 0,#f7f9f8 50%,#e3ebe6 100%)!important;box-shadow:inset 0 -3px 0 rgba(31,77,53,.10),inset 0 2px 0 #fff!important}
 
 /* v195/v197: solo modalità scura, pillole di Alimenti e Storico nel grigio di partenza (#1c1c1e) con rilievo 3D marcato con rilievo 3D medio (come in chiaro), bordo e scritte bianchi */
 html:not(.lightmode) #v-alimenti details.food:not([open]),html:not(.lightmode) #v-storico details.hday:not([open]){background:linear-gradient(to bottom,#36363a 0,#232326 45%,#121214 100%)!important;box-shadow:inset 0 -4px 0 rgba(0,0,0,.5),inset 0 3px 2px rgba(255,255,255,.16)!important}
+html:not(.lightmode) #v-ricette details.food:not([open]){background:linear-gradient(to bottom,#36363a 0,#232326 45%,#121214 100%)!important;box-shadow:inset 0 -4px 0 rgba(0,0,0,.5),inset 0 3px 2px rgba(255,255,255,.16)!important}
 
 /* v198: cerchio "i" (informazioni) a destra del titolo in Diario e Impostazioni */
 .head .dht,#v-impost .ihead .aht{justify-content:space-between}
@@ -688,7 +736,9 @@ html:not(.lightmode) #v-alimenti details.food:not([open]),html:not(.lightmode) #
 
 /* v221: aprendo una pillola di Alimenti o Storico i colori del titolo (nome, kcal, "per …"/"su …") restano quelli della pillola chiusa */
 html.lightmode #v-alimenti details.food[open] summary,html.lightmode #v-alimenti details.food[open] summary .nm,html.lightmode #v-alimenti details.food[open] summary .kv,html.lightmode #v-alimenti details.food[open] summary .kv small,html.lightmode #v-storico details.hday[open] summary,html.lightmode #v-storico details.hday[open] summary .kv,html.lightmode #v-storico details.hday[open] summary .kv small{color:#1f4d35}
+html.lightmode #v-ricette details.food[open] summary,html.lightmode #v-ricette details.food[open] summary .nm,html.lightmode #v-ricette details.food[open] summary .kv,html.lightmode #v-ricette details.food[open] summary .kv small{color:#1f4d35}
 html:not(.lightmode) #v-alimenti details.food[open] summary,html:not(.lightmode) #v-alimenti details.food[open] summary .nm,html:not(.lightmode) #v-alimenti details.food[open] summary .kv,html:not(.lightmode) #v-alimenti details.food[open] summary .kv small,html:not(.lightmode) #v-storico details.hday[open] summary,html:not(.lightmode) #v-storico details.hday[open] summary .kv,html:not(.lightmode) #v-storico details.hday[open] summary .kv small{color:#fff}
+html:not(.lightmode) #v-ricette details.food[open] summary,html:not(.lightmode) #v-ricette details.food[open] summary .nm,html:not(.lightmode) #v-ricette details.food[open] summary .kv,html:not(.lightmode) #v-ricette details.food[open] summary .kv small{color:#fff}
 /* v221: nello Storico aperto, sotto la data, l'etichetta come nel Diario: Restano / Bonus di / Oltre di */
 .hstat{margin-top:10px}
 .hleft{display:inline-block;font-size:14px;font-weight:600;padding:4px 12px;border-radius:99px;background:#3e6651;color:#fff} /* v223: stesso verde della pillolina del Diario */
@@ -715,6 +765,7 @@ html:not(.lightmode) #v-alimenti details.food[open] summary,html:not(.lightmode)
 /* v230: pillole contenitore "Aggiungi Alimento" e Ricette: sfumatura del colore, nessun rilievo, ombra un po' più marcata.
    "Applica e torna al Diario": sfumatura, rilievo 3D più evidente e la stessa ombra */
 .applybar .btn.addbar,#v-alimenti .applybar .btn.addbar,#rdock .mrow{background-image:linear-gradient(to bottom,rgba(255,255,255,.22),rgba(255,255,255,0) 55%,rgba(0,0,0,.12))!important;box-shadow:0 4px 10px rgba(0,0,0,.35)!important}
+#v-ricette .applybar .btn.addbar{background-image:linear-gradient(to bottom,rgba(255,255,255,.22),rgba(255,255,255,0) 55%,rgba(0,0,0,.12))!important;box-shadow:0 4px 10px rgba(0,0,0,.35)!important}
 .applybar .btn.addbar:active{box-shadow:0 4px 10px rgba(0,0,0,.35)!important;transform:none}
 #apply{background-image:linear-gradient(to bottom,rgba(255,255,255,.22),rgba(255,255,255,0) 55%,rgba(0,0,0,.12))!important;box-shadow:inset 0 2px 0 rgba(255,255,255,.45),inset 0 -3px 0 rgba(0,0,0,.28),0 4px 10px rgba(0,0,0,.35)!important}
 #apply:active{box-shadow:inset 0 3px 5px rgba(0,0,0,.3)!important;transform:translateY(1px)}
@@ -727,8 +778,10 @@ html:not(.lightmode) #v-alimenti details.food[open] summary,html:not(.lightmode)
 #mdock .mrow,#mealBar:not(.histbar){background-image:linear-gradient(to bottom,rgba(255,255,255,.22),rgba(255,255,255,0) 55%,rgba(0,0,0,.12))!important;box-shadow:0 4px 10px rgba(0,0,0,.35)!important}
 
 /* v233: i tre ovali bianchi delle testate (data nel Diario, "Cerca un alimento", legenda dello Storico): nessuna sfumatura né rilievo, ombra un po' più marcata e uguale per tutti */
-html.lightmode .dayline,html.lightmode .ahead input#foodQ,html.lightmode #v-storico .hlegp{box-shadow:0 8px 20px rgba(0,0,0,.48),0 3px 6px rgba(0,0,0,.28)!important} /* v235: ombra più marcata in chiaro */
+html.lightmode .dayline,html.lightmode .ahead input#foodQ,html.lightmode #v-storico .hlegp{box-shadow:0 8px 20px rgba(0,0,0,.48),0 3px 6px rgba(0,0,0,.28)!important}
+html.lightmode .ahead input#recQ{box-shadow:0 8px 20px rgba(0,0,0,.48),0 3px 6px rgba(0,0,0,.28)!important} /* v235: ombra più marcata in chiaro */
 html:not(.lightmode) .dayline,html:not(.lightmode) .ahead input#foodQ,html:not(.lightmode) #v-storico .hlegp{box-shadow:0 6px 18px rgba(0,0,0,.6),0 2px 5px rgba(0,0,0,.4)!important}
+html:not(.lightmode) .ahead input#recQ{box-shadow:0 6px 18px rgba(0,0,0,.6),0 2px 5px rgba(0,0,0,.4)!important}
 
 /* v234: tasti di Aspetto (Come il Telefono / Chiaro / Scuro) con il rilievo 3D di un livello più leggero (quello standard dei tasti) */
 #v-impost .thm button{box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -2px 0 rgba(0,0,0,.18),0 2px 5px rgba(0,0,0,.28)!important}
@@ -740,9 +793,12 @@ html body #v-impost .btn:not(:disabled):active,html body #sheet .btn:not(:disabl
 
 /* v236: pillole degli elenchi (Alimenti e Storico) con il rilievo 3D di un livello più forte: chiaro da medio a marcato, scuro da marcato a molto marcato */
 html.lightmode #v-alimenti details.food:not([open]),html.lightmode #v-storico details.hday:not([open]){background:linear-gradient(to bottom,#fff 0,#f3f6f4 45%,#d9e3dd 100%)!important;box-shadow:inset 0 -4px 0 rgba(31,77,53,.16),inset 0 3px 2px rgba(255,255,255,.9)!important}
+html.lightmode #v-ricette details.food:not([open]){background:linear-gradient(to bottom,#fff 0,#f3f6f4 45%,#d9e3dd 100%)!important;box-shadow:inset 0 -4px 0 rgba(31,77,53,.16),inset 0 3px 2px rgba(255,255,255,.9)!important}
 html:not(.lightmode) #v-alimenti details.food:not([open]),html:not(.lightmode) #v-storico details.hday:not([open]){background:linear-gradient(to bottom,#3e3e42 0,#242427 45%,#0e0e10 100%)!important;box-shadow:inset 0 -5px 0 rgba(0,0,0,.55),inset 0 3px 2px rgba(255,255,255,.2)!important}
+html:not(.lightmode) #v-ricette details.food:not([open]){background:linear-gradient(to bottom,#3e3e42 0,#242427 45%,#0e0e10 100%)!important;box-shadow:inset 0 -5px 0 rgba(0,0,0,.55),inset 0 3px 2px rgba(255,255,255,.2)!important}
 /* v263: modalità scura, bordo delle pillole di Alimenti e Storico nel bianco del tasto + (#e6ece8) invece del bianco pieno: meno luminoso sul nero; anche il contorno del pallino dello Storico */
 html:not(.lightmode) #v-alimenti details.food,html:not(.lightmode) #v-storico details.hday{border-color:#e6ece8!important}
+html:not(.lightmode) #v-ricette details.food{border-color:#e6ece8!important}
 html:not(.lightmode) #v-storico details.hday:not([open]) .dot{box-shadow:0 0 0 2px #e6ece8!important}
 /* v271: tolte le prove v269/v270; le pillole scure di Alimenti e Storico tornano al rilievo verticale marcato della v236 (regola più sopra) */
 
@@ -787,6 +843,7 @@ html:not(.lightmode) .comp textarea{background:#f4f6f1;color:#17201a} /* v251: c
 /* v252: solo modalità chiara, i tre ovali delle testate in bianco attenuato #f4f6f1 */
 html.lightmode .dayline,html.lightmode #v-storico .hlegp{background:#f4f6f1}
 html.lightmode .ahead input#foodQ{background-color:#f4f6f1}
+html.lightmode .ahead input#recQ{background-color:#f4f6f1}
 
 /* v253: solo modalità chiara, campo di scrittura con bordo 4px verde tasti #436955, ombra morbida e allineamento perfetto a 44px */
 html.lightmode .comp textarea{border:4px solid #436955;box-shadow:0 2px 5px rgba(0,0,0,.28);padding-top:7px;padding-bottom:7px;min-height:44px;box-sizing:border-box}
@@ -817,6 +874,7 @@ html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,ht
 .comp textarea,html.lightmode .comp textarea,html:not(.lightmode) .comp textarea{border-radius:22px!important}
 /* v255/v266: solo modalità chiara, pillole di Alimenti e Storico: rilievo medio con filo in basso sfocato e luce diagonale: bianco pieno fino al 10%, poi sfumatura lunga fino a #d6e0da sul bordo destro, senza ombra esterna */
 html.lightmode #v-alimenti details.food:not([open]),html.lightmode #v-storico details.hday:not([open]){background:linear-gradient(115deg,#fff 0,#fff 10%,#fbfcfb 20%,#f5f8f6 32%,#eef3f0 45%,#e7eee9 58%,#e0e8e3 72%,#dae4de 86%,#d6e0da 100%)!important;box-shadow:inset 0 -3px 3px -1px rgba(31,77,53,.14),inset 0 2px 2px rgba(255,255,255,.95)!important}
+html.lightmode #v-ricette details.food:not([open]){background:linear-gradient(115deg,#fff 0,#fff 10%,#fbfcfb 20%,#f5f8f6 32%,#eef3f0 45%,#e7eee9 58%,#e0e8e3 72%,#dae4de 86%,#d6e0da 100%)!important;box-shadow:inset 0 -3px 3px -1px rgba(31,77,53,.14),inset 0 2px 2px rgba(255,255,255,.95)!important}
 </style>
 </head>
 <body>
@@ -854,15 +912,13 @@ window.addEventListener('error',()=>hideSplash());</script>
     </section>
 
     <section id="v-ricette" class="vh" hidden>
-      <div class="ahead hhead ihead"><div class="in"><div class="aht"><h2>Ricette</h2></div></div></div>
+      <div class="ahead"><div class="in"><div class="aht"><h2>Ricette</h2><span class="acnt" id="recCnt"></span></div>
+        <input type="search" id="recQ" placeholder="Cerca una ricetta" autocomplete="off"></div></div>
       <div class="wrap">
-        <h2>Ricette</h2>
-        <div class="recsel" id="recSel" hidden></div>
-        <div class="seg" id="recTabs" style="padding-top:0"></div>
-        <div id="recChatBox"><div class="chat" id="recChat"></div></div>
-        <div id="recBook" hidden></div>
-        <div class="lfadeB" aria-hidden="true"></div>
-      </div>
+        <div id="recList"></div></div>
+      <div class="applybar"><button class="btn addbar" id="addRec"><span class="pl">+</span>Aggiungi Ricetta</button></div>
+      <!-- vecchia sezione (chat e ricettario), nascosta finché non viene rifatta -->
+      <div hidden><div class="recsel" id="recSel"></div><div class="seg" id="recTabs"></div><div id="recChatBox"><div class="chat" id="recChat"></div></div><div id="recBook"></div></div>
     </section>
 
     <section id="v-alimenti" class="vh" hidden>
@@ -940,7 +996,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 277</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 278</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1344,14 +1400,16 @@ function applyTheme(){const th=(S.settings&&S.settings.theme)||'auto';document.d
 document.querySelectorAll('[data-thm]').forEach(b=>b.classList.toggle('on',b.dataset.thm===th))}
 function updSeg(){[['mealTabs','segw'],['psc','pillw']].forEach(([a,b])=>{const s=$('#'+a),w=$('#'+b);if(!s||!w)return;const max=s.scrollWidth-s.clientWidth;w.classList.toggle('cl',!s.hidden&&s.scrollLeft>4);w.classList.toggle('cr',!s.hidden&&s.scrollLeft<max-4)})}
 /* v119: misure per la barra di ricerca fissa e le lettere degli Alimenti */
-function alimSticky(){const sec=$('#v-alimenti');if(!sec||sec.hidden)return;const ah=sec.querySelector('.ahead'),q=$('#foodQ');if(!ah||!q)return;
+/* v278: vale per Alimenti e Ricette (stessa grafica) */
+const alimSec=()=>['#v-alimenti','#v-ricette'].map(x=>$(x)).find(x=>x&&!x.hidden);
+function alimSticky(){const sec=alimSec();if(!sec)return;const ah=sec.querySelector('.ahead'),q=sec.querySelector('input[type=search]');if(!ah||!q)return;
   const top=-Math.max(0,q.offsetTop-10);sec.style.setProperty('--ahTop',top+'px');sec.style.setProperty('--ltTop',(ah.offsetHeight+top)+'px');alimStuck()}
 function diarioFades(){const mn=$('#main'),sec=$('#v-diario');if(!sec||sec.hidden)return;const st=sec.querySelector('.mstick'),fb=$('#dfadeB');
   if(st)st.classList.toggle('stuck',!$('#mealBar').hidden&&mn.scrollTop>0&&st.getBoundingClientRect().top<=mn.getBoundingClientRect().top+1);
   if(fb)fb.classList.toggle('on',mn.scrollHeight-mn.scrollTop-mn.clientHeight>2)}
 function histFades(){const mn=$('#main'),sec=$('#v-storico');if(!sec||sec.hidden)return;const h=sec.querySelector('.hhead'),fb=$('#hfadeB');
   if(h)h.classList.toggle('stuck',mn.scrollTop>0);if(fb)fb.classList.toggle('on',mn.scrollHeight-mn.scrollTop-mn.clientHeight>2)}
-function alimStuck(){const sec=$('#v-alimenti');if(!sec||sec.hidden)return;const mn=$('#main').getBoundingClientRect().top,lt=parseFloat(sec.style.getPropertyValue('--ltTop'))||0;
+function alimStuck(){const sec=alimSec();if(!sec)return;const mn=$('#main').getBoundingClientRect().top,lt=parseFloat(sec.style.getPropertyValue('--ltTop'))||0;
   let on=null;sec.querySelectorAll('.letter').forEach(l=>{l.classList.remove('stuck');if(l.getBoundingClientRect().top<=mn+lt+1&&$('#main').scrollTop>0)on=l});if(on)on.classList.add('stuck')}
 function render(){applyTheme();requestAnimationFrame(alimSticky);requestAnimationFrame(()=>requestAnimationFrame(()=>{diarioFades();histFades()}));fdKill($('#v-'+ui.view));requestAnimationFrame(updSeg);
   ['diario','alimenti','ricette','pasti','storico','impost'].forEach(v=>$('#v-'+v).hidden=ui.view!==v);
@@ -1361,11 +1419,11 @@ function render(){applyTheme();requestAnimationFrame(alimSticky);requestAnimatio
   $('#send').disabled=ui.busy;
   if(false){}else{$('#msg').disabled=$('#mic').disabled=$('#bCam').disabled=$('#bGal').disabled=false}
   $('#pills').hidden=true; /* barra dei pasti in basso tolta (26/11): la riga dei pasti ora sta sopra il campo di scrittura */
-  $('#mdock').hidden=ui.view!=='diario';$('#addMeal').hidden=ui.dv!==null;$('#ctx').hidden=ui.view==='diario'||ui.view==='ricette';$('#rdock').hidden=ui.view!=='ricette';document.querySelectorAll('[data-rdock]').forEach(b=>b.classList.toggle('on',b.dataset.rdock===ui.rsel));{const t=$('#recSel');if(t){t.hidden=!ui.rsel;t.textContent=ui.rsel==='crea'?'Crea Ricetta':ui.rsel==='book'?'Ricettario':''}}
+  $('#mdock').hidden=ui.view!=='diario';$('#addMeal').hidden=ui.dv!==null;$('#ctx').hidden=ui.view==='diario'||ui.view==='ricette';$('#rdock').hidden=true;/* v278: barra Ricettario / Crea Ricetta tolta */document.querySelectorAll('[data-rdock]').forEach(b=>b.classList.toggle('on',b.dataset.rdock===ui.rsel));{const t=$('#recSel');if(t){t.hidden=!ui.rsel;t.textContent=ui.rsel==='crea'?'Crea Ricetta':ui.rsel==='book'?'Ricettario':''}}
   $('#comp .in').hidden=false;
   if(ui.view==='diario'&&ui.dv!==null){$('#comp').hidden=true;/* v228: giornata archiviata, niente striscia vuota del campo di scrittura */$('#comp .in').hidden=true;renderHead();renderHistDay();}
   else if(ui.view==='diario'){if(ui.meal)ensureMeal(ui.meal);renderHead();renderMeal();renderPills();$('#msg').placeholder=ui.meal?'Cosa hai mangiato?':'Tocca + per iniziare'}
-  if(ui.view==='ricette'){renderRec();$('#ctx').textContent='Chat ricette · non viene contata nel diario';$('#msg').placeholder=''}
+  if(ui.view==='ricette')renderRecipes();
   if(ui.view==='storico')renderHist();
   if(ui.view==='alimenti')renderFoods();
   if(ui.view==='impost'){renderSet();gdRender()}
@@ -1548,6 +1606,10 @@ document.addEventListener('click',e=>{
     $('#okMealDel').onclick=()=>{deleteMeal(k);save();closeSheet();render();toast(nm+(k==='colazione'||k==='cena'?' eliminata':' eliminato'))};return}
   if(b.id==='noSheet'){closeSheet();return}
   if(b.id==='impRec'){return importRecipes()}
+  if(b.id==='addRec'){/* v278: come Aggiungi Alimento, si apre toccando il + e la scritta fino a «Agg» */
+    let lim=0;try{const tn=[...b.childNodes].find(n=>n.nodeType===3),rg=document.createRange();rg.setStart(tn,0);rg.setEnd(tn,3);lim=rg.getBoundingClientRect().right+4}catch(_){}
+    if(e.target.closest('.pl')||(lim&&e.clientX<=lim))return addRecipeStart();return}
+  if(b.dataset.delrecipe){const id=b.dataset.delrecipe,r=S.recipes.find(x=>x.id===id);sheet(`<h3>Eliminare «${esc(r?r.nome:'')}»?</h3><p class="hm">La ricetta verrà eliminata. Non si può annullare.</p><div class="row between"><button class="btn ghost std2" id="noSheet">Annulla</button><button class="btn bad std2" id="okDelR">Elimina</button></div>`);$('#okDelR').onclick=()=>{S.recipes=S.recipes.filter(x=>x.id!==id);save();closeSheet();render();toast('Ricetta eliminata')};return}
   if(b.id==='addFood'){/* v255: si apre toccando il cerchio + e la parte della scritta fino alla seconda «g» di «Aggiungi» (testo «Agg»); il resto della pillola non fa nulla */
     let lim=0;try{const tn=[...b.childNodes].find(n=>n.nodeType===3),rg=document.createRange();rg.setStart(tn,0);rg.setEnd(tn,3);lim=rg.getBoundingClientRect().right+4}catch(_){}
     if(e.target.closest('.pl')||(lim&&e.clientX<=lim))return addFoodStart();return}
@@ -1635,7 +1697,7 @@ function renderFoods(){fdKill();
     <div class="ph" data-ph="${esc(f.id)}"></div>
     <div class="row between"><button class="btn sm ghost std2" data-collapse>Annulla</button><span class="row" style="margin:0"><button class="btn sm ghost std2" data-editfood="${esc(f.id)}">Modifica</button><button class="btn sm ghost std2" data-delfood="${esc(f.id)}">Elimina</button></span></div></details>`});
   $('#foodList').innerHTML=h;const c=$('#foodCnt');if(c)c.textContent=S.foods.length+(S.foods.length===1?' salvato':' salvati');
-  document.querySelectorAll('details.food').forEach(d=>bindCloseDetails(d,()=>loadFoodPhotos(d.dataset.fid)));
+  document.querySelectorAll('#foodList details.food').forEach(d=>bindCloseDetails(d,()=>loadFoodPhotos(d.dataset.fid)));
 }
 async function loadFoodPhotos(id,box0){
   const f=S.foods.find(x=>x.id===id),box=box0||document.querySelector(`[data-ph="${CSS.escape(id)}"]`);if(!f||!box||!f.foto)return;
@@ -1655,6 +1717,22 @@ function miniConfirm(title,text,onYes){const o=document.createElement('div');o.c
   try{if(window.CloseWatcher){cw=new CloseWatcher();cw.onclose=()=>{cw=null;o.remove()}}}catch(e){}
   o.onclick=e=>{if(e.target===o){close();return}const b=e.target.closest('[data-c]');if(!b)return;close();if(b.dataset.c==='yes')onYes()};document.body.appendChild(o)}
 function addFoodStart(){foodSheet(null)}
+/* v278: SEZIONE RICETTE con la stessa grafica degli Alimenti. Per ora: elenco alfabetico, ricerca, «Aggiungi Ricetta» (finestra vuota con Annulla e Salva disattivato) */
+function renderRecipes(){fdKill();
+  const q=($('#recQ').value||'').trim().toLowerCase(),c=$('#recCnt');if(c)c.textContent=S.recipes.length+(S.recipes.length===1?' salvata':' salvate');
+  const list=S.recipes.filter(r=>!q||String(r.nome||'').toLowerCase().includes(q)).sort((a,b)=>String(a.nome||'').localeCompare(String(b.nome||''),'it',{sensitivity:'base'}));
+  if(!S.recipes.length){$('#recList').innerHTML='<div class="card"><div class="empty">Nessuna ricetta salvata. Usa «+ Aggiungi Ricetta».</div></div>';return}
+  if(!list.length){$('#recList').innerHTML='<div class="empty">Nessuna ricetta trovata.</div>';return}
+  let h='',cur='';
+  list.forEach(r=>{const L=letterOf(r.nome||'?');if(L!==cur){cur=L;h+=`<div class="letter">${L}</div>`}const ing=r.ingredienti||[],t=sum(ing);
+    h+=`<details class="card food" data-rid="${esc(r.id)}"><summary><span class="nm">${esc(r.nome)}</span><span class="kv"><b>${f0(t.kcal)} kcal</b><small>per porzione</small></span></summary>
+    ${ing.length?`<div class="hm" style="margin-top:8px">${ing.map(i=>`• ${esc(i.nome)} ${esc(i.quantita||'')} — ${f0(i.kcal)} kcal`).join('<br>')}</div>`:''}
+    <div class="row between"><button class="btn sm ghost std2" data-collapse>Annulla</button><button class="btn sm ghost std2" data-delrecipe="${esc(r.id)}">Elimina</button></div></details>`});
+  $('#recList').innerHTML=h;
+  document.querySelectorAll('#recList details.food').forEach(d=>bindCloseDetails(d));
+}
+function addRecipeStart(){sheet(`<h3>Aggiungi Ricetta</h3>
+    <div class="row between"><button class="btn sm ghost std2" id="noSheet">Annulla</button><button class="btn std2" id="rrSave" disabled>Salva</button></div>`)}
 function foodForm(f){foodSheet(f)}
 async function foodSheet(f){
   const ph={tabella:null,confezione:null,confezione2:null,confezione3:null};
@@ -1667,7 +1745,7 @@ async function foodSheet(f){
     <div class="f"><label for="ffR">Valori riferiti a</label><input type="text" id="ffR" value="${esc(card.riferimento||'100 g')}" placeholder="100 g"></div>
     <div class="fgrid">${FKEYS.map(([k,l,u])=>`<div><label for="ff_${k}">${l} (${u})</label><input type="number" inputmode="decimal" step="any" id="ff_${k}" value="${card[k]===null||card[k]===undefined?'':esc(card[k])}"></div>`).join('')}</div>
     <div class="f" style="margin:12px 0 0"><label for="ffNote">Note</label><textarea id="ffNote" class="ta" rows="2">${esc(card.note||'')}</textarea></div></div>`;
-  let draw=()=>{sheet(`<h3>${f?'Modifica alimento':'Aggiungi alimento'}</h3>
+  let draw=()=>{sheet(`<h3>${f?'Modifica Alimento':'Aggiungi Alimento'}</h3>
     <div class="row modes"><button class="btn sm ghost two ${auto?'sel':''}" id="fGo">${auto?'<i class="chk">✓</i>':''}Compila scheda Automaticamente<small>da foto, testo o voce</small></button><button class="btn sm ghost two ${!auto?'sel':''}" id="fMan">${!auto?'<i class="chk">✓</i>':''}Compila scheda Manualmente<small>scrivi tu tutti i valori</small></button></div>
     ${slotsHtml(ph)}
     <div class="fin"><textarea id="fTxt" class="ta" rows="8" placeholder="Scrivi o detta nome, marca, valori e precisazioni. Es. «Prosciutto cotto Rovagnati, per 100 grammi: 135 kcal, proteine 20…»">${esc(txt)}</textarea>${MIC}</div>
@@ -1701,6 +1779,7 @@ async function foodSheet(f){
   draw();
 }
 $('#foodQ').addEventListener('input',renderFoods);
+$('#recQ').addEventListener('input',renderRecipes);
 $('#closeDay').onclick=()=>{if(S.parked){finishEdit();return}
   const t=sum(dayItems(S.day)),{target,margin}=S.settings;
   sheet(`<h3>Chiudere la giornata alimentare?</h3><p class="hm" style="margin:0 0 12px">La giornata alimentare attuale verrà chiusa, conservata nello storico e se ne aprirà una nuova.<br>Potrai consultarla nello <b>Storico</b> e modificarla tornando indietro con la freccia <b>‹</b> accanto alla data.</p><p style="margin:0 0 6px"><b style="font-size:28px">${f0(t.kcal)}</b> kcal su ${f0(target)}${margin?` (+${f0(margin)} bonus)`:''}</p><p class="hm" style="margin:0 0 10px;color:var(--ink)">${mline(t)}</p>
@@ -2064,7 +2143,7 @@ function boot(){
 try{history.replaceState({v:'diario'},'')}catch(e){}
 /* frecce su/giù */
 {const mn=$('#main'),J=$('#jmp'),U=$('#jUp'),D=$('#jDn');
- function upd(){if($('#app').hidden){U.hidden=D.hidden=true;return}const r=mn.getBoundingClientRect();J.style.top='';/* v166: negli Alimenti le frecce stanno alla stessa altezza del Diario (sopra la barra dei pasti e il campo di scrittura) */const al=$('#v-alimenti'),ex=['v-alimenti','v-storico','v-impost'].some(i=>{const e=document.getElementById(i);return e&&!e.hidden})?129:0;J.style.bottom=(window.innerHeight-r.bottom+12+ex)+'px';
+ function upd(){if($('#app').hidden){U.hidden=D.hidden=true;return}const r=mn.getBoundingClientRect();J.style.top='';/* v166: negli Alimenti le frecce stanno alla stessa altezza del Diario (sopra la barra dei pasti e il campo di scrittura) */const al=$('#v-alimenti'),ex=['v-alimenti','v-ricette','v-storico','v-impost'].some(i=>{const e=document.getElementById(i);return e&&!e.hidden})?129:0;J.style.bottom=(window.innerHeight-r.bottom+12+ex)+'px';
    const can=mn.scrollHeight-mn.clientHeight>40;U.hidden=!can||mn.scrollTop<30;D.hidden=!can||mn.scrollHeight-mn.scrollTop-mn.clientHeight<30}
  mn.addEventListener('scroll',upd,{passive:true});window.addEventListener('resize',upd);
  new MutationObserver(()=>requestAnimationFrame(upd)).observe(mn,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden','open']});

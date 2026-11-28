@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 277 (28/11/2026).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 278 (28/11/2026).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **Kcal** (nome del repository e del progetto: **KalRaf28**; titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **277**.
+> Sto sviluppando **Kcal** (nome del repository e del progetto: **KalRaf28**; titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **278**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -53,7 +53,7 @@ KalRaf28 è un diario alimentare personale. Al posto di contare le calorie nelle
 - **Mai spese extra per l'API** oltre all'abbonamento.
 - In futuro forse un'APK.
 
-## 3. Come funziona oggi (v277): sezioni
+## 3. Come funziona oggi (v278): sezioni
 
 La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impostazioni** (Preimpostati tolto nella v53). La voce attiva è evidenziata con una pillola verde `#2f8f5c`.
 
@@ -104,11 +104,10 @@ La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impos
 - Nel Diario, quando l'utente nomina un alimento salvato, Gemini lo collega con il suo `alimento_id` e i grammi (o il numero di pezzi). L'app poi **ricalcola i valori con precisione dalla scheda**.
 
 ### 3.5 Ricette
-- **Stato grafico (v165–v175):** testata verde con il titolo "Ricette" come le altre sezioni; sopra il campo di scrittura c'è la stessa barra verde dei pasti del Diario con due pulsanti **segnaposto** "Ricettario" (a sinistra) e "Crea Ricetta" (a destra, v226) (selezionandoli compare solo il titolo verde corrispondente). Il campo di scrittura non ha testo d'esempio. Sotto è rimasta la vecchia versione (chat + ricettario) descritta qui sotto: tutta la sezione è **da ristrutturare** (vedi Cose da fare).
-- Due schede: **Chat** e **Ricettario (N)**.
-- La **Chat** è un consulente di cucina per la dieta (prompt `SYS_REC`) che non conta nel diario. Quando propone una ricetta concreta compare il riquadro **"Salva nel ricettario"**. Il pulsante "Nuova conversazione" svuota la chat, che tiene al massimo 200 messaggi.
-- Il **Ricettario** mostra kcal e macro per porzione e l'elenco degli ingredienti. Ha i pulsanti **"Aggiungi a un pasto"** (si sceglie il pasto e le porzioni da 0,5 a 10, a passi di 0,5) ed **"Elimina"**.
-- **"Importa ricette":** si incolla del testo (anche più ricette insieme, per esempio dalle note di Gemini) o uno screenshot. Gemini le struttura usando esattamente i valori presenti nel testo (prompt `SYS_IMP`).
+- **Dalla v278 la sezione ha la stessa identica grafica degli Alimenti**, in chiaro e in scuro: testata verde con il titolo "Ricette" e a destra il conteggio ("N salvate"), ovale di ricerca **"Cerca una ricetta"** che resta fisso scorrendo, elenco alfabetico con le lettere che si fermano, pillole uguali a quelle degli Alimenti (nome a sinistra, kcal e "per porzione" a destra), frecce ↑ ↓, e in basso la pillola **"Aggiungi Ricetta"** con il cerchio + (si apre toccando il + o la scritta fino a "Agg", come negli Alimenti). Tutte le regole CSS degli Alimenti sono duplicate per `#v-ricette` (con `#recQ`, `#recList`, `#addRec`, `#recCnt`), quindi ogni ritocco futuro va fatto su entrambe.
+- **Aggiungi Ricetta** apre per ora una finestra con solo il titolo "Aggiungi Ricetta" e i tasti Annulla e Salva (disattivato): il contenuto (chat per creare la ricetta, porzioni, ecc.) è il prossimo passo.
+- Una ricetta già salvata, aperta, mostra gli ingredienti e i tasti Annulla / Elimina (con conferma, Elimina rosso solo nella conferma).
+- Tolti la barra "Ricettario / Crea Ricetta" e la vecchia chat ricette: il codice vecchio (`renderRec`, `SYS_REC`, `SYS_IMP`, importa ricette, aggiungi a un pasto) resta nel file ma non è più visibile, pronto da riusare.
 
 ### 3.6 Preimpostati
 - Pulsante tolto dalla barra (v53). Nel codice resta solo il segnaposto "Sezione in arrivo." (vedi Stato delle sezioni).
@@ -448,10 +447,11 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **v275:** finestra "Come funziona Kcal", in "Gesti utili e funzioni" dopo la chat del Diario, nuova sottosezione **Come vengono salvati gli orari**: l'ora del pasto si salva da sola all'ultima modifica agli alimenti (le domande non la cambiano); si può cambiare in qualunque momento dicendolo all'Intelligenza Artificiale (es. "Il pranzo l'ho finito alle 13:30"), e da lì resta fissa; si vede nella tabella Lista alimenti e nello Storico; pasti in ordine di ora e spuntini numerati per ora.
   - **v276: data del pasto e ora nella barra.** Con l'ora si salva anche la data (`data`), e l'ordine dei pasti si calcola su data e ora (niente più dubbi dopo mezzanotte; le giornate vecchie senza data usano la regola delle 4:00). Un'ora detta all'IA prende la data di oggi, o di ieri se sarebbe più di un'ora nel futuro. La data compare sotto l'ora nella tabella "Lista alimenti" ("28/11/26", piccola e grigia) e tra parentesi accanto all'ora nello Storico. Nella barra del pasto (con "Elimina …") l'ora è piccola sotto il nome ("ore 20:45") e le kcal sono accanto, centrate tra le due righe, con 16 px di spazio (opzione C dell'anteprima, spazio raddoppiato).
   - **v277:** ordine dei pasti più sicuro per quelli salvati tra la v273 e la v275 (con l'ora ma senza data): il loro giorno è quello di apertura della giornata, o il successivo se l'ora viene prima dell'apertura, invece della regola fissa delle 4:00. Provato con l'orologio simulato alle 18:00: colazione 08:00, spuntino 10:30, spuntino 16:00 nell'ordine giusto.
+  - **v278: sezione Ricette con la grafica degli Alimenti.** Testata con titolo e conteggio ("N salvate"), ricerca "Cerca una ricetta", elenco alfabetico con le lettere, pillole, frecce e pillola "Aggiungi Ricetta" con il +, identici agli Alimenti in chiaro e in scuro (62 regole CSS duplicate per `#v-ricette`; `alimSticky()` / `alimStuck()` valgono per entrambe le sezioni). Il + apre la finestra "Aggiungi Ricetta" con Annulla e Salva disattivato. Tolte la barra Ricettario / Crea Ricetta e la vecchia chat. Nella finestra degli Alimenti il titolo ora è "Aggiungi Alimento" (e "Modifica Alimento").
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
-**Stato:** online, **collaudo in corso dal 25/11/2026**. Tra il 26/11 sera e la notte del 28/11 (v91–v277) è stata rifinita tutta la grafica di Diario, Alimenti, Storico e Impostazioni, in chiaro e in scuro, con le regole della sezione 3.16, e scritta la finestra "Come funziona Kcal": **la grafica è considerata definitiva dall'utente**. Resta da fare solo la sezione Ricette (e, quando si rigenera l'APK, lo sblocco della rotazione: vedi Note).
+**Stato:** online, **collaudo in corso dal 25/11/2026**. Tra il 26/11 sera e la notte del 28/11 (v91–v278) è stata rifinita tutta la grafica di Diario, Alimenti, Storico e Impostazioni, in chiaro e in scuro, con le regole della sezione 3.16, e scritta la finestra "Come funziona Kcal": **la grafica è considerata definitiva dall'utente**. Resta da fare solo la sezione Ricette (e, quando si rigenera l'APK, lo sblocco della rotazione: vedi Note).
 
 ---
 
@@ -464,13 +464,13 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
 ## ✅ COSE DA FARE
 
 ### Da implementare
-**Situazione al 28/11/2026 (v277):**
+**Situazione al 28/11/2026 (v278):**
 0. **Subito, nella prossima chat:** un paio di piccoli bug e 2-3 ritocchi grafici che l'utente spiegherà a voce (non sono descritti qui). (Fatto nella v261: il campo di scrittura in scuro ora è uguale al chiaro.)
 1. Da valutare con l'uso: posizione definitiva dell'ora del pasto nel Diario (per ora è la prima riga della tabella "Lista alimenti") e verifica che Gemini capisca bene l'ora detta a voce.
 1. Poi la sezione Ricette (qui sotto).
 2. La gestione verticale/orizzontale dell'app (vedi Note in fondo).
 
-1. **Sezione Ricette, da ristrutturare** (è la prossima cosa da fare). Esistono già la testata verde e la barra in basso con i pulsanti segnaposto "Crea Nuova Ricetta" e "Ricettario" (v175): vanno collegati alle nuove schermate, seguendo le regole grafiche della sezione 3.16. Alla fine va scritto anche il paragrafo **Ricette** nella finestra "Come funziona Kcal" (oggi vuoto). Come dovrà funzionare:
+1. **Sezione Ricette, da completare** (è la prossima cosa da fare). Dalla v278 la grafica è quella degli Alimenti (elenco, ricerca, "Aggiungi Ricetta"); la finestra "Aggiungi Ricetta" per ora è vuota (Annulla e Salva disattivato) e va riempita con quanto segue, seguendo le regole grafiche della sezione 3.16. Alla fine va scritto anche il paragrafo **Ricette** nella finestra "Come funziona Kcal" (oggi vuoto). Come dovrà funzionare:
    - **Chat per creare le ricette.** Si danno a Gemini gli ingredienti con le dosi e si indica in quante **porzioni** si divide la ricetta (es. un impasto da cui escono 4 piadine = 4 porzioni). A ogni ingrediente aggiunto o modificato si vede sempre, aggiornato:
      - il **totale della ricetta**: elenco di tutti gli ingredienti con le quantità, kcal totali e macro totali;
      - sotto, la **singola porzione**: ingredienti con le quantità per porzione, kcal e macro di una porzione (totale diviso per il numero di porzioni).
