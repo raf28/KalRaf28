@@ -1000,6 +1000,9 @@ textarea,.ta{border-radius:26px}
 /* v322: chat di Aggiungi Alimento alta come i due tasti accanto (dall'alto del microfono al fondo dell'invio), curvatura come i tasti */
 .foodsheet #fTxt{height:98px!important;min-height:0;box-sizing:border-box;border-radius:30px;padding:9px 18px!important;font-size:13.5px;line-height:1.25}
 .foodsheet .fcur{left:19px;top:10px;height:17px}
+/* v323: Annulla / Modifica / Elimina delle pillole aperte (Alimenti, Storico, Ricette): centrati e a distanza uguale */
+details .row.between:has(>[data-collapse]){justify-content:center;gap:8px}
+details .row.between:has(>[data-collapse])>.row{display:contents}
 /* v311: in scuro i campi di scrittura (Diario, chat e nome delle ricette) hanno lo stesso nero-grigio di «Cerca un alimento» (--card #1c1c1e) con testo bianco; in chiaro invariato */
 html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,html:not(.lightmode) .comp textarea:focus-visible{background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(to bottom,#265e41,#1f4d35 50%,#183c29) border-box;color:#fff}
 html:not(.lightmode) .comp textarea::placeholder{color:#fff;opacity:1}
@@ -1146,7 +1149,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 322</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 323</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
