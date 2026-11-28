@@ -114,10 +114,10 @@ html.lightmode .dayline #dayLabel,html.lightmode .dayline #dayLabel *{color:#1f4
 .it .q{font-size:13px;color:var(--mute)}
 .it .k{font-weight:600;white-space:nowrap;text-align:right}
 .it .m{grid-column:1/3;font-size:13px;color:var(--mute)}
-.it.it2{grid-template-columns:minmax(0,1fr) auto 36px;grid-template-areas:'n n n' 'q k x' 'm m m';row-gap:2px}
-.it.it2 .n{grid-area:n}.it.it2 .q{grid-area:q;align-self:center}.it.it2 .k{grid-area:k}.it.it2 .x{grid-area:x}.it.it2 .m{grid-area:m;margin-top:4px}
+.it.it2{grid-template-columns:minmax(0,1fr) auto 36px;grid-template-areas:'n n n' 'qa k x' 'q q q' 'm m m';row-gap:2px}
+.it.it2 .n{grid-area:n}.it.it2 .q{grid-area:q}.it.it2 .qa{grid-area:qa;justify-self:start;align-self:center;font-size:16px;font-weight:600;color:var(--ink)}.it.it2 .k{grid-area:k}.it.it2 .x{grid-area:x}.it.it2 .m{grid-area:m;margin-top:4px}
 .it.it2 .qq{font-size:16px;font-weight:600;color:var(--ink);margin-right:.5em}
-.it.it2 .src{white-space:normal} /* v368: etichette lunghe vanno a capo senza coprire le kcal */
+.it.it2 .src{white-space:normal} /* v371: etichetta su una riga sua */
 .x{width:44px;height:44px;border-radius:12px;color:var(--mute);font-size:22px;line-height:1}
 .x:active{background:var(--soft)}
 .flink{font:inherit;color:inherit;text-align:left;padding:0}
@@ -1266,7 +1266,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 370</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 371</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1412,7 +1412,7 @@ const mlines=t=>NUTR.slice(1).map(([k,l,u])=>`${l} ${fv(t,k,u)}`+(SUB[k]?` (di c
 const mline=t=>NUTR.slice(1).map(([k,l,u])=>`${l} ${fv(t,k,u)}`+(SUB[k]?` (di cui ${SUB[k][1]} ${fv(t,SUB[k][0],u)})`:'')).join(' · ');
 const clean=i=>{const o={nome:String(i.nome||'Alimento'),quantita:String(i.quantita||'')};o.kcal=num(i.kcal);KEYS.slice(1).forEach(k=>o[k]=nn(i[k]));if(i.imposto)o.imposto=true;if(i.alimento_id){o.alimento_id=String(i.alimento_id);o.grammi=nn(i.grammi);o.fattore=nn(i.fattore)}if(i.dalAlimenti)o.dalAlimenti=true;const F=['utente','etichetta','generico','foto','non_trovato','alimenti','ricetta'];o.fonte=F.includes(i.fonte)?i.fonte:(i.dalAlimenti?'alimenti':i.imposto?'utente':i.stima?'generico':'generico');if(i.imposto)o.fonte='utente';
   if(o.fonte==='non_trovato'){o.kcal=0;KEYS.slice(1).forEach(k=>o[k]=null)}return o};
-const SRC={alimenti:['ok','Valore Sicuro – Lista Alimenti'],ricetta:['ok','Valore Sicuro – Da Ricetta'],utente:['ok','Valore Sicuro – Imposto Da Te'],etichetta:['ok','Valore Sicuro – Foto Etichetta'],generico:['gen','Valore Generico'],foto:['gen','Stima Da Foto'],non_trovato:['nf','Non Trovato – Cercare Manualmente l\'Alimento']};
+const SRC={alimenti:['ok','Valore Sicuro – Lista Alimenti'],ricetta:['ok','Valore Sicuro – Da Ricetta'],utente:['ok','Valore Sicuro – Imposto Da Te'],etichetta:['ok','Valore Sicuro – Foto Etichetta'],generico:['gen','Valore Generico – Stima IA'],foto:['gen','Valore Generico – Stima da Foto del Piatto'],non_trovato:['nf','Non Trovato – L\'IA Non Riconosce']};
 function srcTag(i){const f=i.fonte||(i.dalAlimenti?'alimenti':i.imposto?'utente':i.stima?'generico':'');const s=SRC[f];return s?` <span class="src ${s[0]}">(${s[1]})</span>`:''}
 function md(s){return esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/^\s*[-*•]\s+/gm,'• ').replace(/\n/g,'<br>')}
 
@@ -1463,9 +1463,9 @@ function showInfo(){sheet(`<div class="info"><h3>Come funziona Kcal</h3>
 <p class="hm"><span class="src ok">(Valore Sicuro – Lista Alimenti)</span> preso da un alimento che hai salvato in Alimenti.</p>
 <p class="hm"><span class="src ok">(Valore Sicuro – Imposto Da Te)</span> l'hai scritto tu.</p>
 <p class="hm"><span class="src ok">(Valore Sicuro – Foto Etichetta)</span> letto dalla tabella nutrizionale della confezione.</p>
-<p class="hm"><span class="src gen">(Valore Generico)</span> stimato dall'Intelligenza Artificiale con le tabelle nutrizionali.</p>
-<p class="hm"><span class="src gen">(Stima Da Foto)</span> stimato dall'Intelligenza Artificiale guardando la foto.</p>
-<p class="hm"><span class="src nf">(Non Trovato – Cercare Manualmente l'Alimento)</span><br>l'Intelligenza Artificiale non conosce l'alimento:<br>non inventa nulla e ti chiede i valori.</p>
+<p class="hm"><span class="src gen">(Valore Generico – Stima IA)</span> stimato dall'Intelligenza Artificiale con le tabelle nutrizionali.</p>
+<p class="hm"><span class="src gen">(Valore Generico – Stima da Foto del Piatto)</span> stimato dall'Intelligenza Artificiale guardando la foto.</p>
+<p class="hm"><span class="src nf">(Non Trovato – L'IA Non Riconosce)</span><br>l'Intelligenza Artificiale non conosce l'alimento:<br>non inventa nulla e ti chiede i valori.</p>
 <h4>Alimenti</h4><p class="hm">I tuoi prodotti di marca con i valori esatti e le foto.<br>Quando li nomini nel Diario, i valori vengono presi da qui.</p>
 <p class="hm">Per aggiungerne uno tocca <b>Aggiungi Alimento</b>.<br>Con <b>Compila scheda Automaticamente</b> basta fotografare la confezione e la tabella nutrizionale:<br>l'Intelligenza Artificiale compila la scheda da sola,<br>poi puoi aggiungere indicazioni o note scrivendo o parlando nella chat (per esempio "1 galletta = 8 g").<br>Con <b>Compila scheda Manualmente</b> inserisci tu tutti i valori.</p>
 <h4>Ricette</h4><p class="hm">Kcal e Macro della Ricetta intera e di una singola porzione.</p>
@@ -1841,7 +1841,7 @@ function ttsHTML(ix){return `<div class="tts"><button class="tb${ttsState(ix)===
 function mealBoxHTML(items,name,edit,tix,ora,data,opt){opt=opt||{};if(!items||!items.length)return'<div class="empty">Nessun alimento in questo pasto.</div>';
   const t=sum(items),row=(l,k,sub)=>`<div class="sr${sub?' sub':''}"><span>${l}${t.miss[k]&&t.has[k]?'<span class="ast">*</span>':''}</span><b>${fv(t,k,'g')}</b></div>`;
   const miss=items.filter(i=>KEYS.slice(1).some(k=>nn(i[k])===null));
-  return`<div class="lt">${opt.title||'Lista alimenti<br>Totale kcal e macro'}</div>`+(ora?`<div class="mora"><span class="mnm">${esc(name.toUpperCase())}</span><span class="mor">Ora del pasto: <b>${esc(ora)}</b>${data?`<small>${dShort(data)}</small>`:''}</span></div>`:'')+items.map((i,ix)=>`<div class="it it2"><div class="n">${edit?foodLink(i):esc(i.nome)}</div><div class="q"><span class="qq">${esc(i.quantita)}</span>${srcTag(i)}</div><div class="k">${f0(i.kcal)} kcal</div>${edit?`<button class="x" ${opt.delAttr||'data-del'}="${ix}" aria-label="Elimina ${esc(i.nome)}">×</button>`:'<span></span>'}<div class="m">${mline(i)}</div></div>`).join('')+
+  return`<div class="lt">${opt.title||'Lista alimenti<br>Totale kcal e macro'}</div>`+(ora?`<div class="mora"><span class="mnm">${esc(name.toUpperCase())}</span><span class="mor">Ora del pasto: <b>${esc(ora)}</b>${data?`<small>${dShort(data)}</small>`:''}</span></div>`:'')+items.map((i,ix)=>`<div class="it it2"><div class="n">${edit?foodLink(i):esc(i.nome)}</div><div class="qa">${esc(i.quantita)}</div><div class="q">${srcTag(i)}</div><div class="k">${f0(i.kcal)} kcal</div>${edit?`<button class="x" ${opt.delAttr||'data-del'}="${ix}" aria-label="Elimina ${esc(i.nome)}">×</button>`:'<span></span>'}<div class="m">${mline(i)}</div></div>`).join('')+
     `<div class="sumt">${opt.sumLabel||'Totale kcal '+esc(name.toUpperCase())}: <b>${f0(t.kcal)} kcal</b></div><div class="sml">${row('Carboidrati','carboidrati')}${row('di cui zuccheri','zuccheri',1)}${row('Proteine','proteine')}${row('Grassi','grassi')}${row('di cui saturi','saturi',1)}${row('Fibre','fibre')}${row('Sale','sale')}</div>`+
     (miss.length?`<div class="missn">* Valori mancanti per: ${miss.map(i=>esc(i.nome)).join(', ')}. I totali segnati sono parziali.</div>`:'')+
     (tix!=null&&('speechSynthesis' in window)?'<div class="mtts">'+ttsHTML(tix)+'</div>':'')}
