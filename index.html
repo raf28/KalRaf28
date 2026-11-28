@@ -1129,6 +1129,9 @@ html:not(.lightmode) #v-impost input[type=number],html:not(.lightmode) #v-impost
 html:not(.lightmode) .card:has(>.empty),html:not(.lightmode) #mealItems:has(>.empty),html:not(.lightmode) #histList>.empty,html:not(.lightmode) #foodList>.empty,html:not(.lightmode) #recList>.empty{border-color:#fff!important}
 html:not(.lightmode) .msg.a:not(.e):not(.rsumw):not(.rsum){border-color:#fff!important}
 html:not(.lightmode) .recsheet .rname,html:not(.lightmode) .recsheet .rname:focus,html:not(.lightmode) .recsheet .rname:focus-visible{border-color:#fff!important}
+/* v381: campi obbligatori di Aggiungi/Modifica Alimento (Nome, Valori riferiti a, Energia): asterisco e scritta piccola come nella chat (13 px), bianchi in scuro (verde scuro in chiaro, dove il bianco non si vedrebbe); al tocco spariscono */
+.foodsheet #ffN::placeholder,.foodsheet #ffR::placeholder,.foodsheet #ff_kcal::placeholder{font-size:13px;color:light-dark(#1f4d35,#fff)!important;opacity:.85}
+.foodsheet #ffN:focus::placeholder,.foodsheet #ffR:focus::placeholder,.foodsheet #ff_kcal:focus::placeholder{color:transparent!important}
 /* v311: in scuro i campi di scrittura (Diario, chat e nome delle ricette) hanno lo stesso nero-grigio di «Cerca un alimento» (--card #1c1c1e) con testo bianco; in chiaro invariato */
 html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,html:not(.lightmode) .comp textarea:focus-visible{background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(to bottom,#265e41,#1f4d35 50%,#183c29) border-box;color:#fff}
 html:not(.lightmode) .comp textarea::placeholder{color:#fff;opacity:1}
@@ -1275,7 +1278,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 380</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 381</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -2241,9 +2244,9 @@ async function foodSheet(f,pre){
   const MIC='<div class="fside"><button class="ib mic" id="fMic" aria-label="Detta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg></button><button class="ib send" id="fSend" aria-label="Prepara la scheda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>';
   const grab=()=>{const t=$('#fTxt');if(t)txt=t.value;if(card&&$('#ffN')){card.nome=$('#ffN').value;card.riferimento=$('#ffR').value;card.note=$('#ffNote').value;FKEYS.forEach(([k])=>card[k]=$('#ff_'+k).value)}};
   const cardHtml=()=>!card?'':`<div class="card" style="margin-top:6px"><h3 style="font-size:16px">Scheda alimento</h3>
-    <div class="f"><label for="ffN">Nome</label><input type="text" id="ffN" value="${esc(card.nome||'')}"></div>
-    <div class="f"><label for="ffR">Valori riferiti a</label><input type="text" id="ffR" value="${esc(card.riferimento||'')}"></div>
-    <div class="fgrid">${FKEYS.map(([k,l,u])=>`<div><label for="ff_${k}">${l} (${u})</label><input type="number" inputmode="decimal" step="any" id="ff_${k}" value="${card[k]===null||card[k]===undefined?'':esc(card[k])}"></div>`).join('')}</div>
+    <div class="f"><label for="ffN">Nome</label><input type="text" id="ffN" placeholder="* Campo obbligatorio" value="${esc(card.nome||'')}"></div>
+    <div class="f"><label for="ffR">Valori riferiti a</label><input type="text" id="ffR" placeholder="* Campo obbligatorio (peso in grammi o porzione)" value="${esc(card.riferimento||'')}"></div>
+    <div class="fgrid">${FKEYS.map(([k,l,u])=>`<div><label for="ff_${k}">${l} (${u})</label><input type="number" inputmode="decimal" step="any" id="ff_${k}"${k==='kcal'?' placeholder="* Obbligatorio"':''} value="${card[k]===null||card[k]===undefined?'':esc(card[k])}"></div>`).join('')}</div>
     <div class="f" style="margin:12px 0 0"><label for="ffNote">Note</label><textarea id="ffNote" class="ta" rows="2">${esc(card.note||'')}</textarea></div></div>`;
   let draw=()=>{sheet(`<h3>${f?'Modifica Alimento':'Aggiungi Alimento'}</h3>
     <div class="card modeblk"><h3 style="font-size:16px">Modalità compilazione</h3><div class="row modes"><button class="btn sm ghost two ${auto?'sel':''}" id="fGo">${auto?'<i class="chk">✓</i>':''}Compila scheda Automaticamente<small>da foto, testo o voce</small></button><button class="btn sm ghost two ${!auto?'sel':''}" id="fMan">${!auto?'<i class="chk">✓</i>':''}Compila scheda Manualmente<small>scrivi tu tutti i valori</small></button></div></div>
