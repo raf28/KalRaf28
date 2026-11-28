@@ -1088,7 +1088,8 @@ html.lightmode .foodsheet .fcur{left:23px;top:10px}
 /* v353: BORDINO SOTTILISSIMO (standard): 1 px verde #2c6a49. In Impostazioni su obiettivo kcal, margine, chiave API, modello principale, riserva 1 e 2 e «Conserva le Giornate Alimentari per»; forme invariate */
 #v-impost input[type=number],#v-impost input[type=password],#v-impost select{border:1px solid #2c6a49!important}
 /* v354: Ricette aperta: i tondi «+A» e «Condividi Ricetta» insieme al centro, sopra Annulla / Modifica / Elimina (chiaro e scuro) */
-#recList .rshr{justify-content:center;gap:56px}
+#recList .rshr{justify-content:space-between;gap:0}
+#recList .rsc{width:clamp(70px,22vw,90px)} /* v356: «+A» centrato sopra Annulla, «Condividi» centrato sopra Elimina (stessa larghezza dei tasti sotto) */
 /* v311: in scuro i campi di scrittura (Diario, chat e nome delle ricette) hanno lo stesso nero-grigio di «Cerca un alimento» (--card #1c1c1e) con testo bianco; in chiaro invariato */
 html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,html:not(.lightmode) .comp textarea:focus-visible{background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(to bottom,#265e41,#1f4d35 50%,#183c29) border-box;color:#fff}
 html:not(.lightmode) .comp textarea::placeholder{color:#fff;opacity:1}
@@ -1235,7 +1236,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 355</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 356</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
