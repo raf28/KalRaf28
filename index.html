@@ -1097,6 +1097,8 @@ html.lightmode .foodsheet .fcur{left:23px;top:10px}
 .empty{font-size:16.5px!important;line-height:1.5!important;color:var(--ink)!important;padding:14px 16px!important}
 .card:has(>.empty),#mealItems:has(>.empty),#histList>.empty{border:1px solid #2c6a49!important}
 #histList>.empty,#foodList>.empty,#recList>.empty{border:1px solid #2c6a49!important;border-radius:22px;background:var(--card)}
+/* v359: risposte dell'IA nelle chat (Diario e Ricette) con il bordino sottilissimo 1 px */
+.msg.a:not(.e):not(.rsumw):not(.rsum){border:1px solid #2c6a49!important}
 /* v311: in scuro i campi di scrittura (Diario, chat e nome delle ricette) hanno lo stesso nero-grigio di «Cerca un alimento» (--card #1c1c1e) con testo bianco; in chiaro invariato */
 html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,html:not(.lightmode) .comp textarea:focus-visible{background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(to bottom,#265e41,#1f4d35 50%,#183c29) border-box;color:#fff}
 html:not(.lightmode) .comp textarea::placeholder{color:#fff;opacity:1}
@@ -1243,7 +1245,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 358</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 359</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
