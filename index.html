@@ -377,6 +377,8 @@ nav button.on{font-weight:700;color:light-dark(#1f4d35,#fff)}
 .recsheet .rnote textarea{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:14px;padding:8px 12px;font-size:14px;color:var(--mute);background:var(--bg);resize:none}
 .recsheet .rcomp{margin:0 -16px;border-top:1px solid var(--line)}
 .recsheet .rbtns{margin-top:10px}
+/* v288: Salva allineato alla fine della pillola del campo di scrittura: sotto microfono e invio resta spazio vuoto (niente tocchi sbagliati); un po' più di distanza dal campo */
+.recsheet #rBtns{margin-top:16px;padding-right:var(--rbtnR,104px)}
 .recsheet .rnotebox .lt{margin-bottom:6px}.recsheet .rnotetx{font-size:14px;line-height:1.5;color:var(--mute)}
 .recsheet .msg.a .card{margin:10px 0 4px}
 #sheet.recsheet{position:relative}
@@ -1046,7 +1048,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 287</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 288</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1863,7 +1865,8 @@ function recEditor(r){RD=r?JSON.parse(JSON.stringify(r)):{id:null,nome:'',porzio
     <div class="row rbtns rclose" id="rCloseRow" hidden><button class="btn bdef new" id="rNoteClose">Chiudi note</button></div>`);
   $('#sheet').classList.add('recsheet');recWire();sheetGuard=recExit;requestAnimationFrame(recJmp)}
 function recRefresh(toEnd){if(!RD||!$('#rBody'))return;const b=$('#rBody'),st=b.scrollTop;b.innerHTML=recBodyHTML();b.scrollTop=toEnd?b.scrollHeight:st;$('#rPor').textContent=RD.porzioni;if($('#rName')&&document.activeElement!==$('#rName'))$('#rName').value=RD.nome;if($('#rSend'))$('#rSend').disabled=!!RD.busy;recWire(true);recCanSave();requestAnimationFrame(recJmp)}
-function recJmp(){const b=$('#rBody'),U=$('#rUp'),D=$('#rDn');if(!b||!U)return;const can=b.scrollHeight-b.clientHeight>40;U.hidden=!can||b.scrollTop<30;D.hidden=!can||b.scrollHeight-b.scrollTop-b.clientHeight<30;
+function recBtnAlign(){const t=$('#rMsg'),r=$('#rBtns'),sh=$('#sheet');if(!t||!r||!sh)return;const R=sh.getBoundingClientRect().right-parseFloat(getComputedStyle(sh).paddingRight)-t.getBoundingClientRect().right;if(R>0)sh.style.setProperty('--rbtnR',R+'px')}
+function recJmp(){const b=$('#rBody'),U=$('#rUp'),D=$('#rDn');if(!b||!U)return;recBtnAlign();const can=b.scrollHeight-b.clientHeight>40;U.hidden=!can||b.scrollTop<30;D.hidden=!can||b.scrollHeight-b.scrollTop-b.clientHeight<30;
   const sh=$('#sheet').getBoundingClientRect(),br=b.getBoundingClientRect();$('.rjmp').style.bottom=(sh.bottom-br.bottom+12)+'px'}
 const recDirty=()=>RD&&JSON.stringify([RD.nome,RD.porzioni,RD.items,RD.note,RD.chat.length])!==RD.base;
 /* v282: Salva si attiva appena c'è almeno un ingrediente (il nome, se manca, lo propone l'IA o lo mette l'app) */
