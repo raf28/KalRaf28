@@ -914,7 +914,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 258</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 259</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1682,10 +1682,17 @@ function speechText(m){
 function itVoice(){const v=speechSynthesis.getVoices();return v.find(x=>/^it/i.test(x.lang)&&/google/i.test(x.name))||v.find(x=>/^it/i.test(x.lang))}
 /* Ascolta/Pausa (v98): lettura a frasi; la Pausa ricorda la frase per 1 ora (solo l'ultimo audio) */
 const TTSK='kalraf28_tts';
-function ttsKey(ix){return (ui.view==='ricette'?'rec':'meal:'+(ui.meal||('h'+ui.dv+':'+ui.hmeal)))+':'+ix}
-function ttsSaved(){try{const o=JSON.parse(localStorage.getItem(TTSK)||'null');if(o&&Date.now()-o.ts<3600000)return o;localStorage.removeItem(TTSK)}catch(e){}return null}
-function ttsSave(o){try{o?localStorage.setItem(TTSK,JSON.stringify(o)):localStorage.removeItem(TTSK)}catch(e){}}
-function ttsState(ix){const k=ttsKey(ix);if(TTS.playing&&TTS.key===k)return'play';const o=ttsSaved();return o&&o.key===k?'pause':''}
+function ttsKey(ix){/* v259: la chiave contiene anche la giornata, così le pause di giorni diversi non si confondono */
+  let g='';try{g=ui.meal?S.day.id:((S.history[ui.dv]||{}).id||ui.dv)}catch(e){}
+  return (ui.view==='ricette'?'rec':'meal:'+g+':'+(ui.meal||('h:'+ui.hmeal)))+':'+ix}
+/* v259: si ricordano le ultime 3 pause (risposte diverse), senza scadenza, solo su questo telefono.
+   Alla quarta si cancella la più vecchia; una risposta ascoltata fino alla fine viene tolta dall'elenco. */
+function ttsList(){try{const o=JSON.parse(localStorage.getItem(TTSK)||'null');return Array.isArray(o)?o:(o&&o.key?[o]:[])}catch(e){return[]}}
+function ttsWrite(l){try{l.length?localStorage.setItem(TTSK,JSON.stringify(l.slice(0,3))):localStorage.removeItem(TTSK)}catch(e){}}
+function ttsGet(k){return ttsList().find(x=>x.key===k)||null}
+function ttsPut(o){ttsWrite([o,...ttsList().filter(x=>x.key!==o.key)])}
+function ttsDel(k){ttsWrite(ttsList().filter(x=>x.key!==k))}
+function ttsState(ix){const k=ttsKey(ix);if(TTS.playing&&TTS.key===k)return'play';return ttsGet(k)?'pause':''}
 function ttsChunks(t){const out=[];
   String(t).split(/\n+/).forEach(line=>{(line.match(/.+?(?:[.!?;:,](?=\s|$)|$)/g)||[]).forEach(seg=>{
     const w=seg.trim().split(/\s+/).filter(Boolean);for(let i=0;i<w.length;i+=12)out.push(w.slice(i,i+12).join(' '))})});
@@ -1694,7 +1701,7 @@ function ttsMark(){document.querySelectorAll('.tts .tb.on:not([data-autoread])')
   document.querySelectorAll('[data-say]').forEach(b=>{const sv=b.dataset.say,st=ttsState(sv==='box'?sv:+sv);if(st==='play')b.classList.add('on');const p=b.parentNode.querySelector('[data-pause]');if(p&&st==='pause')p.classList.add('on')})}
 function ttsStop(c=true){TTS.tok++;TTS.playing=false;if(c)try{speechSynthesis.cancel()}catch(e){}}
 function ttsPlay(i,off=0){const tok=TTS.tok;
-  if(i>=TTS.chunks.length){TTS.playing=false;ttsSave(null);ttsMark();return}
+  if(i>=TTS.chunks.length){TTS.playing=false;ttsDel(TTS.key);ttsMark();return}
   TTS.idx=i;TTS.pos=off;const u=new SpeechSynthesisUtterance(TTS.chunks[i].slice(off));u.lang='it-IT';const v=itVoice();if(v)u.voice=v;u.rate=1;
   u.onboundary=ev=>{if(tok===TTS.tok&&(!ev.name||ev.name==='word'))TTS.pos=off+ev.charIndex};
   u.onend=()=>{if(tok===TTS.tok)ttsPlay(i+1)};
@@ -1706,13 +1713,16 @@ document.addEventListener('click',e=>{
   if(b)ttsStartBtn(b,false);else ttsPauseBtn(p);
 },true);
 function ttsPauseBtn(p){
-  const pv=p.dataset.pause,k=ttsKey(pv==='box'?pv:+pv);if(TTS.playing&&TTS.key===k){ttsStop();ttsSave({key:k,len:TTS.len,idx:TTS.idx,pos:TTS.pos||0,ts:Date.now()});ttsMark()}}
+  const pv=p.dataset.pause,k=ttsKey(pv==='box'?pv:+pv);if(TTS.playing&&TTS.key===k){ttsStop();ttsPut({key:k,len:TTS.len,idx:TTS.idx,pos:TTS.pos||0,ts:Date.now()});ttsMark()}}
 function ttsStartBtn(b,fromStart){
   const ix=b.dataset.say==='box'?'box':+b.dataset.say,k=ttsKey(ix);if(TTS.playing&&TTS.key===k&&!fromStart)return;
   const chat=ui.view==='ricette'?S.recChat:(ui.meal?ensureMeal(ui.meal).chat:(ui.dv!==null&&ui.hmeal&&histDay(ui.dv)?histDay(ui.dv).meals[ui.hmeal].chat:[])),m=ix==='box'?{role:'a',text:'',tot:{}}:chat[ix];if(!m)return;
   const txt=speechText(m),chunks=ttsChunks(txt);if(!chunks.length)return;
-  const o=fromStart?null:ttsSaved();let start=0,off=0;if(o&&o.key===k&&o.len===txt.length&&o.idx<chunks.length){start=o.idx;off=Math.min(o.pos||0,chunks[start].length-1);off=Math.max(0,chunks[start].lastIndexOf(' ',off)+1)}
-  const busy=!!(speechSynthesis.speaking||speechSynthesis.pending);ttsStop(busy);ttsSave(null);
+  const o=fromStart?null:ttsGet(k);let start=0,off=0;if(o&&o.key===k&&o.len===txt.length&&o.idx<chunks.length){start=o.idx;off=Math.min(o.pos||0,chunks[start].length-1);off=Math.max(0,chunks[start].lastIndexOf(' ',off)+1)}
+  const busy=!!(speechSynthesis.speaking||speechSynthesis.pending);
+  /* v259: se un'altra risposta stava leggendo, il suo punto viene salvato come una pausa */
+  if(TTS.playing&&TTS.key&&TTS.key!==k)ttsPut({key:TTS.key,len:TTS.len,idx:TTS.idx,pos:TTS.pos||0,ts:Date.now()});
+  ttsStop(busy);
   Object.assign(TTS,{key:k,len:txt.length,chunks,playing:true});ttsMark();
   /* su Android, speak() subito dopo cancel() viene spesso ignorato: piccola attesa */
   const tok=TTS.tok;if(busy)setTimeout(()=>{if(tok===TTS.tok)ttsPlay(start,off)},250);else ttsPlay(start,off);
