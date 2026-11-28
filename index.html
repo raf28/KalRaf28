@@ -117,7 +117,7 @@ html.lightmode .dayline #dayLabel,html.lightmode .dayline #dayLabel *{color:#1f4
 .it.it2{grid-template-columns:minmax(0,1fr) auto 36px;grid-template-areas:'n n n' 'q k x' 'm m m';row-gap:2px}
 .it.it2 .n{grid-area:n}.it.it2 .q{grid-area:q;align-self:center}.it.it2 .k{grid-area:k}.it.it2 .x{grid-area:x}.it.it2 .m{grid-area:m;margin-top:4px}
 .it.it2 .qq{font-size:16px;font-weight:600;color:var(--ink);margin-right:.5em}
-.it.it2 .src{white-space:nowrap}
+.it.it2 .src{white-space:normal} /* v368: etichette lunghe vanno a capo senza coprire le kcal */
 .x{width:44px;height:44px;border-radius:12px;color:var(--mute);font-size:22px;line-height:1}
 .x:active{background:var(--soft)}
 .flink{font:inherit;color:inherit;text-align:left;padding:0}
@@ -1266,7 +1266,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 367</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 368</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1412,7 +1412,7 @@ const mlines=t=>NUTR.slice(1).map(([k,l,u])=>`${l} ${fv(t,k,u)}`+(SUB[k]?` (di c
 const mline=t=>NUTR.slice(1).map(([k,l,u])=>`${l} ${fv(t,k,u)}`+(SUB[k]?` (di cui ${SUB[k][1]} ${fv(t,SUB[k][0],u)})`:'')).join(' · ');
 const clean=i=>{const o={nome:String(i.nome||'Alimento'),quantita:String(i.quantita||'')};o.kcal=num(i.kcal);KEYS.slice(1).forEach(k=>o[k]=nn(i[k]));if(i.imposto)o.imposto=true;if(i.alimento_id){o.alimento_id=String(i.alimento_id);o.grammi=nn(i.grammi);o.fattore=nn(i.fattore)}if(i.dalAlimenti)o.dalAlimenti=true;const F=['utente','etichetta','generico','foto','non_trovato','alimenti','ricetta','preimpostato'];o.fonte=F.includes(i.fonte)?i.fonte:(i.dalAlimenti?'alimenti':i.imposto?'utente':i.stima?'generico':'generico');if(i.imposto)o.fonte='utente';
   if(o.fonte==='non_trovato'){o.kcal=0;KEYS.slice(1).forEach(k=>o[k]=null)}return o};
-const SRC={alimenti:['ok','Valore Sicuro – Alimenti'],ricetta:['ok','Valore Sicuro – Ricette'],preimpostato:['ok','Valore Sicuro – Preimpostati'],utente:['ok','Valore Tuo'],etichetta:['ok','Da Etichetta'],generico:['gen','Valore Generico'],foto:['gen','Stima Da Foto'],non_trovato:['nf','Non Trovato – Cercare Manualmente l\'Alimento']};
+const SRC={alimenti:['ok','Valore Sicuro – Preso Da Alimento Salvato'],ricetta:['ok','Valore Sicuro – Ricette'],preimpostato:['ok','Valore Sicuro – Preimpostati'],utente:['ok','Valore Tuo – Imposto Da Te'],etichetta:['ok','Da Etichetta'],generico:['gen','Valore Generico'],foto:['gen','Stima Da Foto'],non_trovato:['nf','Non Trovato – Cercare Manualmente l\'Alimento']};
 function srcTag(i){const f=i.fonte||(i.dalAlimenti?'alimenti':i.imposto?'utente':i.stima?'generico':'');const s=SRC[f];return s?` <span class="src ${s[0]}">(${s[1]})</span>`:''}
 function md(s){return esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/^\s*[-*•]\s+/gm,'• ').replace(/\n/g,'<br>')}
 
@@ -1460,8 +1460,8 @@ function showInfo(){sheet(`<div class="info"><h3>Come funziona Kcal</h3>
 – I pasti sono in <b>ordine di ora</b> e gli spuntini vengono numerati in base all'ora:<br>Spuntino 1 è sempre il primo della giornata</p>
 <h4>Diario</h4><p class="hm"><b>Tocca il <span class="iplus" aria-label="+">+</span> per Aggiungere un Pasto</b>,<br>poi scrivi, detta o fotografa cosa hai mangiato:<br>l'Intelligenza Artificiale calcola kcal e Macro e il conteggio della giornata si aggiorna da solo.<br>Se un valore è sbagliato correggilo in chat:<br>vale sempre l'ultimo inserito.<br>A fine giornata tocca <b>Nuova Giornata Alimentare</b> per iniziare un nuovo conteggio.</p>
 <h4>Da dove vengono i valori</h4><p class="hm">Accanto a ogni alimento c'è un'etichetta colorata che dice da dove viene il valore:</p>
-<p class="hm"><span class="src ok">(Valore Sicuro – Alimenti)</span> preso da un alimento che hai salvato in Alimenti.</p>
-<p class="hm"><span class="src ok">(Valore Tuo)</span> l'hai scritto tu.</p>
+<p class="hm"><span class="src ok">(Valore Sicuro – Preso Da Alimento Salvato)</span> preso da un alimento che hai salvato in Alimenti.</p>
+<p class="hm"><span class="src ok">(Valore Tuo – Imposto Da Te)</span> l'hai scritto tu.</p>
 <p class="hm"><span class="src ok">(Da Etichetta)</span> letto dalla tabella nutrizionale della confezione.</p>
 <p class="hm"><span class="src gen">(Valore Generico)</span> stimato dall'Intelligenza Artificiale con le tabelle nutrizionali.</p>
 <p class="hm"><span class="src gen">(Stima Da Foto)</span> stimato dall'Intelligenza Artificiale guardando la foto.</p>
