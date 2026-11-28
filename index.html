@@ -800,6 +800,8 @@ html:not(.lightmode) .comp textarea{border:4px solid #436955;box-shadow:0 2px 5p
 html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,html:not(.lightmode) .comp textarea:focus-visible{outline:none;border-color:transparent;background:linear-gradient(#e6ece8,#e6ece8) padding-box,linear-gradient(to bottom,#265e41,#1f4d35 50%,#183c29) border-box}
 /* v267: bordo del campo di scrittura raddoppiato a 8px (chiaro e scuro, colori invariati); spazio interno ridotto (3px sopra e sotto, 8px ai lati) così il campo resta alto 44px, a filo con i tasti */
 .comp textarea,html.lightmode .comp textarea,html:not(.lightmode) .comp textarea{border-width:8px!important;padding:3px 8px!important} /* spazio ai lati da 12 a 8px: «Tocca + per iniziare» resta su una riga */
+/* v272: campo di scrittura a pillola (angoli 22px = metà dell'altezza), in chiaro e in scuro; con più righe resta un rettangolo molto arrotondato */
+.comp textarea,html.lightmode .comp textarea,html:not(.lightmode) .comp textarea{border-radius:22px!important}
 /* v255/v266: solo modalità chiara, pillole di Alimenti e Storico: rilievo medio con filo in basso sfocato e luce diagonale: bianco pieno fino al 10%, poi sfumatura lunga fino a #d6e0da sul bordo destro, senza ombra esterna */
 html.lightmode #v-alimenti details.food:not([open]),html.lightmode #v-storico details.hday:not([open]){background:linear-gradient(115deg,#fff 0,#fff 10%,#fbfcfb 20%,#f5f8f6 32%,#eef3f0 45%,#e7eee9 58%,#e0e8e3 72%,#dae4de 86%,#d6e0da 100%)!important;box-shadow:inset 0 -3px 3px -1px rgba(31,77,53,.14),inset 0 2px 2px rgba(255,255,255,.95)!important}
 </style>
@@ -925,7 +927,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 271</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 272</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
