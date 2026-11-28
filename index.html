@@ -803,6 +803,10 @@ html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,ht
 .mora b{color:light-dark(#2a7a4b,#5cc58a)}
 /* v274: riga dell'ora: a sinistra il nome del pasto in stampatello (come «1 porzione»), a destra «Ora del pasto»; nome e ora nel verde della pillolina «Restano X kcal» (#3e6651) */
 .mbox .mora,#mealItems .mora{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+/* v276: barra del pasto: ora piccola sotto il nome, kcal accanto centrate tra le due righe, con il doppio dello spazio */
+.mbar b.mbw{display:inline-flex;align-items:center}.mbar b .mbc{display:inline-flex;flex-direction:column;line-height:1.15}.mbar b .mbc small{font-size:12.5px;font-weight:500;opacity:.8;text-transform:none;letter-spacing:0}.mbar b.mbw .mk{margin-left:16px}
+.mora .mor{text-align:right}.mora .mor small{display:block;font-size:12px;font-weight:500;color:var(--mute);margin-top:1px}
+#v-storico .hora small{font-size:12px;color:var(--mute);font-weight:500}
 .mora .mnm{font-size:16px;font-weight:600;color:#3e6651;letter-spacing:.02em}
 .mora b,.mbox .mora b,#mealItems .mora b{color:#3e6651}
 #v-storico .hora{margin-left:16px;color:var(--ink);font-size:inherit}
@@ -936,7 +940,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 275</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 276</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1012,15 +1016,23 @@ function deleteMeal(k){const o=S.day.order;
    I pasti si ordinano per ora e gli spuntini vengono rinumerati per ora (Spuntino 1 = il più presto). Le ore prima delle 4:00 contano come dopo mezzanotte. */
 const nowHM=()=>{const d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
 const oraMin=o=>{if(!o||!/^\d{1,2}:\d{2}$/.test(o))return null;const[h,m]=o.split(':').map(Number);const v=h*60+m;return v<240?v+1440:v};
-function sortByTime(keys,meals){const t=keys.map((k,i)=>({k,i,m:oraMin((meals[k]||{}).ora)}));
+/* v276: insieme all'ora si salva la data (meal.data = "AAAA-MM-GG"), così l'ordine è sicuro anche dopo mezzanotte */
+const isoDay=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const dShort=x=>{if(!x)return'';const[a,m,g]=x.split('-');return g+'/'+m+'/'+a.slice(2)};
+function mealTs(m,start){if(!m||!oraMin(m.ora))return null;
+  if(m.data)return new Date(m.data+'T'+m.ora.padStart(5,'0')).getTime();
+  const b=start?new Date(start):new Date();b.setHours(0,0,0,0);return b.getTime()+oraMin(m.ora)*60000}
+function oraData(hm){/* data per un'ora detta all'IA: oggi, o ieri se l'ora di oggi sarebbe più di un'ora nel futuro (es. dopo mezzanotte) */
+  const n=new Date(),[h,mi]=hm.split(':').map(Number),c=new Date(n);c.setHours(h,mi,0,0);if(c-n>3600000)c.setDate(c.getDate()-1);return isoDay(c)}
+function sortByTime(keys,meals,start){const t=keys.map((k,i)=>({k,i,m:mealTs(meals[k],start)}));
   return[...t.filter(x=>x.m!==null).sort((a,b)=>a.m-b.m||a.i-b.i),...t.filter(x=>x.m===null)].map(x=>x.k)}
 function reorderDay(D){D=D||S.day;if(!D||!Array.isArray(D.order))return{};
-  const ord=sortByTime(D.order.filter(k=>D.meals[k]),D.meals);
+  const ord=sortByTime(D.order.filter(k=>D.meals[k]),D.meals,D.start);
   const sn=[...ord.filter(isSnack),...Object.keys(D.meals).filter(k=>isSnack(k)&&!ord.includes(k))],map={},ms={};
   sn.forEach((k,i)=>{map[k]='spuntino'+(i+1);ms[map[k]]=D.meals[k]});sn.forEach(k=>delete D.meals[k]);Object.assign(D.meals,ms);
   D.order=ord.map(k=>map[k]||k);if(D===S.day&&ui.meal&&map[ui.meal])ui.meal=map[ui.meal];return map}
 function touchMeal(meal,before){/* da chiamare dopo una modifica alla lista: aggiorna l'ora automatica e riordina */
-  if(JSON.stringify(meal.items)!==before&&!meal.oraFissa)meal.ora=meal.items.length?nowHM():null;reorderDay(S.day)}
+  if(JSON.stringify(meal.items)!==before&&!meal.oraFissa){meal.ora=meal.items.length?nowHM():null;meal.data=meal.items.length?isoDay(new Date()):null}reorderDay(S.day)}
 const keyOf=meal=>Object.keys(S.day.meals).find(k=>S.day.meals[k]===meal);
 const isClosed=k=>false;
 function deleteSnack(k){
@@ -1283,7 +1295,7 @@ async function runMeal(key,text,photo){
   try{
     const out=await gemini(SYS_MEAL,toContents(hist,cur),SCHEMA_MEAL);const before=JSON.stringify(meal.items);
     if(!out.domanda)meal.items=(Array.isArray(out.items)?out.items:[]).map(clean).map(linkFood);
-    {const o=typeof out.ora==='string'&&out.ora.trim().match(/^(\d{1,2})[:.](\d{2})$/);if(o&&+o[1]<24&&+o[2]<60){meal.ora=o[1].padStart(2,'0')+':'+o[2];meal.oraFissa=true}}
+    {const o=typeof out.ora==='string'&&out.ora.trim().match(/^(\d{1,2})[:.](\d{2})$/);if(o&&+o[1]<24&&+o[2]<60){meal.ora=o[1].padStart(2,'0')+':'+o[2];meal.data=oraData(meal.ora);meal.oraFissa=true}}
     touchMeal(meal,before);
     if(!out.riepilogo)meal.chat.push({role:'a',text:out.reply||'Fatto.'});
     else meal.chat.push({role:'a',text:out.reply||'',ans:!!out.domanda,tot:sum(meal.items),list:meal.items.map(i=>({n:i.nome,q:i.quantita,k:i.kcal,miss:KEYS.slice(1).filter(k=>i[k]===null||i[k]===undefined)}))});
@@ -1359,7 +1371,7 @@ function render(){applyTheme();requestAnimationFrame(alimSticky);requestAnimatio
   if(chatView)requestAnimationFrame(()=>{const m=$('#main');if(ui.toTop){ui.toTop=false;m.scrollTop=0}else m.scrollTop=m.scrollHeight});
 }
 function histDay(i){const h=S.history[i];if(!h)return null;const meals={};
-  if(h.full)Object.keys(h.full).forEach(k=>{meals[k]={items:h.full[k].items||[],chat:h.full[k].chat||[],closed:h.full[k].closed,ora:h.full[k].ora}});
+  if(h.full)Object.keys(h.full).forEach(k=>{meals[k]={items:h.full[k].items||[],chat:h.full[k].chat||[],closed:h.full[k].closed,ora:h.full[k].ora,data:h.full[k].data}});
   else Object.keys(h.meals||{}).forEach(k=>{meals[k==='spuntino'?'spuntino1':k]={items:h.meals[k]||[],chat:[]}});
   return{start:h.start,end:h.end,meals,order:h.order,target:h.target,margin:h.margin}}
 function viewDay(){return ui.dv===null?S.day:histDay(ui.dv)}
@@ -1385,7 +1397,7 @@ function renderHead(){
 }
 function renderHistDay(){
   const D=histDay(ui.dv);if(!D){ui.dv=null;render();return}
-  const keys=sortByTime((Array.isArray(D.order)?D.order.filter(k=>D.meals[k]):orderKeys(Object.keys(D.meals))).filter(k=>D.meals[k].items.length),D.meals);
+  const keys=sortByTime((Array.isArray(D.order)?D.order.filter(k=>D.meals[k]):orderKeys(Object.keys(D.meals))).filter(k=>D.meals[k].items.length),D.meals,D.start);
   if(!keys.includes(ui.hmeal))ui.hmeal=keys[0]||null;
   $('#mealTabs').hidden=!keys.length;
   $('#mealTabs').innerHTML=keys.map(k=>`<button data-hmeal="${k}" class="${k===ui.hmeal?'on':''}">${mealName(k)}<small>${f0(sum(D.meals[k].items).kcal)} kcal</small></button>`).join('');
@@ -1393,8 +1405,8 @@ function renderHistDay(){
   bar.innerHTML=`<div><b>Giornata archiviata</b><small>tocca «Modifica giornata» per correggerla</small><button class="btn bdef" id="reopenDay">Modifica giornata</button></div>`;
   if(!ui.hmeal){$('#mealItems').innerHTML='<div class="empty">Nessun alimento in questa giornata.</div>';$('#mealChat').innerHTML='';return}
   const m=D.meals[ui.hmeal],t=sum(m.items);
-  ui.box={items:m.items,name:mealName(ui.hmeal),edit:false,ora:m.ora};
-  $('#mealItems').innerHTML=mealBoxHTML(m.items,mealName(ui.hmeal),false,'box',m.ora);
+  ui.box={items:m.items,name:mealName(ui.hmeal),edit:false,ora:m.ora,data:m.data};
+  $('#mealItems').innerHTML=mealBoxHTML(m.items,mealName(ui.hmeal),false,'box',m.ora,m.data);
   $('#mealChat').innerHTML=m.chat.map(msgHtml).join('');
 }
 function packDay(d){const meals={};orderKeys(Object.keys(d.meals)).forEach(k=>{if(d.meals[k].items.length)meals[k]=d.meals[k].items});
@@ -1423,13 +1435,13 @@ function renderMeal(){
     $('#mealChat').innerHTML='';return}
   const m0=ensureMeal(ui.meal),isStarted=m0.items.length||m0.chat.length;
   const bar=$('#mealBar');bar.hidden=false;
-  bar.innerHTML=`<div><b>${mealName(ui.meal)}<span class="mk">${f0(sum(m0.items).kcal)} kcal</span></b></div><button class="mbtn" id="mealDel">Elimina ${isSnack(ui.meal)?'spuntino':mealName(ui.meal).toLowerCase()}</button>`;
+  bar.innerHTML=`<div><b class="mbw"><span class="mbc">${mealName(ui.meal)}${m0.ora?`<small>ore ${esc(m0.ora)}</small>`:''}</span><span class="mk">${f0(sum(m0.items).kcal)} kcal</span></b></div><button class="mbtn" id="mealDel">Elimina ${isSnack(ui.meal)?'spuntino':mealName(ui.meal).toLowerCase()}</button>`;
   if(!isStarted){
     $('#mealItems').innerHTML=`<div class="empty">Scrivi, detta o fotografa cosa hai mangiato a <b>${mealName(ui.meal).toLowerCase()}</b>: il conteggio si aggiorna da solo, e se correggi qualcosa in chat vale sempre l'ultima versione.</div>`;
     $('#mealChat').innerHTML=ui.busy?'<div class="typing">Sto calcolando<i></i><i></i><i></i></div>':'';return}
   const m=S.day.meals[ui.meal],t=sum(m.items);
-  ui.box={items:m.items,name:mealName(ui.meal),edit:true,ora:m.ora};
-  $('#mealItems').innerHTML=(m.items.length?mealBoxHTML(m.items,mealName(ui.meal),true,'box',m.ora)
+  ui.box={items:m.items,name:mealName(ui.meal),edit:true,ora:m.ora,data:m.data};
+  $('#mealItems').innerHTML=(m.items.length?mealBoxHTML(m.items,mealName(ui.meal),true,'box',m.ora,m.data)
     :`<div class="empty">Ancora niente. Scrivi cosa hai mangiato o allega una foto: il conteggio si aggiorna da solo, e se correggi qualcosa in chat vale sempre l'ultima versione.</div>`);
   $('#mealChat').innerHTML=m.chat.map(msgHtml).join('')+(ui.busy?'<div class="typing">Sto calcolando<i></i><i></i><i></i></div>':'');
 }
@@ -1441,10 +1453,10 @@ function foodInfo(id,it){const f=S.foods.find(x=>x.id===id);if(!f)return;
   <div class="ph" id="fiPh"></div><div class="row" style="justify-content:flex-start"><button class="btn sm fiClose" id="noSheet">Chiudi</button></div>`);loadFoodPhotos(f.id,$('#fiPh'))}
 /* v139: tabella unica del pasto (Lista alimenti + totale + macro), usata in alto e nei riepiloghi della chat (sempre aggiornata) */
 function ttsHTML(ix){return `<div class="tts"><button class="tb${ttsState(ix)==='play'?' on':''}" data-say="${ix}"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="0.5" y="0.5" width="15" height="15" rx="3.5" fill="#1f4d35"/><path d="M6 4.2v7.6l6-3.8z" fill="#fff"/></svg>Ascolta</button><button class="tb${ttsState(ix)==='pause'?' on':''}" data-pause="${ix}"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="0.5" y="0.5" width="15" height="15" rx="3.5" fill="#1f4d35"/><rect x="5" y="4" width="2" height="8" rx=".6" fill="#fff"/><rect x="9" y="4" width="2" height="8" rx=".6" fill="#fff"/></svg>Pausa</button><button class="tb tbauto${autoOn()?' on':''}" data-autoread aria-label="Lettura automatica" aria-pressed="${autoOn()?'true':'false'}"><span class="auw"><svg viewBox="0 0 26 24" width="22" height="17" aria-hidden="true"><path d="M4 21v-3.2C2.8 16.7 2 15.2 2 13.5 2 10 4.9 7.2 8.4 7.2c3.1 0 5.6 2.1 6.1 5l1.4 2.6-1.4.6v2c0 1-.8 1.7-1.7 1.7H11.2V21z" fill="currentColor"/><path d="M16.8 11.6c.8.8.8 2.2 0 3M18.8 9.8c1.8 1.8 1.8 4.8 0 6.6M20.9 8c2.8 2.8 2.8 7.4 0 10.2" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg><span>AUTO</span></span></button></div>`}
-function mealBoxHTML(items,name,edit,tix,ora){if(!items||!items.length)return'<div class="empty">Nessun alimento in questo pasto.</div>';
+function mealBoxHTML(items,name,edit,tix,ora,data){if(!items||!items.length)return'<div class="empty">Nessun alimento in questo pasto.</div>';
   const t=sum(items),row=(l,k,sub)=>`<div class="sr${sub?' sub':''}"><span>${l}${t.miss[k]&&t.has[k]?'<span class="ast">*</span>':''}</span><b>${fv(t,k,'g')}</b></div>`;
   const miss=items.filter(i=>KEYS.slice(1).some(k=>nn(i[k])===null));
-  return'<div class="lt">Lista alimenti<br>Totale kcal e macro</div>'+(ora?`<div class="mora"><span class="mnm">${esc(name.toUpperCase())}</span><span>Ora del pasto: <b>${esc(ora)}</b></span></div>`:'')+items.map((i,ix)=>`<div class="it it2"><div class="n">${edit?foodLink(i):esc(i.nome)}</div><div class="q"><span class="qq">${esc(i.quantita)}</span>${srcTag(i)}</div><div class="k">${f0(i.kcal)} kcal</div>${edit?`<button class="x" data-del="${ix}" aria-label="Elimina ${esc(i.nome)}">×</button>`:'<span></span>'}<div class="m">${mline(i)}</div></div>`).join('')+
+  return'<div class="lt">Lista alimenti<br>Totale kcal e macro</div>'+(ora?`<div class="mora"><span class="mnm">${esc(name.toUpperCase())}</span><span class="mor">Ora del pasto: <b>${esc(ora)}</b>${data?`<small>${dShort(data)}</small>`:''}</span></div>`:'')+items.map((i,ix)=>`<div class="it it2"><div class="n">${edit?foodLink(i):esc(i.nome)}</div><div class="q"><span class="qq">${esc(i.quantita)}</span>${srcTag(i)}</div><div class="k">${f0(i.kcal)} kcal</div>${edit?`<button class="x" data-del="${ix}" aria-label="Elimina ${esc(i.nome)}">×</button>`:'<span></span>'}<div class="m">${mline(i)}</div></div>`).join('')+
     `<div class="sumt">Totale kcal ${esc(name.toUpperCase())}: <b>${f0(t.kcal)} kcal</b></div><div class="sml">${row('Carboidrati','carboidrati')}${row('di cui zuccheri','zuccheri',1)}${row('Proteine','proteine')}${row('Grassi','grassi')}${row('di cui saturi','saturi',1)}${row('Fibre','fibre')}${row('Sale','sale')}</div>`+
     (miss.length?`<div class="missn">* Valori mancanti per: ${miss.map(i=>esc(i.nome)).join(', ')}. I totali segnati sono parziali.</div>`:'')+
     (tix!=null&&('speechSynthesis' in window)?'<div class="mtts">'+ttsHTML(tix)+'</div>':'')}
@@ -1454,7 +1466,7 @@ function msgHtml(m,ix){
   if(m.tot&&!m.err){
     if(m.ans&&m.text)h+=`<div class="ansx">${md(m.text)}</div>`;
     const B=ui.box||{items:[],name:'pasto',edit:false};
-    h+=`<div class="card mbox">${mealBoxHTML(B.items,B.name,B.edit,ix,B.ora)}</div>`;
+    h+=`<div class="card mbox">${mealBoxHTML(B.items,B.name,B.edit,ix,B.ora,B.data)}</div>`;
   }else h+=md(m.text);
   if(m.ricetta){const t=sum(m.ricetta.ingredienti);const saved=S.recipes.some(r=>r.src===m.ts);
     h+=`<div class="rc"><b>${esc(m.ricetta.nome)}</b><div class="m">Per porzione: ${f0(t.kcal)} kcal · ${mline(t)}</div><div class="row"><button class="btn sm ghost" data-saverec="${ix}" ${saved?'disabled':''}>${saved?'Salvata':'Salva nel ricettario'}</button></div></div>`}
@@ -1480,7 +1492,7 @@ function renderHist(){fdKill();
     <div style="margin-top:12px"><b class="ht">Riepilogo:</b> <b class="hm">${f0(t.kcal)} kcal</b></div>
     <div class="hm hmac" style="margin-top:2px">${mlines(t)}</div>
     <div class="hm" style="margin-top:12px">Aperta: ${fdt(h.start)}${h.end?`<br>Chiusa: ${fdt(h.end)}`:''}</div>
-    ${(()=>{const F=h.full||{},ks=orderKeys(Object.keys(h.meals).map(k=>k==='spuntino'?'spuntino1':k));return sortByTime(ks,F)})().map(k=>{const l=mealName(k);const it=(h.meals[k]||(k==='spuntino1'?h.meals.spuntino:null)||[]);if(!it.length)return'';const mt=sum(it),ora=h.full&&h.full[k]&&h.full[k].ora;return`<div style="margin-top:10px"><b class="ht">${l}:</b> <b class="hm">${f0(mt.kcal)} kcal</b>${ora?`<span class="hora">ore ${esc(ora)}</span>`:''}${it.map(i=>`<div class="hm">• ${esc(i.nome)} ${esc(i.quantita)} — ${f0(i.kcal)} kcal</div>`).join('')}</div>`}).join('')}
+    ${(()=>{const F=h.full||{},ks=orderKeys(Object.keys(h.meals).map(k=>k==='spuntino'?'spuntino1':k));return sortByTime(ks,F,h.start)})().map(k=>{const l=mealName(k);const it=(h.meals[k]||(k==='spuntino1'?h.meals.spuntino:null)||[]);if(!it.length)return'';const mt=sum(it),ora=h.full&&h.full[k]&&h.full[k].ora,odata=h.full&&h.full[k]&&h.full[k].data;return`<div style="margin-top:10px"><b class="ht">${l}:</b> <b class="hm">${f0(mt.kcal)} kcal</b>${ora?`<span class="hora">ore ${esc(ora)}${odata?` <small>(${dShort(odata)})</small>`:''}</span>`:''}${it.map(i=>`<div class="hm">• ${esc(i.nome)} ${esc(i.quantita)} — ${f0(i.kcal)} kcal</div>`).join('')}</div>`}).join('')}
     <div class="row between" style="margin-top:14px"><button class="btn sm ghost std2" data-collapse>Annulla</button><span class="row" style="margin:0"><button class="btn sm ghost std2" data-edithist="${ix}">Modifica</button><button class="btn sm ghost std2" data-delhist="${ix}">Elimina</button></span></div></details>`}).join('')
     :'<div class="empty">Qui trovi le giornate chiuse (conservate per il periodo scelto nelle Impostazioni). Usa «Nuova Giornata Alimentare» nel Diario quando hai finito di mangiare.</div>';
   document.querySelectorAll('#histList details.hday').forEach(d=>bindCloseDetails(d));
