@@ -940,7 +940,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 276</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 277</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1021,7 +1021,8 @@ const isoDay=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+S
 const dShort=x=>{if(!x)return'';const[a,m,g]=x.split('-');return g+'/'+m+'/'+a.slice(2)};
 function mealTs(m,start){if(!m||!oraMin(m.ora))return null;
   if(m.data)return new Date(m.data+'T'+m.ora.padStart(5,'0')).getTime();
-  const b=start?new Date(start):new Date();b.setHours(0,0,0,0);return b.getTime()+oraMin(m.ora)*60000}
+  /* senza data (pasti salvati prima della v276): il giorno è quello dell'apertura della giornata, o il successivo se l'ora viene prima dell'apertura */
+  const st=start?new Date(start):new Date(),c=new Date(st),[h,mi]=m.ora.split(':').map(Number);c.setHours(h,mi,0,0);if(c<st-3600000)c.setDate(c.getDate()+1);return c.getTime()}
 function oraData(hm){/* data per un'ora detta all'IA: oggi, o ieri se l'ora di oggi sarebbe più di un'ora nel futuro (es. dopo mezzanotte) */
   const n=new Date(),[h,mi]=hm.split(':').map(Number),c=new Date(n);c.setHours(h,mi,0,0);if(c-n>3600000)c.setDate(c.getDate()-1);return isoDay(c)}
 function sortByTime(keys,meals,start){const t=keys.map((k,i)=>({k,i,m:mealTs(meals[k],start)}));

@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 276 (28/11/2026).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 277 (28/11/2026).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **Kcal** (nome del repository e del progetto: **KalRaf28**; titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **276**.
+> Sto sviluppando **Kcal** (nome del repository e del progetto: **KalRaf28**; titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **277**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -53,7 +53,7 @@ KalRaf28 è un diario alimentare personale. Al posto di contare le calorie nelle
 - **Mai spese extra per l'API** oltre all'abbonamento.
 - In futuro forse un'APK.
 
-## 3. Come funziona oggi (v276): sezioni
+## 3. Come funziona oggi (v277): sezioni
 
 La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impostazioni** (Preimpostati tolto nella v53). La voce attiva è evidenziata con una pillola verde `#2f8f5c`.
 
@@ -447,10 +447,11 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **v274:** riga dell'ora nella tabella del pasto: a sinistra il nome del pasto in stampatello (PRANZO, SPUNTINO 1…, 16 px semi-grassetto come "1 porzione"), a destra "Ora del pasto: 13:30"; nome e ora nel verde `#3e6651` della pillolina "Restano X kcal" (prima l'ora era nel verde dei valori sicuri). In chiaro e in scuro.
   - **v275:** finestra "Come funziona Kcal", in "Gesti utili e funzioni" dopo la chat del Diario, nuova sottosezione **Come vengono salvati gli orari**: l'ora del pasto si salva da sola all'ultima modifica agli alimenti (le domande non la cambiano); si può cambiare in qualunque momento dicendolo all'Intelligenza Artificiale (es. "Il pranzo l'ho finito alle 13:30"), e da lì resta fissa; si vede nella tabella Lista alimenti e nello Storico; pasti in ordine di ora e spuntini numerati per ora.
   - **v276: data del pasto e ora nella barra.** Con l'ora si salva anche la data (`data`), e l'ordine dei pasti si calcola su data e ora (niente più dubbi dopo mezzanotte; le giornate vecchie senza data usano la regola delle 4:00). Un'ora detta all'IA prende la data di oggi, o di ieri se sarebbe più di un'ora nel futuro. La data compare sotto l'ora nella tabella "Lista alimenti" ("28/11/26", piccola e grigia) e tra parentesi accanto all'ora nello Storico. Nella barra del pasto (con "Elimina …") l'ora è piccola sotto il nome ("ore 20:45") e le kcal sono accanto, centrate tra le due righe, con 16 px di spazio (opzione C dell'anteprima, spazio raddoppiato).
+  - **v277:** ordine dei pasti più sicuro per quelli salvati tra la v273 e la v275 (con l'ora ma senza data): il loro giorno è quello di apertura della giornata, o il successivo se l'ora viene prima dell'apertura, invece della regola fissa delle 4:00. Provato con l'orologio simulato alle 18:00: colazione 08:00, spuntino 10:30, spuntino 16:00 nell'ordine giusto.
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
-**Stato:** online, **collaudo in corso dal 25/11/2026**. Tra il 26/11 sera e la notte del 28/11 (v91–v276) è stata rifinita tutta la grafica di Diario, Alimenti, Storico e Impostazioni, in chiaro e in scuro, con le regole della sezione 3.16, e scritta la finestra "Come funziona Kcal": **la grafica è considerata definitiva dall'utente**. Resta da fare solo la sezione Ricette (e, quando si rigenera l'APK, lo sblocco della rotazione: vedi Note).
+**Stato:** online, **collaudo in corso dal 25/11/2026**. Tra il 26/11 sera e la notte del 28/11 (v91–v277) è stata rifinita tutta la grafica di Diario, Alimenti, Storico e Impostazioni, in chiaro e in scuro, con le regole della sezione 3.16, e scritta la finestra "Come funziona Kcal": **la grafica è considerata definitiva dall'utente**. Resta da fare solo la sezione Ricette (e, quando si rigenera l'APK, lo sblocco della rotazione: vedi Note).
 
 ---
 
@@ -463,7 +464,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
 ## ✅ COSE DA FARE
 
 ### Da implementare
-**Situazione al 28/11/2026 (v276):**
+**Situazione al 28/11/2026 (v277):**
 0. **Subito, nella prossima chat:** un paio di piccoli bug e 2-3 ritocchi grafici che l'utente spiegherà a voce (non sono descritti qui). (Fatto nella v261: il campo di scrittura in scuro ora è uguale al chiaro.)
 1. Da valutare con l'uso: posizione definitiva dell'ora del pasto nel Diario (per ora è la prima riga della tabella "Lista alimenti") e verifica che Gemini capisca bene l'ora detta a voce.
 1. Poi la sezione Ricette (qui sotto).
