@@ -1099,6 +1099,14 @@ html.lightmode .foodsheet .fcur{left:23px;top:10px}
 #histList>.empty,#foodList>.empty,#recList>.empty{border:1px solid #2c6a49!important;border-radius:22px;background:var(--card)}
 /* v359: risposte dell'IA nelle chat (Diario e Ricette) con il bordino sottilissimo 1 px */
 .msg.a:not(.e):not(.rsumw):not(.rsum){border:1px solid #2c6a49!important}
+/* v360: Aggiungi/Modifica Ricetta: cursore lampeggiante + due spazi + testo (nome e chat); al tocco resta il cursore e sparisce la scritta; nome con bordino sottilissimo fisso */
+.recsheet .rtw{position:relative;display:flex;flex:1;min-width:0}
+.recsheet .rtw>.rname,.recsheet .rtw>textarea{width:100%;box-sizing:border-box}
+.recsheet .rcur{display:none;position:absolute;width:2px;background:light-dark(#436955,#fff);animation:fcurb 1s steps(1) infinite;pointer-events:none}
+.recsheet .rtwm .rcur{background:#436955}
+#rName:placeholder-shown:not(:focus)+.rcur,#rMsg:placeholder-shown:not(:focus)+.rcur{display:block}
+#rName:focus::placeholder,#rMsg:focus::placeholder{color:transparent!important}
+.recsheet .rname,.recsheet .rname:focus,.recsheet .rname:focus-visible{border:1px solid #2c6a49!important;outline:none!important;box-shadow:none!important}
 /* v311: in scuro i campi di scrittura (Diario, chat e nome delle ricette) hanno lo stesso nero-grigio di «Cerca un alimento» (--card #1c1c1e) con testo bianco; in chiaro invariato */
 html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,html:not(.lightmode) .comp textarea:focus-visible{background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(to bottom,#265e41,#1f4d35 50%,#183c29) border-box;color:#fff}
 html:not(.lightmode) .comp textarea::placeholder{color:#fff;opacity:1}
@@ -1245,7 +1253,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 359</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 360</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -2086,14 +2094,15 @@ function recBodyHTML(){const d=RD;
 function recEditor(r){RD=r?JSON.parse(JSON.stringify(r)):{id:null,nome:'',porzioni:1,items:[],note:'',chat:[]};RD.tmp='n'+Date.now();RD.porzioni=Math.min(99,Math.max(1,Math.round(+RD.porzioni||1)));
   if(!RD.items){/* ricette vecchie: ingredienti salvati per porzione → quantità dell'intera ricetta */RD.items=(RD.ingredienti||[]).map(i=>{const o={...i};KEYS.forEach(k=>{if(o[k]!=null)o[k]=o[k]*RD.porzioni});return o})}RD.chat=RD.chat||[];RD.busy=false;RD.base=JSON.stringify([RD.nome,RD.porzioni,RD.items,RD.note,RD.chat.length]);
   sheet(`<div class="rsh"><h3>${r?'Modifica Ricetta':'Aggiungi Ricetta'}</h3>
-    <div class="rtop"><input type="text" id="rName" class="rname" placeholder="Nome della ricetta" value="${esc(RD.nome)}"></div></div>
+    <div class="rtop"><span class="rtw"><input type="text" id="rName" class="rname" placeholder="&nbsp;&nbsp;Nome della ricetta" value="${esc(RD.nome)}"><i class="rcur"></i></span></div></div>
     <div class="rnpanel" id="rNotes" hidden><h4>Note</h4><textarea id="rNoteTa" placeholder="Tempi e modi di cottura, accortezze, conservazione… Puoi scrivere qui o dettare con il microfono qui sotto.">${esc(RD.note||'')}</textarea><p class="hm" id="rNoteSt"></p></div>
     <div class="rbody" id="rBody">${recBodyHTML()}</div>
     <div class="jmp rjmp"><button id="rUp" aria-label="Vai in cima" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></button><button id="rDn" aria-label="Vai in fondo" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
-    <div class="comp rcomp"><div class="in"><textarea id="rMsg" rows="1" placeholder="Ingredienti, quantità, porzioni…"></textarea><button class="ib mic" id="rMic" aria-label="Detta">${MIC_SVG}</button><button class="ib send" id="rSend" aria-label="Invia">${SEND_SVG}</button></div></div>
+    <div class="comp rcomp"><div class="in"><span class="rtw rtwm"><textarea id="rMsg" rows="1" placeholder="&nbsp;&nbsp;Ingredienti, quantità, porzioni…"></textarea><i class="rcur"></i></span><button class="ib mic" id="rMic" aria-label="Detta">${MIC_SVG}</button><button class="ib send" id="rSend" aria-label="Invia">${SEND_SVG}</button></div></div>
     <div class="row between rbtns" id="rBtns"><button class="btn sm ghost std2" id="rCancel">Annulla</button><div class="rpor"><span>Porzioni</span><button class="rpm" id="rMinus" aria-label="Una porzione in meno">–</button><b id="rPor">${RD.porzioni}</b><button class="rpm" id="rPlus" aria-label="Una porzione in più">+</button></div><button class="btn std2" id="rrSave" disabled>Salva</button></div>
     <div class="row rbtns rclose" id="rCloseRow" hidden><button class="btn bdef new" id="rNoteClose">Chiudi note</button></div>`);
-  $('#sheet').classList.add('recsheet');recWire();sheetGuard=recExit;requestAnimationFrame(recJmp)}
+  $('#sheet').classList.add('recsheet');recWire();sheetGuard=recExit;requestAnimationFrame(recJmp);requestAnimationFrame(recCur)}
+function recCur(){['#rName','#rMsg'].forEach(s=>{const el=$(s);if(!el)return;const c=el.nextElementSibling;if(!c)return;const cs=getComputedStyle(el),lh=parseFloat(cs.lineHeight)||22,fs=parseFloat(cs.fontSize)||16;c.style.left=(parseFloat(cs.borderLeftWidth)+parseFloat(cs.paddingLeft))+'px';const h=Math.round(fs*1.2);c.style.height=h+'px';c.style.top=(parseFloat(cs.borderTopWidth)+parseFloat(cs.paddingTop)+((s==='#rName'?el.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom):lh)-h)/2)+'px'})}
 function recRefresh(toEnd){if(!RD||!$('#rBody'))return;const b=$('#rBody'),st=b.scrollTop;b.innerHTML=recBodyHTML();b.scrollTop=toEnd?b.scrollHeight:st;$('#rPor').textContent=RD.porzioni;if($('#rName')&&document.activeElement!==$('#rName'))$('#rName').value=RD.nome;if($('#rSend'))$('#rSend').disabled=!!RD.busy;recWire(true);recCanSave();requestAnimationFrame(recJmp)}
 function recBtnAlign(){const t=$('#rMsg'),r=$('#rBtns'),sh=$('#sheet');if(!t||!r||!sh)return;const R=sh.getBoundingClientRect().right-parseFloat(getComputedStyle(sh).paddingRight)-t.getBoundingClientRect().right;if(R>0)sh.style.setProperty('--rbtnR',R+'px')}
 function recJmp(){const b=$('#rBody'),U=$('#rUp'),D=$('#rDn');if(!b||!U)return;recBtnAlign();const can=b.scrollHeight-b.clientHeight>40;
@@ -2155,7 +2164,7 @@ function recNotes(open){if(!RD)return;const ta=$('#rMsg');
   else{RD.note=($('#rNoteTa').value||'').trim();RD.noteMode=false;
     const sr=RD.id&&S.recipes.find(x=>x.id===RD.id);if(sr){sr.note=RD.note;save();const b=JSON.parse(RD.base);b[3]=RD.note;RD.base=JSON.stringify(b);toast('Note salvate')}}
   $('#sheet').classList.toggle('rnmode',!!open);$('#rNotes').hidden=!open;$('#rBtns').hidden=!!open;$('#rCloseRow').hidden=!open;$('#rName').readOnly=!!open;
-  ta.placeholder=open?'Detta o scrivi per le note…':'Ingredienti, quantità, porzioni…';ta.value='';
+  ta.placeholder=open?'\u00a0\u00a0Detta o scrivi per le note…':'\u00a0\u00a0Ingredienti, quantità, porzioni…';ta.value='';
   const dot=$('#rNoteBtn .rdot');if(dot)dot.hidden=!(RD.note&&RD.note.trim());recJmp()}
 const SCHEMA_RNOTE={type:'OBJECT',properties:{reply:{type:'STRING'},note:{type:'STRING'}},required:['reply','note']};
 const SYS_RNOTE=`Gestisci le NOTE di una ricetta (tempi e modi di cottura, temperature, passaggi, accortezze, conservazione). Ricevi le note attuali e il messaggio dell'utente, spesso dettato a voce.
