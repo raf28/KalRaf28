@@ -801,6 +801,10 @@ html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,ht
 /* v273: ora del pasto nella tabella e nello Storico */
 .mbox .mora,#mealItems .mora{font-size:15px;margin:2px 0 8px;color:var(--ink)}
 .mora b{color:light-dark(#2a7a4b,#5cc58a)}
+/* v274: riga dell'ora: a sinistra il nome del pasto in stampatello (come «1 porzione»), a destra «Ora del pasto»; nome e ora nel verde della pillolina «Restano X kcal» (#3e6651) */
+.mbox .mora,#mealItems .mora{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.mora .mnm{font-size:16px;font-weight:600;color:#3e6651;letter-spacing:.02em}
+.mora b,.mbox .mora b,#mealItems .mora b{color:#3e6651}
 #v-storico .hora{margin-left:16px;color:var(--ink);font-size:inherit}
 #v-storico details.hday[open] b.hm{font-weight:700}
 /* v267: bordo del campo di scrittura raddoppiato a 8px (chiaro e scuro, colori invariati); spazio interno ridotto (3px sopra e sotto, 8px ai lati) così il campo resta alto 44px, a filo con i tasti */
@@ -932,7 +936,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 273</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 274</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1436,7 +1440,7 @@ function ttsHTML(ix){return `<div class="tts"><button class="tb${ttsState(ix)===
 function mealBoxHTML(items,name,edit,tix,ora){if(!items||!items.length)return'<div class="empty">Nessun alimento in questo pasto.</div>';
   const t=sum(items),row=(l,k,sub)=>`<div class="sr${sub?' sub':''}"><span>${l}${t.miss[k]&&t.has[k]?'<span class="ast">*</span>':''}</span><b>${fv(t,k,'g')}</b></div>`;
   const miss=items.filter(i=>KEYS.slice(1).some(k=>nn(i[k])===null));
-  return'<div class="lt">Lista alimenti<br>Totale kcal e macro</div>'+(ora?`<div class="mora">Ora del pasto: <b>${esc(ora)}</b></div>`:'')+items.map((i,ix)=>`<div class="it it2"><div class="n">${edit?foodLink(i):esc(i.nome)}</div><div class="q"><span class="qq">${esc(i.quantita)}</span>${srcTag(i)}</div><div class="k">${f0(i.kcal)} kcal</div>${edit?`<button class="x" data-del="${ix}" aria-label="Elimina ${esc(i.nome)}">×</button>`:'<span></span>'}<div class="m">${mline(i)}</div></div>`).join('')+
+  return'<div class="lt">Lista alimenti<br>Totale kcal e macro</div>'+(ora?`<div class="mora"><span class="mnm">${esc(name.toUpperCase())}</span><span>Ora del pasto: <b>${esc(ora)}</b></span></div>`:'')+items.map((i,ix)=>`<div class="it it2"><div class="n">${edit?foodLink(i):esc(i.nome)}</div><div class="q"><span class="qq">${esc(i.quantita)}</span>${srcTag(i)}</div><div class="k">${f0(i.kcal)} kcal</div>${edit?`<button class="x" data-del="${ix}" aria-label="Elimina ${esc(i.nome)}">×</button>`:'<span></span>'}<div class="m">${mline(i)}</div></div>`).join('')+
     `<div class="sumt">Totale kcal ${esc(name.toUpperCase())}: <b>${f0(t.kcal)} kcal</b></div><div class="sml">${row('Carboidrati','carboidrati')}${row('di cui zuccheri','zuccheri',1)}${row('Proteine','proteine')}${row('Grassi','grassi')}${row('di cui saturi','saturi',1)}${row('Fibre','fibre')}${row('Sale','sale')}</div>`+
     (miss.length?`<div class="missn">* Valori mancanti per: ${miss.map(i=>esc(i.nome)).join(', ')}. I totali segnati sono parziali.</div>`:'')+
     (tix!=null&&('speechSynthesis' in window)?'<div class="mtts">'+ttsHTML(tix)+'</div>':'')}
