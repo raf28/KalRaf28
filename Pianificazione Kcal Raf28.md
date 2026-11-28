@@ -580,6 +580,10 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
 ## ✅ COSE DA FARE
 
 ### Da implementare
+**Da controllare (aggiunte il 28/11/2026, v362):**
+- **Standard minimo dei caratteri piccoli e coerenza dei caratteri più grossi (modalità chiara):** stabilire una grandezza minima per i testi piccoli (oggi nell'app ce ne sono di 12,5, 13, 14, 14,5, 15 px: per esempio «per 1 galletta», le etichette «(valore sicuro)», i sottotitoli dei tasti) e verificare che i testi più grossi (16, 16,5, 17 px) siano coerenti tra loro in tutta l'app, non solo in Impostazioni, nelle pillole aperte, nelle finestre vuote e nelle info. Poi applicare lo standard a ogni sezione.
+- **Ricontrollo grafico di coerenza di tutta la modalità scura:** passare in rivista tutte le schermate in scuro (Diario, Alimenti, Ricette, Storico, Impostazioni, finestre, chat, tabelle) confrontando colori, bordi (standard 2 px, bordino sottilissimo 1 px), bianchi puri, sfondi (#111112 / #1c1c1e) e tasti, e correggere le differenze.
+
 **Situazione al 28/11/2026 (v309): tutte le funzioni dell'app sono concluse e il collaudo sul telefono è fatto.** Resta una sola cosa:
 - **Rotazione dell'app e blocco in verticale** (non urgente, da fare alla prossima rigenerazione dell'APK): oggi l'app non ruota in orizzontale e non si può usare a schermo diviso. Soluzione: togliere `orientation` dal manifest e rigenerare l'APK con PWABuilder (stesso keystore, **version code 4**). Rimandato dall'utente il 26/11.
   - **Idea dell'utente:** interruttore **"Blocca in verticale" sì/no** nelle Impostazioni, con `screen.orientation.lock()` / `unlock()`.
