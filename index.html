@@ -1117,6 +1117,9 @@ html.lightmode .foodsheet .fcur{left:23px;top:10px}
 /* v362: Aggiungi/Modifica Ricetta: tolta la barra «Nome della ricetta» (il nome si dice in chat); sotto il titolo uno spazio e un filo sottile quasi trasparente */
 .recsheet .rtw:has(#rName){display:none!important}
 .recsheet .rtop{padding-bottom:0!important;margin-top:14px;min-height:0;border-bottom:1px solid rgba(128,128,128,.22)!important}
+/* v367: Aggiungi/Modifica Ricetta e chat delle ricette: tabelle con le stesse misure della ricetta salvata aperta (16 px; etichette fonte 15 px) */
+.recsheet .it2 .m,.recsheet .sr.sub span,.recsheet .sr.sub b,.recsheet .rnit .n{font-size:16px!important}
+.recsheet .it2 .src{font-size:15px!important}
 /* v311: in scuro i campi di scrittura (Diario, chat e nome delle ricette) hanno lo stesso nero-grigio di «Cerca un alimento» (--card #1c1c1e) con testo bianco; in chiaro invariato */
 html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,html:not(.lightmode) .comp textarea:focus-visible{background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(to bottom,#265e41,#1f4d35 50%,#183c29) border-box;color:#fff}
 html:not(.lightmode) .comp textarea::placeholder{color:#fff;opacity:1}
@@ -1263,7 +1266,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 366</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 367</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1409,7 +1412,7 @@ const mlines=t=>NUTR.slice(1).map(([k,l,u])=>`${l} ${fv(t,k,u)}`+(SUB[k]?` (di c
 const mline=t=>NUTR.slice(1).map(([k,l,u])=>`${l} ${fv(t,k,u)}`+(SUB[k]?` (di cui ${SUB[k][1]} ${fv(t,SUB[k][0],u)})`:'')).join(' · ');
 const clean=i=>{const o={nome:String(i.nome||'Alimento'),quantita:String(i.quantita||'')};o.kcal=num(i.kcal);KEYS.slice(1).forEach(k=>o[k]=nn(i[k]));if(i.imposto)o.imposto=true;if(i.alimento_id){o.alimento_id=String(i.alimento_id);o.grammi=nn(i.grammi);o.fattore=nn(i.fattore)}if(i.dalAlimenti)o.dalAlimenti=true;const F=['utente','etichetta','generico','foto','non_trovato','alimenti','ricetta','preimpostato'];o.fonte=F.includes(i.fonte)?i.fonte:(i.dalAlimenti?'alimenti':i.imposto?'utente':i.stima?'generico':'generico');if(i.imposto)o.fonte='utente';
   if(o.fonte==='non_trovato'){o.kcal=0;KEYS.slice(1).forEach(k=>o[k]=null)}return o};
-const SRC={alimenti:['ok','valore sicuro – Alimenti'],ricetta:['ok','valore sicuro – Ricette'],preimpostato:['ok','valore sicuro – Preimpostati'],utente:['ok','valore tuo'],etichetta:['ok','da etichetta'],generico:['gen','valore generico'],foto:['gen','stima da foto'],non_trovato:['nf','non trovato – cercare manualmente l\'alimento']};
+const SRC={alimenti:['ok','Valore Sicuro – Alimenti'],ricetta:['ok','Valore Sicuro – Ricette'],preimpostato:['ok','Valore Sicuro – Preimpostati'],utente:['ok','Valore Tuo'],etichetta:['ok','Da Etichetta'],generico:['gen','Valore Generico'],foto:['gen','Stima Da Foto'],non_trovato:['nf','Non Trovato – Cercare Manualmente l\'Alimento']};
 function srcTag(i){const f=i.fonte||(i.dalAlimenti?'alimenti':i.imposto?'utente':i.stima?'generico':'');const s=SRC[f];return s?` <span class="src ${s[0]}">(${s[1]})</span>`:''}
 function md(s){return esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/^\s*[-*•]\s+/gm,'• ').replace(/\n/g,'<br>')}
 
@@ -1457,12 +1460,12 @@ function showInfo(){sheet(`<div class="info"><h3>Come funziona Kcal</h3>
 – I pasti sono in <b>ordine di ora</b> e gli spuntini vengono numerati in base all'ora:<br>Spuntino 1 è sempre il primo della giornata</p>
 <h4>Diario</h4><p class="hm"><b>Tocca il <span class="iplus" aria-label="+">+</span> per Aggiungere un Pasto</b>,<br>poi scrivi, detta o fotografa cosa hai mangiato:<br>l'Intelligenza Artificiale calcola kcal e Macro e il conteggio della giornata si aggiorna da solo.<br>Se un valore è sbagliato correggilo in chat:<br>vale sempre l'ultimo inserito.<br>A fine giornata tocca <b>Nuova Giornata Alimentare</b> per iniziare un nuovo conteggio.</p>
 <h4>Da dove vengono i valori</h4><p class="hm">Accanto a ogni alimento c'è un'etichetta colorata che dice da dove viene il valore:</p>
-<p class="hm"><span class="src ok">(valore sicuro – Alimenti)</span> preso da un alimento che hai salvato in Alimenti.</p>
-<p class="hm"><span class="src ok">(valore tuo)</span> l'hai scritto tu.</p>
-<p class="hm"><span class="src ok">(da etichetta)</span> letto dalla tabella nutrizionale della confezione.</p>
-<p class="hm"><span class="src gen">(valore generico)</span> stimato dall'Intelligenza Artificiale con le tabelle nutrizionali.</p>
-<p class="hm"><span class="src gen">(stima da foto)</span> stimato dall'Intelligenza Artificiale guardando la foto.</p>
-<p class="hm"><span class="src nf">(non trovato – cercare manualmente l'alimento)</span><br>l'Intelligenza Artificiale non conosce l'alimento:<br>non inventa nulla e ti chiede i valori.</p>
+<p class="hm"><span class="src ok">(Valore Sicuro – Alimenti)</span> preso da un alimento che hai salvato in Alimenti.</p>
+<p class="hm"><span class="src ok">(Valore Tuo)</span> l'hai scritto tu.</p>
+<p class="hm"><span class="src ok">(Da Etichetta)</span> letto dalla tabella nutrizionale della confezione.</p>
+<p class="hm"><span class="src gen">(Valore Generico)</span> stimato dall'Intelligenza Artificiale con le tabelle nutrizionali.</p>
+<p class="hm"><span class="src gen">(Stima Da Foto)</span> stimato dall'Intelligenza Artificiale guardando la foto.</p>
+<p class="hm"><span class="src nf">(Non Trovato – Cercare Manualmente l'Alimento)</span><br>l'Intelligenza Artificiale non conosce l'alimento:<br>non inventa nulla e ti chiede i valori.</p>
 <h4>Alimenti</h4><p class="hm">I tuoi prodotti di marca con i valori esatti e le foto.<br>Quando li nomini nel Diario, i valori vengono presi da qui.</p>
 <p class="hm">Per aggiungerne uno tocca <b>Aggiungi Alimento</b>.<br>Con <b>Compila scheda Automaticamente</b> basta fotografare la confezione e la tabella nutrizionale:<br>l'Intelligenza Artificiale compila la scheda da sola,<br>poi puoi aggiungere indicazioni o note scrivendo o parlando nella chat (per esempio "1 galletta = 8 g").<br>Con <b>Compila scheda Manualmente</b> inserisci tu tutti i valori.</p>
 <h4>Ricette</h4><p class="hm">Kcal e Macro della Ricetta intera e di una singola porzione.</p>
