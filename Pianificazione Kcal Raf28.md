@@ -1,6 +1,6 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 382 (28/11/2026).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 383 (28/11/2026).*
 
 ---
 
@@ -55,7 +55,7 @@ KalRaf28 è un diario alimentare personale. Al posto di contare le calorie nelle
 - **Mai spese extra per l'API** oltre all'abbonamento.
 - In futuro forse un'APK.
 
-## 3. Come funziona oggi (v382): sezioni
+## 3. Come funziona oggi (v383): sezioni
 
 La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impostazioni** (Preimpostati tolto nella v53). La voce attiva è evidenziata con una pillola verde `#2f8f5c`.
 
@@ -492,6 +492,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **v277:** ordine dei pasti più sicuro per quelli salvati tra la v273 e la v275 (con l'ora ma senza data): il loro giorno è quello di apertura della giornata, o il successivo se l'ora viene prima dell'apertura, invece della regola fissa delle 4:00. Provato con l'orologio simulato alle 18:00: colazione 08:00, spuntino 10:30, spuntino 16:00 nell'ordine giusto.
   - **v278: sezione Ricette con la grafica degli Alimenti.** Testata con titolo e conteggio ("N salvate"), ricerca "Cerca una ricetta", elenco alfabetico con le lettere, pillole, frecce e pillola "Aggiungi Ricetta" con il +, identici agli Alimenti in chiaro e in scuro (62 regole CSS duplicate per `#v-ricette`; `alimSticky()` / `alimStuck()` valgono per entrambe le sezioni). Il + apre la finestra "Aggiungi Ricetta" con Annulla e Salva disattivato. Tolte la barra Ricettario / Crea Ricetta e la vecchia chat. Nella finestra degli Alimenti il titolo ora è "Aggiungi Alimento" (e "Modifica Alimento").
   - **v375:** **Modalità scura: il bordino sottilissimo (1 px) è bianco `#fff` ovunque** (Impostazioni: campi numerici, chiave API e tendine; finestre «vuote»; bolle di risposta dell'IA nelle chat; Aggiungi/Modifica Alimento; nome della ricetta nascosto). **In chiaro resta verde `#2c6a49`.** Aggiorna lo standard «bordino sottilissimo»: chiaro verde #2c6a49, scuro bianco #fff, sempre 1 px.
+  - **v383:** **Aggiungi Ricetta vuota:** all'inizio del messaggio, tutta in grassetto, la frase «Il nome della ricetta e almeno un alimento in lista sono obbligatori per poterla salvare.», poi uno spazio e il resto del testo di prima.
   - **v382:** **Prodotti diversi non sono lo stesso alimento** (prompt `SYS_MEAL` Diario e `SYS_RICETTA`): un alimento salvato si collega solo se è lo stesso prodotto; varianti/forme diverse (es. «olio extravergine di oliva (evo)» e «olio extravergine di oliva spray», light/zero, intero/scremato, crudo/cotto, marche diverse) NON si scambiano. Se c'è solo la variante diversa l'IA non collega (`alimento_id` null), usa un valore generico o «non trovato» e lo dice in chat; se l'utente nomina la variante collega quella; se ci sono più varianti salvate e la parola è generica chiede quale. Regola solo nel prompt: l'app non fa un controllo suo.
   - **v381:** **Aggiungi/Modifica Alimento, campi obbligatori:** Nome, «Valori riferiti a» ed Energia (kcal) mostrano, quando sono vuoti, un asterisco con la scritta piccola (13 px, come il testo d'esempio della chat): «* Campo obbligatorio», «* Campo obbligatorio (peso in grammi o porzione)», «* Obbligatorio» (più corto per starci nella casella di Energia). Bianchi in scuro, verde scuro in chiaro (il bianco non si vedrebbe sul fondo chiaro); al tocco spariscono (segnaposto).
   - **v380:** (1) **Regole di Salva, Alimenti:** in Aggiungi e in Modifica Alimento il tasto Salva è attivo solo con **nome, «Valori riferiti a» ed Energia (kcal)** compilati; si aggiorna mentre si scrive; se se ne svuota uno resta disattivato e si può solo Annullare (la scheda torna com'era). (2) **Ricette:** Salva attivo solo con **nome e almeno un ingrediente** (porzioni 1 di default), anche in modifica; prima bastava anche solo le note o le porzioni, e senza nome si salvava «Ricetta del GG/MM». (3) **Scuro, «Aggiornamento…»:** non si vedeva perché una regola dello scuro lo teneva trasparente; ora compare come in chiaro (pillola verde, scritta bianca, 202 px dal fondo). (4) **Striscia bianca in alto durante la schermata di avvio:** lo sfondo dietro la splash è ora verde `#1f4d35` (classe `boot` su `<html>`, tolta a splash finita) e la splash è alta `100lvh`; non riprodotto in Chromium desktop, da verificare sul telefono.
@@ -608,7 +609,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
 ## ✅ COSE DA FARE
 
 ### Da implementare
-**Da fare per concludere (stato v382, 28/11/2026):** resta solo l'**uniformità dei caratteri** (primo punto qui sotto) con un ultimo ricontrollo generale; la coerenza grafica della modalità scura è conclusa (decisione dell'utente). Poi, se si vorrà, la rotazione.
+**Da fare per concludere (stato v383, 28/11/2026):** resta solo l'**uniformità dei caratteri** (primo punto qui sotto) con un ultimo ricontrollo generale; la coerenza grafica della modalità scura è conclusa (decisione dell'utente). Poi, se si vorrà, la rotazione.
 
 **Da controllare (aggiunte il 28/11/2026, v362):**
 - **Standard minimo dei caratteri piccoli e coerenza dei caratteri più grossi (modalità chiara):** stabilire una grandezza minima per i testi piccoli (oggi nell'app ce ne sono di 12,5, 13, 14, 14,5, 15 px: per esempio «per 1 galletta», le etichette «(valore sicuro)», i sottotitoli dei tasti) e verificare che i testi più grossi (16, 16,5, 17 px) siano coerenti tra loro in tutta l'app, non solo in Impostazioni, nelle pillole aperte, nelle finestre vuote e nelle info. Poi applicare lo standard a ogni sezione.
