@@ -1027,6 +1027,17 @@ html:not(.lightmode) .scur{background:#fff}
 #foodQ:focus::placeholder{color:transparent!important}
 /* v336: solo in scuro: messaggi a comparsa neri; in chiaro tornano verdi con scritta bianca. v334: messaggi a comparsa neri con la scritta nel verde di «Nuova Giornata Alimentare» (#2f8f5c) */
 html:not(.lightmode) .toast{background:#000!important;background-image:none!important;color:#2f8f5c!important;box-shadow:0 4px 12px rgba(0,0,0,.45)}
+/* v337: Aggiungi/Modifica Alimento: bordo grosso (8 px, come il campo del Diario) su blocchi e campi; in chiaro finestra e blocchi nel bianco attenuato #e6ece8, campi #f4f6f1 */
+.foodsheet .card,.foodsheet .card input,.foodsheet .card textarea,.foodsheet .card select{border:8px solid transparent!important}
+html.lightmode #sheet.foodsheet{background:#e6ece8}
+html.lightmode .foodsheet .card{background:linear-gradient(#e6ece8,#e6ece8) padding-box,linear-gradient(to bottom,#547f68,#436955 50%,#345243) border-box!important}
+html.lightmode .foodsheet .card input,html.lightmode .foodsheet .card textarea{background:linear-gradient(#f4f6f1,#f4f6f1) padding-box,linear-gradient(to bottom,#547f68,#436955 50%,#345243) border-box!important}
+html:not(.lightmode) .foodsheet .card{background:linear-gradient(#121214,#121214) padding-box,linear-gradient(to bottom,#265e41,#1f4d35 50%,#183c29) border-box!important}
+html:not(.lightmode) .foodsheet .card input,html:not(.lightmode) .foodsheet .card textarea{background:linear-gradient(#242426,#242426) padding-box,linear-gradient(to bottom,#265e41,#1f4d35 50%,#183c29) border-box!important}
+.foodsheet #fTxt:focus,.foodsheet #fTxt:focus-visible{box-shadow:none!important}
+/* v337: con il bordo grosso la chat tiene tutto il testo d'esempio: testo 13 px, margini interni minimi */
+.foodsheet #fTxt{padding:2px 12px!important;font-size:13px;line-height:1.2}
+.foodsheet .fcur{left:20px;top:10px;height:15px}
 /* v311: in scuro i campi di scrittura (Diario, chat e nome delle ricette) hanno lo stesso nero-grigio di «Cerca un alimento» (--card #1c1c1e) con testo bianco; in chiaro invariato */
 html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,html:not(.lightmode) .comp textarea:focus-visible{background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(to bottom,#265e41,#1f4d35 50%,#183c29) border-box;color:#fff}
 html:not(.lightmode) .comp textarea::placeholder{color:#fff;opacity:1}
@@ -1173,7 +1184,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 336</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 337</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
