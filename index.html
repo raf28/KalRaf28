@@ -789,6 +789,8 @@ html.lightmode .comp textarea{border:4px solid #436955;box-shadow:0 2px 5px rgba
 html.lightmode .comp textarea:focus,html.lightmode .comp textarea:focus-visible{border-color:#436955;outline:none}
 /* v254: solo modalità chiara, bordo del campo di scrittura con sfumatura verticale delicata (luce in alto, scuro in basso) */
 html.lightmode .comp textarea,html.lightmode .comp textarea:focus,html.lightmode .comp textarea:focus-visible{border-color:transparent;background:linear-gradient(#f4f6f1,#f4f6f1) padding-box,linear-gradient(to bottom,#547f68,#436955 50%,#345243) border-box}
+/* v255: solo modalità chiara, pillole di Alimenti e Storico: rilievo medio con filo in basso sfocato e luce diagonale (bianco in alto a sinistra → grigio-verde chiarissimo in basso a destra), senza ombra esterna */
+html.lightmode #v-alimenti details.food:not([open]),html.lightmode #v-storico details.hday:not([open]){background:linear-gradient(115deg,#fff 0,#f9fbfa 40%,#eef3f0 100%)!important;box-shadow:inset 0 -3px 3px -1px rgba(31,77,53,.14),inset 0 2px 2px rgba(255,255,255,.95)!important}
 </style>
 </head>
 <body>
@@ -912,7 +914,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 254</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 255</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1483,7 +1485,9 @@ document.addEventListener('click',e=>{
     $('#okMealDel').onclick=()=>{deleteMeal(k);save();closeSheet();render();toast(nm+(k==='colazione'||k==='cena'?' eliminata':' eliminato'))};return}
   if(b.id==='noSheet'){closeSheet();return}
   if(b.id==='impRec'){return importRecipes()}
-  if(b.id==='addFood'){if(e.target.closest('.pl'))return addFoodStart();return}/* v226: si apre solo toccando il cerchio + */
+  if(b.id==='addFood'){/* v255: si apre toccando il cerchio + e la parte della scritta fino alla seconda «g» di «Aggiungi» (testo «Agg»); il resto della pillola non fa nulla */
+    let lim=0;try{const tn=[...b.childNodes].find(n=>n.nodeType===3),rg=document.createRange();rg.setStart(tn,0);rg.setEnd(tn,3);lim=rg.getBoundingClientRect().right+4}catch(_){}
+    if(e.target.closest('.pl')||(lim&&e.clientX<=lim))return addFoodStart();return}
   if(b.dataset.editfood){const f=S.foods.find(x=>x.id===b.dataset.editfood);if(f)foodForm(f,false);return}
   if(b.dataset.delfood){const id=b.dataset.delfood;const f=S.foods.find(x=>x.id===id);sheet(`<h3>Eliminare «${esc(f?f.nome:'')}»?</h3><p class="hm">Verranno eliminate anche le sue foto. Non si può annullare.</p><div class="row between"><button class="btn ghost std2" id="noSheet">Annulla</button><button class="btn bad std2" id="okDelF">Elimina</button></div>`);$('#okDelF').onclick=async()=>{if(f)for(const k of Object.values(f.foto||{}))await IDB.del(k);S.foods=S.foods.filter(x=>x.id!==id);save();closeSheet();render();toast('Alimento eliminato')};return}
   if(b.id==='recClear'){S.recChat=[];save();render();return}
@@ -2007,7 +2011,7 @@ try{history.replaceState({v:'diario'},'')}catch(e){}
  document.addEventListener('pointerdown',e=>{last=e.target.closest('button')},{passive:true,capture:true});
  document.addEventListener('click',e=>{if(!e.isTrusted)return;const b=e.target.closest('button');if(!b||b.disabled||b.closest('nav')||b!==last)return;
    const need=160-(Date.now()-t0);if(need<=0)return;e.preventDefault();e.stopImmediatePropagation();const tg=e.target;last=null;
-   b.classList.add('pressed');setTimeout(()=>{/* v246: il tocco può essere sull'icona (SVG), che non ha .click(): si invia l'evento click direttamente */tg.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,view:window}));setTimeout(()=>b.classList.remove('pressed'),20)},need)},true);
+   b.classList.add('pressed');setTimeout(()=>{/* v246: il tocco può essere sull'icona (SVG), che non ha .click(): si invia l'evento click direttamente */tg.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,view:window,clientX:e.clientX,clientY:e.clientY}));setTimeout(()=>b.classList.remove('pressed'),20)},need)},true);
  ['pointerup','pointercancel','pointerleave'].forEach(ev=>document.addEventListener(ev,off,{passive:true}));
  document.addEventListener('scroll',off,{passive:true,capture:true});})();
 $('#main').addEventListener('scroll',()=>{alimStuck();diarioFades();histFades()},{passive:true});window.addEventListener('resize',()=>requestAnimationFrame(alimSticky));
