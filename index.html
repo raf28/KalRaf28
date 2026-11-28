@@ -361,6 +361,12 @@ nav button.on{font-weight:700;color:light-dark(#1f4d35,#fff)}
 /* Alimenti: stile unificato al Diario (v80) */
 #v-alimenti.vh{padding-top:0}
 #v-ricette.vh{padding-top:0}
+/* v279: Alimenti e Ricette occupano tutta l'altezza: la pillola «Aggiungi …» resta sempre in fondo, alla stessa altezza, anche con pochi elementi o nessuno */
+#v-alimenti:not([hidden]),#v-ricette:not([hidden]){display:flex;flex-direction:column;min-height:100%;box-sizing:border-box}
+#v-alimenti>.wrap,#v-ricette>.wrap{flex:1 0 auto;width:100%;box-sizing:border-box}
+#v-alimenti>.applybar,#v-ricette>.applybar{margin-top:auto}
+/* v279: riquadro «Nessun alimento / Nessuna ricetta salvata» staccato dalla testata */
+#foodList>.card:only-child,#recList>.card:only-child{margin-top:16px}
 .ahead{background:var(--brand);color:#fff;padding:calc(env(safe-area-inset-top) + 14px) 16px 16px}
 .ahead .in{max-width:720px;margin:0 auto}
 .ahead .aht{display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -655,7 +661,7 @@ html:not(.lightmode) #v-storico details.hday{border-color:#fff}
 html:not(.lightmode) #v-storico details.hday:not([open]) summary,html:not(.lightmode) #v-storico details.hday:not([open]) summary .kv,html:not(.lightmode) #v-storico details.hday:not([open]) summary .kv small{color:#fff}
 html:not(.lightmode) #v-storico details.hday:not([open]) .dot{box-shadow:0 0 0 2px #fff}
 html:not(.lightmode) #v-storico .hlegp{color:#fff}
-html:not(.lightmode) #v-impost .card,html:not(.lightmode) #v-ricette .card,html:not(.lightmode) #v-storico details.hday[open]{border-color:#fff}
+html:not(.lightmode) #v-impost .card,html:not(.lightmode) #v-storico details.hday[open]{border-color:#fff}
 html:not(.lightmode) .dayline #dayLabel,html:not(.lightmode) .dayline #dayLabel *{color:#fff}
 
 /* v185: modalità scura. Cursori di Obiettivo kcal e Margine bonus: Chrome in modalità scura schiarisce da solo il colore,
@@ -996,7 +1002,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 278</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 279</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1687,7 +1693,8 @@ function fdKill(keep){document.querySelectorAll('details').forEach(d=>{if(d._cw&
 function renderFoods(){fdKill();
   const q=($('#foodQ').value||'').trim().toLowerCase();
   const list=S.foods.filter(f=>!q||(f.nome+' '+(f.note||'')).toLowerCase().includes(q)).sort((a,b)=>a.nome.localeCompare(b.nome,'it',{sensitivity:'base'}));
-  if(!S.foods.length){$('#foodList').innerHTML='<div class="card"><div class="empty">Nessun alimento salvato. Usa «+ Aggiungi alimento»: detta o scrivi i valori, oppure fotografa la tabella nutrizionale. Il Diario userà questi valori quando li nomini.</div></div>';return}
+  {const c=$('#foodCnt');if(c)c.textContent=S.foods.length+(S.foods.length===1?' salvato':' salvati')}/* v279: il conteggio si vede anche a zero, come nelle Ricette */
+  if(!S.foods.length){$('#foodList').innerHTML='<div class="card"><div class="empty">Nessun alimento salvato. Usa «+ Aggiungi Alimento»: detta o scrivi i valori, oppure fotografa la tabella nutrizionale. Il Diario userà questi valori quando li nomini.</div></div>';return}
   if(!list.length){$('#foodList').innerHTML='<div class="empty">Nessun alimento trovato.</div>';return}
   let h='',cur='';
   list.forEach(f=>{const L=letterOf(f.nome);if(L!==cur){cur=L;h+=`<div class="letter">${L}</div>`}
