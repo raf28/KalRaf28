@@ -521,21 +521,13 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
 ## ✅ COSE DA FARE
 
 ### Da implementare
-**Situazione al 28/11/2026 (v306, funzioni concluse), da cui ripartire nella prossima chat:**
-1. **Provare tutto sul telefono**, soprattutto le Ricette con le 20 frasi di prova qui sotto, e correggere quello che l'utente segnala.
-2. Scrivere il paragrafo **Ricette** nella finestra "Come funziona Kcal" (oggi vuoto): chat che riconosce ingredienti, consigli e note, X per togliere ingredienti e note, porzioni in basso, tabelle su richiesta, Condividi, 1 Porzione in Alimento.
-3. **Condividi come immagine** (idea dell'utente, non ancora decisa): immagine della ricetta con la grafica dell'app, da offrire insieme al testo.
-4. Eventuale "Aggiungi una ricetta a un pasto" del Diario (il vecchio codice c'è ancora), se serve.
-5. Da valutare con l'uso: colore verde `#3e6651` della riga dell'ora del pasto in scuro (proposto `#6f9a83` solo per lo scuro, in attesa di risposta); posizione definitiva dell'ora nel Diario; che Gemini capisca bene l'ora detta a voce.
-6. La gestione verticale/orizzontale dell'app (vedi Note in fondo).
-
-1. ✅ **Sezione Ricette** (fatta tra la v278 e la v305; qui sotto la specifica originale, per riferimento). Dalla v278 la grafica è quella degli Alimenti (elenco, ricerca, "Aggiungi Ricetta"); la finestra "Aggiungi Ricetta" per ora è vuota (Annulla e Salva disattivato) e va riempita con quanto segue, seguendo le regole grafiche della sezione 3.16. Alla fine va scritto anche il paragrafo **Ricette** nella finestra "Come funziona Kcal" (oggi vuoto). Come dovrà funzionare:
-   - **Chat per creare le ricette.** Si danno a Gemini gli ingredienti con le dosi e si indica in quante **porzioni** si divide la ricetta (es. un impasto da cui escono 4 piadine = 4 porzioni). A ogni ingrediente aggiunto o modificato si vede sempre, aggiornato:
-     - il **totale della ricetta**: elenco di tutti gli ingredienti con le quantità, kcal totali e macro totali;
-     - sotto, la **singola porzione**: ingredienti con le quantità per porzione, kcal e macro di una porzione (totale diviso per il numero di porzioni).
-   - **Domande di cucina nella chat.** La chat risponde anche a domande pratiche di cucina (es. "quanto olio mi consigli di mettere?", tempi, cotture, sostituzioni), se conosce la risposta. Queste risposte **non toccano** la lista degli ingredienti né il conteggio di kcal e macro: cambia qualcosa solo quando l'utente aggiunge o modifica davvero un ingrediente.
-   - **Ricettario.** Quando la ricetta è nella versione finale, dalla chat la si salva nel Ricettario, cioè l'elenco di tutte le ricette salvate.
-   - **Salva come alimento** (✅ fatto nella v305: tasto «+A – 1 Porzione in Alimento» nella ricetta aperta). Sia nella chat sia nel Ricettario, il blocco della **singola porzione** (ingredienti, kcal e macro per porzione) si può salvare come **singolo alimento** nella sezione Alimenti (es. "1 piadina").
+**Situazione al 28/11/2026 (v309): tutte le funzioni sono concluse. Restano solo queste cose (pulizia del 28/11):**
+1. **Provare tutto sul telefono** (collaudo), soprattutto le Ricette con le 20 frasi di prova qui sotto, e correggere quello che l'utente segnala.
+2. **Condividi come immagine** (idea dell'utente, non ancora decisa): immagine della ricetta con la grafica dell'app, da offrire insieme al testo.
+3. Eventuale **"Aggiungi una ricetta a un pasto"** del Diario (il vecchio codice c'è ancora), solo se serve.
+4. Da valutare con l'uso: colore verde `#3e6651` della riga dell'ora del pasto in scuro (proposto `#6f9a83` solo per lo scuro, in attesa di risposta); posizione definitiva dell'ora nel Diario; che Gemini capisca bene l'ora detta a voce.
+5. **Rotazione dell'app / blocco in verticale** (vedi Note in fondo), da fare alla prossima rigenerazione dell'APK.
+6. **Preimpostati:** da decidere se la sezione resta nell'app (oggi tolta dalla barra, solo segnaposto).
 
 ### Frasi di prova per la chat delle Ricette (v285)
 Da dire o scrivere in una ricetta nuova, in quest'ordine; tra parentesi cosa deve succedere.
@@ -564,7 +556,6 @@ Da dire o scrivere in una ricetta nuova, in quest'ordine; tra parentesi cosa dev
 1. Eventuale APK "autonoma" con tutto il codice dentro (Capacitor o simili): servirebbe solo per il Play Store o per non dipendere da GitHub. Richiede di rifare il login Google per Drive e la dettatura.
 2. Possibilità di agganciare altri "cervelli" AI usando gli abbonamenti Pro (ChatGPT, Gemini Pro, Claude Pro), quando renderanno disponibile questa funzione nelle app di terze parti.
 3. Possibilità di agganciare un'AI locale come "cervello" (per esempio Gemini Nano sul telefono), quando sarà possibile farlo.
-4. ✅ *Fatta nella v165.* **Legenda del pallino colorato nello Storico** (idea, 26/11/2026): verde = entro l'obiettivo kcal, giallo/arancione = nel margine bonus, rosso = oltre il bonus. Da mostrare prima o poi nell'app (per esempio una riga piccola sotto il titolo dello Storico).
 
 ### Cose da vedere per far utilizzare l'applicazione ad altre persone
 *Ipotesi del 26/11/2026: passare la stessa APK a un'amica, che usa una sua chiave API Gemini.*
@@ -584,5 +575,5 @@ Da dire o scrivere in una ricetta nuova, in quest'ordine; tra parentesi cosa dev
 **In sintesi:** l'uso da parte di un'altra persona è fattibile. Prima vanno sistemati il PIN (condividerlo o cambiare il sistema) e, se serve il backup su Drive, l'aggiunta del suo account agli utenti di prova su Google Cloud.
 
 ### Note
-- 📌 **Ancora da fare** (insieme alle Ricette). **Blocco in verticale** (da sistemare alla prossima rigenerazione dell'APK, non urgente): l'app non ruota in orizzontale e non si può usare a schermo diviso. Soluzione: togliere `orientation` dal manifest e rigenerare l'APK (stesso keystore, **version code 4**). Rimandato dall'utente il 26/11.
+- 📌 **Ancora da fare.** **Blocco in verticale** (da sistemare alla prossima rigenerazione dell'APK, non urgente): l'app non ruota in orizzontale e non si può usare a schermo diviso. Soluzione: togliere `orientation` dal manifest e rigenerare l'APK (stesso keystore, **version code 4**). Rimandato dall'utente il 26/11.
   - **Idea dell'utente:** interruttore **"Blocca in verticale" sì/no** nelle Impostazioni, con `screen.orientation.lock()` / `unlock()`.
