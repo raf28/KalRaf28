@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 283 (28/11/2026).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 284 (28/11/2026).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **Kcal** (nome del repository e del progetto: **KalRaf28**; titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **283**.
+> Sto sviluppando **Kcal** (nome del repository e del progetto: **KalRaf28**; titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **284**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -53,7 +53,7 @@ KalRaf28 è un diario alimentare personale. Al posto di contare le calorie nelle
 - **Mai spese extra per l'API** oltre all'abbonamento.
 - In futuro forse un'APK.
 
-## 3. Come funziona oggi (v283): sezioni
+## 3. Come funziona oggi (v284): sezioni
 
 La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impostazioni** (Preimpostati tolto nella v53). La voce attiva è evidenziata con una pillola verde `#2f8f5c`.
 
@@ -116,7 +116,8 @@ La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impos
   - Sotto il nome ci sono due pillole della stessa misura (172 × 38 px): **Porzioni – N +** a sinistra e **Note** a destra (con un pallino bianco se le note contengono qualcosa). Le note non sono più nella parte che scorre.
   - **Note** apre la modalità note: il riquadro delle note copre porzioni, tabelle e chat; il nome resta visibile ma non modificabile; il campo di scrittura dice "Detta o scrivi per le note…" (bordo tratteggiato) e quello che si detta va all'IA solo per le note (`SYS_RNOTE`: corregge la dettatura, ordina il testo, toglie o cambia solo su richiesta, non tocca ingredienti, porzioni o nome); le note si possono anche scrivere a mano. Annulla / Salva diventano un solo tasto **Chiudi note**; il gesto Indietro non chiude le note (bisogna usare Chiudi note).
   - **Chiudi note** tiene le note nella ricetta e, se la ricetta è già salvata, le salva subito ("Note salvate"); se la ricetta è nuova e si esce senza salvarla, si perde tutto, note comprese.
-  - **Uscita protetta in Aggiungi/Modifica Ricetta e Aggiungi/Modifica Alimento:** Annulla e il gesto Indietro, se c'è qualcosa di inserito o modificato, chiedono **"Vuoi uscire senza salvare?"** con **Esci senza salvare** (rosso, a sinistra) e **Salva** (verde, a destra; disattivato se mancano i dati obbligatori). Se non c'è niente da perdere, chiudono subito. Funzioni `exitConfirm()`, `sheetGuard`, `armSheetBack()`.
+  - **Uscita protetta in Aggiungi/Modifica Ricetta e Aggiungi/Modifica Alimento:** Annulla e il gesto Indietro, se c'è qualcosa di inserito o modificato, chiedono **"Vuoi uscire senza salvare?"** con **Salva** (verde, a sinistra; disattivato se non c'è niente da salvare) ed **Esci senza salvare** (rosso, a destra) (v284). Se non c'è niente da perdere, chiudono subito. Funzioni `exitConfirm()`, `sheetGuard`, `armSheetBack()`.
+- **Tabelle in alto e in chat (v284):** nella parte che scorre, una volta sola: tabella del totale della ricetta, poi il riquadro **Note** (solo lettura, se ci sono note), poi **1 porzione**. In chat, se chiedi di vedere qualcosa, l'IA indica cosa (`mostra`: "totale", "porzione", "note") e l'app mette nella risposta **solo le tabelle richieste** (una, più d'una o tutte), sempre aggiornate. Se chiedi lista, totale o porzione e non ci sono ingredienti, risponde l'app stessa: "Nella ricetta non ci sono ancora ingredienti: dimmeli con le quantità." (e per le note vuote: "Non ci sono ancora note…").
 - Una ricetta salvata, aperta nell'elenco, mostra le due tabelle (totale e 1 porzione) e le note, con i tasti Annulla / Modifica / Elimina (Elimina rosso solo nella conferma).
 - Tolti la barra "Ricettario / Crea Ricetta" e la vecchia chat ricette: il codice vecchio (`renderRec`, `SYS_REC`, `SYS_IMP`, importa ricette, aggiungi a un pasto) resta nel file ma non è più visibile, pronto da riusare.
 
@@ -459,6 +460,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **v276: data del pasto e ora nella barra.** Con l'ora si salva anche la data (`data`), e l'ordine dei pasti si calcola su data e ora (niente più dubbi dopo mezzanotte; le giornate vecchie senza data usano la regola delle 4:00). Un'ora detta all'IA prende la data di oggi, o di ieri se sarebbe più di un'ora nel futuro. La data compare sotto l'ora nella tabella "Lista alimenti" ("28/11/26", piccola e grigia) e tra parentesi accanto all'ora nello Storico. Nella barra del pasto (con "Elimina …") l'ora è piccola sotto il nome ("ore 20:45") e le kcal sono accanto, centrate tra le due righe, con 16 px di spazio (opzione C dell'anteprima, spazio raddoppiato).
   - **v277:** ordine dei pasti più sicuro per quelli salvati tra la v273 e la v275 (con l'ora ma senza data): il loro giorno è quello di apertura della giornata, o il successivo se l'ora viene prima dell'apertura, invece della regola fissa delle 4:00. Provato con l'orologio simulato alle 18:00: colazione 08:00, spuntino 10:30, spuntino 16:00 nell'ordine giusto.
   - **v278: sezione Ricette con la grafica degli Alimenti.** Testata con titolo e conteggio ("N salvate"), ricerca "Cerca una ricetta", elenco alfabetico con le lettere, pillole, frecce e pillola "Aggiungi Ricetta" con il +, identici agli Alimenti in chiaro e in scuro (62 regole CSS duplicate per `#v-ricette`; `alimSticky()` / `alimStuck()` valgono per entrambe le sezioni). Il + apre la finestra "Aggiungi Ricetta" con Annulla e Salva disattivato. Tolte la barra Ricettario / Crea Ricetta e la vecchia chat. Nella finestra degli Alimenti il titolo ora è "Aggiungi Alimento" (e "Modifica Alimento").
+  - **v284:** ricette: in chat le tabelle richieste (totale, porzione, note, una o tutte) compaiono dentro la risposta, sempre aggiornate; se la ricetta è vuota la risposta "non ci sono ancora ingredienti" la dà l'app, non dipende più dall'IA; in alto l'ordine è totale → note → porzione; nella conferma di uscita Salva (verde) a sinistra ed Esci senza salvare (rosso) a destra, anche negli Alimenti.
   - **v283:** ricette: Salva (anche nella conferma di uscita) si attiva appena c'è qualcosa da salvare, anche solo il nome o le porzioni, detti all'IA o scritti a mano (si può salvare una ricetta ancora senza ingredienti). Nuova regola in `SYS_RICETTA`: se si chiede la lista o il totale l'IA elenca brevemente gli ingredienti, e se la lista è vuota lo dice ("Nella ricetta non ci sono ancora ingredienti: dimmeli con le quantità.").
   - **v282: corretto Salva delle ricette.** Salva (anche nella conferma di uscita) restava disattivato perché serviva il nome, e l'IA lo compilava solo se lo si diceva. Ora basta almeno un ingrediente: l'IA propone da sola un nome se è vuoto e, se resta vuoto, l'app usa "Ricetta del GG/MM". Riverificata anche la conferma di uscita in Aggiungi Alimento scrivendo davvero nel campo (Annulla e gesto Indietro, prima e dopo la scheda automatica).
   - **v281: note della ricetta e uscita protetta.** Pillole Porzioni e Note uguali e più piccole sotto il nome; modalità note con riquadro che copre la parte centrale, nome non modificabile, IA solo per le note (`SYS_RNOTE`) e tasto Chiudi note (che salva subito le note se la ricetta esiste già). In Aggiungi/Modifica Ricetta e Alimento, Annulla e il gesto Indietro chiedono "Vuoi uscire senza salvare?" (Esci senza salvare rosso / Salva verde) quando c'è qualcosa da perdere. Verificato con Gemini simulato e con il gesto Indietro ripetuto più volte.
@@ -467,7 +469,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
-**Stato:** online, **collaudo in corso dal 25/11/2026**. Tra il 26/11 sera e la notte del 28/11 (v91–v283) è stata rifinita tutta la grafica di Diario, Alimenti, Storico e Impostazioni, in chiaro e in scuro, con le regole della sezione 3.16, e scritta la finestra "Come funziona Kcal": **la grafica è considerata definitiva dall'utente**. Resta da fare solo la sezione Ricette (e, quando si rigenera l'APK, lo sblocco della rotazione: vedi Note).
+**Stato:** online, **collaudo in corso dal 25/11/2026**. Tra il 26/11 sera e la notte del 28/11 (v91–v284) è stata rifinita tutta la grafica di Diario, Alimenti, Storico e Impostazioni, in chiaro e in scuro, con le regole della sezione 3.16, e scritta la finestra "Come funziona Kcal": **la grafica è considerata definitiva dall'utente**. Resta da fare solo la sezione Ricette (e, quando si rigenera l'APK, lo sblocco della rotazione: vedi Note).
 
 ---
 
@@ -480,7 +482,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
 ## ✅ COSE DA FARE
 
 ### Da implementare
-**Situazione al 28/11/2026 (v283):**
+**Situazione al 28/11/2026 (v284):**
 0. **Subito, nella prossima chat:** un paio di piccoli bug e 2-3 ritocchi grafici che l'utente spiegherà a voce (non sono descritti qui). (Fatto nella v261: il campo di scrittura in scuro ora è uguale al chiaro.)
 1. Ricette (v280): provare l'editor sul telefono e fare le rifiniture (sfumature della parte che scorre, paragrafo Ricette nella finestra "Come funziona Kcal", "Aggiungi a un pasto" e "Salva come alimento").
 1. Da valutare con l'uso: posizione definitiva dell'ora del pasto nel Diario (per ora è la prima riga della tabella "Lista alimenti") e verifica che Gemini capisca bene l'ora detta a voce.
