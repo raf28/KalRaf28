@@ -1120,6 +1120,11 @@ html.lightmode .foodsheet .fcur{left:23px;top:10px}
 /* v367: Aggiungi/Modifica Ricetta e chat delle ricette: tabelle con le stesse misure della ricetta salvata aperta (16 px; etichette fonte 15 px) */
 .recsheet .it2 .m,.recsheet .sr.sub span,.recsheet .sr.sub b,.recsheet .rnit .n{font-size:16px!important}
 .recsheet .it2 .src{font-size:15px!important}
+/* v375: in scuro il bordino sottilissimo (1 px) è bianco ovunque */
+html:not(.lightmode) #v-impost input[type=number],html:not(.lightmode) #v-impost input[type=password],html:not(.lightmode) #v-impost select{border-color:#fff!important}
+html:not(.lightmode) .card:has(>.empty),html:not(.lightmode) #mealItems:has(>.empty),html:not(.lightmode) #histList>.empty,html:not(.lightmode) #foodList>.empty,html:not(.lightmode) #recList>.empty{border-color:#fff!important}
+html:not(.lightmode) .msg.a:not(.e):not(.rsumw):not(.rsum){border-color:#fff!important}
+html:not(.lightmode) .recsheet .rname,html:not(.lightmode) .recsheet .rname:focus,html:not(.lightmode) .recsheet .rname:focus-visible{border-color:#fff!important}
 /* v311: in scuro i campi di scrittura (Diario, chat e nome delle ricette) hanno lo stesso nero-grigio di «Cerca un alimento» (--card #1c1c1e) con testo bianco; in chiaro invariato */
 html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,html:not(.lightmode) .comp textarea:focus-visible{background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(to bottom,#265e41,#1f4d35 50%,#183c29) border-box;color:#fff}
 html:not(.lightmode) .comp textarea::placeholder{color:#fff;opacity:1}
@@ -1266,7 +1271,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 374</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 375</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
