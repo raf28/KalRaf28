@@ -381,7 +381,7 @@ nav button.on{font-weight:700;color:light-dark(#1f4d35,#fff)}
 #sheet.foodsheet{height:100dvh;max-height:100dvh}
 .foodsheet .fjmp{position:fixed;right:12px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:21}
 .foodsheet #fSt[hidden]{display:none}
-.foodsheet #fTxt{height:204px}
+.foodsheet #fTxt{height:180px}
 .foodsheet h3{margin-bottom:14px}
 .foodsheet .row.modes{margin:0 0 24px}
 .foodsheet .ph3{margin-bottom:24px}
@@ -391,6 +391,7 @@ nav button.on{font-weight:700;color:light-dark(#1f4d35,#fff)}
 /* v288: Salva allineato alla fine della pillola del campo di scrittura: sotto microfono e invio resta spazio vuoto (niente tocchi sbagliati); un po' più di distanza dal campo */
 .recsheet #rBtns{margin-top:16px;padding-right:var(--rbtnR,104px)}
 .rnotebox .lt{margin-bottom:6px}.rnotetx{font-size:14px;line-height:1.5;color:var(--mute)}
+.it.rnit{grid-template-columns:minmax(0,1fr) 36px}.it.rnit.ro{grid-template-columns:minmax(0,1fr)}.it.rnit .n{font-size:15px;line-height:1.4;font-weight:500;color:var(--ink)}
 .mbox.rnotebox,html:not(.lightmode) .mbox.rnotebox{border-color:light-dark(#a8740a,#e2b43c)}
 .mbox.rpor1,html:not(.lightmode) .mbox.rpor1{border-color:#2f8f5c}
 .rpor1 .lt .rp1{text-transform:uppercase}
@@ -1062,7 +1063,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 295</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 296</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1841,7 +1842,7 @@ function renderRecipes(){fdKill();
   let h='',cur='';
   list.forEach(r=>{const L=letterOf(r.nome||'?');if(L!==cur){cur=L;h+=`<div class="letter">${L}</div>`}const ing=r.items||r.ingredienti||[],n=r.items?(r.porzioni||1):1,t=sum(ing);t.kcal=t.kcal/n;
     h+=`<details class="card food" data-rid="${esc(r.id)}"><summary><span class="nm">${esc(r.nome)}</span><span class="kv"><b>${f0(t.kcal)} kcal</b><small>per porzione</small></span></summary>
-    ${r.items?`<div class="mbox rview">${mealBoxHTML(r.items,'ricetta',false,null,null,null,{title:recTitle(r),sumLabel:'Totale kcal RICETTA'})}</div>${recNoteBox(r).replace('card mbox rnotebox','mbox rview rnotebox')}<div class="mbox rview rpor1">${porzBox(r.items,r.porzioni||1,r)}</div>`
+    ${r.items?`<div class="mbox rview">${mealBoxHTML(r.items,'ricetta',false,null,null,null,{title:recTitle(r),sumLabel:'Totale kcal RICETTA'})}</div>${recNoteBox(r,false).replace('card mbox rnotebox','mbox rview rnotebox')}<div class="mbox rview rpor1">${porzBox(r.items,r.porzioni||1,r)}</div>`
       :(ing.length?`<div class="hm" style="margin-top:8px">${ing.map(i=>`• ${esc(i.nome)} ${esc(i.quantita||'')} — ${f0(i.kcal)} kcal`).join('<br>')}</div>`:'')}
     <div class="row between"><button class="btn sm ghost std2" data-collapse>Annulla</button><span class="row" style="margin:0"><button class="btn sm ghost std2" data-editrecipe="${esc(r.id)}">Modifica</button><button class="btn sm ghost std2" data-delrecipe="${esc(r.id)}">Elimina</button></span></div></details>`});
   $('#recList').innerHTML=h;
@@ -1862,17 +1863,19 @@ const titleCase=t=>String(t||'').toLowerCase().replace(/[\p{L}\p{N}]+/gu,(w,i)=>
 const recNm=d=>{const n=Math.max(1,+d.porzioni||1),nm=(d.nome||'').trim();return`<span class="rtn">${nm?esc(titleCase(nm))+' ':''}(${n} ${n===1?'Porzione':'Porzioni'})</span>`};
 const recTitle=d=>`Ricetta<br>${recNm(d)}<br>Totale kcal e macro`;
 /* v295: tre cornici distinte. Ricetta: com'era; Note: gialla (quella di «valore generico»), titolo «Note» + nome; 1 porzione: verde di «Nuova Giornata Alimentare», titolo «1 porzione» in verde, «Totale kcal e macro», nome in verde */
-const recNoteBox=d=>(d.note||'').trim()?`<div class="card mbox rnotebox"><div class="lt">Note<br>${recNm(d)}</div><div class="rnotetx">${esc(d.note).replace(/\n/g,'<br>')}</div></div>`:'';
+/* v296: le note come elenco, una per riga, nello stile della tabella della ricetta; nell'editor e in chat ogni nota ha la X verde (con conferma) */
+const recNoteLines=d=>String(d.note||'').split('\n').map(x=>x.trim()).filter(Boolean);
+const recNoteBox=(d,edit)=>{const L=recNoteLines(d);return L.length?`<div class="card mbox rnotebox"><div class="lt">Note<br>${recNm(d)}</div>${L.map((t,i)=>`<div class="it rnit${edit?'':' ro'}"><div class="n">${esc(t)}</div>${edit?`<button class="x" data-rndel="${i}" aria-label="Elimina nota">×</button>`:''}</div>`).join('')}</div>`:''};
 /* v284: tabelle in chat su richiesta (sempre aggiornate): «totale», «porzione», «note», una o più */
 function recShowHTML(m,d){if(!m.show||!m.show.length||m.err)return'';let h='';
-  if(m.show.includes('totale')&&d.items.length)h+=`<div class="card mbox">${mealBoxHTML(d.items,'ricetta',false,null,null,null,{title:recTitle(d),sumLabel:'Totale kcal RICETTA'})}</div>`;
-  if(m.show.includes('note')&&(d.note||'').trim())h+=recNoteBox(d);
+  if(m.show.includes('totale')&&d.items.length)h+=`<div class="card mbox">${mealBoxHTML(d.items,'ricetta',true,null,null,null,{title:recTitle(d),sumLabel:'Totale kcal RICETTA',delAttr:'data-rdel'})}</div>`;
+  if(m.show.includes('note')&&(d.note||'').trim())h+=recNoteBox(d,true);
   if(m.show.includes('porzione')&&d.items.length)h+=`<div class="card mbox rpor1">${porzBox(d.items,d.porzioni,d)}</div>`;
   return h}
 function recBodyHTML(){const d=RD;
   /* v284: in alto, una volta sola: totale della ricetta, poi le note (se ci sono), poi la singola porzione */
   return(d.items.length?`<div class="card mbox">${mealBoxHTML(d.items,'ricetta',true,null,null,null,{title:recTitle(d),sumLabel:'Totale kcal RICETTA',delAttr:'data-rdel'})}</div>
-    ${recNoteBox(d)}<div class="card mbox rpor1">${porzBox(d.items,d.porzioni,d)}</div>`
+    ${recNoteBox(d,true)}<div class="card mbox rpor1">${porzBox(d.items,d.porzioni,d)}</div>`
     :`<div class="card"><div class="empty">Scrivi o detta gli <b>ingredienti con le quantità</b> e in quante <b>porzioni</b> si divide la ricetta: l'Intelligenza Artificiale calcola kcal e Macro del totale e di una porzione.<br><br>Puoi anche <b>chiedere consigli</b> all'Intelligenza Artificiale su ingredienti, quantità, abbinamenti e sostituzioni: le domande non cambiano la ricetta.<br><br>Cotture, tempi e accortezze vengono <b>riconosciuti e messi nelle note</b> da soli; puoi anche dire «<b>Aggiungi alle note…</b>».<br>Con il tasto <b>Note</b> in alto le vedi e le completi.</div></div>${recNoteBox(d)}`)
    +`<div class="chat" id="rChat">${d.chat.map((m,i)=>m.role==='u'?`<div class="msg u">${esc(m.text)}</div>`:`<div class="msg a${m.err?' e':''}${m.show&&m.show.length?' rsumw':''}">${md(m.text)}${recShowHTML(m,d)}${m.prop&&!m.propDone?`<div class="row" style="margin:8px 0 2px"><button class="btn bdef new" data-rprop="${i}">Aggiungi alla<br>ricetta</button></div>`:m.prop&&m.propDone?'<p class="hm" style="margin:6px 0 0;font-size:13px">✓ Aggiunto alla ricetta</p>':''}${!m.err&&('speechSynthesis' in window)?ttsHTML(i):''}</div>`).join('')}${d.busy?'<div class="typing">Sto calcolando<i></i><i></i><i></i></div>':''}</div>`}
 function recEditor(r){RD=r?JSON.parse(JSON.stringify(r)):{id:null,nome:'',porzioni:1,items:[],note:'',chat:[]};RD.tmp='n'+Date.now();RD.porzioni=Math.min(99,Math.max(1,Math.round(+RD.porzioni||1)));
@@ -1898,9 +1901,11 @@ const recDirty=()=>RD&&JSON.stringify([RD.nome,RD.porzioni,RD.items,RD.note,RD.c
 const recOk=()=>!!(RD&&(RD.items.length||RD.nome.trim()||(RD.note||'').trim()||RD.porzioni>1));
 function recCanSave(){const b=$('#rrSave');if(b)b.disabled=!recOk()}
 function recWire(bodyOnly){
-  document.querySelectorAll('#rBody [data-rprop]').forEach(x=>x.onclick=e=>{e.stopPropagation();const m=RD.chat[+x.dataset.rprop];if(!m||!m.prop)return;RD.items=m.prop;m.propDone=true;toast('Aggiunto alla ricetta');recRefresh()});
+  document.querySelectorAll('#rBody [data-rprop]').forEach(x=>x.onclick=e=>{e.stopPropagation();const m=RD.chat[+x.dataset.rprop];if(!m||!m.prop)return;RD.items=m.prop;m.propDone=true;if(RD.items.length){m.show=m.show||[];if(!m.show.includes('totale'))m.show.unshift('totale')}toast('Aggiunto alla ricetta');recRefresh()});
   document.querySelectorAll('#rBody [data-rdel]').forEach(x=>x.onclick=e=>{e.stopPropagation();const it=RD.items[+x.dataset.rdel];if(!it)return;
     miniConfirm('Eliminare questo ingrediente?',`${it.nome} ${it.quantita||''} — ${f0(it.kcal)} kcal\nverrà tolto dalla ricetta.`,()=>{const j=RD.items.indexOf(it);if(j>=0){RD.items.splice(j,1);RD.chat.push({role:'u',text:`(Ho eliminato a mano: ${it.nome})`})}recRefresh()})});
+  document.querySelectorAll('#rBody [data-rndel]').forEach(x=>x.onclick=e=>{e.stopPropagation();const L=recNoteLines(RD),t=L[+x.dataset.rndel];if(t==null)return;
+    miniConfirm('Eliminare questa nota?',`${t}\nverrà tolta dalle note.`,()=>{const M=recNoteLines(RD),j=M.indexOf(t);if(j>=0){M.splice(j,1);RD.note=M.join('\n')}const dot=$('#rNoteBtn .rdot');if(dot)dot.hidden=!RD.note;recRefresh();recCanSave()})});
   if(bodyOnly)return;
   const b=$('#rBody');b.onscroll=recJmp;$('#rUp').onclick=()=>b.scrollTo({top:0,behavior:'smooth'});$('#rDn').onclick=()=>b.scrollTo({top:b.scrollHeight,behavior:'smooth'});
   const ta=$('#rMsg');ta.oninput=()=>{ta.style.height='auto';const cs=getComputedStyle(ta),lh=parseFloat(cs.lineHeight)||22,max=lh*3+parseFloat(cs.paddingTop)+parseFloat(cs.paddingBottom)+parseFloat(cs.borderTopWidth)+parseFloat(cs.borderBottomWidth);ta.style.height=Math.min(ta.scrollHeight+parseFloat(cs.borderTopWidth)+parseFloat(cs.borderBottomWidth),max)+'px'};
@@ -1949,7 +1954,7 @@ async function recSend(){const ta=$('#rMsg'),text=(ta.value||'').trim();if(!text
   const hist=histOf(d.chat.slice(0,-1));
   const cur={role:'user',parts:[{text:`Nome attuale: ${d.nome||'(vuoto)'}. Porzioni attuali: ${d.porzioni}.\nNote attuali: ${d.note||'(nessuna)'}\nLista attuale degli ingredienti dell'intera ricetta (JSON): ${JSON.stringify(d.items)}${foodsCtx()}\n\nMessaggio dell'utente: ${text}`}]};
   try{const out=await geminiRicetta(SYS_RICETTA,toContents(hist,cur),SCHEMA_RICETTA);
-    const intento=out.intento||(out.domanda?'parere':'modifica');let prop=null;
+    const intento=out.intento||(out.domanda?'parere':'modifica');let prop=null;const before=JSON.stringify(d.items);
     /* v285: l'app applica la lista SOLO per un comando chiaro; con parere o dubbio la modifica diventa una proposta con il tasto «Aggiungi alla ricetta» */
     if(intento==='modifica'&&!out.dubbio&&!out.domanda)d.items=(Array.isArray(out.items)?out.items:[]).map(clean).map(linkFood);
     else{const pl=intento==='modifica'&&out.dubbio?out.items:out.proposta;if(Array.isArray(pl)&&pl.length){const pc=pl.map(clean).map(linkFood);if(JSON.stringify(pc)!==JSON.stringify(d.items))prop=pc}}
@@ -1957,6 +1962,8 @@ async function recSend(){const ta=$('#rMsg'),text=(ta.value||'').trim();if(!text
     if(typeof out.nome==='string'&&out.nome.trim())d.nome=out.nome.trim();
     if(out.porzioni!=null&&+out.porzioni>=1)d.porzioni=Math.min(99,Math.round(+out.porzioni));
     {const sh=Array.isArray(out.mostra)?out.mostra.filter(x=>['totale','porzione','note'].includes(x)):[];let txt=out.reply||'Fatto.';
+      /* v296: se la lista degli ingredienti è cambiata, nella risposta compare sempre la tabella del totale della ricetta */
+      if(JSON.stringify(d.items)!==before&&d.items.length&&!sh.includes('totale'))sh.unshift('totale');
       /* v284: se chiede tabelle che non possono esserci, risponde l'app (non dipende dall'IA) */
       const vuoti=[];if((sh.includes('totale')||sh.includes('porzione'))&&!d.items.length)vuoti.push('Nella ricetta non ci sono ancora ingredienti: dimmeli con le quantità.');if(sh.includes('note')&&!(d.note||'').trim())vuoti.push('Non ci sono ancora note: toccando «Note» puoi scriverle o dettarle.');
       if(vuoti.length&&!sh.some(x=>x==='totale'||x==='porzione'?d.items.length:(d.note||'').trim()))txt=vuoti.join('\n');else if(vuoti.length)txt+=(txt?'\n':'')+vuoti.join('\n');
