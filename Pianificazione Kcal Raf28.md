@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 263 (28/11/2026).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 264 (28/11/2026).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **Kcal** (nome del repository e del progetto: **KalRaf28**; titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **263**.
+> Sto sviluppando **Kcal** (nome del repository e del progetto: **KalRaf28**; titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **264**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -53,7 +53,7 @@ KalRaf28 è un diario alimentare personale. Al posto di contare le calorie nelle
 - **Mai spese extra per l'API** oltre all'abbonamento.
 - In futuro forse un'APK.
 
-## 3. Come funziona oggi (v263): sezioni
+## 3. Come funziona oggi (v264): sezioni
 
 La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impostazioni** (Preimpostati tolto nella v53). La voce attiva è evidenziata con una pillola verde `#2f8f5c`.
 
@@ -143,7 +143,7 @@ La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impos
 
 ### 3.10 Altro
 - **Swipe a sinistra/destra** (v168–v171) per passare da una sezione all'altra, a carosello (Diario → Alimenti → Ricette → Storico → Impostazioni → Diario); la sezione cambia appena il dito ha fatto 60 px, con un'animazione di 180 ms. Non vale vicino ai bordi dello schermo, sulle barre che scorrono di lato, sui cursori e con una finestra aperta. Tornando al Diario si riparte sempre dall'alto.
-- **Finestra "Come funziona Kcal"** (cerchio ⓘ in Diario e Impostazioni, funzione `showInfo()`, v198–v216): spiegazioni scritte con l'utente, in quest'ordine: introduzione, **Gesti utili e funzioni** (trascina per aggiornare, pressione lunga sulla barra, swipe; nella chat del Diario: chiedere il totale, Ascolta, Pausa, pressione lunga su Ascolta, AUTO, con i pulsanti veri disegnati), Diario, Da dove vengono i valori (etichette colorate vere), Alimenti, **Ricette (vuota, da scrivere quando la sezione sarà fatta)**, Storico (legenda dei pallini, modifica delle giornate, frecce ‹ ›), Impostazioni (elenco). Testo grande (16,5 px), a capo dopo ogni punto e nei punti naturali delle frasi, frasi chiave in grassetto verde, simboli ⊕ ‹ › nel cerchio.
+- **Finestra "Come funziona Kcal"** (cerchio ⓘ in Diario e Impostazioni, funzione `showInfo()`, v198–v216): spiegazioni scritte con l'utente, in quest'ordine: introduzione, **Gesti utili e funzioni** (trascina per aggiornare, pressione lunga sulla barra, swipe; nella chat del Diario: chiedere il totale, Ascolta, Pausa, pressione lunga su Ascolta, AUTO, con i pulsanti veri disegnati; dalla v264 anche le ultime 3 pause ricordate e il microfono che mette in pausa la lettura), Diario, Da dove vengono i valori (etichette colorate vere), Alimenti, **Ricette (vuota, da scrivere quando la sezione sarà fatta)**, Storico (legenda dei pallini, modifica delle giornate, frecce ‹ ›), Impostazioni (elenco). Testo grande (16,5 px), a capo dopo ogni punto e nei punti naturali delle frasi, frasi chiave in grassetto verde, simboli ⊕ ‹ › nel cerchio.
 - "Trascina in basso per aggiornare" ricarica la pagina (solo quando si è in cima). In più (v150–v151), **tenendo premuto per 1 secondo un qualsiasi tasto della barra in basso** (Diario, Alimenti, Ricette, Storico o Impostazioni, selezionato o no) il telefono vibra e l'app si aggiorna da qualunque punto, anche a metà di una chat; il tocco normale resta invariato. Come ogni aggiornamento, riparte dal Diario sulla giornata in corso senza pasti selezionati.
 - Le frecce rotonde ↑ ↓ portano in cima o in fondo.
 - Il tasto/gesto Indietro di Android chiude prima le finestre (pop-up come "Aggiungi un pasto", conferme, foto a tutto schermo) e le schede aperte (Alimenti, Storico), poi torna alla sezione precedente. Dalla v149 finestre, foto e schede usano **CloseWatcher** (Chrome 120+): si chiudono senza passare dalla cronologia, quindi niente schermata che scorre con lo swipe da sinistra; se CloseWatcher non c'è si usa la cronologia come prima.
@@ -427,10 +427,11 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **v261:** modalità scura, campo di scrittura del Diario identico a quello chiaro: bordo 4 px con la sfumatura verticale (`#547f68` → `#436955` → `#345243`), ombra come i tasti, alto 44 px e allineato a filo con i tasti accanto (prima 46 px con bordo 2 px `#1f4d35`). Sfondo `#f4f6f1` e testo scuro come prima.
   - **v262:** modalità scura, il bordo del campo di scrittura del Diario usa il verde del tasto microfono (`#1f4d35`) con la stessa sfumatura del chiaro, calcolata con le stesse proporzioni (in alto `#265e41`, a metà `#1f4d35`, in basso `#183c29`). Spessore, ombra e misure invariati.
   - **v263:** modalità scura, il bordo (4 px) delle pillole di Alimenti e Storico, chiuse e aperte, e il contorno del pallino dello Storico passano dal bianco pieno `#fff` al bianco del tasto + `#e6ece8` (variante B dell'anteprima): meno luminoso sul nero, senza stonare con il +. Scritte invariate (bianche).
+  - **v264:** finestra "Come funziona Kcal", in "Nella chat del Diario" dopo AUTO e prima del paragrafo Diario, due voci nuove: **Le pause si ricordano** (ultime 3 risposte messe in pausa, anche dopo la chiusura dell'app; alla quarta si dimentica la più vecchia) e **Se tocchi il microfono mentre l'Intelligenza Artificiale sta parlando** (la lettura si mette in pausa da sola; dopo l'invio, con AUTO acceso, si legge la nuova risposta; quella interrotta riparte con Ascolta; con il microfono acceso AUTO aspetta).
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
-**Stato:** online, **collaudo in corso dal 25/11/2026**. Tra il 26/11 sera e la notte del 28/11 (v91–v263) è stata rifinita tutta la grafica di Diario, Alimenti, Storico e Impostazioni, in chiaro e in scuro, con le regole della sezione 3.16, e scritta la finestra "Come funziona Kcal": **la grafica è considerata definitiva dall'utente**. Resta da fare solo la sezione Ricette (e, quando si rigenera l'APK, lo sblocco della rotazione: vedi Note).
+**Stato:** online, **collaudo in corso dal 25/11/2026**. Tra il 26/11 sera e la notte del 28/11 (v91–v264) è stata rifinita tutta la grafica di Diario, Alimenti, Storico e Impostazioni, in chiaro e in scuro, con le regole della sezione 3.16, e scritta la finestra "Come funziona Kcal": **la grafica è considerata definitiva dall'utente**. Resta da fare solo la sezione Ricette (e, quando si rigenera l'APK, lo sblocco della rotazione: vedi Note).
 
 ---
 
@@ -443,7 +444,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
 ## ✅ COSE DA FARE
 
 ### Da implementare
-**Situazione al 28/11/2026 (v263):**
+**Situazione al 28/11/2026 (v264):**
 0. **Subito, nella prossima chat:** un paio di piccoli bug e 2-3 ritocchi grafici che l'utente spiegherà a voce (non sono descritti qui). (Fatto nella v261: il campo di scrittura in scuro ora è uguale al chiaro.)
 1. Poi la sezione Ricette (qui sotto).
 2. La gestione verticale/orizzontale dell'app (vedi Note in fondo).
