@@ -796,8 +796,8 @@ html.lightmode .comp textarea,html.lightmode .comp textarea:focus,html.lightmode
 html:not(.lightmode) .comp textarea{border:4px solid #436955;box-shadow:0 2px 5px rgba(0,0,0,.28);padding-top:7px;padding-bottom:7px;min-height:44px;box-sizing:border-box;color:#17201a}
 /* v262: in scuro il bordo usa il verde del tasto microfono (#1f4d35), con la stessa sfumatura del chiaro (in alto ×1,22 = #265e41, in basso ×0,78 = #183c29) */
 html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,html:not(.lightmode) .comp textarea:focus-visible{outline:none;border-color:transparent;background:linear-gradient(#f4f6f1,#f4f6f1) padding-box,linear-gradient(to bottom,#265e41,#1f4d35 50%,#183c29) border-box}
-/* v255/v265: solo modalità chiara, pillole di Alimenti e Storico: rilievo medio con filo in basso sfocato, riflesso di luce bianco in alto a sinistra sopra una sfumatura diagonale fino a #dbe4de, senza ombra esterna */
-html.lightmode #v-alimenti details.food:not([open]),html.lightmode #v-storico details.hday:not([open]){background:radial-gradient(ellipse 38% 120% at 12% 10%,rgba(255,255,255,1) 0,rgba(255,255,255,.85) 35%,rgba(255,255,255,0) 100%),linear-gradient(115deg,#fafbfa 0,#f4f7f5 25%,#ebf1ed 50%,#e2eae5 75%,#dbe4de 100%)!important;box-shadow:inset 0 -3px 3px -1px rgba(31,77,53,.14),inset 0 2px 2px rgba(255,255,255,.95)!important}
+/* v255/v266: solo modalità chiara, pillole di Alimenti e Storico: rilievo medio con filo in basso sfocato e luce diagonale: bianco pieno fino al 10%, poi sfumatura lunga fino a #d6e0da sul bordo destro, senza ombra esterna */
+html.lightmode #v-alimenti details.food:not([open]),html.lightmode #v-storico details.hday:not([open]){background:linear-gradient(115deg,#fff 0,#fff 10%,#fbfcfb 20%,#f5f8f6 32%,#eef3f0 45%,#e7eee9 58%,#e0e8e3 72%,#dae4de 86%,#d6e0da 100%)!important;box-shadow:inset 0 -3px 3px -1px rgba(31,77,53,.14),inset 0 2px 2px rgba(255,255,255,.95)!important}
 </style>
 </head>
 <body>
@@ -921,7 +921,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 265</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 266</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
