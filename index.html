@@ -383,7 +383,7 @@ nav button.on{font-weight:700;color:light-dark(#1f4d35,#fff)}
 #sheet.foodsheet{height:100dvh;max-height:100dvh}
 .foodsheet .fjmp{position:fixed;right:12px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:21}
 .foodsheet #fSt[hidden]{display:none}
-.foodsheet #fTxt{height:156px}
+.foodsheet #fTxt{height:184px}
 .foodsheet h3{margin-bottom:14px}
 .foodsheet .row.modes{margin:34px 0 24px} /* v316: un po' più di spazio sotto il titolo */
 .foodsheet .card.chatblk{margin:0 0 12px}
@@ -977,7 +977,18 @@ html:not(.lightmode) .foodsheet #fTxt:focus,html:not(.lightmode) .foodsheet #fTx
 @keyframes fcurb{50%{opacity:0}}
 .ph figcaption{font-size:14.5px;font-weight:600;line-height:1.2;min-height:2.4em;margin-top:4px}
 details.food .ph{margin:12px 0 20px}
-details .row.between:has(>[data-collapse]){padding:0 22px 12px}
+details .row.between:has(>[data-collapse]){padding:0 18px 12px;flex-wrap:nowrap;gap:4px}
+details .row.between:has(>[data-collapse]) .btn.std2{width:clamp(70px,22vw,90px)!important}
+details .row.between:has(>[data-collapse])>.row{flex-wrap:nowrap;gap:6px}
+/* v319: foto delle schede sempre sulla stessa riga e centrate (1, 2 o 3); tutti i campi di scrittura ovali come i tasti (restano quadrati solo i riquadri foto) */
+.ph{flex-wrap:nowrap;justify-content:center;gap:8px}
+.ph figure{flex:0 1 120px;min-width:0}
+.ph img{width:100%;height:auto;aspect-ratio:1/1}
+input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=range]):not([type=color]),select{border-radius:99px}
+textarea,.ta{border-radius:26px}
+.foodsheet input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=range]),.foodsheet select{padding-left:18px;padding-right:18px;min-height:44px}
+.foodsheet textarea,.foodsheet .ta{padding:14px 18px}
+.recsheet .rnote textarea,.recsheet .rnpanel textarea{border-radius:26px;padding-left:18px;padding-right:18px}
 /* v311: in scuro i campi di scrittura (Diario, chat e nome delle ricette) hanno lo stesso nero-grigio di «Cerca un alimento» (--card #1c1c1e) con testo bianco; in chiaro invariato */
 html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,html:not(.lightmode) .comp textarea:focus-visible{background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(to bottom,#265e41,#1f4d35 50%,#183c29) border-box;color:#fff}
 html:not(.lightmode) .comp textarea::placeholder{color:#fff;opacity:1}
@@ -1124,7 +1135,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 318</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 319</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
