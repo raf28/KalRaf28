@@ -1063,6 +1063,13 @@ html:not(.lightmode) .foodsheet .fcur{left:24px;top:8px}
 html:not(.lightmode) #v-impost .card{border-color:#fff!important}
 /* v345-v346: pillole di Storico, Alimenti e Ricette con la cornice sottile da 2 px (prima 4 px), stessi colori */
 #v-storico details.hday,#v-alimenti details.food,#v-ricette details.food{border-width:2px!important}
+/* v347: Aggiungi/Modifica Alimento: blocchi con il bordo standard da 2 px (chiaro #2c6a49, scuro #fff); campi, chat e riquadri foto senza bordo */
+html.lightmode .foodsheet .card{border:2px solid #2c6a49!important}
+html:not(.lightmode) .foodsheet .card{border:2px solid #fff!important}
+html.lightmode .foodsheet .card input,html.lightmode .foodsheet .card textarea,html.lightmode .foodsheet .card select,html:not(.lightmode) .foodsheet .card input,html:not(.lightmode) .foodsheet .card textarea,html:not(.lightmode) .foodsheet .card select{border:0!important}
+html.lightmode .foodsheet .sl3i,html:not(.lightmode) .foodsheet .sl3i{border:0!important}
+.foodsheet #fTxt:focus,.foodsheet #fTxt:focus-visible{box-shadow:none!important}
+.foodsheet .fcur,html.lightmode .foodsheet .fcur,html:not(.lightmode) .foodsheet .fcur{left:22px;top:9px}
 /* v311: in scuro i campi di scrittura (Diario, chat e nome delle ricette) hanno lo stesso nero-grigio di «Cerca un alimento» (--card #1c1c1e) con testo bianco; in chiaro invariato */
 html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,html:not(.lightmode) .comp textarea:focus-visible{background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(to bottom,#265e41,#1f4d35 50%,#183c29) border-box;color:#fff}
 html:not(.lightmode) .comp textarea::placeholder{color:#fff;opacity:1}
@@ -1209,7 +1216,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 346</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 347</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
