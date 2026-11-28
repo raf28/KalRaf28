@@ -228,6 +228,13 @@ Valgono per tutte le sezioni e per quelle future (Ricette). Nel codice le regole
 - **Cornici delle tabelle delle ricette (v295):** Ricetta = cornice standard della tabella del pasto; Note = gialla (`#a8740a` chiaro, `#e2b43c` scuro); 1 porzione = verde `#2f8f5c`.
 - **Tasti tondi con scritta sotto (v302–v304):** cerchio verde 44 px (standard 2) con icona e scritta di due righe (12 px, semi-grassetto) centrata sotto l'icona.
 
+**📐 STANDARD fissati dall'utente (28/11/2026, v346). Quando l'utente li nomina («spessore del bordo standard», «combinazione standard dei neri/bianchi») vanno applicati così:**
+- **Spessore del bordo standard = 2 px.** Vale per le cornici delle pillole contenitore (Alimenti, Ricette, Storico, aperte e chiuse), per i blocchi di Impostazioni e per la «Lista alimenti» del Diario. Colore: verde `#2c6a49` (pillole chiare `#1f4d35`) in chiaro, bianco in scuro (pillole `#e6ece8`).
+- **Combinazione standard dei neri (scuro), come Impostazioni e Aggiungi Alimento:** finestra/sfondo `#111112`; blocchi e quadroni `#1c1c1e`; interno di campi, chat e riquadri «Nessuna Foto» `#111112`; bordi bianchi sottili.
+- **Combinazione standard dei bianchi (chiaro), come Impostazioni e Aggiungi Alimento:** finestra/sfondo `#f4f6f1`; blocchi e quadroni bianchi `#fff`; interno di campi, chat e riquadri «Nessuna Foto» `#f4f6f1`; bordo verde sottile.
+- **Campi di inserimento:** sempre a pillola ovale (chat 26–30 px di raggio); restano quadrati solo i riquadri foto.
+- Stato: Aggiungi Alimento li usa già (bordo 1 px, da portare a 2 px su richiesta); Aggiungi Ricetta da allineare quando l'utente lo decide.
+
 ## 4. Struttura dei dati (localStorage `diario_kcal_v1`)
 
 ```
