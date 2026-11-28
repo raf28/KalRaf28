@@ -962,6 +962,22 @@ html:not(.lightmode) .foodsheet textarea::placeholder,html:not(.lightmode) .food
 .foodsheet #fTxt:focus,.foodsheet #fTxt:focus-visible{outline:none;border-color:#436955;box-shadow:0 0 0 3px rgba(67,105,85,.45)}
 html:not(.lightmode) .foodsheet #fTxt:focus,html:not(.lightmode) .foodsheet #fTxt:focus-visible{border-color:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.55)}
 .foodsheet #fTxt:focus::placeholder{color:transparent!important}
+/* v318: cornici e bordini di Aggiungi Alimento nel verde dei tasti (in chiaro #436955, in scuro il verde dei tasti); foto delle schede più grandi su due righe; più aria attorno a Annulla/Modifica/Elimina */
+.foodsheet{--fr:light-dark(#436955,#2c6a49)}
+html:not(.lightmode) .foodsheet .card,html:not(.lightmode) .foodsheet .sl3i{border-color:var(--fr)}
+.foodsheet .card{border:2px solid var(--fr)}
+.foodsheet .card input,.foodsheet .card textarea,.foodsheet .card select{border:2px solid var(--fr)!important}
+html:not(.lightmode) .foodsheet .card input,html:not(.lightmode) .foodsheet .card textarea{background:var(--card)!important;color:#fff}
+.foodsheet #fTxt:focus,.foodsheet #fTxt:focus-visible{border-color:var(--fr)!important;box-shadow:0 0 0 3px light-dark(rgba(67,105,85,.45),rgba(44,106,73,.6))!important}
+html:not(.lightmode) .foodsheet #fTxt:focus,html:not(.lightmode) .foodsheet #fTxt:focus-visible{border-color:var(--fr)!important}
+.foodsheet .fin .tw{position:relative;flex:1;min-width:0;display:flex}
+.foodsheet .fin .tw textarea{width:100%}
+.foodsheet .fcur{display:none;position:absolute;left:13px;top:12px;width:2px;height:20px;background:light-dark(#436955,#fff);animation:fcurb 1s steps(1) infinite;pointer-events:none}
+.foodsheet #fTxt:placeholder-shown:not(:focus)+.fcur{display:block}
+@keyframes fcurb{50%{opacity:0}}
+.ph figcaption{font-size:14.5px;font-weight:600;line-height:1.2;min-height:2.4em;margin-top:4px}
+details.food .ph{margin:12px 0 20px}
+details .row.between:has(>[data-collapse]){padding:0 22px 12px}
 /* v311: in scuro i campi di scrittura (Diario, chat e nome delle ricette) hanno lo stesso nero-grigio di «Cerca un alimento» (--card #1c1c1e) con testo bianco; in chiaro invariato */
 html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,html:not(.lightmode) .comp textarea:focus-visible{background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(to bottom,#265e41,#1f4d35 50%,#183c29) border-box;color:#fff}
 html:not(.lightmode) .comp textarea::placeholder{color:#fff;opacity:1}
@@ -1108,7 +1124,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 317</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 318</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1873,7 +1889,7 @@ function renderFoods(){fdKill();
 }
 async function loadFoodPhotos(id,box0){
   const f=S.foods.find(x=>x.id===id),box=box0||document.querySelector(`[data-ph="${CSS.escape(id)}"]`);if(!f||!box||!f.foto)return;
-  let h='';for(const [k,lab] of PHK.map(k=>[k,PHL[k]])){if(!f.foto[k])continue;const d=await IDB.get(f.foto[k]);if(d)h+=`<figure><img alt="${lab}" src="${esc(d)}"><figcaption>${lab}</figcaption></figure>`}
+  let h='';for(const [k,lab] of PHK.map(k=>[k,PHL[k]])){if(!f.foto[k])continue;const d=await IDB.get(f.foto[k]);if(d)h+=`<figure><img alt="${lab}" src="${esc(d)}"><figcaption>${k==='tabella'?'Tabella<br>kcal e Macro':lab}</figcaption></figure>`}
   box.innerHTML=h;
 }
 async function compress(file,max,q){const url=URL.createObjectURL(file);const img=new Image();img.src=url;await img.decode();const s=Math.min(1,max/Math.max(img.naturalWidth,img.naturalHeight));const c=document.createElement('canvas');c.width=Math.round(img.naturalWidth*s);c.height=Math.round(img.naturalHeight*s);c.getContext('2d').drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);return c.toDataURL('image/jpeg',q)}
@@ -2080,7 +2096,7 @@ async function foodSheet(f,pre){
   let draw=()=>{sheet(`<h3>${f?'Modifica Alimento':'Aggiungi Alimento'}</h3>
     <div class="row modes"><button class="btn sm ghost two ${auto?'sel':''}" id="fGo">${auto?'<i class="chk">✓</i>':''}Compila scheda Automaticamente<small>da foto, testo o voce</small></button><button class="btn sm ghost two ${!auto?'sel':''}" id="fMan">${!auto?'<i class="chk">✓</i>':''}Compila scheda Manualmente<small>scrivi tu tutti i valori</small></button></div>
     ${slotsHtml(ph)}
-    <div class="card chatblk"><h3 style="font-size:16px">Chat</h3><div class="fin"><textarea id="fTxt" class="ta" rows="5" placeholder="Scrivi o detta nome, marca, valori e precisazioni. Es. «Prosciutto cotto Rovagnati, per 100 grammi: 135 kcal, proteine 20…»">${esc(txt)}</textarea>${MIC}</div></div>
+    <div class="card chatblk"><h3 style="font-size:16px">Chat</h3><div class="fin"><div class="tw"><textarea id="fTxt" class="ta" rows="5" placeholder="&#10;Scrivi o detta nome, marca, valori e precisazioni. Es. «Prosciutto cotto Rovagnati, per 100 grammi: 135 kcal, proteine 20…»">${esc(txt)}</textarea><i class="fcur"></i></div>${MIC}</div></div>
     ${stErr?'<div class="tts" style="margin:0 0 6px"><button class="tb" id="fRetry">↻ Riprova</button></div>':''}<p class="hm" id="fSt"${st?'':' hidden'}>${esc(st)}</p>
     ${cardHtml()}
     <div class="row between"><button class="btn sm ghost std2" id="ffCancel">Annulla</button><button class="btn std2" id="ffSave" ${card?'':'disabled'}>Salva</button></div>
