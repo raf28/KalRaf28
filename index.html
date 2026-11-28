@@ -1023,8 +1023,8 @@ html:not(.lightmode) .foodsheet .card input,html:not(.lightmode) .foodsheet .car
 .scur{display:none;position:absolute;left:48px;top:28px;width:2px;height:20px;background:#1f4d35;animation:fcurb 1s steps(1) infinite;pointer-events:none}
 html:not(.lightmode) .scur{background:#fff}
 @media(max-width:600px){.scur{left:44px}}
-#foodQ:placeholder-shown:not(:focus)+.scur{display:block}
-#foodQ:focus::placeholder{color:transparent!important}
+#foodQ:placeholder-shown:not(:focus)+.scur,#recQ:placeholder-shown:not(:focus)+.scur{display:block}
+#foodQ:focus::placeholder,#recQ:focus::placeholder{color:transparent!important}
 /* v336: solo in scuro: messaggi a comparsa neri; in chiaro tornano verdi con scritta bianca. v334: messaggi a comparsa neri con la scritta nel verde di «Nuova Giornata Alimentare» (#2f8f5c) */
 html:not(.lightmode) .toast{background:#000!important;background-image:none!important;color:#2f8f5c!important;box-shadow:0 4px 12px rgba(0,0,0,.45)}
 /* v337: Aggiungi/Modifica Alimento: bordo grosso (8 px, come il campo del Diario) su blocchi e campi; in chiaro finestra e blocchi nel bianco attenuato #e6ece8, campi #f4f6f1 */
@@ -1152,7 +1152,7 @@ window.addEventListener('error',()=>hideSplash());</script>
 
     <section id="v-ricette" class="vh" hidden>
       <div class="ahead"><div class="in"><div class="aht"><h2>Ricette</h2><span class="acnt" id="recCnt"></span></div>
-        <input type="search" id="recQ" placeholder="Cerca una ricetta" autocomplete="off"></div></div>
+        <span class="sw"><input type="search" id="recQ" placeholder="&nbsp;&nbsp;&nbsp;Cerca una ricetta" autocomplete="off"><i class="scur"></i></span></div></div>
       <div class="wrap">
         <div id="recList"></div></div>
       <div class="applybar"><button class="btn addbar" id="addRec"><span class="pl">+</span>Aggiungi Ricetta</button></div>
@@ -1235,7 +1235,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 354</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 355</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
