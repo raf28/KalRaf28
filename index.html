@@ -1107,6 +1107,13 @@ html.lightmode .foodsheet .fcur{left:23px;top:10px}
 #rName:placeholder-shown:not(:focus)+.rcur,#rMsg:placeholder-shown:not(:focus)+.rcur{display:block}
 #rName:focus::placeholder,#rMsg:focus::placeholder{color:transparent!important}
 .recsheet .rname,.recsheet .rname:focus,.recsheet .rname:focus-visible{border:1px solid #2c6a49!important;outline:none!important;box-shadow:none!important}
+/* v361: Diario, campo di scrittura: cursore lampeggiante + due spazi + scritta; al tocco resta solo il cursore */
+.comp .mtw{position:relative;display:flex;flex:1;min-width:0}
+.comp .mtw>#msg{width:100%;box-sizing:border-box}
+.mcur{display:none;position:absolute;width:2px;background:#436955;animation:fcurb 1s steps(1) infinite;pointer-events:none}
+#msg:placeholder-shown:not(:focus)+.mcur{display:block}
+#msg:focus::placeholder{color:transparent!important}
+#msg::placeholder{font-size:14.5px;white-space:nowrap}
 /* v311: in scuro i campi di scrittura (Diario, chat e nome delle ricette) hanno lo stesso nero-grigio di «Cerca un alimento» (--card #1c1c1e) con testo bianco; in chiaro invariato */
 html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,html:not(.lightmode) .comp textarea:focus-visible{background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(to bottom,#265e41,#1f4d35 50%,#183c29) border-box;color:#fff}
 html:not(.lightmode) .comp textarea::placeholder{color:#fff;opacity:1}
@@ -1253,7 +1260,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 360</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 361</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1268,7 +1275,7 @@ window.addEventListener('error',()=>hideSplash());</script>
     <div class="in">
       <button class="ib" id="bCam" aria-label="Scatta foto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></button>
       <button class="ib" id="bGal" aria-label="Allega dalla galleria"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg></button>
-      <textarea id="msg" rows="1" placeholder="Cosa hai mangiato?"></textarea>
+      <span class="mtw"><textarea id="msg" rows="1" placeholder="&nbsp;&nbsp;Cosa hai mangiato?"></textarea><i class="mcur"></i></span>
       <button class="ib mic" id="mic" aria-label="Detta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg></button>
       <button class="ib send" id="send" aria-label="Invia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
     </div>
@@ -1735,7 +1742,7 @@ function render(){applyTheme();requestAnimationFrame(alimSticky);requestAnimatio
   $('#mdock').hidden=ui.view!=='diario';$('#addMeal').hidden=ui.dv!==null;$('#ctx').hidden=ui.view==='diario'||ui.view==='ricette';$('#rdock').hidden=true;/* v278: barra Ricettario / Crea Ricetta tolta */document.querySelectorAll('[data-rdock]').forEach(b=>b.classList.toggle('on',b.dataset.rdock===ui.rsel));{const t=$('#recSel');if(t){t.hidden=!ui.rsel;t.textContent=ui.rsel==='crea'?'Crea Ricetta':ui.rsel==='book'?'Ricettario':''}}
   $('#comp .in').hidden=false;
   if(ui.view==='diario'&&ui.dv!==null){$('#comp').hidden=true;/* v228: giornata archiviata, niente striscia vuota del campo di scrittura */$('#comp .in').hidden=true;renderHead();renderHistDay();}
-  else if(ui.view==='diario'){if(ui.meal)ensureMeal(ui.meal);renderHead();renderMeal();renderPills();$('#msg').placeholder=ui.meal?'Cosa hai mangiato?':'Tocca + per iniziare'}
+  else if(ui.view==='diario'){if(ui.meal)ensureMeal(ui.meal);renderHead();renderMeal();renderPills();$('#msg').placeholder=ui.meal?'\u00a0\u00a0Cosa hai mangiato?':'\u00a0\u00a0Tocca + per iniziare'}
   if(ui.view==='ricette')renderRecipes();
   if(ui.view==='storico')renderHist();
   if(ui.view==='alimenti')renderFoods();
@@ -2403,6 +2410,8 @@ $('#send').onclick=()=>{stopDictation();send()};
    Ora il tocco su Invia non toglie il fuoco al campo: il messaggio parte al primo tocco. */
 ['mousedown','pointerdown'].forEach(ev=>$('#send').addEventListener(ev,e=>{if(document.activeElement===$('#msg'))e.preventDefault()}));
 $('#msg').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&window.matchMedia('(pointer:fine)').matches){e.preventDefault();send()}});
+function msgCur(){const el=$('#msg');if(!el)return;const c=el.nextElementSibling;if(!c)return;const cs=getComputedStyle(el),lh=parseFloat(cs.lineHeight)||22,h=Math.round(parseFloat(cs.fontSize)*1.2);c.style.left=(parseFloat(cs.borderLeftWidth)+parseFloat(cs.paddingLeft))+'px';c.style.height=h+'px';c.style.top=(parseFloat(cs.borderTopWidth)+parseFloat(cs.paddingTop)+(lh-h)/2)+'px'}
+window.addEventListener('resize',()=>msgCur());
 function autoH(){const t=$('#msg');t.style.height='auto';/* v250: al massimo 3 righe, poi si scorre */const cs=getComputedStyle(t),lh=parseFloat(cs.lineHeight)||20,max=Math.round(lh*3+parseFloat(cs.paddingTop)+parseFloat(cs.paddingBottom)+parseFloat(cs.borderTopWidth)+parseFloat(cs.borderBottomWidth));t.style.maxHeight=max+'px';t.style.height=Math.min(max,t.scrollHeight+parseFloat(cs.borderTopWidth)+parseFloat(cs.borderBottomWidth))+'px'}
 $('#msg').addEventListener('input',autoH);
 $('#bCam').onclick=()=>$('#fCam').click();$('#bGal').onclick=()=>$('#fGal').click();
@@ -2691,7 +2700,7 @@ $('#addMeal').onclick=()=>{const o=S.day.order,ns=o.filter(isSnack).length;
  nav.addEventListener('click',e=>{if(fired){e.preventDefault();e.stopPropagation()}},true);
  nav.addEventListener('contextmenu',e=>{if(e.target.closest('button[data-v]'))e.preventDefault()});}
 try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>applyTheme())}catch(e){}
-boot();hideSplash();
+boot();msgCur();setTimeout(msgCur,400);hideSplash();
 }
 </script>
 </body>
