@@ -1073,6 +1073,10 @@ html.lightmode .foodsheet .sl3i,html:not(.lightmode) .foodsheet .sl3i{border:0!i
 /* v348: in scuro Ascolta, Pausa e AUTO: scritta e omino bianchi; non premuti pieni di verde #2c6a49, premuti nel verde chiaro di «Elimina pasto» #2f8f5c */
 html:not(.lightmode) .tts .tb{background:#2c6a49;border-color:#2c6a49;color:#fff}
 html:not(.lightmode) .tts .tb.on{background:#2f8f5c;border-color:#2f8f5c;color:#fff}
+/* v349: in scuro Ascolta/Pausa: tolto il quadratino verde scuro dietro al triangolo e alle due barre (simboli più grandi); quando un tasto è premuto (Ascolta, Pausa, AUTO) ha il bordo bianco */
+html:not(.lightmode) .tts .tb .ic rect:first-child{fill:transparent}
+html:not(.lightmode) .tts .tb:not(.tbauto) .ic{width:21px;height:21px;margin-left:-3px}
+html:not(.lightmode) .tts .tb.on{border-color:#fff}
 /* v311: in scuro i campi di scrittura (Diario, chat e nome delle ricette) hanno lo stesso nero-grigio di «Cerca un alimento» (--card #1c1c1e) con testo bianco; in chiaro invariato */
 html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,html:not(.lightmode) .comp textarea:focus-visible{background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(to bottom,#265e41,#1f4d35 50%,#183c29) border-box;color:#fff}
 html:not(.lightmode) .comp textarea::placeholder{color:#fff;opacity:1}
@@ -1219,7 +1223,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 348</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 349</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
