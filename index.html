@@ -362,7 +362,7 @@ nav button.on{font-weight:700;color:light-dark(#1f4d35,#fff)}
 #v-alimenti.vh{padding-top:0}
 #v-ricette.vh{padding-top:0}
 /* v280: editor delle ricette (finestra a tutta altezza) */
-#sheet.recsheet{height:94dvh;max-height:94dvh;display:flex;flex-direction:column;overflow:hidden;padding-bottom:calc(12px + env(safe-area-inset-bottom))}
+#sheet.recsheet{height:100dvh;max-height:100dvh;display:flex;flex-direction:column;overflow:hidden;padding-bottom:calc(12px + env(safe-area-inset-bottom))}
 .recsheet .rsh h3{margin:0 0 10px}
 .recsheet .rtop{display:flex;flex-direction:column;gap:10px;padding-bottom:10px;border-bottom:1px solid var(--line)}
 .recsheet .rname{width:100%;box-sizing:border-box;border:2px solid var(--line);border-radius:99px;padding:10px 16px;font-size:16px;background:var(--bg);color:var(--ink)}
@@ -378,15 +378,12 @@ nav button.on{font-weight:700;color:light-dark(#1f4d35,#fff)}
 .recsheet .rcomp{margin:0 -16px;border-top:1px solid var(--line)}
 .recsheet .rbtns{margin-top:10px}
 /* v291: Aggiungi/Modifica Alimento alto come l'editor delle ricette, con più spazio tra tasti, foto e campo; microfono e invio in basso, allineati al fondo del campo */
-#sheet.foodsheet{height:94dvh;max-height:94dvh;display:flex;flex-direction:column;padding-bottom:calc(12px + env(safe-area-inset-bottom))}
-#sheet.foodsheet>*{flex:none}
-.foodsheet h3{margin-bottom:24px}
-/* v292: senza scheda il campo di testo si allunga e riempie lo spazio; Annulla e Salva restano in fondo, alla stessa altezza delle altre schermate */
-#sheet.foodsheet:not(.hascard)>.fin{flex:1 1 auto;min-height:120px}
-#sheet.foodsheet:not(.hascard)>.fin textarea{height:auto;align-self:stretch}
-.foodsheet>.row.between:last-child{margin-top:auto;padding-top:10px}
+#sheet.foodsheet{height:100dvh;max-height:100dvh}
+.foodsheet .fjmp{position:fixed;right:12px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:21}
+.foodsheet #fSt[hidden]{display:none}
+.foodsheet h3{margin-bottom:14px}
 .foodsheet .row.modes{margin:0 0 24px}
-.foodsheet .ph3{margin-bottom:32px}
+.foodsheet .ph3{margin-bottom:24px}
 .foodsheet .fin{align-items:flex-end}
 .foodsheet .fin .fside{justify-content:flex-end}
 .lt .rtn{color:light-dark(#2a7a4b,#5cc58a);text-transform:none}
@@ -1061,7 +1058,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 292</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 293</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1828,6 +1825,9 @@ function miniConfirm(title,text,onYes,yesL){const o=document.createElement('div'
   try{if(window.CloseWatcher){cw=new CloseWatcher();cw.onclose=()=>{cw=null;o.remove()}}}catch(e){}
   o.onclick=e=>{if(e.target===o){close();return}const b=e.target.closest('[data-c]');if(!b)return;close();if(b.dataset.c==='yes')onYes()};document.body.appendChild(o)}
 function addFoodStart(){foodSheet(null)}
+/* v293: frecce ↑ ↓ nella finestra Aggiungi/Modifica Alimento, come nel Diario */
+function fJmp(){const sh=$('#sheet'),U=$('#fUp'),D=$('#fDn');if(!sh||!U)return;const upd=()=>{const can=sh.scrollHeight-sh.clientHeight>40;U.hidden=!can||sh.scrollTop<30;D.hidden=!can||sh.scrollHeight-sh.scrollTop-sh.clientHeight<30};
+  sh.onscroll=upd;U.onclick=()=>sh.scrollTo({top:0,behavior:'smooth'});D.onclick=()=>sh.scrollTo({top:sh.scrollHeight,behavior:'smooth'});requestAnimationFrame(upd)}
 /* v278: SEZIONE RICETTE con la stessa grafica degli Alimenti. Per ora: elenco alfabetico, ricerca, «Aggiungi Ricetta» (finestra vuota con Annulla e Salva disattivato) */
 function renderRecipes(){fdKill();
   const q=($('#recQ').value||'').trim().toLowerCase(),c=$('#recCnt');if(c)c.textContent=S.recipes.length+(S.recipes.length===1?' salvata':' salvate');
@@ -1968,7 +1968,8 @@ function foodForm(f){foodSheet(f)}
 async function foodSheet(f){
   const ph={tabella:null,confezione:null,confezione2:null,confezione3:null};
   if(f&&f.foto){for(const k of PHK)if(f.foto[k])ph[k]=await IDB.get(f.foto[k])}
-  let txt='',card=f?{...f}:null,busy=false,st='',stErr=false,auto=true,pend=false,tmr=null;
+  /* v293: la scheda alimento c'è sempre, anche in modalità automatica (vuota finché l'IA non la compila): passando da Automaticamente a Manualmente la finestra non cambia */
+  let txt='',card=f?{...f}:{nome:'',riferimento:'100 g',note:''},busy=false,st='',stErr=false,auto=true,pend=false,tmr=null;
   const MIC='<div class="fside"><button class="ib mic" id="fMic" aria-label="Detta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg></button><button class="ib send" id="fSend" aria-label="Prepara la scheda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>';
   const grab=()=>{const t=$('#fTxt');if(t)txt=t.value;if(card&&$('#ffN')){card.nome=$('#ffN').value;card.riferimento=$('#ffR').value;card.note=$('#ffNote').value;FKEYS.forEach(([k])=>card[k]=$('#ff_'+k).value)}};
   const cardHtml=()=>!card?'':`<div class="card" style="margin-top:6px"><h3 style="font-size:16px">Scheda alimento</h3>
@@ -1979,17 +1980,18 @@ async function foodSheet(f){
   let draw=()=>{sheet(`<h3>${f?'Modifica Alimento':'Aggiungi Alimento'}</h3>
     <div class="row modes"><button class="btn sm ghost two ${auto?'sel':''}" id="fGo">${auto?'<i class="chk">✓</i>':''}Compila scheda Automaticamente<small>da foto, testo o voce</small></button><button class="btn sm ghost two ${!auto?'sel':''}" id="fMan">${!auto?'<i class="chk">✓</i>':''}Compila scheda Manualmente<small>scrivi tu tutti i valori</small></button></div>
     ${slotsHtml(ph)}
-    <div class="fin"><textarea id="fTxt" class="ta" rows="4" placeholder="Scrivi o detta nome, marca, valori e precisazioni. Es. «Prosciutto cotto Rovagnati, per 100 grammi: 135 kcal, proteine 20…»">${esc(txt)}</textarea>${MIC}</div>
-    ${stErr?'<div class="tts" style="margin:0 0 6px"><button class="tb" id="fRetry">↻ Riprova</button></div>':''}<p class="hm" id="fSt">${esc(st||(auto&&!card?'Modalità automatica: detta, scrivi o aggiungi una foto e la scheda si prepara da sola.':''))}</p>
+    <div class="fin"><textarea id="fTxt" class="ta" rows="5" placeholder="Scrivi o detta nome, marca, valori e precisazioni. Es. «Prosciutto cotto Rovagnati, per 100 grammi: 135 kcal, proteine 20…»">${esc(txt)}</textarea>${MIC}</div>
+    ${stErr?'<div class="tts" style="margin:0 0 6px"><button class="tb" id="fRetry">↻ Riprova</button></div>':''}<p class="hm" id="fSt"${st?'':' hidden'}>${esc(st)}</p>
     ${cardHtml()}
-    <div class="row between"><button class="btn sm ghost std2" id="ffCancel">Annulla</button><button class="btn std2" id="ffSave" ${card?'':'disabled'}>Salva</button></div>`);
-    $('#ffCancel').onclick=ffExit;sheetGuard=ffExit;$('#sheet').classList.add('foodsheet');$('#sheet').classList.toggle('hascard',!!card);
+    <div class="row between"><button class="btn sm ghost std2" id="ffCancel">Annulla</button><button class="btn std2" id="ffSave" ${card?'':'disabled'}>Salva</button></div>
+    <div class="jmp fjmp"><button id="fUp" aria-label="Vai in cima" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></button><button id="fDn" aria-label="Vai in fondo" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>`);
+    $('#ffCancel').onclick=ffExit;sheetGuard=ffExit;$('#sheet').classList.add('foodsheet');
     bindSlots(ph,()=>{grab();draw();if(auto)prepare()});
     dictate($('#fTxt'),$('#fMic'),()=>{if(auto&&$('#fTxt'))prepare()});
     $('#fSend').onclick=()=>{stopDictation();prepare(true)};
     $('#fTxt').addEventListener('input',()=>{if(!auto||rec)return;clearTimeout(tmr);tmr=setTimeout(()=>{if($('#fTxt')&&!rec)prepare()},2000)});
-    $('#fMan').onclick=()=>{grab();auto=false;clearTimeout(tmr);if(!card)card={nome:'',riferimento:'100 g',note:''};st='';draw();$('#ffN').focus()};
-    $('#fGo').onclick=()=>{grab();auto=true;draw();prepare(true)};
+    $('#fMan').onclick=()=>{grab();auto=false;clearTimeout(tmr);if(!card)card={nome:'',riferimento:'100 g',note:''};st='';draw()};
+    $('#fGo').onclick=()=>{grab();auto=true;st='';draw();prepare()};
     if($('#fRetry'))$('#fRetry').onclick=()=>{grab();prepare(true)};
   };
   const prepare=async(manual)=>{if(!$('#fTxt'))return;grab();clearTimeout(tmr);
@@ -1997,12 +1999,9 @@ async function foodSheet(f){
       if(busy){pend=true;return}
       busy=true;stErr=false;st='Preparo la scheda…';const se=$('#fSt');if(se)se.textContent=st;
       const parts=[{text:txt.trim()||'(vedi foto)'}];for(const k of PHK)if(ph[k])parts.push({text:'Foto '+PHL[k].toLowerCase()+':'},{inlineData:{mimeType:'image/jpeg',data:ph[k].split(',')[1]}});
-      try{const o=await gemini(SYS_FOOD,[{role:'user',parts}],SCHEMA_FOOD);card={...(card||{}),nome:String(o.nome||''),riferimento:String(o.riferimento||'100 g'),note:String(o.note||'')};FKEYS.forEach(([k])=>card[k]=nn(o[k]));fixMacros(card);st='Scheda pronta: controlla i valori e premi Salva.'}
+      try{const o=await gemini(SYS_FOOD,[{role:'user',parts}],SCHEMA_FOOD);card={...(card||{}),nome:String(o.nome||''),riferimento:String(o.riferimento||'100 g'),note:String(o.note||'')};FKEYS.forEach(([k])=>card[k]=nn(o[k]));fixMacros(card);st=''}
       catch(e){st=e.message;stErr=true}
-      busy=false;if(!$('#fTxt'))return;const nuova=!$('#ffN')&&!!card;draw();
-      /* v292: quando la scheda compare per la prima volta, la finestra scorre fino a mostrare Nome e «Valori riferiti a» */
-      if(nuova&&$('#ffR')){const sh=$('#sheet'),r=$('#ffR').getBoundingClientRect(),sb=sh.getBoundingClientRect();if(r.bottom>sb.bottom-8)sh.scrollTop+=r.bottom-sb.bottom+16}
-      if(pend){pend=false;prepare()}};
+      busy=false;if(!$('#fTxt'))return;draw();if(pend){pend=false;prepare()}};
   /* v281: uscita da Aggiungi/Modifica Alimento: se c'è qualcosa chiede «Vuoi uscire senza salvare?» */
   const sig=()=>{grab();return JSON.stringify([txt,card,PHK.map(k=>ph[k]?ph[k].length:0)])};let sig0=null;
   const ffExit=()=>{if(sig0!==null&&sig()===sig0){closeSheet();return}exitConfirm(()=>closeSheet(),()=>{const b=$('#ffSave');if(b&&!b.disabled)b.click()},!!(card&&(card.nome||'').trim()))};
@@ -2013,7 +2012,7 @@ async function foodSheet(f){
       const rec={id,nome,riferimento:String(card.riferimento||'').trim()||'100 g',note:String(card.note||'').trim(),foto};FKEYS.forEach(([k])=>rec[k]=nn(card[k]));fixMacros(rec);
       if(old)Object.assign(old,rec);else S.foods.push(rec);save();closeSheet();go('alimenti');toast(old?'Alimento aggiornato':'Alimento salvato')};
   };
-  const draw0=draw;draw=()=>{const ae=document.activeElement,id=ae&&ae.id,ss=ae&&ae.selectionStart,se=ae&&ae.selectionEnd,sc=$('#sheet').scrollTop;draw0();bindSave();$('#sheet').scrollTop=sc;if(id&&$('#'+id)&&$('#sheet').contains($('#'+id))){const el=$('#'+id);el.focus({preventScroll:true});try{if(ss!=null)el.setSelectionRange(ss,se)}catch(e){}}};
+  const draw0=draw;draw=()=>{const ae=document.activeElement,id=ae&&ae.id,ss=ae&&ae.selectionStart,se=ae&&ae.selectionEnd,sc=$('#sheet').scrollTop;draw0();bindSave();$('#sheet').scrollTop=sc;fJmp();if(id&&$('#'+id)&&$('#sheet').contains($('#'+id))){const el=$('#'+id);el.focus({preventScroll:true});try{if(ss!=null)el.setSelectionRange(ss,se)}catch(e){}}};
   draw();sig0=sig();
 }
 $('#foodQ').addEventListener('input',renderFoods);
