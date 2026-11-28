@@ -1014,6 +1014,9 @@ details .row.between:has(>[data-collapse]){justify-content:space-between;gap:0;p
 html:not(.lightmode) .hm,html:not(.lightmode) small,html:not(.lightmode) figcaption,html:not(.lightmode) label,html:not(.lightmode) .empty,html:not(.lightmode) ::placeholder{color:#fff;opacity:1}
 html:not(.lightmode) .btn.two small{opacity:1}
 html:not(.lightmode) .dayline,html:not(.lightmode) .kc .of,html:not(.lightmode) .kc .bon,html:not(.lightmode) .legend,html:not(.lightmode) .macros small,html:not(.lightmode) .mbar small,html:not(.lightmode) .row.modes .btn small,html:not(.lightmode) .lb .cap{opacity:1}
+/* v331: Aggiungi/Modifica Alimento in scuro: sfondo della finestra e dei blocchi nero assoluto; i campi (chat, nome, valori, note) restano nel nero un po' più chiaro (#1c1c1e) */
+html:not(.lightmode) #sheet.foodsheet,html:not(.lightmode) .foodsheet .card{background:#000}
+html:not(.lightmode) .foodsheet .card input,html:not(.lightmode) .foodsheet .card textarea{background:#1c1c1e!important}
 /* v311: in scuro i campi di scrittura (Diario, chat e nome delle ricette) hanno lo stesso nero-grigio di «Cerca un alimento» (--card #1c1c1e) con testo bianco; in chiaro invariato */
 html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,html:not(.lightmode) .comp textarea:focus-visible{background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(to bottom,#265e41,#1f4d35 50%,#183c29) border-box;color:#fff}
 html:not(.lightmode) .comp textarea::placeholder{color:#fff;opacity:1}
@@ -1160,7 +1163,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 330</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 331</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
