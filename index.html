@@ -1058,6 +1058,10 @@ html:not(.lightmode) .foodsheet .card{background:#1c1c1e!important;border:1px so
 html:not(.lightmode) .foodsheet .card input,html:not(.lightmode) .foodsheet .card textarea,html:not(.lightmode) .foodsheet .card select{background:#111112!important;border:1px solid #fff!important}
 html:not(.lightmode) .foodsheet .sl3i{background:#111112;border-color:#fff}
 html:not(.lightmode) .foodsheet .fcur{left:24px;top:8px}
+/* v343 (prova): Impostazioni, blocchi con lo stesso bordo delle pillole dello Storico: 4 px, verde scuro #1f4d35 in chiaro, bianco #e6ece8 in scuro. Per tornare indietro: border:1px solid, colori v342 (chiaro #2c6a49, scuro #fff) */
+#v-impost .card{border-width:4px!important}
+html.lightmode #v-impost .card{border-color:#1f4d35!important}
+html:not(.lightmode) #v-impost .card{border-color:#e6ece8!important}
 /* v311: in scuro i campi di scrittura (Diario, chat e nome delle ricette) hanno lo stesso nero-grigio di «Cerca un alimento» (--card #1c1c1e) con testo bianco; in chiaro invariato */
 html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,html:not(.lightmode) .comp textarea:focus-visible{background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(to bottom,#265e41,#1f4d35 50%,#183c29) border-box;color:#fff}
 html:not(.lightmode) .comp textarea::placeholder{color:#fff;opacity:1}
@@ -1204,7 +1208,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 342</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 343</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
