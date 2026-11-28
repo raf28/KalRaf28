@@ -914,7 +914,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 256</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 257</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1006,6 +1006,8 @@ try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
 function normalize(){
   if(!S||typeof S!=='object'||!S.day)S=defaults();
   S.settings=Object.assign(defaults().settings,S.settings||{});
+  /* v257: AUTO non sta più nelle impostazioni sincronizzate; il vecchio valore passa una sola volta al salvataggio locale */
+  if('autoRead' in S.settings){try{if(localStorage.getItem('kalraf28_autoread')===null)localStorage.setItem('kalraf28_autoread',S.settings.autoRead?'1':'0')}catch(e){}delete S.settings.autoRead}
   S.history=Array.isArray(S.history)?S.history:[];S.recipes=Array.isArray(S.recipes)?S.recipes:[];S.recChat=Array.isArray(S.recChat)?S.recChat:[];S.foods=Array.isArray(S.foods)?S.foods:[];
   S.day.meals=S.day.meals||{};
   if(S.day.meals.spuntino){const o=S.day.meals.spuntino;delete S.day.meals.spuntino;if((o.items||[]).length||(o.chat||[]).length&&!S.day.meals.spuntino1)S.day.meals.spuntino1=o}
@@ -1390,7 +1392,7 @@ function foodInfo(id,it){const f=S.foods.find(x=>x.id===id);if(!f)return;
   ${f.note?`<p style="margin:10px 0 0"><b>Note:</b> ${esc(f.note)}</p>`:''}${macroNote(f)?`<p class="hm" style="margin:8px 0 0">${esc(macroNote(f))}</p>`:''}
   <div class="ph" id="fiPh"></div><div class="row" style="justify-content:flex-start"><button class="btn sm fiClose" id="noSheet">Chiudi</button></div>`);loadFoodPhotos(f.id,$('#fiPh'))}
 /* v139: tabella unica del pasto (Lista alimenti + totale + macro), usata in alto e nei riepiloghi della chat (sempre aggiornata) */
-function ttsHTML(ix){return `<div class="tts"><button class="tb${ttsState(ix)==='play'?' on':''}" data-say="${ix}"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="0.5" y="0.5" width="15" height="15" rx="3.5" fill="#1f4d35"/><path d="M6 4.2v7.6l6-3.8z" fill="#fff"/></svg>Ascolta</button><button class="tb${ttsState(ix)==='pause'?' on':''}" data-pause="${ix}"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="0.5" y="0.5" width="15" height="15" rx="3.5" fill="#1f4d35"/><rect x="5" y="4" width="2" height="8" rx=".6" fill="#fff"/><rect x="9" y="4" width="2" height="8" rx=".6" fill="#fff"/></svg>Pausa</button><button class="tb tbauto${S.settings&&S.settings.autoRead?' on':''}" data-autoread aria-label="Lettura automatica" aria-pressed="${S.settings&&S.settings.autoRead?'true':'false'}"><span class="auw"><svg viewBox="0 0 26 24" width="22" height="17" aria-hidden="true"><path d="M4 21v-3.2C2.8 16.7 2 15.2 2 13.5 2 10 4.9 7.2 8.4 7.2c3.1 0 5.6 2.1 6.1 5l1.4 2.6-1.4.6v2c0 1-.8 1.7-1.7 1.7H11.2V21z" fill="currentColor"/><path d="M16.8 11.6c.8.8.8 2.2 0 3M18.8 9.8c1.8 1.8 1.8 4.8 0 6.6M20.9 8c2.8 2.8 2.8 7.4 0 10.2" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg><span>AUTO</span></span></button></div>`}
+function ttsHTML(ix){return `<div class="tts"><button class="tb${ttsState(ix)==='play'?' on':''}" data-say="${ix}"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="0.5" y="0.5" width="15" height="15" rx="3.5" fill="#1f4d35"/><path d="M6 4.2v7.6l6-3.8z" fill="#fff"/></svg>Ascolta</button><button class="tb${ttsState(ix)==='pause'?' on':''}" data-pause="${ix}"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="0.5" y="0.5" width="15" height="15" rx="3.5" fill="#1f4d35"/><rect x="5" y="4" width="2" height="8" rx=".6" fill="#fff"/><rect x="9" y="4" width="2" height="8" rx=".6" fill="#fff"/></svg>Pausa</button><button class="tb tbauto${autoOn()?' on':''}" data-autoread aria-label="Lettura automatica" aria-pressed="${autoOn()?'true':'false'}"><span class="auw"><svg viewBox="0 0 26 24" width="22" height="17" aria-hidden="true"><path d="M4 21v-3.2C2.8 16.7 2 15.2 2 13.5 2 10 4.9 7.2 8.4 7.2c3.1 0 5.6 2.1 6.1 5l1.4 2.6-1.4.6v2c0 1-.8 1.7-1.7 1.7H11.2V21z" fill="currentColor"/><path d="M16.8 11.6c.8.8.8 2.2 0 3M18.8 9.8c1.8 1.8 1.8 4.8 0 6.6M20.9 8c2.8 2.8 2.8 7.4 0 10.2" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg><span>AUTO</span></span></button></div>`}
 function mealBoxHTML(items,name,edit,tix){if(!items||!items.length)return'<div class="empty">Nessun alimento in questo pasto.</div>';
   const t=sum(items),row=(l,k,sub)=>`<div class="sr${sub?' sub':''}"><span>${l}${t.miss[k]&&t.has[k]?'<span class="ast">*</span>':''}</span><b>${fv(t,k,'g')}</b></div>`;
   const miss=items.filter(i=>KEYS.slice(1).some(k=>nn(i[k])===null));
@@ -1715,12 +1717,16 @@ function ttsStartBtn(b,fromStart){
   /* su Android, speak() subito dopo cancel() viene spesso ignorato: piccola attesa */
   const tok=TTS.tok;if(busy)setTimeout(()=>{if(tok===TTS.tok)ttsPlay(start,off)},250);else ttsPlay(start,off);
 }
-/* v153: lettura automatica (AUTO): impostazione unica salvata (settings.autoRead, anche nei backup) */
+/* v153/v257: lettura automatica (AUTO). Dalla v257 è salvata SOLO su questo telefono (localStorage «kalraf28_autoread»):
+   non entra più nelle impostazioni, nei backup su file né nella sincronizzazione con Google Drive. */
+const AUTO_KEY='kalraf28_autoread';
+function autoOn(){try{return localStorage.getItem(AUTO_KEY)==='1'}catch(e){return false}}
+function autoSet(v){try{localStorage.setItem(AUTO_KEY,v?'1':'0')}catch(e){}}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-autoread]');if(!b)return;e.stopPropagation();
-  S.settings.autoRead=!S.settings.autoRead;save();
-  document.querySelectorAll('[data-autoread]').forEach(x=>{x.classList.toggle('on',!!S.settings.autoRead);x.setAttribute('aria-pressed',S.settings.autoRead?'true':'false')});
-  toast(S.settings.autoRead?'Lettura automatica attiva':'Lettura automatica disattivata')},true);
-function autoSpeak(sel){if(!S.settings||!S.settings.autoRead||!('speechSynthesis' in window))return;
+  const on=!autoOn();autoSet(on);/* niente save(): nessuna sincronizzazione con Drive */
+  document.querySelectorAll('[data-autoread]').forEach(x=>{x.classList.toggle('on',on);x.setAttribute('aria-pressed',on?'true':'false')});
+  toast(on?'Lettura automatica attiva':'Lettura automatica disattivata')},true);
+function autoSpeak(sel){if(!autoOn()||!('speechSynthesis' in window))return;
   requestAnimationFrame(()=>{const b=document.querySelector(sel);if(b)ttsStartBtn(b,true)})}
 /* v152: tenendo premuto Ascolta per 1 secondo l'audio riparte dall'inizio */
 let ttsLongFired=false;
@@ -2009,7 +2015,9 @@ try{history.replaceState({v:'diario'},'')}catch(e){}
  /* v239: molti tasti (Annulla, Elimina, Salva, Modifica giornata…) chiudono la finestra o ridisegnano la pagina subito, e il rimbalzo non si vedeva.
     Se il tocco è stato molto breve, l'azione parte con un piccolo ritardo (fino a 110 ms) così il tasto fa in tempo a rimbalzare. */
  document.addEventListener('pointerdown',e=>{last=e.target.closest('button')},{passive:true,capture:true});
- document.addEventListener('click',e=>{if(!e.isTrusted)return;const b=e.target.closest('button');if(!b||b.disabled||b.closest('nav')||b!==last)return;
+ /* v257: ascoltato su window (fase di cattura) così parte PRIMA di tutti gli altri ascoltatori del documento: prima il tasto AUTO
+    riceveva sia il tocco vero sia quello ritardato e si attivava e disattivava subito (sembrava non funzionare). */
+ window.addEventListener('click',e=>{if(!e.isTrusted)return;const b=e.target.closest&&e.target.closest('button');if(!b||b.disabled||b.closest('nav')||b!==last)return;
    const need=160-(Date.now()-t0);if(need<=0)return;e.preventDefault();e.stopImmediatePropagation();const tg=e.target;last=null;
    b.classList.add('pressed');setTimeout(()=>{/* v246: il tocco può essere sull'icona (SVG), che non ha .click(): si invia l'evento click direttamente */tg.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,view:window,clientX:e.clientX,clientY:e.clientY}));setTimeout(()=>b.classList.remove('pressed'),20)},need)},true);
  ['pointerup','pointercancel','pointerleave'].forEach(ev=>document.addEventListener(ev,off,{passive:true}));
