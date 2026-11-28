@@ -386,7 +386,12 @@ nav button.on{font-weight:700;color:light-dark(#1f4d35,#fff)}
 .foodsheet #fTxt{height:156px}
 .foodsheet h3{margin-bottom:14px}
 .foodsheet .row.modes{margin:0 0 24px}
-.foodsheet .ph3{margin-bottom:24px}
+.foodsheet .ph3{margin:0}
+.foodsheet .card.fotoblk{margin:6px 0 24px}
+/* v315: «Nessuna Foto» più grande; in chiaro cornice tratteggiata nel verde dei tasti foto (#436955) */
+.sl3i span{font-size:14.5px;font-weight:600;text-align:center;line-height:1.2;padding:0 6px}
+html.lightmode .sl3i{border-color:#436955}
+html.lightmode .sl3i span{color:#436955}
 .foodsheet .fin{align-items:flex-end}
 .foodsheet .fin .fside{justify-content:flex-end}
 .lt .rtn{color:light-dark(#2a7a4b,#5cc58a);text-transform:none}
@@ -1087,7 +1092,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 314</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 315</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1858,9 +1863,10 @@ async function loadFoodPhotos(id,box0){
 async function compress(file,max,q){const url=URL.createObjectURL(file);const img=new Image();img.src=url;await img.decode();const s=Math.min(1,max/Math.max(img.naturalWidth,img.naturalHeight));const c=document.createElement('canvas');c.width=Math.round(img.naturalWidth*s);c.height=Math.round(img.naturalHeight*s);c.getContext('2d').drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);return c.toDataURL('image/jpeg',q)}
 function pickImage(cam){return new Promise(res=>{const i=document.createElement('input');i.type='file';i.accept='image/*';if(cam)i.setAttribute('capture','environment');i.onchange=async()=>{const f=i.files[0];if(!f)return res(null);try{res(await compress(f,1100,.72))}catch(e){toast('Impossibile leggere la foto');res(null)}};i.click()})}
 const PHK=['confezione','confezione2','tabella'];
-const PHL={tabella:'Tabella valori nutrizionali',confezione:'Confezione 1',confezione2:'Confezione 2',confezione3:'Confezione 3'};
-function slotsHtml(ph){const L=[['confezione','Foto confezione 1'],['confezione2','Foto confezione 2'],['tabella','Foto tabella valori nutrizionali']];
-  return`<div class="ph3">${L.map(([k,l])=>`<div class="sl3"><div class="sl3i">${ph[k]?`<img alt="${l}" src="${esc(ph[k])}">`:'<span>nessuna foto</span>'}</div><div class="sl3l">${l}</div><div class="sl3b"><button data-slot="${k}" data-cam="1" aria-label="Scatta foto: ${l}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></button><button data-slot="${k}" aria-label="Scegli file: ${l}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.8"/><path d="M21 16l-5-5-9 9"/></svg></button></div><button class="sl3r btn std2" data-unslot="${k}" ${ph[k]?'':'disabled'}>Rimuovi</button></div>`).join('')}</div>`}
+const PHL={tabella:'Tabella kcal e Macro',confezione:'Confezione 1',confezione2:'Confezione 2',confezione3:'Confezione 3'};
+function slotsHtml(ph){const L=[['confezione','Confezione 1'],['confezione2','Confezione 2'],['tabella','Tabella kcal e Macro']];
+  /* v315: blocco «Foto» incorniciato come la «Scheda alimento» */
+  return`<div class="card fotoblk"><h3 style="font-size:16px">Foto</h3><div class="ph3">${L.map(([k,l])=>`<div class="sl3"><div class="sl3i">${ph[k]?`<img alt="${l}" src="${esc(ph[k])}">`:'<span>Nessuna Foto</span>'}</div><div class="sl3l">${l}</div><div class="sl3b"><button data-slot="${k}" data-cam="1" aria-label="Scatta foto: ${l}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></button><button data-slot="${k}" aria-label="Scegli file: ${l}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.8"/><path d="M21 16l-5-5-9 9"/></svg></button></div><button class="sl3r btn std2" data-unslot="${k}" ${ph[k]?'':'disabled'}>Rimuovi</button></div>`).join('')}</div></div>`}
 function bindSlots(ph,redraw){document.querySelectorAll('[data-slot]').forEach(b=>b.onclick=async()=>{const d=await pickImage(!!b.dataset.cam);if(d){ph[b.dataset.slot]=d;redraw()}});document.querySelectorAll('[data-unslot]').forEach(b=>b.onclick=()=>miniConfirm('Eliminare la foto?','Sei sicuro di voler eliminare la foto?\nVerrà cancellata definitivamente.',()=>{ph[b.dataset.unslot]=null;const c=['confezione','confezione2','confezione3'].map(k=>ph[k]).filter(Boolean);['confezione','confezione2','confezione3'].forEach((k,i)=>ph[k]=c[i]||null);redraw()}))}
 /* v171: piccola conferma sopra una finestra già aperta (es. Rimuovi foto in Modifica alimento) */
 /* v281/v284: conferma di uscita per Aggiungi/Modifica Alimento e Ricetta: a sinistra «Salva» (verde), a destra «Esci senza salvare» (rosso) */
