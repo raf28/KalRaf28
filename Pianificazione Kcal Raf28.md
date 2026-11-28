@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 293 (28/11/2026).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 295 (28/11/2026).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **Kcal** (nome del repository e del progetto: **KalRaf28**; titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **293**.
+> Sto sviluppando **Kcal** (nome del repository e del progetto: **KalRaf28**; titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **295**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -53,7 +53,7 @@ KalRaf28 è un diario alimentare personale. Al posto di contare le calorie nelle
 - **Mai spese extra per l'API** oltre all'abbonamento.
 - In futuro forse un'APK.
 
-## 3. Come funziona oggi (v293): sezioni
+## 3. Come funziona oggi (v295): sezioni
 
 La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impostazioni** (Preimpostati tolto nella v53). La voce attiva è evidenziata con una pillola verde `#2f8f5c`.
 
@@ -466,6 +466,8 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **v276: data del pasto e ora nella barra.** Con l'ora si salva anche la data (`data`), e l'ordine dei pasti si calcola su data e ora (niente più dubbi dopo mezzanotte; le giornate vecchie senza data usano la regola delle 4:00). Un'ora detta all'IA prende la data di oggi, o di ieri se sarebbe più di un'ora nel futuro. La data compare sotto l'ora nella tabella "Lista alimenti" ("28/11/26", piccola e grigia) e tra parentesi accanto all'ora nello Storico. Nella barra del pasto (con "Elimina …") l'ora è piccola sotto il nome ("ore 20:45") e le kcal sono accanto, centrate tra le due righe, con 16 px di spazio (opzione C dell'anteprima, spazio raddoppiato).
   - **v277:** ordine dei pasti più sicuro per quelli salvati tra la v273 e la v275 (con l'ora ma senza data): il loro giorno è quello di apertura della giornata, o il successivo se l'ora viene prima dell'apertura, invece della regola fissa delle 4:00. Provato con l'orologio simulato alle 18:00: colazione 08:00, spuntino 10:30, spuntino 16:00 nell'ordine giusto.
   - **v278: sezione Ricette con la grafica degli Alimenti.** Testata con titolo e conteggio ("N salvate"), ricerca "Cerca una ricetta", elenco alfabetico con le lettere, pillole, frecce e pillola "Aggiungi Ricetta" con il +, identici agli Alimenti in chiaro e in scuro (62 regole CSS duplicate per `#v-ricette`; `alimSticky()` / `alimStuck()` valgono per entrambe le sezioni). Il + apre la finestra "Aggiungi Ricetta" con Annulla e Salva disattivato. Tolte la barra Ricettario / Crea Ricetta e la vecchia chat. Nella finestra degli Alimenti il titolo ora è "Aggiungi Alimento" (e "Modifica Alimento").
+  - **v295:** Ricette, tre cornici distinte (editor, tabelle in chat): **Ricetta** con la cornice di sempre; **Note** in un riquadro con cornice **gialla** (il giallo di «valore generico») e titolo "NOTE" con sotto, in verde, il nome e le porzioni ("Panino Palloncino (6 Porzioni)"); **1 porzione** con cornice nel verde di "Nuova Giornata Alimentare" (`#2f8f5c`) e titolo "1 PORZIONE" in verde, "TOTALE KCAL E MACRO" e il nome con le porzioni in verde (tolta la riga "su N porzioni"). Nella ricetta salvata aperta (senza cornici) le note sono nello stesso formato, tra il totale e la porzione. Confermato: aggiungere o modificare un alimento o una ricetta fa partire il backup su Drive dopo circa 4 secondi (se Drive è collegato).
+  - **v294:** Aggiungi/Modifica Alimento: campo della chat più alto verso il basso (204 px invece di 5 righe), con microfono e invio che scendono insieme; all'apertura si vede la scheda fino a «Valori riferiti a – 100 g» e un filo di bianco, "Energia (kcal)" resta sotto. Standard grafico della finestra concluso.
   - **v293:** (ripartendo dalla v291; la v292 è stata scartata) Aggiungi/Modifica Alimento: la **scheda alimento è sempre presente** anche in modalità automatica (vuota finché l'IA non la compila), così passando da "Automaticamente" a "Manualmente" la finestra non cambia; tolti i commenti "Modalità automatica…" e "Scheda pronta…" sotto la chat (restano solo attesa ed errori); campo di testo un po' più alto (5 righe); **frecce ↑ ↓** trasparenti come nel Diario per scorrere fino ad Annulla/Salva (un po' più in alto per non coprire Salva). Finestre Aggiungi Alimento e Aggiungi Ricetta a **tutto schermo** (100%, fino alla barra di Android).
   - **v292:** Aggiungi/Modifica Alimento: ancora più spazio sotto il titolo (24 px) e prima del campo (32 px); senza scheda il campo di testo si allunga fino a riempire la finestra, con microfono e invio in fondo al campo; **Annulla e Salva in fondo**, alla stessa altezza delle altre schermate (come nell'editor delle ricette). Quando la scheda compare per la prima volta, la finestra scorre da sola fino a mostrare Nome e "Valori riferiti a".
   - **v291:** Aggiungi/Modifica Alimento: la finestra è alta come l'editor delle ricette (94% dello schermo, si vede solo la testata sfocata dietro); più spazio sotto il titolo, tra i tasti "Compila scheda…" e le foto (24 px) e tra le foto e il campo (24 px); campo di testo di 4 righe con microfono e invio allineati al fondo del campo. Con la scheda pronta si vedono ancora Nome e "Valori riferiti a" senza scorrere.
@@ -484,7 +486,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
-**Stato:** online, **collaudo in corso dal 25/11/2026**. Tra il 26/11 sera e la mattina del 28/11 (v91–v293) è stata rifinita tutta la grafica di Diario, Alimenti, Storico e Impostazioni, in chiaro e in scuro, con le regole della sezione 3.16, e scritta la finestra "Come funziona Kcal": **la grafica è considerata definitiva dall'utente**. Resta da fare solo la sezione Ricette (e, quando si rigenera l'APK, lo sblocco della rotazione: vedi Note).
+**Stato:** online, **collaudo in corso dal 25/11/2026**. Tra il 26/11 sera e la mattina del 28/11 (v91–v295) è stata rifinita tutta la grafica di Diario, Alimenti, Storico e Impostazioni, in chiaro e in scuro, con le regole della sezione 3.16, e scritta la finestra "Come funziona Kcal": **la grafica è considerata definitiva dall'utente**. Resta da fare solo la sezione Ricette (e, quando si rigenera l'APK, lo sblocco della rotazione: vedi Note).
 
 ---
 
@@ -497,7 +499,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
 ## ✅ COSE DA FARE
 
 ### Da implementare
-**Situazione al 28/11/2026 (v293):**
+**Situazione al 28/11/2026 (v295):**
 0. **Subito, nella prossima chat:** un paio di piccoli bug e 2-3 ritocchi grafici che l'utente spiegherà a voce (non sono descritti qui). (Fatto nella v261: il campo di scrittura in scuro ora è uguale al chiaro.)
 1. Ricette (v280): provare l'editor sul telefono e fare le rifiniture (sfumature della parte che scorre, paragrafo Ricette nella finestra "Come funziona Kcal", "Aggiungi a un pasto" e "Salva come alimento").
 1. Da valutare con l'uso: posizione definitiva dell'ora del pasto nel Diario (per ora è la prima riga della tabella "Lista alimenti") e verifica che Gemini capisca bene l'ora detta a voce.

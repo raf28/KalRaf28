@@ -381,6 +381,7 @@ nav button.on{font-weight:700;color:light-dark(#1f4d35,#fff)}
 #sheet.foodsheet{height:100dvh;max-height:100dvh}
 .foodsheet .fjmp{position:fixed;right:12px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:21}
 .foodsheet #fSt[hidden]{display:none}
+.foodsheet #fTxt{height:204px}
 .foodsheet h3{margin-bottom:14px}
 .foodsheet .row.modes{margin:0 0 24px}
 .foodsheet .ph3{margin-bottom:24px}
@@ -389,7 +390,10 @@ nav button.on{font-weight:700;color:light-dark(#1f4d35,#fff)}
 .lt .rtn{color:light-dark(#2a7a4b,#5cc58a);text-transform:none}
 /* v288: Salva allineato alla fine della pillola del campo di scrittura: sotto microfono e invio resta spazio vuoto (niente tocchi sbagliati); un po' più di distanza dal campo */
 .recsheet #rBtns{margin-top:16px;padding-right:var(--rbtnR,104px)}
-.recsheet .rnotebox .lt{margin-bottom:6px}.recsheet .rnotetx{font-size:14px;line-height:1.5;color:var(--mute)}
+.rnotebox .lt{margin-bottom:6px}.rnotetx{font-size:14px;line-height:1.5;color:var(--mute)}
+.mbox.rnotebox,html:not(.lightmode) .mbox.rnotebox{border-color:light-dark(#a8740a,#e2b43c)}
+.mbox.rpor1,html:not(.lightmode) .mbox.rpor1{border-color:#2f8f5c}
+.rpor1 .lt .rp1{text-transform:uppercase}
 .recsheet .msg.a .card{margin:10px 0 4px}
 #sheet.recsheet{position:relative}
 .recsheet .rjmp{position:absolute;right:12px;z-index:3}
@@ -1058,7 +1062,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 293</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 295</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1837,7 +1841,7 @@ function renderRecipes(){fdKill();
   let h='',cur='';
   list.forEach(r=>{const L=letterOf(r.nome||'?');if(L!==cur){cur=L;h+=`<div class="letter">${L}</div>`}const ing=r.items||r.ingredienti||[],n=r.items?(r.porzioni||1):1,t=sum(ing);t.kcal=t.kcal/n;
     h+=`<details class="card food" data-rid="${esc(r.id)}"><summary><span class="nm">${esc(r.nome)}</span><span class="kv"><b>${f0(t.kcal)} kcal</b><small>per porzione</small></span></summary>
-    ${r.items?`<div class="mbox rview">${mealBoxHTML(r.items,'ricetta',false,null,null,null,{title:recTitle(r),sumLabel:'Totale kcal RICETTA'})}</div><div class="mbox rview">${porzBox(r.items,r.porzioni||1)}</div>${r.note?`<p class="hm rnotev"><b>Note:</b> ${esc(r.note)}</p>`:''}`
+    ${r.items?`<div class="mbox rview">${mealBoxHTML(r.items,'ricetta',false,null,null,null,{title:recTitle(r),sumLabel:'Totale kcal RICETTA'})}</div>${recNoteBox(r).replace('card mbox rnotebox','mbox rview rnotebox')}<div class="mbox rview rpor1">${porzBox(r.items,r.porzioni||1,r)}</div>`
       :(ing.length?`<div class="hm" style="margin-top:8px">${ing.map(i=>`• ${esc(i.nome)} ${esc(i.quantita||'')} — ${f0(i.kcal)} kcal`).join('<br>')}</div>`:'')}
     <div class="row between"><button class="btn sm ghost std2" data-collapse>Annulla</button><span class="row" style="margin:0"><button class="btn sm ghost std2" data-editrecipe="${esc(r.id)}">Modifica</button><button class="btn sm ghost std2" data-delrecipe="${esc(r.id)}">Elimina</button></span></div></details>`});
   $('#recList').innerHTML=h;
@@ -1848,25 +1852,27 @@ function renderRecipes(){fdKill();
    Le quantità salvate sono quelle dell'intera ricetta: la porzione la calcola l'app dividendo per il numero di porzioni. */
 let RD=null;
 const MIC_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg>',SEND_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
-function porzBox(items,n){const t=sum(items),p={};KEYS.forEach(k=>p[k]=t[k]==null?null:t[k]/n);p.miss=t.miss;p.has=t.has;
+function porzBox(items,n,d){const t=sum(items),p={};KEYS.forEach(k=>p[k]=t[k]==null?null:t[k]/n);p.miss=t.miss;p.has=t.has;
   const row=(l,k,sub)=>`<div class="sr${sub?' sub':''}"><span>${l}</span><b>${fv(p,k,'g')}</b></div>`;
-  return`<div class="lt">1 porzione<br><small>su ${n} ${n===1?'porzione':'porzioni'}</small></div><div class="sumt">Totale kcal 1 PORZIONE: <b>${f0(p.kcal)} kcal</b></div><div class="sml">${row('Carboidrati','carboidrati')}${row('di cui zuccheri','zuccheri',1)}${row('Proteine','proteine')}${row('Grassi','grassi')}${row('di cui saturi','saturi',1)}${row('Fibre','fibre')}${row('Sale','sale')}</div>`}
+  return`<div class="lt"><span class="rtn rp1">1 porzione</span><br>Totale kcal e macro${d?'<br>'+recNm(d):''}</div><div class="sumt">Totale kcal 1 PORZIONE: <b>${f0(p.kcal)} kcal</b></div><div class="sml">${row('Carboidrati','carboidrati')}${row('di cui zuccheri','zuccheri',1)}${row('Proteine','proteine')}${row('Grassi','grassi')}${row('di cui saturi','saturi',1)}${row('Fibre','fibre')}${row('Sale','sale')}</div>`}
 /* v289: titolo della tabella della ricetta: «Ricetta», poi in verde il nome e le porzioni, poi «Totale kcal e macro» */
 /* v290: iniziale maiuscola per ogni parola, tranne articoli, preposizioni e congiunzioni (es. «Fiocchi di Latte», «Panino Palloncino (6 Porzioni)») */
 const TC_MIN=new Set(['di','a','da','in','con','su','per','tra','fra','e','ed','o','al','allo','alla','ai','agli','alle','del','dello','della','dei','degli','delle','dal','dallo','dalla','dai','dagli','dalle','nel','nello','nella','nei','negli','nelle','sul','sullo','sulla','sui','sugli','sulle','col','coi','il','lo','la','i','gli','le','un','uno','una','d','l','all','dall','dell','nell','sull']);
 const titleCase=t=>String(t||'').toLowerCase().replace(/[\p{L}\p{N}]+/gu,(w,i)=>i>0&&TC_MIN.has(w)?w:w.charAt(0).toUpperCase()+w.slice(1));
-const recTitle=d=>{const n=Math.max(1,+d.porzioni||1),nm=(d.nome||'').trim();return`Ricetta<br><span class="rtn">${nm?esc(titleCase(nm))+' ':''}(${n} ${n===1?'Porzione':'Porzioni'})</span><br>Totale kcal e macro`};
-const recNoteBox=d=>(d.note||'').trim()?`<div class="card rnotebox"><div class="lt">Note</div><div class="rnotetx">${esc(d.note).replace(/\n/g,'<br>')}</div></div>`:'';
+const recNm=d=>{const n=Math.max(1,+d.porzioni||1),nm=(d.nome||'').trim();return`<span class="rtn">${nm?esc(titleCase(nm))+' ':''}(${n} ${n===1?'Porzione':'Porzioni'})</span>`};
+const recTitle=d=>`Ricetta<br>${recNm(d)}<br>Totale kcal e macro`;
+/* v295: tre cornici distinte. Ricetta: com'era; Note: gialla (quella di «valore generico»), titolo «Note» + nome; 1 porzione: verde di «Nuova Giornata Alimentare», titolo «1 porzione» in verde, «Totale kcal e macro», nome in verde */
+const recNoteBox=d=>(d.note||'').trim()?`<div class="card mbox rnotebox"><div class="lt">Note<br>${recNm(d)}</div><div class="rnotetx">${esc(d.note).replace(/\n/g,'<br>')}</div></div>`:'';
 /* v284: tabelle in chat su richiesta (sempre aggiornate): «totale», «porzione», «note», una o più */
 function recShowHTML(m,d){if(!m.show||!m.show.length||m.err)return'';let h='';
   if(m.show.includes('totale')&&d.items.length)h+=`<div class="card mbox">${mealBoxHTML(d.items,'ricetta',false,null,null,null,{title:recTitle(d),sumLabel:'Totale kcal RICETTA'})}</div>`;
   if(m.show.includes('note')&&(d.note||'').trim())h+=recNoteBox(d);
-  if(m.show.includes('porzione')&&d.items.length)h+=`<div class="card mbox rpor1">${porzBox(d.items,d.porzioni)}</div>`;
+  if(m.show.includes('porzione')&&d.items.length)h+=`<div class="card mbox rpor1">${porzBox(d.items,d.porzioni,d)}</div>`;
   return h}
 function recBodyHTML(){const d=RD;
   /* v284: in alto, una volta sola: totale della ricetta, poi le note (se ci sono), poi la singola porzione */
   return(d.items.length?`<div class="card mbox">${mealBoxHTML(d.items,'ricetta',true,null,null,null,{title:recTitle(d),sumLabel:'Totale kcal RICETTA',delAttr:'data-rdel'})}</div>
-    ${recNoteBox(d)}<div class="card mbox rpor1">${porzBox(d.items,d.porzioni)}</div>`
+    ${recNoteBox(d)}<div class="card mbox rpor1">${porzBox(d.items,d.porzioni,d)}</div>`
     :`<div class="card"><div class="empty">Scrivi o detta gli <b>ingredienti con le quantità</b> e in quante <b>porzioni</b> si divide la ricetta: l'Intelligenza Artificiale calcola kcal e Macro del totale e di una porzione.<br><br>Puoi anche <b>chiedere consigli</b> all'Intelligenza Artificiale su ingredienti, quantità, abbinamenti e sostituzioni: le domande non cambiano la ricetta.<br><br>Cotture, tempi e accortezze vengono <b>riconosciuti e messi nelle note</b> da soli; puoi anche dire «<b>Aggiungi alle note…</b>».<br>Con il tasto <b>Note</b> in alto le vedi e le completi.</div></div>${recNoteBox(d)}`)
    +`<div class="chat" id="rChat">${d.chat.map((m,i)=>m.role==='u'?`<div class="msg u">${esc(m.text)}</div>`:`<div class="msg a${m.err?' e':''}${m.show&&m.show.length?' rsumw':''}">${md(m.text)}${recShowHTML(m,d)}${m.prop&&!m.propDone?`<div class="row" style="margin:8px 0 2px"><button class="btn bdef new" data-rprop="${i}">Aggiungi alla<br>ricetta</button></div>`:m.prop&&m.propDone?'<p class="hm" style="margin:6px 0 0;font-size:13px">✓ Aggiunto alla ricetta</p>':''}${!m.err&&('speechSynthesis' in window)?ttsHTML(i):''}</div>`).join('')}${d.busy?'<div class="typing">Sto calcolando<i></i><i></i><i></i></div>':''}</div>`}
 function recEditor(r){RD=r?JSON.parse(JSON.stringify(r)):{id:null,nome:'',porzioni:1,items:[],note:'',chat:[]};RD.tmp='n'+Date.now();RD.porzioni=Math.min(99,Math.max(1,Math.round(+RD.porzioni||1)));
