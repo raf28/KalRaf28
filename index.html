@@ -15,7 +15,7 @@
 <style>
 :root{color-scheme:light dark;
 --bg:light-dark(#f4f6f1,#111112);--card:light-dark(#fff,#1c1c1e);--ink:light-dark(#17201a,#e8eee9);
---mute:light-dark(#5b6a5f,#97a69b);--line:light-dark(#e0e5dc,#2c2c2e);--soft:light-dark(#eef2ea,#242426);
+--mute:light-dark(#5b6a5f,#fff);--line:light-dark(#e0e5dc,#2c2c2e);--soft:light-dark(#eef2ea,#242426);
 --brand:#1f4d35;--brand2:#2c6a49;--ok:#3a9a62;--warn:#e9a21b;--bad:#d9452b;--me:light-dark(#dcefe2,#23402f)}
 *{box-sizing:border-box;min-width:0}
 html,body{height:100%}
@@ -327,7 +327,7 @@ details.card summary::-webkit-details-marker{display:none}
 .mdock .mrow{background:var(--brand);border-color:var(--brand)}
 .mdock .addm{background:#fff;color:light-dark(#436955,var(--brand));box-shadow:inset 0 0 0 2px light-dark(#436955,var(--brand));font-weight:600}
 .mdock .seg button:not(.on){background:light-dark(#fff,#0f1411);color:light-dark(#17201a,#fff)}
-.mdock .seg button:not(.on) small{color:light-dark(#5b6a5f,#b9c6bd)}
+.mdock .seg button:not(.on) small{color:light-dark(#5b6a5f,#fff)}
 .mdock .seg button.on{background:#2f8f5c;color:#fff;border-color:#2f8f5c}.mdock .seg button.on small{color:#fff}
 .mdock .sarr{color:#fff}
 .mdock .sarr.l{background:linear-gradient(90deg,var(--brand) 55%,transparent)}.mdock .sarr.r{background:linear-gradient(270deg,var(--brand) 55%,transparent)}
@@ -339,14 +339,14 @@ details.card summary::-webkit-details-marker{display:none}
 .rdock .mrow{padding:6px 8px}
 .rdock .seg button{flex:0 0 96px}
 .recsel{font-size:20px;font-weight:700;color:light-dark(#2f8f5c,#4cc184);margin:0 0 12px}
-.mdock .seg button:not(.on) small{color:light-dark(rgba(255,255,255,.8),#b9c6bd)}
+.mdock .seg button:not(.on) small{color:light-dark(rgba(255,255,255,.8),#fff)}
 .mdock .sarr.r{right:0;border-radius:0 999px 999px 0}.mdock .sarr.l{border-radius:999px 0 0 999px}
 
 /* icone più marcate (v72) */
 .ib{color:light-dark(#1f4d35,#1f4d35)}
 .ib svg{width:27px;height:27px;stroke-width:2.5}
 .ib.send{background:var(--brand)}
-nav button{color:light-dark(#4a5a4f,#b8c4bc)}
+nav button{color:light-dark(#4a5a4f,#fff)}
 nav button svg{width:26px;height:26px;stroke-width:2.4}
 nav button.on{color:light-dark(#1f4d35,#1f4d35)}
 
@@ -456,7 +456,7 @@ html.lightmode .recsheet .msg.u{background:#436955;color:#fff} /* messaggi dell'
 .ahead h2{margin:0;font-size:24px;color:#fff}
 .ahead .acnt{font-size:14px;font-weight:500;padding:4px 12px;border-radius:99px;background:rgba(255,255,255,.14)}
 .ahead input{width:100%;margin-top:12px;border:0;border-radius:99px;padding:12px 18px;font-size:16px;background:rgba(255,255,255,.14);color:#fff;box-sizing:border-box}
-.ahead input::placeholder{color:rgba(255,255,255,.7)}
+.ahead input::placeholder{color:#fff}
 /* v160: bordo bianco sempre visibile; al tocco nessuna cornice in più, solo il cursore */
 .ahead input{box-shadow:inset 0 0 0 2px #fff}
 .ahead input:focus,.ahead input:focus-visible{outline:none;box-shadow:inset 0 0 0 2px #fff}
@@ -964,7 +964,7 @@ html:not(.lightmode) .foodsheet textarea::placeholder,html:not(.lightmode) .food
 html:not(.lightmode) .foodsheet #fTxt:focus,html:not(.lightmode) .foodsheet #fTxt:focus-visible{border-color:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.55)}
 .foodsheet #fTxt:focus::placeholder{color:transparent!important}
 /* v318: cornici e bordini di Aggiungi Alimento nel verde dei tasti (in chiaro #436955, in scuro il verde dei tasti); foto delle schede più grandi su due righe; più aria attorno a Annulla/Modifica/Elimina */
-.foodsheet{--fr:light-dark(#436955,#2c6a49)}
+.foodsheet{--fr:var(--brand)} /* v327: verde della testata del Diario (#1f4d35) */
 html:not(.lightmode) .foodsheet .card,html:not(.lightmode) .foodsheet .sl3i{border-color:var(--fr)}
 .foodsheet .card{border:2px solid var(--fr)}
 .foodsheet .card input,.foodsheet .card textarea,.foodsheet .card select{border:2px solid var(--fr)!important}
@@ -1010,6 +1010,10 @@ details .row.between:has(>[data-collapse])>.row{display:contents}
 details .row.between:has(>[data-collapse]){justify-content:space-evenly;gap:4px;padding-left:6px;padding-right:6px}
 /* v326: STANDARD TRE TASTI: Annulla a sinistra, Elimina a destra, Modifica esattamente al centro (tasti della stessa larghezza, spazi uguali) */
 details .row.between:has(>[data-collapse]){justify-content:space-between;gap:0;padding-left:0;padding-right:0}
+/* v327: in scuro tutte le scritte grigie diventano bianche (testi secondari, didascalie, note, segnaposto) */
+html:not(.lightmode) .hm,html:not(.lightmode) small,html:not(.lightmode) figcaption,html:not(.lightmode) label,html:not(.lightmode) .empty,html:not(.lightmode) ::placeholder{color:#fff;opacity:1}
+html:not(.lightmode) .btn.two small{opacity:1}
+html:not(.lightmode) .dayline,html:not(.lightmode) .kc .of,html:not(.lightmode) .kc .bon,html:not(.lightmode) .legend,html:not(.lightmode) .macros small,html:not(.lightmode) .mbar small,html:not(.lightmode) .row.modes .btn small,html:not(.lightmode) .lb .cap{opacity:1}
 /* v311: in scuro i campi di scrittura (Diario, chat e nome delle ricette) hanno lo stesso nero-grigio di «Cerca un alimento» (--card #1c1c1e) con testo bianco; in chiaro invariato */
 html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,html:not(.lightmode) .comp textarea:focus-visible{background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(to bottom,#265e41,#1f4d35 50%,#183c29) border-box;color:#fff}
 html:not(.lightmode) .comp textarea::placeholder{color:#fff;opacity:1}
@@ -1156,7 +1160,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 326</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 327</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
