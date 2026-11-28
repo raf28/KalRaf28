@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 270 (28/11/2026).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 271 (28/11/2026).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **Kcal** (nome del repository e del progetto: **KalRaf28**; titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **270**.
+> Sto sviluppando **Kcal** (nome del repository e del progetto: **KalRaf28**; titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **271**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -53,7 +53,7 @@ KalRaf28 è un diario alimentare personale. Al posto di contare le calorie nelle
 - **Mai spese extra per l'API** oltre all'abbonamento.
 - In futuro forse un'APK.
 
-## 3. Come funziona oggi (v270): sezioni
+## 3. Come funziona oggi (v271): sezioni
 
 La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impostazioni** (Preimpostati tolto nella v53). La voce attiva è evidenziata con una pillola verde `#2f8f5c`.
 
@@ -193,7 +193,7 @@ Valgono per tutte le sezioni e per quelle future (Ricette). Nel codice le regole
 - **Verdi:** `#1f4d35` (testate, tasti normali), `#2f8f5c` (tasti in evidenza: "Nuova Giornata Alimentare", "Elimina pranzo", pasto/voce selezionata, frecce della data, cursori), `#436955` (tasti microfono/fotocamera in chiaro e messaggi dell'utente nel Diario in chiaro), `#4cc184`/`#5cc58a` (verdi accesi del tema scuro e valori "sicuri").
 - **Rosso** (`--bad`) solo per il tasto che **elimina davvero** (quello della conferma); tutti gli altri Elimina e le X sono verdi.
 - **Bianco attenuato della modalità scura:** `#e6ece8` (il tono del tasto +) per il bordo delle pillole di Alimenti e Storico e per l'interno del campo di scrittura (v263, v268).
-- **Pillole degli elenchi** (Alimenti, Storico): alte 60 px (padding 5 px), bordo 4 px. Chiaro: bianche con bordo e scritte `#1f4d35` e rilievo 3D **medio**. Scuro: grigio `#1c1c1e` con scritte **bianche**, bordo nel bianco del tasto + `#e6ece8` (meno luminoso del bianco pieno sul nero, anche il contorno del pallino dello Storico, v263); dalla v270 **alone di luce** in alto a sinistra (`radial-gradient(ellipse 45% 130% at 10% 0%, bianco 16% → 6% → trasparente)`) sopra una sfumatura verticale `#2e2e32` → `#1f1f22` → `#111113`, con il rilievo marcato (`inset 0 -5px 0 rgba(0,0,0,.55), inset 0 3px 2px rgba(255,255,255,.2)`). La v269 (luce diagonale e rilievo morbido) è stata sostituita. Nessuna ombra esterna. Lettere dell'indice bianche in scuro. **Chiaro, dalla v255:** rilievo medio con filo in basso sfocato (`inset 0 -3px 3px -1px rgba(31,77,53,.14), inset 0 2px 2px rgba(255,255,255,.95)`) e, dalla v266, **luce diagonale** a 115°: bianco pieno fino al **10%**, poi sfumatura lunga fino a `#d6e0da` sul bordo destro (`linear-gradient(115deg,#fff 0,#fff 10%,#fbfcfb 20%,#f5f8f6 32%,#eef3f0 45%,#e7eee9 58%,#e0e8e3 72%,#dae4de 86%,#d6e0da 100%)`). Prima: v256 bianco fino al 20% e fine `#e4ebe6`; v265 riflesso di luce (scartato).
+- **Pillole degli elenchi** (Alimenti, Storico): alte 60 px (padding 5 px), bordo 4 px. Chiaro: bianche con bordo e scritte `#1f4d35` e rilievo 3D **medio**. Scuro: grigio `#1c1c1e` con scritte **bianche**, bordo nel bianco del tasto + `#e6ece8` (meno luminoso del bianco pieno sul nero, anche il contorno del pallino dello Storico, v263); rilievo 3D **marcato** verticale (`linear-gradient(to bottom,#3e3e42 0,#242427 45%,#0e0e10 100%)`, `inset 0 -5px 0 rgba(0,0,0,.55), inset 0 3px 2px rgba(255,255,255,.2)`, v236): confermato dall'utente il 28/11 dopo aver provato la luce diagonale (v269) e l'alone (v270). Nessuna ombra esterna. Lettere dell'indice bianche in scuro. **Chiaro, dalla v255:** rilievo medio con filo in basso sfocato (`inset 0 -3px 3px -1px rgba(31,77,53,.14), inset 0 2px 2px rgba(255,255,255,.95)`) e, dalla v266, **luce diagonale** a 115°: bianco pieno fino al **10%**, poi sfumatura lunga fino a `#d6e0da` sul bordo destro (`linear-gradient(115deg,#fff 0,#fff 10%,#fbfcfb 20%,#f5f8f6 32%,#eef3f0 45%,#e7eee9 58%,#e0e8e3 72%,#dae4de 86%,#d6e0da 100%)`). Prima: v256 bianco fino al 20% e fine `#e4ebe6`; v265 riflesso di luce (scartato).
 - **3D e ombre (v187–v197):** rilievo 3D (luce in alto, filo scuro in basso, piccola ombra, si "abbassa" quando premuto) **solo su ciò che si preme** (tasti, pasti selezionati e no, X, voce selezionata della barra in basso, "Aggiungi alimento", pillole degli elenchi). I **contenitori** (pillola della data, barra del pasto, barra dei pasti e delle Ricette, ovali delle testate) hanno solo un'ombra morbida. Il tasto **+** è un cerchio bianco "bombato" senza bordo con + verde scuro.
 - **Sfumature** (21 px) sotto le testate e sopra le barre in basso in Alimenti, Storico, Ricette e Impostazioni; nel Diario sotto la barra del pasto e sopra la riga dei pasti.
 - **Frecce ↑ ↓** trasparenti: alla stessa altezza del Diario in tutte le sezioni; in scuro contorno e freccia bianchi.
@@ -435,10 +435,11 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **v268:** modalità scura, l'interno del campo di scrittura del Diario passa da `#f4f6f1` a `#e6ece8`, il bianco attenuato del tasto + già usato per il bordo delle pillole scure: in scuro tutti i bianchi attenuati sono uguali. In chiaro resta `#f4f6f1`.
   - **v269:** modalità scura, pillole chiuse di Alimenti e Storico con la variante 3 dell'anteprima: luce diagonale dal grigio più chiaro in alto a sinistra (`#424246`) al quasi nero in basso a destra (`#111113`) e rilievo morbido con il filo in basso sfocato, al posto del rilievo verticale marcato. Bordo `#e6ece8` e scritte invariati; nessuna ombra esterna.
   - **v270:** modalità scura, pillole chiuse di Alimenti e Storico con la variante 4 dell'anteprima al posto della v269: alone di luce bianco tenue in alto a sinistra sopra la sfumatura verticale (`#2e2e32` → `#111113`), rilievo marcato con filo di luce in alto e filo scuro in basso. Bordo `#e6ece8` e scritte invariati.
+  - **v271:** modalità scura, pillole di Alimenti e Storico tornate al rilievo verticale marcato (quello della v236, "1. Attuale" dell'anteprima), togliendo le prove v269 e v270. Il bordo resta `#e6ece8` (v263).
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
-**Stato:** online, **collaudo in corso dal 25/11/2026**. Tra il 26/11 sera e la notte del 28/11 (v91–v270) è stata rifinita tutta la grafica di Diario, Alimenti, Storico e Impostazioni, in chiaro e in scuro, con le regole della sezione 3.16, e scritta la finestra "Come funziona Kcal": **la grafica è considerata definitiva dall'utente**. Resta da fare solo la sezione Ricette (e, quando si rigenera l'APK, lo sblocco della rotazione: vedi Note).
+**Stato:** online, **collaudo in corso dal 25/11/2026**. Tra il 26/11 sera e la notte del 28/11 (v91–v271) è stata rifinita tutta la grafica di Diario, Alimenti, Storico e Impostazioni, in chiaro e in scuro, con le regole della sezione 3.16, e scritta la finestra "Come funziona Kcal": **la grafica è considerata definitiva dall'utente**. Resta da fare solo la sezione Ricette (e, quando si rigenera l'APK, lo sblocco della rotazione: vedi Note).
 
 ---
 
@@ -451,7 +452,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
 ## ✅ COSE DA FARE
 
 ### Da implementare
-**Situazione al 28/11/2026 (v270):**
+**Situazione al 28/11/2026 (v271):**
 0. **Subito, nella prossima chat:** un paio di piccoli bug e 2-3 ritocchi grafici che l'utente spiegherà a voce (non sono descritti qui). (Fatto nella v261: il campo di scrittura in scuro ora è uguale al chiaro.)
 1. Poi la sezione Ricette (qui sotto).
 2. La gestione verticale/orizzontale dell'app (vedi Note in fondo).
