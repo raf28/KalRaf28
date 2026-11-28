@@ -939,6 +939,9 @@ html:not(.lightmode) .comp textarea{border:4px solid #436955;box-shadow:0 2px 5p
 /* v262: in scuro il bordo usa il verde del tasto microfono (#1f4d35), con la stessa sfumatura del chiaro (in alto ×1,22 = #265e41, in basso ×0,78 = #183c29) */
 /* v268: in scuro l'interno del campo usa il bianco attenuato del tasto + (#e6ece8), come il bordo delle pillole scure */
 html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,html:not(.lightmode) .comp textarea:focus-visible{outline:none;border-color:transparent;background:linear-gradient(#e6ece8,#e6ece8) padding-box,linear-gradient(to bottom,#265e41,#1f4d35 50%,#183c29) border-box}
+/* v310: in scuro il campo «Nome della ricetta» ha lo stesso bianco attenuato del campo di scrittura della chat (#e6ece8, testo scuro); in chiaro invariato */
+html:not(.lightmode) .recsheet .rname{background:#e6ece8;color:#17201a}
+html:not(.lightmode) .recsheet .rname::placeholder{color:#5d685f;opacity:1}
 /* v273: ora del pasto nella tabella e nello Storico */
 .mbox .mora,#mealItems .mora{font-size:15px;margin:2px 0 8px;color:var(--ink)}
 .mora b{color:light-dark(#2a7a4b,#5cc58a)}
@@ -1080,7 +1083,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 309</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 310</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
