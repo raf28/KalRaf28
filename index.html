@@ -378,10 +378,15 @@ nav button.on{font-weight:700;color:light-dark(#1f4d35,#fff)}
 .recsheet .rcomp{margin:0 -16px;border-top:1px solid var(--line)}
 .recsheet .rbtns{margin-top:10px}
 /* v291: Aggiungi/Modifica Alimento alto come l'editor delle ricette, con più spazio tra tasti, foto e campo; microfono e invio in basso, allineati al fondo del campo */
-#sheet.foodsheet{height:94dvh;max-height:94dvh}
-.foodsheet h3{margin-bottom:14px}
+#sheet.foodsheet{height:94dvh;max-height:94dvh;display:flex;flex-direction:column;padding-bottom:calc(12px + env(safe-area-inset-bottom))}
+#sheet.foodsheet>*{flex:none}
+.foodsheet h3{margin-bottom:24px}
+/* v292: senza scheda il campo di testo si allunga e riempie lo spazio; Annulla e Salva restano in fondo, alla stessa altezza delle altre schermate */
+#sheet.foodsheet:not(.hascard)>.fin{flex:1 1 auto;min-height:120px}
+#sheet.foodsheet:not(.hascard)>.fin textarea{height:auto;align-self:stretch}
+.foodsheet>.row.between:last-child{margin-top:auto;padding-top:10px}
 .foodsheet .row.modes{margin:0 0 24px}
-.foodsheet .ph3{margin-bottom:24px}
+.foodsheet .ph3{margin-bottom:32px}
 .foodsheet .fin{align-items:flex-end}
 .foodsheet .fin .fside{justify-content:flex-end}
 .lt .rtn{color:light-dark(#2a7a4b,#5cc58a);text-transform:none}
@@ -1056,7 +1061,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 291</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 292</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1978,7 +1983,7 @@ async function foodSheet(f){
     ${stErr?'<div class="tts" style="margin:0 0 6px"><button class="tb" id="fRetry">↻ Riprova</button></div>':''}<p class="hm" id="fSt">${esc(st||(auto&&!card?'Modalità automatica: detta, scrivi o aggiungi una foto e la scheda si prepara da sola.':''))}</p>
     ${cardHtml()}
     <div class="row between"><button class="btn sm ghost std2" id="ffCancel">Annulla</button><button class="btn std2" id="ffSave" ${card?'':'disabled'}>Salva</button></div>`);
-    $('#ffCancel').onclick=ffExit;sheetGuard=ffExit;$('#sheet').classList.add('foodsheet');
+    $('#ffCancel').onclick=ffExit;sheetGuard=ffExit;$('#sheet').classList.add('foodsheet');$('#sheet').classList.toggle('hascard',!!card);
     bindSlots(ph,()=>{grab();draw();if(auto)prepare()});
     dictate($('#fTxt'),$('#fMic'),()=>{if(auto&&$('#fTxt'))prepare()});
     $('#fSend').onclick=()=>{stopDictation();prepare(true)};
@@ -1994,7 +1999,10 @@ async function foodSheet(f){
       const parts=[{text:txt.trim()||'(vedi foto)'}];for(const k of PHK)if(ph[k])parts.push({text:'Foto '+PHL[k].toLowerCase()+':'},{inlineData:{mimeType:'image/jpeg',data:ph[k].split(',')[1]}});
       try{const o=await gemini(SYS_FOOD,[{role:'user',parts}],SCHEMA_FOOD);card={...(card||{}),nome:String(o.nome||''),riferimento:String(o.riferimento||'100 g'),note:String(o.note||'')};FKEYS.forEach(([k])=>card[k]=nn(o[k]));fixMacros(card);st='Scheda pronta: controlla i valori e premi Salva.'}
       catch(e){st=e.message;stErr=true}
-      busy=false;if(!$('#fTxt'))return;draw();if(pend){pend=false;prepare()}};
+      busy=false;if(!$('#fTxt'))return;const nuova=!$('#ffN')&&!!card;draw();
+      /* v292: quando la scheda compare per la prima volta, la finestra scorre fino a mostrare Nome e «Valori riferiti a» */
+      if(nuova&&$('#ffR')){const sh=$('#sheet'),r=$('#ffR').getBoundingClientRect(),sb=sh.getBoundingClientRect();if(r.bottom>sb.bottom-8)sh.scrollTop+=r.bottom-sb.bottom+16}
+      if(pend){pend=false;prepare()}};
   /* v281: uscita da Aggiungi/Modifica Alimento: se c'è qualcosa chiede «Vuoi uscire senza salvare?» */
   const sig=()=>{grab();return JSON.stringify([txt,card,PHK.map(k=>ph[k]?ph[k].length:0)])};let sig0=null;
   const ffExit=()=>{if(sig0!==null&&sig()===sig0){closeSheet();return}exitConfirm(()=>closeSheet(),()=>{const b=$('#ffSave');if(b&&!b.disabled)b.click()},!!(card&&(card.nome||'').trim()))};
