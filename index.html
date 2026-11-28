@@ -1125,10 +1125,6 @@ html:not(.lightmode) #v-impost input[type=number],html:not(.lightmode) #v-impost
 html:not(.lightmode) .card:has(>.empty),html:not(.lightmode) #mealItems:has(>.empty),html:not(.lightmode) #histList>.empty,html:not(.lightmode) #foodList>.empty,html:not(.lightmode) #recList>.empty{border-color:#fff!important}
 html:not(.lightmode) .msg.a:not(.e):not(.rsumw):not(.rsum){border-color:#fff!important}
 html:not(.lightmode) .recsheet .rname,html:not(.lightmode) .recsheet .rname:focus,html:not(.lightmode) .recsheet .rname:focus-visible{border-color:#fff!important}
-/* v376 (prova): in scuro bordino super sottile bianco (1px) su: campo del Diario e chat di Aggiungi Ricetta (filo interno), pillola data/«Nuova Giornata Alimentare», «Cerca un alimento», «Cerca una ricetta», legenda dello Storico */
-html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus{box-shadow:inset 0 0 0 1px #fff!important}
-html:not(.lightmode) .ahead input#foodQ,html:not(.lightmode) .ahead input#recQ,html:not(.lightmode) .ahead input#foodQ:focus,html:not(.lightmode) .ahead input#recQ:focus,html:not(.lightmode) #v-storico .hlegp{border:1px solid #fff!important}
-html:not(.lightmode) .dayline{box-shadow:0 0 0 1px #fff,0 3px 10px rgba(0,0,0,.35)!important}
 /* v311: in scuro i campi di scrittura (Diario, chat e nome delle ricette) hanno lo stesso nero-grigio di «Cerca un alimento» (--card #1c1c1e) con testo bianco; in chiaro invariato */
 html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,html:not(.lightmode) .comp textarea:focus-visible{background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(to bottom,#265e41,#1f4d35 50%,#183c29) border-box;color:#fff}
 html:not(.lightmode) .comp textarea::placeholder{color:#fff;opacity:1}
@@ -1275,7 +1271,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 376</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 377</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
