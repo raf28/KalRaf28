@@ -1080,7 +1080,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 305</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 306</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1950,7 +1950,7 @@ const SHARE_SVG='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" str
    Il tasto è disattivato se negli Alimenti c'è già un alimento con lo stesso nome; se quell'alimento viene eliminato torna attivo. */
 const nmKey=t=>String(t||'').trim().toLowerCase().replace(/\s+/g,' ');
 const recIsFood=r=>!!(r&&nmKey(r.nome)&&S.foods.some(x=>nmKey(x.nome)===nmKey(r.nome)));
-function rec2food(r){const n=Math.max(1,+r.porzioni||1),it=r.items||r.ingredienti||[],t=sum(it),div=r.items?n:1,c={nome:(r.nome||'').trim(),riferimento:'1 porzione',note:''};
+function rec2food(r){const n=Math.max(1,+r.porzioni||1),it=r.items||r.ingredienti||[],t=sum(it),div=r.items?n:1,c={nome:titleCase((r.nome||'').trim().replace(/\s+/g,' ')),riferimento:'1 porzione',note:''};
   FKEYS.forEach(([k])=>{const v=t[k];c[k]=v==null?null:(k==='sale'?Math.round(v/div*100)/100:Math.round(v/div*10)/10)});c.kcal=t.kcal==null?null:Math.round(t.kcal/div);foodSheet(null,c)}
 function recShareText(r){const n=Math.max(1,+r.porzioni||1),it=r.items||[],t=sum(it),g=(k)=>t[k]==null?'—':fk(k,t[k])+' g',p=k=>t[k]==null?'—':fk(k,t[k]/n)+' g';
   const L=[`🍽️ *${titleCase(r.nome||'Ricetta')}*`,`${n} ${n===1?'porzione':'porzioni'}`,''];
