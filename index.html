@@ -1048,6 +1048,10 @@ html.lightmode .foodsheet .card{background:#fff!important;border:1px solid #2c6a
 html.lightmode .foodsheet .card input,html.lightmode .foodsheet .card textarea,html.lightmode .foodsheet .card select{background:#f4f6f1!important;border:1px solid #2c6a49!important}
 html.lightmode .foodsheet .sl3i{background:#f4f6f1;border-width:1.5px}
 html.lightmode .foodsheet .fcur{left:13px;top:8px}
+/* v340: chat: il testo parte più in basso (anche quello scritto, così non rimbalza su al tocco) e il trattino lampeggiante sta sopra, lontano dalla curva e dal testo */
+.foodsheet #fTxt{padding:24px 20px 4px!important}
+.foodsheet .fcur{left:26px;top:10px;height:14px}
+html.lightmode .foodsheet .fcur{left:24px;top:8px}
 /* v311: in scuro i campi di scrittura (Diario, chat e nome delle ricette) hanno lo stesso nero-grigio di «Cerca un alimento» (--card #1c1c1e) con testo bianco; in chiaro invariato */
 html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,html:not(.lightmode) .comp textarea:focus-visible{background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(to bottom,#265e41,#1f4d35 50%,#183c29) border-box;color:#fff}
 html:not(.lightmode) .comp textarea::placeholder{color:#fff;opacity:1}
@@ -1194,7 +1198,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 339</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 340</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -2166,7 +2170,7 @@ async function foodSheet(f,pre){
   let draw=()=>{sheet(`<h3>${f?'Modifica Alimento':'Aggiungi Alimento'}</h3>
     <div class="card modeblk"><h3 style="font-size:16px">Modalità compilazione</h3><div class="row modes"><button class="btn sm ghost two ${auto?'sel':''}" id="fGo">${auto?'<i class="chk">✓</i>':''}Compila scheda Automaticamente<small>da foto, testo o voce</small></button><button class="btn sm ghost two ${!auto?'sel':''}" id="fMan">${!auto?'<i class="chk">✓</i>':''}Compila scheda Manualmente<small>scrivi tu tutti i valori</small></button></div></div>
     ${slotsHtml(ph)}
-    <div class="card chatblk"><h3 style="font-size:16px">Chat</h3><div class="fin"><div class="tw"><textarea id="fTxt" class="ta" rows="5" placeholder="&#10;Scrivi o detta nome, marca, valori e precisazioni. Es. «Prosciutto cotto Rovagnati, per 100 grammi: 135 kcal…»">${esc(txt)}</textarea><i class="fcur"></i></div>${MIC}</div></div>
+    <div class="card chatblk"><h3 style="font-size:16px">Chat</h3><div class="fin"><div class="tw"><textarea id="fTxt" class="ta" rows="5" placeholder="Scrivi o detta nome, marca, valori e precisazioni. Es. «Prosciutto cotto Rovagnati, per 100 grammi: 135 kcal…»">${esc(txt)}</textarea><i class="fcur"></i></div>${MIC}</div></div>
     ${stErr?'<div class="tts" style="margin:0 0 6px"><button class="tb" id="fRetry">↻ Riprova</button></div>':''}<p class="hm" id="fSt"${st?'':' hidden'}>${esc(st)}</p>
     ${cardHtml()}
     <div class="row between"><button class="btn sm ghost std2" id="ffCancel">Annulla</button><button class="btn std2" id="ffSave" ${card?'':'disabled'}>Salva</button></div>
