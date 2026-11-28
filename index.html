@@ -1061,8 +1061,8 @@ html:not(.lightmode) .foodsheet .fcur{left:24px;top:8px}
 /* v344: Impostazioni, blocchi con la stessa cornice della «Lista alimenti» del Diario: 2 px, verde #2c6a49 in chiaro, bianco #fff in scuro (solo in Impostazioni) */
 #v-impost .card{border:2px solid #2c6a49!important}
 html:not(.lightmode) #v-impost .card{border-color:#fff!important}
-/* v345 (prova): pillole dello Storico con la cornice sottile da 2 px (prima 4 px), stessi colori. Per tornare indietro: 4px */
-#v-storico details.hday{border-width:2px!important}
+/* v345-v346: pillole di Storico, Alimenti e Ricette con la cornice sottile da 2 px (prima 4 px), stessi colori */
+#v-storico details.hday,#v-alimenti details.food,#v-ricette details.food{border-width:2px!important}
 /* v311: in scuro i campi di scrittura (Diario, chat e nome delle ricette) hanno lo stesso nero-grigio di «Cerca un alimento» (--card #1c1c1e) con testo bianco; in chiaro invariato */
 html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,html:not(.lightmode) .comp textarea:focus-visible{background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(to bottom,#265e41,#1f4d35 50%,#183c29) border-box;color:#fff}
 html:not(.lightmode) .comp textarea::placeholder{color:#fff;opacity:1}
@@ -1209,7 +1209,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 345</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 346</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
