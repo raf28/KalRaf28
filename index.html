@@ -382,6 +382,27 @@ nav button.on{font-weight:700;color:light-dark(#1f4d35,#fff)}
 #v-ricette details.food[open] .rview{margin-top:10px;border:0;padding:0}
 #v-ricette .rnotev{margin:10px 0 0}
 html.lightmode .recsheet .msg.u{background:#436955;color:#fff} /* messaggi dell'utente come nel Diario */
+/* v281: porzioni e note: due pillole uguali e più piccole; riquadro delle note che copre la parte centrale */
+.recsheet .rrow{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.recsheet .rpor,.recsheet .rnbtn{width:172px;height:38px;box-sizing:border-box;align-self:auto;flex:none}
+.recsheet .rpor{padding:3px 5px 3px 14px;gap:6px;font-size:14px;justify-content:space-between;white-space:nowrap}
+.recsheet .rpor b{font-size:16px}
+.recsheet .rpm{width:28px;height:28px;font-size:18px}
+.recsheet .rnbtn{border:0;border-radius:99px;background:var(--brand2);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;background-image:linear-gradient(to bottom,rgba(255,255,255,.22),rgba(255,255,255,0) 55%,rgba(0,0,0,.12));box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -2px 0 rgba(0,0,0,.18),0 2px 5px rgba(0,0,0,.28)}
+.recsheet .rnbtn .rdot{width:8px;height:8px;border-radius:50%;background:#fff}
+.recsheet .rnbtn .rdot[hidden]{display:none}
+.recsheet.rnmode .rrow,.recsheet.rnmode .rbody,.recsheet.rnmode .rjmp{display:none}
+.recsheet .rnpanel{flex:1 1 auto;display:flex;flex-direction:column;min-height:0;padding:10px 0 8px}
+.recsheet .rnpanel[hidden]{display:none}
+.recsheet .rnpanel h4{margin:0 0 8px;font-size:17px}
+.recsheet .rnpanel textarea{flex:1 1 auto;min-height:120px;width:100%;box-sizing:border-box;border:2px solid var(--line);border-radius:16px;padding:12px 14px;font-size:15px;line-height:1.5;color:var(--ink);background:var(--bg);resize:none}
+.recsheet .rnpanel .hm{margin:6px 2px 0;font-size:13px;min-height:1em}
+.recsheet.rnmode .rname{opacity:.75}
+.recsheet.rnmode .rcomp textarea{border-style:dashed!important}
+.recsheet .rclose{justify-content:center}
+.recsheet .rclose[hidden],.recsheet .rbtns[hidden]{display:none}
+.modal.cfm .btn.bdef.bad{background:var(--bad)}
+.modal.cfm .btn.bdef.new{background:#2f8f5c}
 /* v279: Alimenti e Ricette occupano tutta l'altezza: la pillola «Aggiungi …» resta sempre in fondo, alla stessa altezza, anche con pochi elementi o nessuno */
 #v-alimenti:not([hidden]),#v-ricette:not([hidden]){display:flex;flex-direction:column;min-height:100%;box-sizing:border-box}
 #v-alimenti>.wrap,#v-ricette>.wrap{flex:1 0 auto;width:100%;box-sizing:border-box}
@@ -1023,7 +1044,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 280</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 281</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1179,10 +1200,13 @@ function hpush(st){try{history.pushState(st,'')}catch(e){}curDead=false}
 function go(v){if(v===ui.view){render();return}ui.view=v;if(v==='diario')ui.toTop=true;/* v173: tornando al Diario si riparte dall'alto con tutta la testata */hpush({v});render();$('#main').scrollTop=0}
 function sheet(html){const was=!$('#modal').hidden;$('#sheet').className='sheet';$('#sheet').innerHTML=html;$('#modal').hidden=false;$('#sheet').scrollTop=0;if(!was){
   /* v149: con CloseWatcher il gesto Indietro chiude la finestra senza passare dalla cronologia (niente schermata che scorre); altrimenti si usa la cronologia */
-  if('CloseWatcher' in window){try{const w=new CloseWatcher();sheetCW=w;w.onclose=()=>{if(sheetCW===w){sheetCW=null;closeSheet()}};return}catch(e){}}
-  hpush({v:ui.view,sheet:1})}}
-let sheetCW=null;
-function closeSheet(fromPop){if(sheetCW){const w=sheetCW;sheetCW=null;try{w.destroy()}catch(e){}}if(typeof rec!=='undefined'&&rec)rec.stop();if($('#modal').hidden)return;$('#modal').hidden=true;$('#sheet').innerHTML='';
+  armSheetBack();}}
+/* v281: in Aggiungi/Modifica Alimento e Ricetta il gesto Indietro non chiude: chiama sheetGuard (conferma «Vuoi uscire senza salvare?») */
+let sheetCW=null,sheetGuard=null;
+function armSheetBack(){
+  if('CloseWatcher' in window){try{const w=new CloseWatcher();sheetCW=w;w.onclose=()=>{if(sheetCW!==w)return;sheetCW=null;if(sheetGuard&&!$('#modal').hidden){armSheetBack();sheetGuard();return}closeSheet()};return}catch(e){}}
+  hpush({v:ui.view,sheet:1})}
+function closeSheet(fromPop){sheetGuard=null;if(sheetCW){const w=sheetCW;sheetCW=null;try{w.destroy()}catch(e){}}if(typeof rec!=='undefined'&&rec)rec.stop();if($('#modal').hidden)return;$('#modal').hidden=true;$('#sheet').innerHTML='';
   if(!fromPop&&history.state&&history.state.sheet){try{history.replaceState({v:ui.view,dead:1},'')}catch(e){}curDead=true}}
 /* foto a tutto schermo (Diario e Alimenti): tocca per chiudere, anche con il tasto Indietro */
 let lbEl=null,lbSkip=false,fdSkip=false;
@@ -1238,7 +1262,7 @@ function showInfo(){sheet(`<div class="info"><h3>Come funziona Kcal</h3>
 <div class="row" style="margin-top:14px"><button class="btn bdef" id="noSheet">Chiudi</button></div></div>`)}
 document.addEventListener('click',e=>{const im=e.target.closest('.ph figure img');if(!im)return;e.preventDefault();e.stopPropagation();const fc=im.closest('figure').querySelector('figcaption');openLb(im.src,fc?fc.textContent:'')},true);
 window.addEventListener('popstate',e=>{if(lbSkip){lbSkip=false;return}if(fdSkip){fdSkip=false;return}if(lbEl){closeLb(true);return}const st=e.state||{v:'diario'};
-  if(!$('#modal').hidden){closeSheet(true);if(st.dead)history.back();if(!st.sheet)return}
+  if(!$('#modal').hidden){if(sheetGuard){hpush({v:ui.view,sheet:1});sheetGuard();return}closeSheet(true);if(st.dead)history.back();if(!st.sheet)return}
   /* Indietro di Android: chiude prima la scheda alimento aperta (v112) */
   {const od=document.querySelector('#v-'+ui.view+' details.food[open], #v-'+ui.view+' details.hday[open]');if(od){od.dataset.pop='1';od.open=false;return}}
   if(curDead){curDead=false;if((st.v||'diario')===ui.view&&!st.sheet){history.back();return}}
@@ -1754,6 +1778,11 @@ function slotsHtml(ph){const L=[['confezione','Foto confezione 1'],['confezione2
   return`<div class="ph3">${L.map(([k,l])=>`<div class="sl3"><div class="sl3i">${ph[k]?`<img alt="${l}" src="${esc(ph[k])}">`:'<span>nessuna foto</span>'}</div><div class="sl3l">${l}</div><div class="sl3b"><button data-slot="${k}" data-cam="1" aria-label="Scatta foto: ${l}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></button><button data-slot="${k}" aria-label="Scegli file: ${l}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.8"/><path d="M21 16l-5-5-9 9"/></svg></button></div><button class="sl3r btn std2" data-unslot="${k}" ${ph[k]?'':'disabled'}>Rimuovi</button></div>`).join('')}</div>`}
 function bindSlots(ph,redraw){document.querySelectorAll('[data-slot]').forEach(b=>b.onclick=async()=>{const d=await pickImage(!!b.dataset.cam);if(d){ph[b.dataset.slot]=d;redraw()}});document.querySelectorAll('[data-unslot]').forEach(b=>b.onclick=()=>miniConfirm('Eliminare la foto?','Sei sicuro di voler eliminare la foto?\nVerrà cancellata definitivamente.',()=>{ph[b.dataset.unslot]=null;const c=['confezione','confezione2','confezione3'].map(k=>ph[k]).filter(Boolean);['confezione','confezione2','confezione3'].forEach((k,i)=>ph[k]=c[i]||null);redraw()}))}
 /* v171: piccola conferma sopra una finestra già aperta (es. Rimuovi foto in Modifica alimento) */
+/* v281: conferma di uscita per Aggiungi/Modifica Alimento e Ricetta: a sinistra «Esci senza salvare» (rosso), a destra «Salva» (verde) */
+function exitConfirm(onExit,onSave,canSave){if(document.querySelector('.modal.cfm'))return;const o=document.createElement('div');o.className='modal cfm';
+  o.innerHTML=`<div class="sheet"><h3>Vuoi uscire senza salvare?</h3><p class="hm">Se esci adesso, quello che hai inserito andrà perso.</p><div class="row between"><button class="btn bdef bad" data-c="exit">Esci senza<br>salvare</button><button class="btn bdef new" data-c="save" ${canSave?'':'disabled'}>Salva</button></div>${canSave?'':'<p class="hm" style="margin:8px 0 0;font-size:13px">Per salvare completa prima i dati obbligatori.</p>'}</div>`;
+  document.body.appendChild(o);const done=()=>o.remove();
+  o.addEventListener('click',e=>{if(e.target===o){done();return}const b=e.target.closest('[data-c]');if(!b||b.disabled)return;done();if(b.dataset.c==='exit')onExit();else onSave()})}
 function miniConfirm(title,text,onYes,yesL){const o=document.createElement('div');o.className='modal cfm';o.innerHTML=`<div class="sheet"><h3>${esc(title)}</h3><p class="hm">${esc(text).replace(/\n/g,'<br>')}</p><div class="row between"><button class="btn std2" data-c="no">Annulla</button><button class="btn std2 bad" data-c="yes">${esc(yesL||'Elimina')}</button></div></div>`;
   let cw=null;const close=()=>{if(cw){const w=cw;cw=null;try{w.destroy()}catch(e){}}o.remove()};
   try{if(window.CloseWatcher){cw=new CloseWatcher();cw.onclose=()=>{cw=null;o.remove()}}}catch(e){}
@@ -1786,39 +1815,64 @@ function recBodyHTML(){const d=RD;
   return(d.items.length?`<div class="card mbox">${mealBoxHTML(d.items,'ricetta',true,null,null,null,{title:'Ricetta<br>Totale kcal e macro',sumLabel:'Totale kcal RICETTA',delAttr:'data-rdel'})}</div>
     <div class="card mbox rpor1">${porzBox(d.items,d.porzioni)}</div>`
     :`<div class="card"><div class="empty">Scrivi o detta gli <b>ingredienti con le quantità</b> e in quante <b>porzioni</b> si divide la ricetta: l'Intelligenza Artificiale calcola kcal e Macro del totale e di una porzione.</div></div>`)
-   +`<div class="rnote"><label for="rNote">Note</label><textarea id="rNote" rows="2" placeholder="Tempi e modi di cottura, accortezze, conservazione…">${esc(d.note||'')}</textarea></div>`
    +`<div class="chat" id="rChat">${d.chat.map((m,i)=>m.role==='u'?`<div class="msg u">${esc(m.text)}</div>`:`<div class="msg a${m.err?' e':''}">${md(m.text)}${!m.err&&('speechSynthesis' in window)?ttsHTML(i):''}</div>`).join('')}${d.busy?'<div class="typing">Sto calcolando<i></i><i></i><i></i></div>':''}</div>`}
 function recEditor(r){RD=r?JSON.parse(JSON.stringify(r)):{id:null,nome:'',porzioni:1,items:[],note:'',chat:[]};RD.tmp='n'+Date.now();RD.porzioni=Math.min(99,Math.max(1,Math.round(+RD.porzioni||1)));
   if(!RD.items){/* ricette vecchie: ingredienti salvati per porzione → quantità dell'intera ricetta */RD.items=(RD.ingredienti||[]).map(i=>{const o={...i};KEYS.forEach(k=>{if(o[k]!=null)o[k]=o[k]*RD.porzioni});return o})}RD.chat=RD.chat||[];RD.busy=false;RD.base=JSON.stringify([RD.nome,RD.porzioni,RD.items,RD.note,RD.chat.length]);
   sheet(`<div class="rsh"><h3>${r?'Modifica Ricetta':'Aggiungi Ricetta'}</h3>
     <div class="rtop"><input type="text" id="rName" class="rname" placeholder="Nome della ricetta" value="${esc(RD.nome)}">
-      <div class="rpor"><span>Porzioni</span><button class="rpm" id="rMinus" aria-label="Una porzione in meno">–</button><b id="rPor">${RD.porzioni}</b><button class="rpm" id="rPlus" aria-label="Una porzione in più">+</button></div></div></div>
+      <div class="rrow"><div class="rpor"><span>Porzioni</span><button class="rpm" id="rMinus" aria-label="Una porzione in meno">–</button><b id="rPor">${RD.porzioni}</b><button class="rpm" id="rPlus" aria-label="Una porzione in più">+</button></div>
+      <button class="rnbtn" id="rNoteBtn">Note<i class="rdot"${RD.note&&RD.note.trim()?'':' hidden'}></i></button></div></div></div>
+    <div class="rnpanel" id="rNotes" hidden><h4>Note</h4><textarea id="rNoteTa" placeholder="Tempi e modi di cottura, accortezze, conservazione… Puoi scrivere qui o dettare con il microfono qui sotto.">${esc(RD.note||'')}</textarea><p class="hm" id="rNoteSt"></p></div>
     <div class="rbody" id="rBody">${recBodyHTML()}</div>
     <div class="jmp rjmp"><button id="rUp" aria-label="Vai in cima" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></button><button id="rDn" aria-label="Vai in fondo" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
     <div class="comp rcomp"><div class="in"><textarea id="rMsg" rows="1" placeholder="Ingredienti, quantità, porzioni…"></textarea><button class="ib mic" id="rMic" aria-label="Detta">${MIC_SVG}</button><button class="ib send" id="rSend" aria-label="Invia">${SEND_SVG}</button></div></div>
-    <div class="row between rbtns"><button class="btn sm ghost std2" id="rCancel">Annulla</button><button class="btn std2" id="rrSave" disabled>Salva</button></div>`);
-  $('#sheet').classList.add('recsheet');recWire();requestAnimationFrame(recJmp)}
+    <div class="row between rbtns" id="rBtns"><button class="btn sm ghost std2" id="rCancel">Annulla</button><button class="btn std2" id="rrSave" disabled>Salva</button></div>
+    <div class="row rbtns rclose" id="rCloseRow" hidden><button class="btn bdef new" id="rNoteClose">Chiudi note</button></div>`);
+  $('#sheet').classList.add('recsheet');recWire();sheetGuard=recExit;requestAnimationFrame(recJmp)}
 function recRefresh(toEnd){if(!RD||!$('#rBody'))return;const b=$('#rBody'),st=b.scrollTop;b.innerHTML=recBodyHTML();b.scrollTop=toEnd?b.scrollHeight:st;$('#rPor').textContent=RD.porzioni;if($('#rName')&&document.activeElement!==$('#rName'))$('#rName').value=RD.nome;if($('#rSend'))$('#rSend').disabled=!!RD.busy;recWire(true);recCanSave();requestAnimationFrame(recJmp)}
 function recJmp(){const b=$('#rBody'),U=$('#rUp'),D=$('#rDn');if(!b||!U)return;const can=b.scrollHeight-b.clientHeight>40;U.hidden=!can||b.scrollTop<30;D.hidden=!can||b.scrollHeight-b.scrollTop-b.clientHeight<30;
   const sh=$('#sheet').getBoundingClientRect(),br=b.getBoundingClientRect();$('.rjmp').style.bottom=(sh.bottom-br.bottom+12)+'px'}
 const recDirty=()=>RD&&JSON.stringify([RD.nome,RD.porzioni,RD.items,RD.note,RD.chat.length])!==RD.base;
 function recCanSave(){const b=$('#rrSave');if(b)b.disabled=!(RD&&RD.nome.trim()&&RD.items.length)}
 function recWire(bodyOnly){
-  const n=$('#rNote');if(n)n.oninput=()=>{RD.note=n.value};
   document.querySelectorAll('#rBody [data-rdel]').forEach(x=>x.onclick=e=>{e.stopPropagation();const it=RD.items[+x.dataset.rdel];if(!it)return;
     miniConfirm('Eliminare questo ingrediente?',`${it.nome} ${it.quantita||''} — ${f0(it.kcal)} kcal\nverrà tolto dalla ricetta.`,()=>{const j=RD.items.indexOf(it);if(j>=0){RD.items.splice(j,1);RD.chat.push({role:'u',text:`(Ho eliminato a mano: ${it.nome})`})}recRefresh()})});
   if(bodyOnly)return;
   const b=$('#rBody');b.onscroll=recJmp;$('#rUp').onclick=()=>b.scrollTo({top:0,behavior:'smooth'});$('#rDn').onclick=()=>b.scrollTo({top:b.scrollHeight,behavior:'smooth'});
   const ta=$('#rMsg');ta.oninput=()=>{ta.style.height='auto';const cs=getComputedStyle(ta),lh=parseFloat(cs.lineHeight)||22,max=lh*3+parseFloat(cs.paddingTop)+parseFloat(cs.paddingBottom)+parseFloat(cs.borderTopWidth)+parseFloat(cs.borderBottomWidth);ta.style.height=Math.min(ta.scrollHeight+parseFloat(cs.borderTopWidth)+parseFloat(cs.borderBottomWidth),max)+'px'};
   dictate(ta,$('#rMic'));
-  $('#rSend').onclick=()=>{stopDictation();recSend()};
+  $('#rSend').onclick=()=>{stopDictation();RD.noteMode?recNoteSend():recSend()};
+  $('#rNoteBtn').onclick=()=>recNotes(true);$('#rNoteClose').onclick=()=>recNotes(false);$('#rNoteTa').oninput=e=>{RD.noteDraft=e.target.value};
   $('#rrSave').onclick=recSave;
   $('#rName').oninput=e=>{RD.nome=e.target.value;recCanSave()};
   $('#rMinus').onclick=()=>{RD.porzioni=Math.max(1,RD.porzioni-1);recRefresh()};
   $('#rPlus').onclick=()=>{RD.porzioni=Math.min(99,RD.porzioni+1);recRefresh()};
-  $('#rCancel').onclick=()=>{if(recDirty())miniConfirm('Chiudere senza salvare?','Le modifiche a questa ricetta andranno perse.',()=>{RD=null;closeSheet()},'Chiudi');else{RD=null;closeSheet()}};
+  $('#rCancel').onclick=recExit;
   recCanSave()}
 function addRecipeStart(){recEditor(null)}
+/* v281: uscita dall'editor (Annulla o gesto Indietro): se c'è qualcosa chiede «Vuoi uscire senza salvare?»; con le note aperte bisogna usare «Chiudi note» */
+function recExit(){if(!RD)return closeSheet();if(RD.noteMode){toast('Tocca «Chiudi note» per chiudere le note');return}
+  if(!recDirty()){RD=null;closeSheet();return}
+  exitConfirm(()=>{RD=null;closeSheet()},()=>recSave(),!!(RD.nome.trim()&&RD.items.length))}
+/* v281: modalità note. Il riquadro copre porzioni, tabelle e chat; il nome resta visibile ma non modificabile; Annulla/Salva diventano «Chiudi note».
+   Chiudendo, le note restano nella ricetta e, se la ricetta è già salvata, vengono salvate subito. */
+function recNotes(open){if(!RD)return;const ta=$('#rMsg');
+  if(open){RD.noteMode=true;RD.noteDraft=RD.note||'';$('#rNoteTa').value=RD.noteDraft;$('#rNoteSt').textContent='';}
+  else{RD.note=($('#rNoteTa').value||'').trim();RD.noteMode=false;
+    const sr=RD.id&&S.recipes.find(x=>x.id===RD.id);if(sr){sr.note=RD.note;save();const b=JSON.parse(RD.base);b[3]=RD.note;RD.base=JSON.stringify(b);toast('Note salvate')}}
+  $('#sheet').classList.toggle('rnmode',!!open);$('#rNotes').hidden=!open;$('#rBtns').hidden=!!open;$('#rCloseRow').hidden=!open;$('#rName').readOnly=!!open;
+  ta.placeholder=open?'Detta o scrivi per le note…':'Ingredienti, quantità, porzioni…';ta.value='';
+  const dot=$('#rNoteBtn .rdot');if(dot)dot.hidden=!(RD.note&&RD.note.trim());recJmp()}
+const SCHEMA_RNOTE={type:'OBJECT',properties:{reply:{type:'STRING'},note:{type:'STRING'}},required:['reply','note']};
+const SYS_RNOTE=`Gestisci le NOTE di una ricetta (tempi e modi di cottura, temperature, passaggi, accortezze, conservazione). Ricevi le note attuali e il messaggio dell'utente, spesso dettato a voce.
+Restituisci in "note" il testo COMPLETO aggiornato delle note: aggiungi quello che l'utente dice, correggi gli errori di dettatura, scrivi in modo ordinato e breve (frasi corte, una indicazione per riga, numeri e unità chiari, es. "Forno statico 200 °C per 15-18 minuti"). Se chiede di togliere o cambiare qualcosa, fallo. Non togliere altro senza richiesta. Non parlare di ingredienti o calorie e non inventare indicazioni che l'utente non ha dato.
+In "reply" scrivi in italiano, brevissimo, cosa hai cambiato.`;
+async function recNoteSend(){const ta=$('#rMsg'),text=(ta.value||'').trim();if(!text||!RD||RD.busy)return;const d=RD;d.busy=true;ta.value='';ta.style.height='';$('#rSend').disabled=true;$('#rNoteSt').textContent='Aggiorno le note…';
+  const cur=($('#rNoteTa').value||'');
+  try{const o=await gemini(SYS_RNOTE,[{role:'user',parts:[{text:`Note attuali:\n${cur||'(nessuna)'}\n\nMessaggio dell'utente: ${text}`}]}],SCHEMA_RNOTE);
+    if(RD===d&&$('#rNoteTa')){$('#rNoteTa').value=String(o.note||cur);d.noteDraft=$('#rNoteTa').value;$('#rNoteSt').textContent=o.reply||'Note aggiornate.'}}
+  catch(e){if($('#rNoteSt'))$('#rNoteSt').textContent=e.message}
+  d.busy=false;if($('#rSend'))$('#rSend').disabled=false}
 async function recSend(){const ta=$('#rMsg'),text=(ta.value||'').trim();if(!text||!RD||RD.busy)return;autoPend=null;
   RD.chat.push({role:'u',text});ta.value='';ta.style.height='';RD.busy=true;recRefresh(true);const d=RD;
   const hist=histOf(d.chat.slice(0,-1));
@@ -1830,7 +1884,7 @@ async function recSend(){const ta=$('#rMsg'),text=(ta.value||'').trim();if(!text
     if(typeof out.note==='string')d.note=out.note;
     d.chat.push({role:'a',text:out.reply||'Fatto.'});
   }catch(e){d.chat.push({role:'a',text:e.message,err:true})}
-  d.busy=false;if(RD!==d)return;if($('#rNote'))$('#rNote').value=d.note||'';recRefresh(true);
+  d.busy=false;if(RD!==d)return;{const dot=$('#rNoteBtn .rdot');if(dot)dot.hidden=!(d.note&&d.note.trim())}recRefresh(true);
   const last=d.chat.length-1;if(!d.chat[last].err)autoSpeak('#rChat [data-say="'+last+'"]')}
 function recSave(){if(!RD||!RD.nome.trim()||!RD.items.length)return;const d=RD,n=d.porzioni;
   const per=d.items.map(i=>{const o={...i};KEYS.forEach(k=>{if(o[k]!=null)o[k]=o[k]/n});return o});
@@ -1855,7 +1909,8 @@ async function foodSheet(f){
     <div class="fin"><textarea id="fTxt" class="ta" rows="8" placeholder="Scrivi o detta nome, marca, valori e precisazioni. Es. «Prosciutto cotto Rovagnati, per 100 grammi: 135 kcal, proteine 20…»">${esc(txt)}</textarea>${MIC}</div>
     ${stErr?'<div class="tts" style="margin:0 0 6px"><button class="tb" id="fRetry">↻ Riprova</button></div>':''}<p class="hm" id="fSt">${esc(st||(auto&&!card?'Modalità automatica: detta, scrivi o aggiungi una foto e la scheda si prepara da sola.':''))}</p>
     ${cardHtml()}
-    <div class="row between"><button class="btn sm ghost std2" id="noSheet">Annulla</button><button class="btn std2" id="ffSave" ${card?'':'disabled'}>Salva</button></div>`);
+    <div class="row between"><button class="btn sm ghost std2" id="ffCancel">Annulla</button><button class="btn std2" id="ffSave" ${card?'':'disabled'}>Salva</button></div>`);
+    $('#ffCancel').onclick=ffExit;sheetGuard=ffExit;
     bindSlots(ph,()=>{grab();draw();if(auto)prepare()});
     dictate($('#fTxt'),$('#fMic'),()=>{if(auto&&$('#fTxt'))prepare()});
     $('#fSend').onclick=()=>{stopDictation();prepare(true)};
@@ -1872,6 +1927,9 @@ async function foodSheet(f){
       try{const o=await gemini(SYS_FOOD,[{role:'user',parts}],SCHEMA_FOOD);card={...(card||{}),nome:String(o.nome||''),riferimento:String(o.riferimento||'100 g'),note:String(o.note||'')};FKEYS.forEach(([k])=>card[k]=nn(o[k]));fixMacros(card);st='Scheda pronta: controlla i valori e premi Salva.'}
       catch(e){st=e.message;stErr=true}
       busy=false;if(!$('#fTxt'))return;draw();if(pend){pend=false;prepare()}};
+  /* v281: uscita da Aggiungi/Modifica Alimento: se c'è qualcosa chiede «Vuoi uscire senza salvare?» */
+  const sig=()=>{grab();return JSON.stringify([txt,card,PHK.map(k=>ph[k]?ph[k].length:0)])};let sig0=null;
+  const ffExit=()=>{if(sig0!==null&&sig()===sig0){closeSheet();return}exitConfirm(()=>closeSheet(),()=>{const b=$('#ffSave');if(b&&!b.disabled)b.click()},!!(card&&(card.nome||'').trim()))};
   const bindSave=()=>{
     $('#ffSave').onclick=async()=>{grab();if(!card)return;const nome=(card.nome||'').trim();if(!nome){st='Il nome è obbligatorio.';draw();return}
       const id=(f&&f.id)||('f'+Date.now());const old=S.foods.find(x=>x.id===id);const foto={...(old&&old.foto||{})};
@@ -1880,7 +1938,7 @@ async function foodSheet(f){
       if(old)Object.assign(old,rec);else S.foods.push(rec);save();closeSheet();go('alimenti');toast(old?'Alimento aggiornato':'Alimento salvato')};
   };
   const draw0=draw;draw=()=>{const ae=document.activeElement,id=ae&&ae.id,ss=ae&&ae.selectionStart,se=ae&&ae.selectionEnd,sc=$('#sheet').scrollTop;draw0();bindSave();$('#sheet').scrollTop=sc;if(id&&$('#'+id)&&$('#sheet').contains($('#'+id))){const el=$('#'+id);el.focus({preventScroll:true});try{if(ss!=null)el.setSelectionRange(ss,se)}catch(e){}}};
-  draw();
+  draw();sig0=sig();
 }
 $('#foodQ').addEventListener('input',renderFoods);
 $('#recQ').addEventListener('input',renderRecipes);
