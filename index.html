@@ -37,7 +37,7 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior
 /* testata */
 .head{background:var(--brand);color:#fff;padding:calc(env(safe-area-inset-top) + 14px) 16px 16px}
 .head .in{max-width:720px;margin:0 auto}
-.dayline{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;opacity:.9}
+.dayline{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:15px;opacity:.9}
 .dnav{display:flex;align-items:center;gap:12px;min-width:0}
 .arw{width:32px;height:32px;flex:none;border-radius:50%;border:2px solid #fff;color:#fff;font-size:22px;font-weight:600;line-height:1;display:grid;place-items:center;padding:0 0 2px}
 .dayline{background:var(--brand2);border-radius:99px;padding:6px 6px 6px 10px;opacity:1;box-shadow:0 3px 10px rgba(0,0,0,.12)}
@@ -48,7 +48,7 @@ html.lightmode .dayline{background:rgba(255,255,255,.1)}
 /* v177: solo modalità chiara, pillola della data tutta bianca, senza bordo, con la data in verde scuro */
 html.lightmode .dayline{background:#fff;box-shadow:0 3px 10px rgba(0,0,0,.12)}
 html.lightmode .dayline #dayLabel,html.lightmode .dayline #dayLabel *{color:#1f4d35}
-#dayLabel{font-size:14px;line-height:1.2;min-width:0}
+#dayLabel{font-size:15px;line-height:1.2;min-width:0}
 #dayLabel::first-letter{text-transform:uppercase}
 .arw:disabled{opacity:.4}
 /* v171: frecce della data piene del verde di Nuova Giornata Alimentare (spente restano più chiare) */
@@ -62,12 +62,12 @@ html.lightmode .dayline #dayLabel,html.lightmode .dayline #dayLabel *{color:#1f4
 #editBar{margin:7px 0 0}
 #editBar .ebtns{display:flex;justify-content:space-between;gap:10px;margin-top:10px}
 #editBar .btn:disabled{opacity:.45}
-.pill{border:1px solid rgba(255,255,255,.45);border-radius:99px;padding:8px 14px;color:#fff;font-size:14px;min-height:40px}
+.pill{border:1px solid rgba(255,255,255,.45);border-radius:99px;padding:8px 14px;color:#fff;font-size:15px;min-height:40px}
 #closeDay{background:var(--brand);border:0;min-height:40px;padding:4px 13px;font-size:13px;line-height:1.15;text-align:center;flex:none;white-space:nowrap}
 .kc{display:flex;align-items:baseline;gap:8px;margin:18px 0 8px;flex-wrap:wrap}
 .kc b{font-size:46px;line-height:1;font-weight:700}
 .kc .of{font-size:17px;opacity:.85}
-.kc .left{margin-left:auto;font-size:14px;font-weight:500;padding:4px 10px;border-radius:99px;background:rgba(255,255,255,.14)}
+.kc .left{margin-left:auto;font-size:15px;font-weight:500;padding:4px 10px;border-radius:99px;background:rgba(255,255,255,.14)}
 .bar{position:relative;height:16px;border-radius:99px;background:rgba(255,255,255,.16);overflow:hidden}
 .bar .zone{position:absolute;top:0;bottom:0;background:repeating-linear-gradient(135deg,rgba(233,162,27,.45) 0 6px,rgba(233,162,27,.25) 6px 12px)}
 .bar .fill{position:absolute;left:0;top:0;bottom:0;border-radius:99px;transition:width .5s ease,background .3s}
@@ -81,7 +81,7 @@ html.lightmode .dayline #dayLabel,html.lightmode .dayline #dayLabel *{color:#1f4
 /* pasti */
 .addlist{display:grid;gap:8px;margin:6px 0 4px}
 .addlist .btn{width:100%;display:flex;justify-content:space-between;align-items:center;min-height:52px;font-size:17px}
-.addlist .btn small{font-size:13px;font-weight:400;color:var(--mute)}
+.addlist .btn small{font-size:15px;font-weight:400;color:var(--mute)}
 .addlist .btn:disabled{opacity:.45}
 .thm{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
 .thm button{min-height:44px;border-radius:99px;border:1.5px solid var(--brand2);background:var(--card);font-size:14px;font-weight:500;padding:4px 6px}
@@ -94,7 +94,7 @@ html.lightmode .dayline #dayLabel,html.lightmode .dayline #dayLabel *{color:#1f4
 .comp .segw{max-width:720px;margin:0 auto}
 .comp .seg{padding:0;gap:6px}
 .comp .seg button{min-height:46px;padding:4px 12px;border-radius:12px;font-size:14px;font-weight:500;line-height:1.15}
-.comp .seg button small{font-size:12px}
+.comp .seg button small{font-size:15px}
 .comp .seg button.vuoto{border-style:dashed;opacity:.85}
 .comp .seg button.vuoto small{opacity:.7}
 .comp .seg button.addsn{border-color:#e0ad12;color:light-dark(#7a5a00,#f4c430);opacity:1}
@@ -107,7 +107,7 @@ html.lightmode .dayline #dayLabel,html.lightmode .dayline #dayLabel *{color:#1f4
 .segw.cl .sarr.l,.segw.cr .sarr.r{display:flex}
 .seg{display:flex;gap:6px;overflow-x:auto;padding:14px 0 10px;scrollbar-width:none}
 .seg button{flex:none;min-height:44px;padding:6px 14px;border-radius:12px;background:var(--card);border:1.5px solid var(--brand2);text-align:left;line-height:1.2}
-.seg button small{display:block;font-size:13px;color:var(--mute)}
+.seg button small{display:block;font-size:15px;color:var(--mute)}
 .seg button.on{background:var(--brand2);border-color:var(--brand2);color:#fff}
 .seg button.on small{color:#fff}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:12px}
@@ -115,9 +115,9 @@ html.lightmode .dayline #dayLabel,html.lightmode .dayline #dayLabel *{color:#1f4
 .it{display:grid;grid-template-columns:minmax(0,1fr) auto 44px;gap:4px 10px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
 .it:first-of-type{border-top:0}
 .it .n{font-weight:500}
-.it .q{font-size:13px;color:var(--mute)}
+.it .q{font-size:15px;color:var(--mute)}
 .it .k{font-weight:600;white-space:nowrap;text-align:right}
-.it .m{grid-column:1/3;font-size:13px;color:var(--mute)}
+.it .m{grid-column:1/3;font-size:15px;color:var(--mute)}
 .it.it2{grid-template-columns:minmax(0,1fr) auto 36px;grid-template-areas:'n n n' 'qa k x' 'q q q' 'm m m';row-gap:2px}
 .it.it2 .n{grid-area:n}.it.it2 .q{grid-area:q}.it.it2 .qa{grid-area:qa;justify-self:start;align-self:center;font-size:16px;font-weight:600;color:var(--ink)}.it.it2 .k{grid-area:k}.it.it2 .x{grid-area:x}.it.it2 .m{grid-area:m;margin-top:4px}
 .it.it2 .qq{font-size:16px;font-weight:600;color:var(--ink);margin-right:.5em}
@@ -131,7 +131,7 @@ html.lightmode .dayline #dayLabel,html.lightmode .dayline #dayLabel *{color:#1f4
 #mealItems .x,.mbox .x{width:24px;height:24px;font-size:20px;padding:0 0 2px;background:#2f8f5c}
 #mealItems .x:active,.mbox .x:active{background:color-mix(in srgb,var(--bad) 75%,#000)}
 .tot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;padding-top:9px;border-top:2px solid var(--line);font-weight:600}
-.tot small{font-weight:400;color:var(--mute);font-size:13px;width:100%}
+.tot small{font-weight:400;color:var(--mute);font-size:15px;width:100%}
 .empty{color:var(--mute);font-size:15px;padding:6px 0}
 .msg.a.rsum{border:2px solid var(--brand2)}
 #mealItems:has(.it),.mbox{border:2px solid var(--brand2)}
@@ -144,10 +144,10 @@ html.lightmode .dayline #dayLabel,html.lightmode .dayline #dayLabel *{color:#1f4
 html.lightmode #v-diario .msg.u{background:#436955;color:#fff}
 .msg.a{align-self:flex-start;background:var(--card);border:1px solid var(--line);border-bottom-left-radius:5px}
 .msg.e{border-color:var(--bad);color:var(--bad)}
-.msg .mt{margin-top:7px;padding-top:7px;border-top:1px dashed var(--line);font-size:13px;color:var(--mute)}
+.msg .mt{margin-top:7px;padding-top:7px;border-top:1px dashed var(--line);font-size:15px;color:var(--mute)}
 .msg .mt b{color:var(--ink)}
-.chip{display:inline-block;font-size:12.5px;padding:1px 8px;border-radius:99px;background:var(--soft);color:var(--mute);margin-bottom:4px}
-.typing{align-self:flex-start;color:var(--mute);font-size:14px;padding:6px 4px}
+.chip{display:inline-block;font-size:15px;padding:1px 8px;border-radius:99px;background:var(--soft);color:var(--mute);margin-bottom:4px}
+.typing{align-self:flex-start;color:var(--mute);font-size:15px;padding:6px 4px}
 .typing i{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--mute);margin-left:3px;animation:b 1s infinite}
 .typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
 @keyframes b{50%{opacity:.2}}
@@ -162,21 +162,21 @@ html.lightmode #v-diario .msg.u{background:#436955;color:#fff}
 .sml{display:flex;flex-direction:column;font-size:16px}
 .sml .sr{display:flex;justify-content:space-between;gap:14px;padding:3px 0;border-bottom:1px solid var(--line)}
 .sml .sr:last-child{border-bottom:0}
-.sml .sr.sub{font-size:14px;color:var(--mute);padding-left:14px}
+.sml .sr.sub{font-size:15px;color:var(--mute);padding-left:14px}
 .sml .sr b{white-space:nowrap}
 .ansx{font-size:15.5px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px dashed var(--line)}
 .ast{color:var(--bad);font-weight:700;margin-left:2px}
-.missn{margin-top:8px;font-size:12.5px;color:var(--bad)}
+.missn{margin-top:8px;font-size:15px;color:var(--bad)}
 .tts{display:flex;gap:8px;margin-top:10px}
 .tts .tb{min-height:34px;padding:4px 12px;border-radius:999px;border:1.5px solid var(--brand2);background:var(--soft);font-size:13px;font-weight:600;color:var(--brand2)}
 .tts .tb.on{background:var(--brand2);color:#fff}
 .tts .tb{display:inline-flex;align-items:center;gap:6px}
 .tts .tb .ic{width:15px;height:15px;flex:none}
-.mnote{margin-top:8px;font-size:13.5px;color:var(--mute)}
+.mnote{margin-top:8px;font-size:15px;color:var(--mute)}
 .msg.a:has(.sml){min-width:70%}
 .rc{margin-top:8px;padding:10px;border-radius:12px;background:var(--soft)}
 .rc b{display:block}
-.rc .m{font-size:13px;color:var(--mute)}
+.rc .m{font-size:15px;color:var(--mute)}
 .btn{min-height:44px;padding:8px 16px;border-radius:12px;background:var(--brand2);color:#fff;font-weight:600;border:1.5px solid var(--brand2)}
 .btn.ghost{background:var(--soft);color:var(--ink);border:1.5px solid var(--brand2)}
 .btn.bad{background:var(--bad)}
@@ -185,31 +185,31 @@ html.lightmode #v-diario .msg.u{background:#436955;color:#fff}
 .applybar .btn{display:block;width:100%;max-width:692px;margin:0 auto;min-height:52px;font-size:17px;box-shadow:0 4px 14px rgba(0,0,0,.18)}
 .letter{position:sticky;top:0;z-index:1;background:var(--bg);font-weight:700;font-size:20px;color:var(--brand2);padding:10px 2px 4px}
 details.food summary .nm{font-weight:600}
-details.food summary .kv{white-space:nowrap;color:var(--mute);font-size:14px}
+details.food summary .kv{white-space:nowrap;color:var(--mute);font-size:15px}
 .vt{width:100%;border-collapse:collapse;margin-top:8px;font-size:15px}
 .vt td{padding:5px 0;border-top:1px solid var(--line)}
 .vt td:last-child{text-align:right;font-weight:600;white-space:nowrap}
-.vt tr.sub td{color:var(--mute);font-size:14px;padding-left:14px}
+.vt tr.sub td{color:var(--mute);font-size:15px;padding-left:14px}
 .vt tr.sub td:last-child{font-weight:500}
 .ph{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
 .ph figure{margin:0;width:120px}
 .ph img{width:120px;height:120px;object-fit:cover;border-radius:12px;border:1px solid var(--line);background:var(--soft)}
-.ph figcaption{font-size:12.5px;color:var(--mute);text-align:center}
+.ph figcaption{font-size:15px;color:var(--mute);text-align:center}
 .ph figure img{cursor:zoom-in}
 .lb{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.94);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:calc(env(safe-area-inset-top) + 56px) 10px calc(env(safe-area-inset-bottom) + 16px)}
 .lb img{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px;touch-action:pinch-zoom}
-.lb .cap{color:#fff;font-size:14px;margin-top:10px;opacity:.85}
+.lb .cap{color:#fff;font-size:15px;margin-top:10px;opacity:.85}
 .lb .lbx{position:absolute;top:calc(env(safe-area-inset-top) + 10px);right:12px;width:40px;height:40px;border-radius:50%;border:0;background:var(--brand);color:#fff;font-size:26px;line-height:1;display:grid;place-items:center;padding:0 0 3px}
 .slot .sb{display:flex;flex-direction:column;gap:6px;margin-top:6px}
 .slot .sb .btn{width:100%}
-.slot{width:150px;border:1px dashed var(--line);border-radius:12px;padding:8px;text-align:center;font-size:13px;color:var(--mute)}
+.slot{width:150px;border:1px dashed var(--line);border-radius:12px;padding:8px;text-align:center;font-size:15px;color:var(--mute)}
 .slot>div:first-of-type{font-weight:600;color:var(--ink)}
 .slot img{width:100%;height:100px;object-fit:cover;border-radius:8px;display:block;margin-bottom:6px}
 .fgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 10px}
-.fgrid label{font-weight:500;font-size:14px}
+.fgrid label{font-weight:500;font-size:15px}
 .fgrid input{width:100%;min-height:44px;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:6px 10px;font-size:16px}
 .ta{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:10px;font-size:16px}
-.src{font-size:12.5px;font-weight:600;white-space:normal}
+.src{font-size:15px;font-weight:600;white-space:normal}
 .src.ok{color:light-dark(#2a7a4b,#5cc58a)}
 .src.gen{color:light-dark(#a8740a,#e2b43c)}
 .src.nf{color:var(--bad)}
@@ -220,14 +220,14 @@ details.food summary .kv{white-space:nowrap;color:var(--mute);font-size:14px}
 .micbig.rec{background:var(--bad)!important;color:#fff!important;animation:pulse 1.2s infinite}
 .btn.two{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}
 .btn.sel{background:light-dark(#dcefe2,#23402f);box-shadow:inset 0 0 0 1px var(--brand2)}
-.btn.two small{font-size:11px;font-weight:500;opacity:.75}
+.btn.two small{font-size:15px;font-weight:500;opacity:.75}
 .btn:disabled{opacity:.4;cursor:default}
 .row.between{justify-content:space-between;margin-top:12px}
 .mstick{position:sticky;top:0;z-index:3;background:var(--bg);margin:0 -14px;padding:7px 14px 0}
 .mbar{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--brand2);color:#fff;border-radius:12px;padding:8px 10px 8px 14px;margin-bottom:7px;box-shadow:0 3px 10px rgba(0,0,0,.12)}
 .mbar b{font-size:17px;text-transform:uppercase;letter-spacing:.03em}
 .mbar b .mk{margin-left:8px;font-weight:700;text-transform:none;letter-spacing:0}
-.mbar small{display:block;font-size:12px;opacity:.85}
+.mbar small{display:block;font-size:15px;opacity:.85}
 .mbar .mbtn{min-height:40px;padding:8px 14px;border-radius:99px;border:0;color:#fff;font-size:14px;font-weight:400;background:var(--brand);white-space:nowrap}
 .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 /* compositore */
@@ -248,23 +248,23 @@ details.food summary .kv{white-space:nowrap;color:var(--mute);font-size:14px}
 .pills .sarr.l{left:-2px;background:linear-gradient(90deg,var(--card) 55%,transparent)}.pills .sarr.r{right:-2px;background:linear-gradient(270deg,var(--card) 55%,transparent)}
 .pills button{min-height:40px;border-radius:999px;border:1.5px solid var(--brand2);background:var(--bg);font-size:12.5px;letter-spacing:-.2px;font-weight:500;padding:2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pills button.on{background:var(--brand2);border-color:var(--brand2);color:#fff;font-weight:600}
-.pills .newsn{border-radius:8px;background:#f4c430;border-color:#e0ad12;color:#3a2c00;font-size:11px;font-weight:700;line-height:1.1;white-space:normal;text-overflow:clip;padding:2px 0}
+.pills .newsn{border-radius:8px;background:#f4c430;border-color:#e0ad12;color:#3a2c00;font-size:15px;font-weight:700;line-height:1.1;white-space:normal;text-overflow:clip;padding:2px 0}
 .pills .newsn:disabled{opacity:.4}
 @media(min-width:600px){.pills{grid-template-columns:minmax(0,1fr) 110px}.pills button{font-size:14px}}
 .ib.mic{margin-right:8px}
 .ib.mic.rec{background:var(--bad);color:#fff;animation:pulse 1.2s infinite}
 @keyframes pulse{50%{opacity:.6}}
-.prev{max-width:720px;margin:0 auto 6px;display:flex;align-items:center;gap:8px;font-size:14px;color:var(--mute)}
+.prev{max-width:720px;margin:0 auto 6px;display:flex;align-items:center;gap:8px;font-size:15px;color:var(--mute)}
 .prev img{width:52px;height:52px;object-fit:cover;border-radius:10px}
-.ctx{max-width:720px;margin:0 auto 4px;font-size:13px;color:var(--mute)}
+.ctx{max-width:720px;margin:0 auto 4px;font-size:15px;color:var(--mute)}
 nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));padding-left:max(8px,calc((100% - 720px)/2));padding-right:max(8px,calc((100% - 720px)/2));background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
-nav button{min-height:58px;font-size:12.5px;letter-spacing:0;line-height:1.15;text-align:center;padding:4px 0;color:var(--mute);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+nav button{min-height:58px;font-size:13px;letter-spacing:0;line-height:1.15;text-align:center;padding:4px 0;color:var(--mute);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
 nav button svg{width:22px;height:22px}
 nav button.on{color:var(--brand2);font-weight:600}
 /* form */
 .f{margin-bottom:16px}
 .f label{display:block;font-weight:600;margin-bottom:4px}
-.f p{margin:4px 0 0;font-size:13.5px;color:var(--mute)}
+.f p{margin:4px 0 0;font-size:15px;color:var(--mute)}
 .f input[type=text],.f input[type=password],.f input[type=number],.f select{width:100%;min-height:44px;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:8px 12px;font-size:16px}
 .f input[type=range]{width:100%;accent-color:#2f8f5c;height:32px}
 .rng{display:flex;gap:10px;align-items:center}
@@ -275,7 +275,7 @@ h2{font-size:22px;margin:18px 0 10px}
 details.card summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:8px;align-items:center}
 details.card summary::-webkit-details-marker{display:none}
 .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
-.hm{font-size:13px;color:var(--mute)}
+.hm{font-size:15px;color:var(--mute)}
 /* modale */
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:20}
 .modal.cfm{z-index:25}.modal.cfm .sheet h3{margin-top:0}
@@ -297,18 +297,18 @@ details.card summary::-webkit-details-marker{display:none}
 @media(max-width:600px){.head .dht{margin:6px 4px 12px}}
 @media(max-width:600px){
   .head{padding:calc(env(safe-area-inset-top) + 8px) 12px 10px}
-  .dayline{font-size:12.5px}
-  .pill{min-height:30px;padding:3px 10px;font-size:12.5px}
+  .dayline{font-size:15px}
+  .pill{min-height:30px;padding:3px 10px;font-size:15px}
   .kc{margin:14px 0 6px;gap:6px}
   .kc b{font-size:30px}
-  .kc .of{font-size:14px}
-  .kc .left{font-size:12.5px;padding:2px 8px}
+  .kc .of{font-size:15px}
+  .kc .left{font-size:15px;padding:2px 8px}
   .bar{height:9px}
   .legend{display:none}
   .macros{margin-top:7px;gap:4px}
   .macros div{padding:3px 2px;border-radius:8px}
-  .macros b{font-size:13px}
-  .macros span{font-size:13px}
+  .macros b{font-size:15px}
+  .macros span{font-size:15px}
   .macros small{font-size:9.5px;margin-top:0}
   .seg{padding:10px 0 8px}
 }
@@ -318,7 +318,7 @@ details.card summary::-webkit-details-marker{display:none}
 .mdock .mrow{margin:0 auto}
 .mdock .seg{padding:0;gap:6px}
 .mdock .seg button{flex:0 0 96px;min-height:46px;padding:4px 6px;border-radius:12px;font-size:14px;font-weight:500;line-height:1.15;text-align:center}
-.mdock .seg button small{font-size:12px}
+.mdock .seg button small{font-size:15px}
 .mdock .seg button.vuoto{border-style:dashed;opacity:.85}
 .mdock .sarr{top:0;bottom:0}
 .mdock{background:var(--bg);padding:0 4px 8px}
@@ -377,10 +377,10 @@ nav button.on{font-weight:700;color:light-dark(#1f4d35,#fff)}
 .recsheet .rpm{width:34px;height:34px;border-radius:50%;border:0;background:radial-gradient(circle at 35% 30%,#fff 0,#f3f6f4 45%,#cfd9d3 100%);color:#1f4d35;font-size:22px;font-weight:700;line-height:1;display:grid;place-items:center;padding:0 0 2px;box-shadow:inset 0 -2px 0 rgba(0,0,0,.12),0 2px 5px rgba(0,0,0,.35)}
 .recsheet .rbody{flex:1 1 auto;overflow-y:auto;margin:0 -16px;padding:10px 16px 6px;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 var(--ft,0px),#000 calc(100% - var(--fb,0px)),transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 var(--ft,0px),#000 calc(100% - var(--fb,0px)),transparent 100%)}
 .recsheet .rbody .card{margin-bottom:10px}
-.recsheet .rpor1 .lt small{display:block;font-size:13px;font-weight:500;text-transform:none;letter-spacing:0;color:var(--mute)}
+.recsheet .rpor1 .lt small{display:block;font-size:15px;font-weight:500;text-transform:none;letter-spacing:0;color:var(--mute)}
 .recsheet .rnote{margin:4px 0 10px}
-.recsheet .rnote label{display:block;font-size:13px;font-weight:600;color:var(--mute);margin:0 0 4px 4px}
-.recsheet .rnote textarea{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:14px;padding:8px 12px;font-size:14px;color:var(--mute);background:var(--bg);resize:none}
+.recsheet .rnote label{display:block;font-size:15px;font-weight:600;color:var(--mute);margin:0 0 4px 4px}
+.recsheet .rnote textarea{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:14px;padding:8px 12px;font-size:15px;color:var(--mute);background:var(--bg);resize:none}
 .recsheet .rcomp{margin:0 -16px;border-top:1px solid var(--line)}
 .recsheet .rbtns{margin-top:10px}
 /* v291: Aggiungi/Modifica Alimento alto come l'editor delle ricette, con più spazio tra tasti, foto e campo; microfono e invio in basso, allineati al fondo del campo */
@@ -395,7 +395,7 @@ nav button.on{font-weight:700;color:light-dark(#1f4d35,#fff)}
 .foodsheet .ph3{margin:0}
 .foodsheet .card.fotoblk{margin:6px 0 24px}
 /* v315: «Nessuna Foto» più grande; in chiaro cornice tratteggiata nel verde dei tasti foto (#436955) */
-.sl3i span{font-size:14.5px;font-weight:600;text-align:center;line-height:1.2;padding:0 6px}
+.sl3i span{font-size:15px;font-weight:600;text-align:center;line-height:1.2;padding:0 6px}
 html.lightmode .sl3i{border-color:#436955}
 html.lightmode .sl3i span{color:#436955}
 .foodsheet .fin{align-items:flex-end}
@@ -407,7 +407,7 @@ html.lightmode .sl3i span{color:#436955}
 .recsheet #rBtns{margin-top:28px;padding-right:0;align-items:center;flex-wrap:nowrap}
 .recsheet #rBtns .rpor{align-self:center;flex:none}
 .recsheet .rtop{padding-bottom:12px}
-.rnotebox .lt{margin-bottom:6px}.rnotetx{font-size:14px;line-height:1.5;color:var(--mute)}
+.rnotebox .lt{margin-bottom:6px}.rnotetx{font-size:15px;line-height:1.5;color:var(--mute)}
 .it.rnit{grid-template-columns:minmax(0,1fr) 36px}.it.rnit.ro{grid-template-columns:minmax(0,1fr)}.it.rnit .n{font-size:15px;line-height:1.4;font-weight:500;color:var(--ink)}
 .it.rnit{padding:14px 0}
 .mbox.rnotebox,html:not(.lightmode) .mbox.rnotebox{border-color:light-dark(#a8740a,#e2b43c)}
@@ -416,7 +416,7 @@ html.lightmode .sl3i span{color:#436955}
 /* v302: ricetta aperta: sopra, a sinistra «+A» (Trasforma una porzione in alimento) e a destra Condividi, tondi con la scritta sotto; sotto Annulla, Modifica (al centro), Elimina */
 #recList .rshr{display:flex;justify-content:space-between;align-items:flex-start;margin:16px 0 14px}
 #recList .rsc{display:flex;flex-direction:column;align-items:center;gap:6px;width:auto;text-align:center}
-#recList .rsc small{font-size:12px;font-weight:600;line-height:1.25;color:var(--ink)}
+#recList .rsc small{font-size:15px;font-weight:600;line-height:1.25;color:var(--ink)}
 
 #recList .rcirc{width:44px!important;min-width:44px!important;max-width:44px!important;height:44px!important;padding:0!important;border-radius:50%!important;display:grid!important;place-items:center}
 #recList .rcirc .pa{font-size:17px;font-weight:800;letter-spacing:-.02em}
@@ -441,7 +441,7 @@ html.lightmode .recsheet .msg.u{background:#436955;color:#fff} /* messaggi dell'
 .recsheet .rnpanel[hidden]{display:none}
 .recsheet .rnpanel h4{margin:0 0 8px;font-size:17px}
 .recsheet .rnpanel textarea{flex:1 1 auto;min-height:120px;width:100%;box-sizing:border-box;border:2px solid var(--line);border-radius:16px;padding:12px 14px;font-size:15px;line-height:1.5;color:var(--ink);background:var(--bg);resize:none}
-.recsheet .rnpanel .hm{margin:6px 2px 0;font-size:13px;min-height:1em}
+.recsheet .rnpanel .hm{margin:6px 2px 0;font-size:15px;min-height:1em}
 .recsheet.rnmode .rname{opacity:.75}
 .recsheet.rnmode .rcomp textarea{border-style:dashed!important}
 .recsheet .rclose{justify-content:center}
@@ -458,7 +458,7 @@ html.lightmode .recsheet .msg.u{background:#436955;color:#fff} /* messaggi dell'
 .ahead .in{max-width:720px;margin:0 auto}
 .ahead .aht{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .ahead h2{margin:0;font-size:24px;color:#fff}
-.ahead .acnt{font-size:14px;font-weight:500;padding:4px 12px;border-radius:99px;background:rgba(255,255,255,.14)}
+.ahead .acnt{font-size:15px;font-weight:500;padding:4px 12px;border-radius:99px;background:rgba(255,255,255,.14)}
 .ahead input{width:100%;margin-top:12px;border:0;border-radius:99px;padding:12px 18px;font-size:16px;background:rgba(255,255,255,.14);color:#fff;box-sizing:border-box}
 .ahead input::placeholder{color:#fff}
 /* v160: bordo bianco sempre visibile; al tocco nessuna cornice in più, solo il cursore */
@@ -498,24 +498,24 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
 #v-ricette details.food summary .kv{white-space:normal;text-align:right;max-width:44vw;line-height:1.2;display:flex;flex-direction:column;align-items:flex-end}
 #v-alimenti details.food summary .kv b{font-size:15px;white-space:nowrap}
 #v-ricette details.food summary .kv b{font-size:15px;white-space:nowrap}
-#v-alimenti details.food summary .kv small{font-size:12.5px;font-weight:500;overflow-wrap:anywhere}
-#v-ricette details.food summary .kv small{font-size:12.5px;font-weight:500;overflow-wrap:anywhere}
+#v-alimenti details.food summary .kv small{font-size:15px;font-weight:500;overflow-wrap:anywhere}
+#v-ricette details.food summary .kv small{font-size:15px;font-weight:500;overflow-wrap:anywhere}
 
 .row.modes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0 16px}
 .row.modes .btn{position:relative;width:100%;min-height:62px;white-space:normal;line-height:1.2;padding:8px 10px 8px 26px}
-.row.modes .btn small{display:block;font-size:11.5px;font-weight:400;opacity:.85;margin-top:2px}
+.row.modes .btn small{display:block;font-size:15px;font-weight:400;opacity:.85;margin-top:2px}
 .row.modes .chk{position:absolute;top:5px;left:8px;font-style:normal;font-size:20px;font-weight:800;line-height:1;color:#fff}
 .ph3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:6px 0 10px}
 .sl3{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0}
 .sl3i{position:relative;width:100%;aspect-ratio:1;border-radius:14px;border:2px dashed var(--line);display:grid;place-items:center;overflow:hidden;background:var(--soft)}
-.sl3i span{font-size:11.5px;color:var(--mute)}
+.sl3i span{font-size:15px;color:var(--mute)}
 .sl3i img{width:100%;height:100%;object-fit:cover}
 .sl3x{position:absolute;top:5px;right:5px;width:28px;height:28px;border-radius:50%;background:var(--brand);color:#fff;font-size:20px;line-height:1;display:grid;place-items:center;padding:0 0 2px}
-.sl3l{font-size:12px;font-weight:600;text-align:center;line-height:1.2;min-height:2.4em;color:var(--ink)}
+.sl3l{font-size:13px;font-weight:600;text-align:center;line-height:1.2;min-height:2.4em;color:var(--ink)}
 .sl3b{display:flex;gap:6px;margin-bottom:8px}
 .sl3b button{width:44px;height:44px;border-radius:50%;background:light-dark(#436955,var(--brand));color:#fff;display:grid;place-items:center}
 .sl3b svg{width:24px;height:24px}
-.sl3r{width:90px;height:40px;border-radius:99px;background:var(--brand);color:#fff;font-size:14px;font-weight:400}
+.sl3r{width:90px;height:40px;border-radius:99px;background:var(--brand);color:#fff;font-size:15px;font-weight:400}
 .sl3r:disabled{opacity:.35}
 
 .fin{display:flex;gap:8px;align-items:stretch}
@@ -549,7 +549,7 @@ html.boot{background:#1f4d35} /* v380: all'avvio lo sfondo dietro la schermata d
 #v-impost .btn.aib{height:40px;min-height:40px;padding:0 18px;border-radius:99px;border:0;background:var(--brand);color:#fff;font-size:14px;font-weight:400;flex:none}
 /* Impostazioni (v127): blocco Backup su Google Drive */
 #gdBtns .gdr1{display:flex;align-items:center;gap:12px;margin:10px 0 0}
-#gdBtns #gdStat{font-size:13px;line-height:1.35;margin:0}
+#gdBtns #gdStat{font-size:15px;line-height:1.35;margin:0}
 #gdBtns .gdr2{display:flex;justify-content:space-between;gap:8px;margin-top:22px}
 #v-impost .btn.aib:disabled{opacity:.6}
 #v-impost .btn.aib.gdb{width:150px;padding:0 8px}
@@ -566,7 +566,7 @@ html.boot{background:#1f4d35} /* v380: all'avvio lo sfondo dietro la schermata d
 #v-storico details.hday summary .nm{font-weight:600;line-height:1.25}
 #v-storico details.hday summary .kv{display:flex;flex-direction:column;align-items:flex-end;line-height:1.2;color:light-dark(#22804f,#4cc184)}
 #v-storico details.hday summary .kv b{font-size:15px;white-space:nowrap}
-#v-storico details.hday summary .kv small{font-size:12.5px;font-weight:500}
+#v-storico details.hday summary .kv small{font-size:15px;font-weight:500}
 #v-storico details.hday:not([open]) summary,#v-storico details.hday:not([open]) summary .kv{color:#fff}
 #v-storico details.hday .dot{box-shadow:0 0 0 2px #fff;margin-right:14px}
 /* Storico (v133): giornata aperta più leggibile */
@@ -665,7 +665,7 @@ html.lightmode #v-ricette details.food:not([open]) summary,html.lightmode #v-ric
 /* Aggiungi un pasto (v110): pillole come Alimenti, piene di verde */
 #sheet .addlist{gap:10px;margin:18px 0 28px}
 #sheet .addlist .btn{min-height:58px;padding:10px 22px;border-radius:34px;border:0;background:var(--brand2);color:#fff;font-size:17px;font-weight:600;box-shadow:none}
-#sheet .addlist .btn small{color:#fff;font-size:13px;font-weight:400}
+#sheet .addlist .btn small{color:#fff;font-size:15px;font-weight:400}
 #sheet .addlist .btn:disabled{opacity:.45}
 /* TASTO STANDARD 2 (v114): pillola 90x40, scritta bianca 14px normale, verde scuro #1f4d35 (rosso per eliminazioni definitive). Classe "btn std2". Usato nella sezione Alimenti */
 .btn.std2{width:90px!important;height:40px!important;min-height:40px!important;padding:0 4px!important;border-radius:99px!important;border:0!important;background:var(--brand)!important;color:#fff!important;font-size:14px!important;font-weight:400!important;line-height:1.15!important;text-align:center;box-shadow:none!important;flex:none}
@@ -837,7 +837,7 @@ html:not(.lightmode) #v-alimenti details.food[open] summary,html:not(.lightmode)
 html:not(.lightmode) #v-ricette details.food[open] summary,html:not(.lightmode) #v-ricette details.food[open] summary .nm,html:not(.lightmode) #v-ricette details.food[open] summary .kv,html:not(.lightmode) #v-ricette details.food[open] summary .kv small{color:#fff}
 /* v221: nello Storico aperto, sotto la data, l'etichetta come nel Diario: Restano / Bonus di / Oltre di */
 .hstat{margin-top:10px}
-.hleft{display:inline-block;font-size:14px;font-weight:600;padding:4px 12px;border-radius:99px;background:#3e6651;color:#fff} /* v223: stesso verde della pillolina del Diario */
+.hleft{display:inline-block;font-size:15px;font-weight:600;padding:4px 12px;border-radius:99px;background:#3e6651;color:#fff} /* v223: stesso verde della pillolina del Diario */
 .hleft.ok{color:#fff}.hleft.warn{color:var(--warn)}.hleft.bad{color:#ff7a62}
 
 /* v225: "Applica e torna al Diario" con la stessa forma a pillola e lo stesso verde dei tasti delle Impostazioni (misura e scritta invariate; il 3D è già dalla v187) */
@@ -913,7 +913,7 @@ nav button.on svg{box-shadow:inset 0 2px 0 rgba(255,255,255,.45),inset 0 -3px 0 
 #dayLabel{font-size:15px;font-weight:700}
 .head #closeDay,.mbar #mealDel,#sheet .btn{font-size:15px!important;font-weight:700!important}
 #mdock .seg button{font-size:15px;font-weight:700}
-#mdock .seg button small{font-size:12.5px;font-weight:600}
+#mdock .seg button small{font-size:15px;font-weight:600}
 
 /* v244: tutti i tasti con scritta in grassetto (stessa grandezza di prima), tranne la barra di navigazione e i pulsanti della chat */
 .btn,.thm button,#rdock .seg button,#mdock .seg button{font-weight:700!important}
@@ -981,7 +981,7 @@ html:not(.lightmode) .foodsheet #fTxt:focus,html:not(.lightmode) .foodsheet #fTx
 .foodsheet .fcur{display:none;position:absolute;left:13px;top:12px;width:2px;height:20px;background:light-dark(#436955,#fff);animation:fcurb 1s steps(1) infinite;pointer-events:none}
 .foodsheet #fTxt:placeholder-shown:not(:focus)+.fcur{display:block}
 @keyframes fcurb{50%{opacity:0}}
-.ph figcaption{font-size:14.5px;font-weight:600;line-height:1.2;min-height:2.4em;margin-top:4px}
+.ph figcaption{font-size:15px;font-weight:600;line-height:1.2;min-height:2.4em;margin-top:4px}
 details.food .ph{margin:12px 0 20px}
 details .row.between:has(>[data-collapse]){padding:0 18px 12px;flex-wrap:nowrap;gap:4px}
 details .row.between:has(>[data-collapse]) .btn.std2{width:clamp(70px,22vw,90px)!important}
@@ -1117,7 +1117,7 @@ html.lightmode .foodsheet .fcur{left:23px;top:10px}
 .mcur{display:none;position:absolute;width:2px;background:#436955;animation:fcurb 1s steps(1) infinite;pointer-events:none}
 #msg:placeholder-shown:not(:focus)+.mcur{display:block}
 #msg:focus::placeholder{color:transparent!important}
-#msg::placeholder{font-size:14.5px;white-space:nowrap}
+#msg::placeholder{font-size:15px;white-space:nowrap}
 /* v362: Aggiungi/Modifica Ricetta: tolta la barra «Nome della ricetta» (il nome si dice in chat); sotto il titolo uno spazio e un filo sottile quasi trasparente */
 .recsheet .rtw:has(#rName){display:none!important}
 .recsheet .rtop{padding-bottom:0!important;margin-top:14px;min-height:0;border-bottom:1px solid rgba(128,128,128,.22)!important}
@@ -1130,7 +1130,7 @@ html:not(.lightmode) .card:has(>.empty),html:not(.lightmode) #mealItems:has(>.em
 html:not(.lightmode) .msg.a:not(.e):not(.rsumw):not(.rsum){border-color:#fff!important}
 html:not(.lightmode) .recsheet .rname,html:not(.lightmode) .recsheet .rname:focus,html:not(.lightmode) .recsheet .rname:focus-visible{border-color:#fff!important}
 /* v381: campi obbligatori di Aggiungi/Modifica Alimento (Nome, Valori riferiti a, Energia): asterisco e scritta piccola come nella chat (13 px), bianchi in scuro (verde scuro in chiaro, dove il bianco non si vedrebbe); al tocco spariscono */
-.foodsheet #ffN::placeholder,.foodsheet #ffR::placeholder,.foodsheet #ff_kcal::placeholder{font-size:13px;color:light-dark(#1f4d35,#fff)!important;opacity:.85}
+.foodsheet #ffN::placeholder,.foodsheet #ffR::placeholder,.foodsheet #ff_kcal::placeholder{font-size:15px;color:light-dark(#1f4d35,#fff)!important;opacity:.85}
 .foodsheet #ffN:focus::placeholder,.foodsheet #ffR:focus::placeholder,.foodsheet #ff_kcal:focus::placeholder{color:transparent!important}
 /* v385: messaggi rossi con asterisco nell'editor delle ricette; messaggio a comparsa d'errore con asterisco rosso (stessa forma e altezza degli altri, fondo bianco) */
 .rmiss.rmt{display:block;text-align:center;text-transform:none;margin:8px 0 0;font-size:14px}
@@ -1148,9 +1148,9 @@ html:not(.lightmode) .recsheet .rname::placeholder{color:#fff;opacity:1}
 /* v274: riga dell'ora: a sinistra il nome del pasto in stampatello (come «1 porzione»), a destra «Ora del pasto»; nome e ora nel verde della pillolina «Restano X kcal» (#3e6651) */
 .mbox .mora,#mealItems .mora{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
 /* v276: barra del pasto: ora piccola sotto il nome, kcal accanto centrate tra le due righe, con il doppio dello spazio */
-.mbar b.mbw{display:inline-flex;align-items:center}.mbar b .mbc{display:inline-flex;flex-direction:column;line-height:1.15}.mbar b .mbc small{font-size:12.5px;font-weight:500;opacity:.8;text-transform:none;letter-spacing:0}.mbar b.mbw .mk{margin-left:16px}
-.mora .mor{text-align:right}.mora .mor small{display:block;font-size:12px;font-weight:500;color:var(--mute);margin-top:1px}
-#v-storico .hora small{font-size:12px;color:var(--mute);font-weight:500}
+.mbar b.mbw{display:inline-flex;align-items:center}.mbar b .mbc{display:inline-flex;flex-direction:column;line-height:1.15}.mbar b .mbc small{font-size:15px;font-weight:500;opacity:.8;text-transform:none;letter-spacing:0}.mbar b.mbw .mk{margin-left:16px}
+.mora .mor{text-align:right}.mora .mor small{display:block;font-size:15px;font-weight:500;color:var(--mute);margin-top:1px}
+#v-storico .hora small{font-size:15px;color:var(--mute);font-weight:500}
 .mora .mnm{font-size:16px;font-weight:600;color:#2f8f5c;letter-spacing:.02em} /* v314: stesso verde del tasto «Elimina pasto» */
 .mora b,.mbox .mora b,#mealItems .mora b{color:#2f8f5c}
 #v-storico .hora{margin-left:16px;color:var(--ink);font-size:inherit}
@@ -1283,7 +1283,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 388</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 389</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -2064,7 +2064,7 @@ function bindSlots(ph,redraw){document.querySelectorAll('[data-slot]').forEach(b
 /* v171: piccola conferma sopra una finestra già aperta (es. Rimuovi foto in Modifica alimento) */
 /* v281/v284: conferma di uscita per Aggiungi/Modifica Alimento e Ricetta: a sinistra «Salva» (verde), a destra «Esci senza salvare» (rosso) */
 function exitConfirm(onExit,onSave,canSave){if(document.querySelector('.modal.cfm'))return;const o=document.createElement('div');o.className='modal cfm';
-  o.innerHTML=`<div class="sheet"><h3>Vuoi uscire senza salvare?</h3><p class="hm">Se esci adesso, quello che hai inserito andrà perso.</p><div class="row between"><button class="btn bdef new" data-c="save" ${canSave?'':'disabled'}>Salva</button><button class="btn bdef bad" data-c="exit">Esci senza<br>salvare</button></div>${canSave?'':'<p class="hm" style="margin:8px 0 0;font-size:13px">Non c\'è ancora niente da salvare.</p>'}</div>`;
+  o.innerHTML=`<div class="sheet"><h3>Vuoi uscire senza salvare?</h3><p class="hm">Se esci adesso, quello che hai inserito andrà perso.</p><div class="row between"><button class="btn bdef new" data-c="save" ${canSave?'':'disabled'}>Salva</button><button class="btn bdef bad" data-c="exit">Esci senza<br>salvare</button></div>${canSave?'':'<p class="hm" style="margin:8px 0 0;font-size:15px">Non c\'è ancora niente da salvare.</p>'}</div>`;
   document.body.appendChild(o);const done=()=>o.remove();
   o.addEventListener('click',e=>{if(e.target===o){done();return}const b=e.target.closest('[data-c]');if(!b||b.disabled)return;done();if(b.dataset.c==='exit')onExit();else onSave()})}
 function miniConfirm(title,text,onYes,yesL){const o=document.createElement('div');o.className='modal cfm';o.innerHTML=`<div class="sheet"><h3>${esc(title)}</h3><p class="hm">${esc(text).replace(/\n/g,'<br>')}</p><div class="row between"><button class="btn std2" data-c="no">Annulla</button><button class="btn std2 bad" data-c="yes">${esc(yesL||'Elimina')}</button></div></div>`;
@@ -2122,7 +2122,7 @@ function recBodyHTML(){const d=RD;
   return(d.items.length?`<div class="card mbox">${mealBoxHTML(d.items,'ricetta',true,null,null,null,{title:recTitle(d),sumLabel:'Totale kcal RICETTA',delAttr:'data-rdel'})}</div>
     ${recNoteBox(d,true)}${d.porzioni>1?`<div class="card mbox rpor1">${porzBox(d.items,d.porzioni,d)}</div>`:''}`
     :`<div class="card"><p class="rmiss" style="margin:0">${d.nome.trim()?'':'* Manca il nome della ricetta<br>'}* Serve inserire almeno un alimento nella lista</p></div><div class="card"><div class="empty"><b>Il nome della ricetta e almeno un alimento in lista sono obbligatori per poterla salvare.</b><br><br>Scrivi o detta <b>il Nome della Ricetta</b>, gli <b>ingredienti con le quantità</b> e in quante <b>porzioni</b> si divide: l'Intelligenza Artificiale calcola kcal e Macro del totale e di una singola porzione.<br><br>Puoi anche <b>chiedere consigli</b> all'Intelligenza Artificiale su ingredienti, quantità, abbinamenti e sostituzioni: le domande non cambiano la ricetta.<br><br>Cotture, tempi e accortezze vengono <b>riconosciuti e messi nelle note</b> da soli; puoi anche dire «<b>Aggiungi alle note…</b>».<br>Le singole note compaiono qui sotto, nella sezione apposita, una per riga, e possono essere eliminate con la X.<br><br>Le <b>Tabelle Riassuntive</b> con la lista degli ingredienti <b>della Ricetta</b>, <b>delle Note</b> e dei valori nutrizionali e dei macro <b>di una Porzione</b> possono essere richiamate dalla chat.</div></div>${recNoteBox(d,true)}`)
-   +`<div class="chat" id="rChat">${d.chat.map((m,i)=>m.role==='u'?`<div class="msg u">${esc(m.text)}</div>`:`<div class="msg a${m.err?' e':''}${m.show&&m.show.length?' rsumw':''}">${md(m.text)}${recShowHTML(m,d)}${m.prop&&!m.propDone?`<div class="row" style="margin:8px 0 2px"><button class="btn bdef new" data-rprop="${i}">Aggiungi alla<br>ricetta</button></div>`:m.prop&&m.propDone?'<p class="hm" style="margin:6px 0 0;font-size:13px">✓ Aggiunto alla ricetta</p>':''}${!m.err&&('speechSynthesis' in window)?ttsHTML(i):''}</div>`).join('')}${d.busy?'<div class="typing">Sto calcolando<i></i><i></i><i></i></div>':''}</div>`}
+   +`<div class="chat" id="rChat">${d.chat.map((m,i)=>m.role==='u'?`<div class="msg u">${esc(m.text)}</div>`:`<div class="msg a${m.err?' e':''}${m.show&&m.show.length?' rsumw':''}">${md(m.text)}${recShowHTML(m,d)}${m.prop&&!m.propDone?`<div class="row" style="margin:8px 0 2px"><button class="btn bdef new" data-rprop="${i}">Aggiungi alla<br>ricetta</button></div>`:m.prop&&m.propDone?'<p class="hm" style="margin:6px 0 0;font-size:15px">✓ Aggiunto alla ricetta</p>':''}${!m.err&&('speechSynthesis' in window)?ttsHTML(i):''}</div>`).join('')}${d.busy?'<div class="typing">Sto calcolando<i></i><i></i><i></i></div>':''}</div>`}
 function recEditor(r){RD=r?JSON.parse(JSON.stringify(r)):{id:null,nome:'',porzioni:1,items:[],note:'',chat:[]};RD.tmp='n'+Date.now();RD.porzioni=Math.min(99,Math.max(1,Math.round(+RD.porzioni||1)));
   if(!RD.items){/* ricette vecchie: ingredienti salvati per porzione → quantità dell'intera ricetta */RD.items=(RD.ingredienti||[]).map(i=>{const o={...i};KEYS.forEach(k=>{if(o[k]!=null)o[k]=o[k]*RD.porzioni});return o})}RD.chat=RD.chat||[];RD.busy=false;RD.base=JSON.stringify([RD.nome,RD.porzioni,RD.items,RD.note,RD.chat.length]);
   sheet(`<div class="rsh"><h3>${r?'Modifica Ricetta':'Aggiungi Ricetta'}</h3>
