@@ -1017,6 +1017,13 @@ html:not(.lightmode) .dayline,html:not(.lightmode) .kc .of,html:not(.lightmode) 
 /* v331: Aggiungi/Modifica Alimento in scuro: sfondo della finestra e dei blocchi nero assoluto; i campi (chat, nome, valori, note) restano nel nero un po' più chiaro (#1c1c1e) */
 html:not(.lightmode) #sheet.foodsheet,html:not(.lightmode) .foodsheet .card{background:#242426}
 html:not(.lightmode) .foodsheet .card input,html:not(.lightmode) .foodsheet .card textarea{background:#242426!important} /* v332: tutto nel grigio scuro dei riquadri «Nessuna Foto» (#242426) */
+/* v333: barra «Cerca un alimento»: trattino lampeggiante + due spazi + scritta; al tocco la scritta sparisce e resta solo la lente */
+.ahead .sw{position:relative;display:flow-root}
+.scur{display:none;position:absolute;left:48px;top:28px;width:2px;height:20px;background:#1f4d35;animation:fcurb 1s steps(1) infinite;pointer-events:none}
+html:not(.lightmode) .scur{background:#fff}
+@media(max-width:600px){.scur{left:44px}}
+#foodQ:placeholder-shown:not(:focus)+.scur{display:block}
+#foodQ:focus::placeholder{color:transparent!important}
 /* v311: in scuro i campi di scrittura (Diario, chat e nome delle ricette) hanno lo stesso nero-grigio di «Cerca un alimento» (--card #1c1c1e) con testo bianco; in chiaro invariato */
 html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,html:not(.lightmode) .comp textarea:focus-visible{background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(to bottom,#265e41,#1f4d35 50%,#183c29) border-box;color:#fff}
 html:not(.lightmode) .comp textarea::placeholder{color:#fff;opacity:1}
@@ -1090,7 +1097,7 @@ window.addEventListener('error',()=>hideSplash());</script>
 
     <section id="v-alimenti" class="vh" hidden>
       <div class="ahead"><div class="in"><div class="aht"><h2>Alimenti</h2><span class="acnt" id="foodCnt"></span></div>
-        <input type="search" id="foodQ" placeholder="Cerca un alimento" autocomplete="off"></div></div>
+        <span class="sw"><input type="search" id="foodQ" placeholder="&nbsp;&nbsp;&nbsp;Cerca un alimento" autocomplete="off"><i class="scur"></i></span></div></div>
       <div class="wrap">
         <div id="foodList"></div></div>
       <div class="applybar"><button class="btn addbar" id="addFood"><span class="pl">+</span>Aggiungi Alimento</button></div>
@@ -1163,7 +1170,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 332</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 333</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
