@@ -14,8 +14,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{color-scheme:light dark;
---bg:light-dark(#f4f6f1,#19191a);--card:light-dark(#fff,#252526);--ink:light-dark(#17201a,#e8eee9);
---mute:light-dark(#5b6a5f,#97a69b);--line:light-dark(#e0e5dc,#363637);--soft:light-dark(#eef2ea,#2e2e2f);
+--bg:light-dark(#f4f6f1,#111112);--card:light-dark(#fff,#1c1c1e);--ink:light-dark(#17201a,#e8eee9);
+--mute:light-dark(#5b6a5f,#97a69b);--line:light-dark(#e0e5dc,#2c2c2e);--soft:light-dark(#eef2ea,#242426);
 --brand:#1f4d35;--brand2:#2c6a49;--ok:#3a9a62;--warn:#e9a21b;--bad:#d9452b;--me:light-dark(#dcefe2,#23402f)}
 *{box-sizing:border-box;min-width:0}
 html,body{height:100%}
@@ -790,8 +790,8 @@ html.lightmode #v-alimenti details.food:not([open]),html.lightmode #v-storico de
 html.lightmode #v-ricette details.food:not([open]){background:linear-gradient(to bottom,#fff 0,#f7f9f8 50%,#e3ebe6 100%)!important;box-shadow:inset 0 -3px 0 rgba(31,77,53,.10),inset 0 2px 0 #fff!important}
 
 /* v195/v197: solo modalità scura, pillole di Alimenti e Storico nel grigio di partenza (#1c1c1e) con rilievo 3D marcato con rilievo 3D medio (come in chiaro), bordo e scritte bianchi */
-html:not(.lightmode) #v-alimenti details.food:not([open]),html:not(.lightmode) #v-storico details.hday:not([open]){background:linear-gradient(to bottom,#414142 0,#232326 45%,#1a1a1b 100%)!important;box-shadow:inset 0 -4px 0 rgba(0,0,0,.5),inset 0 3px 2px rgba(255,255,255,.16)!important}
-html:not(.lightmode) #v-ricette details.food:not([open]){background:linear-gradient(to bottom,#414142 0,#232326 45%,#1a1a1b 100%)!important;box-shadow:inset 0 -4px 0 rgba(0,0,0,.5),inset 0 3px 2px rgba(255,255,255,.16)!important}
+html:not(.lightmode) #v-alimenti details.food:not([open]),html:not(.lightmode) #v-storico details.hday:not([open]){background:linear-gradient(to bottom,#36363a 0,#232326 45%,#121214 100%)!important;box-shadow:inset 0 -4px 0 rgba(0,0,0,.5),inset 0 3px 2px rgba(255,255,255,.16)!important}
+html:not(.lightmode) #v-ricette details.food:not([open]){background:linear-gradient(to bottom,#36363a 0,#232326 45%,#121214 100%)!important;box-shadow:inset 0 -4px 0 rgba(0,0,0,.5),inset 0 3px 2px rgba(255,255,255,.16)!important}
 
 /* v198: cerchio "i" (informazioni) a destra del titolo in Diario e Impostazioni */
 .head .dht,#v-impost .ihead .aht{justify-content:space-between}
@@ -878,8 +878,8 @@ html body #v-impost .btn:not(:disabled):active,html body #sheet .btn:not(:disabl
 /* v236: pillole degli elenchi (Alimenti e Storico) con il rilievo 3D di un livello più forte: chiaro da medio a marcato, scuro da marcato a molto marcato */
 html.lightmode #v-alimenti details.food:not([open]),html.lightmode #v-storico details.hday:not([open]){background:linear-gradient(to bottom,#fff 0,#f3f6f4 45%,#d9e3dd 100%)!important;box-shadow:inset 0 -4px 0 rgba(31,77,53,.16),inset 0 3px 2px rgba(255,255,255,.9)!important}
 html.lightmode #v-ricette details.food:not([open]){background:linear-gradient(to bottom,#fff 0,#f3f6f4 45%,#d9e3dd 100%)!important;box-shadow:inset 0 -4px 0 rgba(31,77,53,.16),inset 0 3px 2px rgba(255,255,255,.9)!important}
-html:not(.lightmode) #v-alimenti details.food:not([open]),html:not(.lightmode) #v-storico details.hday:not([open]){background:linear-gradient(to bottom,#4a4a4b 0,#2e2e2f 45%,#161617 100%)!important;box-shadow:inset 0 -5px 0 rgba(0,0,0,.55),inset 0 3px 2px rgba(255,255,255,.2)!important}
-html:not(.lightmode) #v-ricette details.food:not([open]){background:linear-gradient(to bottom,#4a4a4b 0,#2e2e2f 45%,#161617 100%)!important;box-shadow:inset 0 -5px 0 rgba(0,0,0,.55),inset 0 3px 2px rgba(255,255,255,.2)!important}
+html:not(.lightmode) #v-alimenti details.food:not([open]),html:not(.lightmode) #v-storico details.hday:not([open]){background:linear-gradient(to bottom,#3e3e42 0,#242427 45%,#0e0e10 100%)!important;box-shadow:inset 0 -5px 0 rgba(0,0,0,.55),inset 0 3px 2px rgba(255,255,255,.2)!important}
+html:not(.lightmode) #v-ricette details.food:not([open]){background:linear-gradient(to bottom,#3e3e42 0,#242427 45%,#0e0e10 100%)!important;box-shadow:inset 0 -5px 0 rgba(0,0,0,.55),inset 0 3px 2px rgba(255,255,255,.2)!important}
 /* v263: modalità scura, bordo delle pillole di Alimenti e Storico nel bianco del tasto + (#e6ece8) invece del bianco pieno: meno luminoso sul nero; anche il contorno del pallino dello Storico */
 html:not(.lightmode) #v-alimenti details.food,html:not(.lightmode) #v-storico details.hday{border-color:#e6ece8!important}
 html:not(.lightmode) #v-ricette details.food{border-color:#e6ece8!important}
@@ -940,7 +940,7 @@ html:not(.lightmode) .comp textarea{border:4px solid #436955;box-shadow:0 2px 5p
 /* v268: in scuro l'interno del campo usa il bianco attenuato del tasto + (#e6ece8), come il bordo delle pillole scure */
 html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,html:not(.lightmode) .comp textarea:focus-visible{outline:none;border-color:transparent;background:linear-gradient(#e6ece8,#e6ece8) padding-box,linear-gradient(to bottom,#265e41,#1f4d35 50%,#183c29) border-box}
 .msg .mbox.mauto{margin-top:10px} /* v312: tabella automatica nella chat del Diario, staccata dal testo */
-/* v312: modalità scura «Intermedia 1»: tutti i grigi schiariti in proporzione (sfondo #111112→#191919, schede #1c1c1e→#252525); verdi, bianchi, ombre e tasti invariati */
+/* v313: modalità scura tornata ai grigi di prima (sfondo #111112, schede #1c1c1e); la proposta «Intermedia 1» (sfondo #19191a, schede #252526) è descritta nel documento */
 /* v311: in scuro i campi di scrittura (Diario, chat e nome delle ricette) hanno lo stesso nero-grigio di «Cerca un alimento» (--card #1c1c1e) con testo bianco; in chiaro invariato */
 html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,html:not(.lightmode) .comp textarea:focus-visible{background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(to bottom,#265e41,#1f4d35 50%,#183c29) border-box;color:#fff}
 html:not(.lightmode) .comp textarea::placeholder{color:#fff;opacity:1}
@@ -1087,7 +1087,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 312</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 313</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>

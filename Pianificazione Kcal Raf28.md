@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 312 (28/11/2026).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 313 (28/11/2026).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **Kcal** (nome del repository e del progetto: **KalRaf28**; titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **312**.
+> Sto sviluppando **Kcal** (nome del repository e del progetto: **KalRaf28**; titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **313**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -18,7 +18,7 @@
 >
 > Prima di tutto leggi il codice attuale dal repository (è pubblico: https://github.com/raf28/kalraf28) e questo documento di pianificazione. Controlla anche gli ultimi commit (`git log`): a volte lavoro con altre chat o altri modelli, quindi la versione nel repository può essere più avanti di quella scritta qui. In quel caso riparti dall'ultima versione pubblicata e aggiorna questo documento.
 >
-> Poi riprendiamo dalla lista **"Cose da fare"** in fondo al documento. Al 28/11/2026 (v312) **l'app è finita e collaudata**: grafica, sezione Ricette (editor con chat, note, porzioni, condivisione come testo, «1 Porzione in Alimento») e finestra "Come funziona Kcal" sono completi. Resta soltanto da decidere/fare la **rotazione dell'app / blocco in verticale** (richiede di rigenerare l'APK). In fondo al documento, sotto la scritta **NOTE**, ci sono le cose da sapere se un'altra persona usa l'app.
+> Poi riprendiamo dalla lista **"Cose da fare"** in fondo al documento. Al 28/11/2026 (v313) **l'app è finita e collaudata**: grafica, sezione Ricette (editor con chat, note, porzioni, condivisione come testo, «1 Porzione in Alimento») e finestra "Come funziona Kcal" sono completi. Resta soltanto da decidere/fare la **rotazione dell'app / blocco in verticale** (richiede di rigenerare l'APK). In fondo al documento, sotto la scritta **NOTE**, ci sono le cose da sapere se un'altra persona usa l'app.
 >
 > Ogni tanto ti scriverò "implementa", "applica" o "senza anteprima": vuol dire pubblicare subito. Quando chiedo solo un'anteprima, non pubblicare finché non dico "implementa".
 >
@@ -55,7 +55,7 @@ KalRaf28 è un diario alimentare personale. Al posto di contare le calorie nelle
 - **Mai spese extra per l'API** oltre all'abbonamento.
 - In futuro forse un'APK.
 
-## 3. Come funziona oggi (v312): sezioni
+## 3. Come funziona oggi (v313): sezioni
 
 La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impostazioni** (Preimpostati tolto nella v53). La voce attiva è evidenziata con una pillola verde `#2f8f5c`.
 
@@ -212,7 +212,7 @@ Formato più piccolo, per le sezioni dove il tasto di default non ci sta (prima 
 ### 3.16 🎨 Regole grafiche definitive (27/11/2026, v216)
 Valgono per tutte le sezioni e per quelle future (Ricette). Nel codice le regole per il solo tema chiaro usano `html.lightmode …`, quelle per il solo tema scuro `html:not(.lightmode) …`.
 - **Testate:** verde `#1f4d35`, titolo 24 px in grassetto a 16 px dal bordo, riga del titolo alta 36 px. Sotto il titolo c'è un **ovale** di 52 px di altezza, largo uguale in tutte le sezioni: pillola della data (Diario), "Cerca un alimento" (Alimenti), legenda (Storico). Chiaro: ovale in bianco attenuato `#f4f6f1` senza bordo, scritte e lente `#1f4d35`. Scuro: ovale grigio scuro (`--card`) senza bordo, con scritte e lente bianche.
-- **Colori di fondo:** chiaro `--bg #f4f6f1`, schede `--card #fff`. Scuro (dalla v312, «Intermedia 1»): sfondo `--bg #19191a`, schede/finestre/pillole `--card #252526` (grigio neutro), linee `#363637`; prima `#111112` / `#1c1c1e` / `#2c2c2e`.
+- **Colori di fondo:** chiaro `--bg #f4f6f1`, schede `--card #fff`. Scuro (v313, grigi «Attuale»): sfondo `--bg #111112`, schede/finestre/pillole `--card #1c1c1e` (grigio neutro), linee `#2c2c2e`. Proposte alternative più chiare, da ripristinare se l'utente le richiede: vedi v313.
 - **Verdi:** `#1f4d35` (testate, tasti normali), `#2f8f5c` (tasti in evidenza: "Nuova Giornata Alimentare", "Elimina pranzo", pasto/voce selezionata, frecce della data, cursori), `#436955` (tasti microfono/fotocamera in chiaro e messaggi dell'utente nel Diario in chiaro), `#4cc184`/`#5cc58a` (verdi accesi del tema scuro e valori "sicuri").
 - **Rosso** (`--bad`) solo per il tasto che **elimina davvero** (quello della conferma); tutti gli altri Elimina e le X sono verdi.
 - **Bianco attenuato della modalità scura:** `#e6ece8` (il tono del tasto +) per il bordo delle pillole di Alimenti e Storico e per l'interno del campo di scrittura (v263, v268).
@@ -474,6 +474,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **v276: data del pasto e ora nella barra.** Con l'ora si salva anche la data (`data`), e l'ordine dei pasti si calcola su data e ora (niente più dubbi dopo mezzanotte; le giornate vecchie senza data usano la regola delle 4:00). Un'ora detta all'IA prende la data di oggi, o di ieri se sarebbe più di un'ora nel futuro. La data compare sotto l'ora nella tabella "Lista alimenti" ("28/11/26", piccola e grigia) e tra parentesi accanto all'ora nello Storico. Nella barra del pasto (con "Elimina …") l'ora è piccola sotto il nome ("ore 20:45") e le kcal sono accanto, centrate tra le due righe, con 16 px di spazio (opzione C dell'anteprima, spazio raddoppiato).
   - **v277:** ordine dei pasti più sicuro per quelli salvati tra la v273 e la v275 (con l'ora ma senza data): il loro giorno è quello di apertura della giornata, o il successivo se l'ora viene prima dell'apertura, invece della regola fissa delle 4:00. Provato con l'orologio simulato alle 18:00: colazione 08:00, spuntino 10:30, spuntino 16:00 nell'ordine giusto.
   - **v278: sezione Ricette con la grafica degli Alimenti.** Testata con titolo e conteggio ("N salvate"), ricerca "Cerca una ricetta", elenco alfabetico con le lettere, pillole, frecce e pillola "Aggiungi Ricetta" con il +, identici agli Alimenti in chiaro e in scuro (62 regole CSS duplicate per `#v-ricette`; `alimSticky()` / `alimStuck()` valgono per entrambe le sezioni). Il + apre la finestra "Aggiungi Ricetta" con Annulla e Salva disattivato. Tolte la barra Ricettario / Crea Ricetta e la vecchia chat. Nella finestra degli Alimenti il titolo ora è "Aggiungi Alimento" (e "Modifica Alimento").
+  - **v313:** modalità scura: ripristinati i grigi di prima (**«Attuale»**: sfondo `#111112`, schede `#1c1c1e`, linee `#2c2c2e`, `--soft` `#242426`, rilievo pillole `#3e3e42`/`#242427`/`#0e0e10`), per decidere con calma. Resta la tabella automatica nella chat del Diario (v312). **Palette provate, da ripristinare con il loro nome** (stesse regole: tutti i grigi neutri spostati in proporzione, verdi/bianchi/ombre/tasti invariati; la mappatura lineare passa da sfondo 17 e schede 28 ai valori nuovi): **«Intermedia 1»** sfondo `#19191a`, schede `#252526`, linee `#363637`, `--soft` `#2e2e2f`, rilievo pillole `#4a4a4b`/`#2e2e2f`/`#161617` (rilievo chiaro dei list `#414142`/`#1a1a1b`) — è quella provata nella v312; **«Intermedia 2»** sfondo `#20`, schede `#2d`; **«Grafite»** sfondo `#28`, schede `#35`. Per ripristinarne una: scrivere "rimetti Intermedia 1" (o 2, o Grafite).
   - **v312:** (1) **Diario:** dopo ogni aggiunta, eliminazione o cambio di quantità fatti dall'IA, sotto la risposta compare in automatico la tabella del pasto (colazione, pranzo, cena, spuntini), staccata di 10 px; niente tabella per domande e ora del pasto, né dopo la X. Verificato con Gemini simulato. (2) **Modalità scura «Intermedia 1»** (scelta dall'utente tra Attuale, Intermedia 1, Intermedia 2 e Grafite; se non convince si torna all'attuale): tutti i grigi schiariti in proporzione: sfondo `#111112` → `#19191a`, schede/pillole/ovali/campi `#1c1c1e` → `#252526`, linee `#2c2c2e` → `#363637`, `--soft` `#242426` → `#2e2e2f`, rilievo delle pillole `#3e3e42`/`#242427`/`#0e0e10` → `#4a4a4b`/`#2e2e2f`/`#161617`. Verdi, bianchi, ombre e tasti invariati. Per tornare indietro: rimettere i valori di prima nelle variabili `--bg`, `--card`, `--line`, `--soft` e nelle due regole del rilievo (v236).
   - **v311:** modalità scura, coerenza dei campi di scrittura con «Cerca un alimento»: il campo di scrittura del Diario («Tocca + per iniziare»), la chat delle ricette («Ingredienti, quantità, porzioni…») e il «Nome della ricetta» hanno ora il grigio scuro delle schede `#1c1c1e` (`--card`, lo stesso della ricerca) con testo e segnaposto bianchi, al posto del bianco attenuato `#e6ece8` delle v268 e v310 (che sono superate). Bordo verde sfumato invariato. Modalità chiara invariata (`#f4f6f1`, testo scuro). Verificato con Playwright: stesso colore della ricerca. **Regola (3.16):** in scuro tutti i campi di testo usano `--card` con testo bianco.
   - **v310:** modalità scura, editor delle ricette: il campo «Nome della ricetta» ha lo stesso bianco attenuato `#e6ece8` (testo `#17201a`) del campo di scrittura della chat, per coerenza. Modalità chiara invariata (`#f4f6f1`). Verificato con Playwright in chiaro e in scuro.
@@ -511,7 +512,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
-**Stato:** online, **app finita e collaudata (28/11/2026, v312)**. Dal 25/11 al 28/11/2026 (v1–v309) sono stati fatti Diario, Alimenti, Ricette, Storico e Impostazioni, con la grafica definitiva in chiaro e in scuro (regole in 3.16), la finestra "Come funziona Kcal" completa (Ricette comprese), l'APK e il backup su Drive. Resta solo, se si vorrà, la rotazione dell'app (vedi "Cose da fare").
+**Stato:** online, **app finita e collaudata (28/11/2026, v313)**. Dal 25/11 al 28/11/2026 (v1–v309) sono stati fatti Diario, Alimenti, Ricette, Storico e Impostazioni, con la grafica definitiva in chiaro e in scuro (regole in 3.16), la finestra "Come funziona Kcal" completa (Ricette comprese), l'APK e il backup su Drive. Resta solo, se si vorrà, la rotazione dell'app (vedi "Cose da fare").
 
 ---
 
