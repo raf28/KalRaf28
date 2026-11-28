@@ -377,7 +377,7 @@ nav button.on{font-weight:700;color:light-dark(#1f4d35,#fff)}
 .recsheet .rnote textarea{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:14px;padding:8px 12px;font-size:14px;color:var(--mute);background:var(--bg);resize:none}
 .recsheet .rcomp{margin:0 -16px;border-top:1px solid var(--line)}
 .recsheet .rbtns{margin-top:10px}
-.lt .rtn{color:light-dark(#2a7a4b,#5cc58a)}
+.lt .rtn{color:light-dark(#2a7a4b,#5cc58a);text-transform:none}
 /* v288: Salva allineato alla fine della pillola del campo di scrittura: sotto microfono e invio resta spazio vuoto (niente tocchi sbagliati); un po' più di distanza dal campo */
 .recsheet #rBtns{margin-top:16px;padding-right:var(--rbtnR,104px)}
 .recsheet .rnotebox .lt{margin-bottom:6px}.recsheet .rnotetx{font-size:14px;line-height:1.5;color:var(--mute)}
@@ -1049,7 +1049,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 289</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 290</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1840,7 +1840,10 @@ function porzBox(items,n){const t=sum(items),p={};KEYS.forEach(k=>p[k]=t[k]==nul
   const row=(l,k,sub)=>`<div class="sr${sub?' sub':''}"><span>${l}</span><b>${fv(p,k,'g')}</b></div>`;
   return`<div class="lt">1 porzione<br><small>su ${n} ${n===1?'porzione':'porzioni'}</small></div><div class="sumt">Totale kcal 1 PORZIONE: <b>${f0(p.kcal)} kcal</b></div><div class="sml">${row('Carboidrati','carboidrati')}${row('di cui zuccheri','zuccheri',1)}${row('Proteine','proteine')}${row('Grassi','grassi')}${row('di cui saturi','saturi',1)}${row('Fibre','fibre')}${row('Sale','sale')}</div>`}
 /* v289: titolo della tabella della ricetta: «Ricetta», poi in verde il nome e le porzioni, poi «Totale kcal e macro» */
-const recTitle=d=>{const n=Math.max(1,+d.porzioni||1),nm=(d.nome||'').trim();return`Ricetta<br><span class="rtn">${nm?esc(nm)+' ':''}(${n} ${n===1?'porzione':'porzioni'})</span><br>Totale kcal e macro`};
+/* v290: iniziale maiuscola per ogni parola, tranne articoli, preposizioni e congiunzioni (es. «Fiocchi di Latte», «Panino Palloncino (6 Porzioni)») */
+const TC_MIN=new Set(['di','a','da','in','con','su','per','tra','fra','e','ed','o','al','allo','alla','ai','agli','alle','del','dello','della','dei','degli','delle','dal','dallo','dalla','dai','dagli','dalle','nel','nello','nella','nei','negli','nelle','sul','sullo','sulla','sui','sugli','sulle','col','coi','il','lo','la','i','gli','le','un','uno','una','d','l','all','dall','dell','nell','sull']);
+const titleCase=t=>String(t||'').toLowerCase().replace(/[\p{L}\p{N}]+/gu,(w,i)=>i>0&&TC_MIN.has(w)?w:w.charAt(0).toUpperCase()+w.slice(1));
+const recTitle=d=>{const n=Math.max(1,+d.porzioni||1),nm=(d.nome||'').trim();return`Ricetta<br><span class="rtn">${nm?esc(titleCase(nm))+' ':''}(${n} ${n===1?'Porzione':'Porzioni'})</span><br>Totale kcal e macro`};
 const recNoteBox=d=>(d.note||'').trim()?`<div class="card rnotebox"><div class="lt">Note</div><div class="rnotetx">${esc(d.note).replace(/\n/g,'<br>')}</div></div>`:'';
 /* v284: tabelle in chat su richiesta (sempre aggiornate): «totale», «porzione», «note», una o più */
 function recShowHTML(m,d){if(!m.show||!m.show.length||m.err)return'';let h='';
