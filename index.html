@@ -402,6 +402,14 @@ nav button.on{font-weight:700;color:light-dark(#1f4d35,#fff)}
 .mbox.rnotebox,html:not(.lightmode) .mbox.rnotebox{border-color:light-dark(#a8740a,#e2b43c)}
 .mbox.rpor1,html:not(.lightmode) .mbox.rpor1{border-color:#2f8f5c}
 .rpor1 .lt .rp1{text-transform:uppercase}
+/* v302: ricetta aperta: sopra, a sinistra «+A» (Trasforma una porzione in alimento) e a destra Condividi, tondi con la scritta sotto; sotto Annulla, Modifica (al centro), Elimina */
+#recList .rshr{display:flex;justify-content:space-between;align-items:flex-start;margin:16px 0 14px}
+#recList .rsc{display:flex;flex-direction:column;align-items:center;gap:6px;width:150px;text-align:center}
+#recList .rsc small{font-size:12px;font-weight:600;line-height:1.25;color:var(--ink)}
+#recList .rsc:first-child{align-items:flex-start;text-align:left}#recList .rsc:last-child{align-items:flex-end;text-align:right}
+#recList .rcirc{width:44px!important;min-width:44px!important;max-width:44px!important;height:44px!important;padding:0!important;border-radius:50%!important;display:grid!important;place-items:center}
+#recList .rcirc .pa{font-size:17px;font-weight:800;letter-spacing:-.02em}
+#recList .rbt3{flex-wrap:nowrap}
 .recsheet .msg.a .card{margin:10px 0 4px}
 #sheet.recsheet{position:relative}
 .recsheet .rjmp{position:absolute;right:12px;z-index:3}
@@ -1072,7 +1080,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 301</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 302</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1222,7 +1230,9 @@ const SRC={alimenti:['ok','valore sicuro – Alimenti'],ricetta:['ok','valore si
 function srcTag(i){const f=i.fonte||(i.dalAlimenti?'alimenti':i.imposto?'utente':i.stima?'generico':'');const s=SRC[f];return s?` <span class="src ${s[0]}">(${s[1]})</span>`:''}
 function md(s){return esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/^\s*[-*•]\s+/gm,'• ').replace(/\n/g,'<br>')}
 
-function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}
+/* v302: il messaggio compare sempre un po' sopra la barra più alta in basso (riga dei pasti con il +, «Aggiungi Alimento/Ricetta», «Applica…», campo di scrittura delle ricette), senza sovrapporsi */
+function toastBottom(){let top=innerHeight;document.querySelectorAll('#mrow,.applybar>.btn,#modal:not([hidden]) .rcomp,#modal:not([hidden]) .rbtns').forEach(e=>{if(!e.offsetParent&&getComputedStyle(e).position!=='fixed')return;const r=e.getBoundingClientRect();if(r.height>0&&r.top>innerHeight*.45&&r.top<top)top=r.top});return top<innerHeight?Math.round(innerHeight-top+14):130}
+function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;d.style.bottom=toastBottom()+'px';document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}
 let curDead=false;
 function hpush(st){try{history.pushState(st,'')}catch(e){}curDead=false}
 function go(v){if(v===ui.view){render();return}ui.view=v;if(v==='diario')ui.toTop=true;/* v173: tornando al Diario si riparte dall'alto con tutta la testata */hpush({v});render();$('#main').scrollTop=0}
@@ -1724,6 +1734,8 @@ document.addEventListener('click',e=>{
   if(b.id==='addRec'){/* v278: come Aggiungi Alimento, si apre toccando il + e la scritta fino a «Agg» */
     let lim=0;try{const tn=[...b.childNodes].find(n=>n.nodeType===3),rg=document.createRange();rg.setStart(tn,0);rg.setEnd(tn,3);lim=rg.getBoundingClientRect().right+4}catch(_){}
     if(e.target.closest('.pl')||(lim&&e.clientX<=lim))return addRecipeStart();return}
+  if(b.dataset.sharerecipe){const r=S.recipes.find(x=>x.id===b.dataset.sharerecipe);if(r)shareRecipe(r);return}
+  if(b.dataset.rec2food){toast('Trasforma in alimento: in arrivo');return}
   if(b.dataset.editrecipe){const r=S.recipes.find(x=>x.id===b.dataset.editrecipe);if(r)recEditor(r);return}
   if(b.dataset.delrecipe){const id=b.dataset.delrecipe,r=S.recipes.find(x=>x.id===id);sheet(`<h3>Eliminare «${esc(r?r.nome:'')}»?</h3><p class="hm">La ricetta verrà eliminata. Non si può annullare.</p><div class="row between"><button class="btn ghost std2" id="noSheet">Annulla</button><button class="btn bad std2" id="okDelR">Elimina</button></div>`);$('#okDelR').onclick=()=>{S.recipes=S.recipes.filter(x=>x.id!==id);save();closeSheet();render();toast('Ricetta eliminata')};return}
   if(b.id==='addFood'){/* v255: si apre toccando il cerchio + e la parte della scritta fino alla seconda «g» di «Aggiungi» (testo «Agg»); il resto della pillola non fa nulla */
@@ -1853,7 +1865,8 @@ function renderRecipes(){fdKill();
     h+=`<details class="card food" data-rid="${esc(r.id)}"><summary><span class="nm">${esc(r.nome)}</span><span class="kv"><b>${f0(t.kcal)} kcal</b><small>per porzione</small></span></summary>
     ${r.items?`<div class="mbox rview">${mealBoxHTML(r.items,'ricetta',false,null,null,null,{title:recTitle(r),sumLabel:'Totale kcal RICETTA'})}</div>${recNoteBox(r,false).replace('card mbox rnotebox','mbox rview rnotebox')}<div class="mbox rview rpor1">${porzBox(r.items,r.porzioni||1,r)}</div>`
       :(ing.length?`<div class="hm" style="margin-top:8px">${ing.map(i=>`• ${esc(i.nome)} ${esc(i.quantita||'')} — ${f0(i.kcal)} kcal`).join('<br>')}</div>`:'')}
-    <div class="row between"><button class="btn sm ghost std2" data-collapse>Annulla</button><span class="row" style="margin:0"><button class="btn sm ghost std2" data-editrecipe="${esc(r.id)}">Modifica</button><button class="btn sm ghost std2" data-delrecipe="${esc(r.id)}">Elimina</button></span></div></details>`});
+    <div class="rshr"><div class="rsc"><button class="btn std2 rcirc" data-rec2food="${esc(r.id)}" aria-label="Trasforma una porzione in alimento"><span class="pa">+A</span></button><small>Trasforma una porzione<br>in alimento</small></div><div class="rsc"><button class="btn std2 rcirc" data-sharerecipe="${esc(r.id)}" aria-label="Condividi ricetta">${SHARE_SVG}</button><small>Condividi<br>ricetta</small></div></div>
+    <div class="row between rbt3"><button class="btn sm ghost std2" data-collapse>Annulla</button><button class="btn sm ghost std2" data-editrecipe="${esc(r.id)}">Modifica</button><button class="btn sm ghost std2" data-delrecipe="${esc(r.id)}">Elimina</button></div></details>`});
   $('#recList').innerHTML=h;
   document.querySelectorAll('#recList details.food').forEach(d=>bindCloseDetails(d));
 }
@@ -1929,6 +1942,19 @@ function recWire(bodyOnly){
   $('#rCancel').onclick=recExit;
   recCanSave()}
 function addRecipeStart(){recEditor(null)}
+/* v302: condivisione della ricetta come testo (WhatsApp, Gmail, Keep…): menu di condivisione di Android; se non c'è o si chiude senza scegliere, il testo va negli appunti */
+const SHARE_SVG='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>';
+function recShareText(r){const n=Math.max(1,+r.porzioni||1),it=r.items||[],t=sum(it),g=(k)=>t[k]==null?'—':fk(k,t[k])+' g',p=k=>t[k]==null?'—':fk(k,t[k]/n)+' g';
+  const L=[`🍽️ *${titleCase(r.nome||'Ricetta')}*`,`${n} ${n===1?'porzione':'porzioni'}`,''];
+  if(it.length){L.push('*Ingredienti (ricetta intera)*');it.forEach(i=>L.push(`• ${i.nome}${i.quantita?' – '+i.quantita:''} – ${f0(i.kcal)} kcal`));L.push('',`*Totale ricetta: ${f0(t.kcal)} kcal*`,
+    `Carboidrati ${g('carboidrati')} (di cui zuccheri ${g('zuccheri')})`,`Proteine ${g('proteine')}`,`Grassi ${g('grassi')} (di cui saturi ${g('saturi')})`,`Fibre ${g('fibre')}`,`Sale ${g('sale')}`,'',
+    `*1 porzione: ${f0(t.kcal/n)} kcal*`,`Carboidrati ${p('carboidrati')} · Proteine ${p('proteine')} · Grassi ${p('grassi')}`)}
+  const N=recNoteLines(r);if(N.length){L.push('','*Note*');N.forEach(x=>L.push('• '+x))}
+  L.push('','— Condiviso da Kcal');return L.join('\n')}
+async function shareRecipe(r){const text=recShareText(r);
+  const copy=async m=>{try{await navigator.clipboard.writeText(text);toast(m)}catch(e){toast('Impossibile copiare il testo')}};
+  if(navigator.share){try{await navigator.share({title:r.nome||'Ricetta',text});return}catch(e){if(e&&e.name==='AbortError'){copy('Testo della ricetta copiato');return}}}
+  copy('Testo della ricetta copiato: incollalo dove vuoi')}
 /* v281: uscita dall'editor (Annulla o gesto Indietro): se c'è qualcosa chiede «Vuoi uscire senza salvare?»; con le note aperte bisogna usare «Chiudi note» */
 function recExit(){if(!RD)return closeSheet();if(RD.noteMode){toast('Tocca «Chiudi note» per chiudere le note');return}
   if(!recDirty()){RD=null;closeSheet();return}
