@@ -377,6 +377,13 @@ nav button.on{font-weight:700;color:light-dark(#1f4d35,#fff)}
 .recsheet .rnote textarea{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:14px;padding:8px 12px;font-size:14px;color:var(--mute);background:var(--bg);resize:none}
 .recsheet .rcomp{margin:0 -16px;border-top:1px solid var(--line)}
 .recsheet .rbtns{margin-top:10px}
+/* v291: Aggiungi/Modifica Alimento alto come l'editor delle ricette, con più spazio tra tasti, foto e campo; microfono e invio in basso, allineati al fondo del campo */
+#sheet.foodsheet{height:94dvh;max-height:94dvh}
+.foodsheet h3{margin-bottom:14px}
+.foodsheet .row.modes{margin:0 0 24px}
+.foodsheet .ph3{margin-bottom:24px}
+.foodsheet .fin{align-items:flex-end}
+.foodsheet .fin .fside{justify-content:flex-end}
 .lt .rtn{color:light-dark(#2a7a4b,#5cc58a);text-transform:none}
 /* v288: Salva allineato alla fine della pillola del campo di scrittura: sotto microfono e invio resta spazio vuoto (niente tocchi sbagliati); un po' più di distanza dal campo */
 .recsheet #rBtns{margin-top:16px;padding-right:var(--rbtnR,104px)}
@@ -1049,7 +1056,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 290</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 291</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1967,11 +1974,11 @@ async function foodSheet(f){
   let draw=()=>{sheet(`<h3>${f?'Modifica Alimento':'Aggiungi Alimento'}</h3>
     <div class="row modes"><button class="btn sm ghost two ${auto?'sel':''}" id="fGo">${auto?'<i class="chk">✓</i>':''}Compila scheda Automaticamente<small>da foto, testo o voce</small></button><button class="btn sm ghost two ${!auto?'sel':''}" id="fMan">${!auto?'<i class="chk">✓</i>':''}Compila scheda Manualmente<small>scrivi tu tutti i valori</small></button></div>
     ${slotsHtml(ph)}
-    <div class="fin"><textarea id="fTxt" class="ta" rows="3" placeholder="Scrivi o detta nome, marca, valori e precisazioni. Es. «Prosciutto cotto Rovagnati, per 100 grammi: 135 kcal, proteine 20…»">${esc(txt)}</textarea>${MIC}</div>
+    <div class="fin"><textarea id="fTxt" class="ta" rows="4" placeholder="Scrivi o detta nome, marca, valori e precisazioni. Es. «Prosciutto cotto Rovagnati, per 100 grammi: 135 kcal, proteine 20…»">${esc(txt)}</textarea>${MIC}</div>
     ${stErr?'<div class="tts" style="margin:0 0 6px"><button class="tb" id="fRetry">↻ Riprova</button></div>':''}<p class="hm" id="fSt">${esc(st||(auto&&!card?'Modalità automatica: detta, scrivi o aggiungi una foto e la scheda si prepara da sola.':''))}</p>
     ${cardHtml()}
     <div class="row between"><button class="btn sm ghost std2" id="ffCancel">Annulla</button><button class="btn std2" id="ffSave" ${card?'':'disabled'}>Salva</button></div>`);
-    $('#ffCancel').onclick=ffExit;sheetGuard=ffExit;
+    $('#ffCancel').onclick=ffExit;sheetGuard=ffExit;$('#sheet').classList.add('foodsheet');
     bindSlots(ph,()=>{grab();draw();if(auto)prepare()});
     dictate($('#fTxt'),$('#fMic'),()=>{if(auto&&$('#fTxt'))prepare()});
     $('#fSend').onclick=()=>{stopDictation();prepare(true)};
