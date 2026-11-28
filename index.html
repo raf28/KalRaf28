@@ -390,8 +390,13 @@ nav button.on{font-weight:700;color:light-dark(#1f4d35,#fff)}
 .lt .rtn{color:light-dark(#2a7a4b,#5cc58a);text-transform:none}
 /* v288: Salva allineato alla fine della pillola del campo di scrittura: sotto microfono e invio resta spazio vuoto (niente tocchi sbagliati); un po' più di distanza dal campo */
 .recsheet #rBtns{margin-top:16px;padding-right:var(--rbtnR,104px)}
+/* v298: tolto il tasto Note (le note si gestiscono in chat); Porzioni al centro tra Annulla e Salva (Salva di nuovo tutto a destra), più distanza dal campo di scrittura */
+.recsheet #rBtns{margin-top:28px;padding-right:0;align-items:center;flex-wrap:nowrap}
+.recsheet #rBtns .rpor{align-self:center;flex:none}
+.recsheet .rtop{padding-bottom:12px}
 .rnotebox .lt{margin-bottom:6px}.rnotetx{font-size:14px;line-height:1.5;color:var(--mute)}
 .it.rnit{grid-template-columns:minmax(0,1fr) 36px}.it.rnit.ro{grid-template-columns:minmax(0,1fr)}.it.rnit .n{font-size:15px;line-height:1.4;font-weight:500;color:var(--ink)}
+.it.rnit{padding:14px 0}
 .mbox.rnotebox,html:not(.lightmode) .mbox.rnotebox{border-color:light-dark(#a8740a,#e2b43c)}
 .mbox.rpor1,html:not(.lightmode) .mbox.rpor1{border-color:#2f8f5c}
 .rpor1 .lt .rp1{text-transform:uppercase}
@@ -548,6 +553,8 @@ details.food .btn.ghost{background:var(--brand);color:#fff;border:0;border-radiu
 /* v139: riepilogo in chat = tabella del pasto, larga e incorniciata */
 .msg.a.rsumw{background:none;border:0;padding:0;max-width:100%;width:100%;box-shadow:none}
 .msg.a.rsumw .mbox{margin:0}
+/* v298: più tabelle nella stessa risposta delle ricette: 10 px tra l'una e l'altra, come in alto */
+#rChat .msg.a.rsumw .mbox+.mbox{margin-top:10px}
 #mealItems .sumt,.mbox .sumt{margin-top:10px}
 /* v142: riga del totale grande come il titolo; kcal nel verde di «valore sicuro» */
 #mealItems .sumt,.mbox .sumt{font-size:17px;font-weight:700;color:light-dark(#17201a,#fff)}
@@ -1063,7 +1070,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 297</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 299</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1876,19 +1883,17 @@ function recBodyHTML(){const d=RD;
   /* v284: in alto, una volta sola: totale della ricetta, poi le note (se ci sono), poi la singola porzione */
   return(d.items.length?`<div class="card mbox">${mealBoxHTML(d.items,'ricetta',true,null,null,null,{title:recTitle(d),sumLabel:'Totale kcal RICETTA',delAttr:'data-rdel'})}</div>
     ${recNoteBox(d,true)}<div class="card mbox rpor1">${porzBox(d.items,d.porzioni,d)}</div>`
-    :`<div class="card"><div class="empty">Scrivi o detta gli <b>ingredienti con le quantità</b> e in quante <b>porzioni</b> si divide la ricetta: l'Intelligenza Artificiale calcola kcal e Macro del totale e di una porzione.<br><br>Puoi anche <b>chiedere consigli</b> all'Intelligenza Artificiale su ingredienti, quantità, abbinamenti e sostituzioni: le domande non cambiano la ricetta.<br><br>Cotture, tempi e accortezze vengono <b>riconosciuti e messi nelle note</b> da soli; puoi anche dire «<b>Aggiungi alle note…</b>».<br>Con il tasto <b>Note</b> in alto le vedi e le completi.</div></div>${recNoteBox(d)}`)
+    :`<div class="card"><div class="empty">Scrivi o detta gli <b>ingredienti con le quantità</b> e in quante <b>porzioni</b> si divide la ricetta: l'Intelligenza Artificiale calcola kcal e Macro del totale e di una porzione.<br><br>Puoi anche <b>chiedere consigli</b> all'Intelligenza Artificiale su ingredienti, quantità, abbinamenti e sostituzioni: le domande non cambiano la ricetta.<br><br>Cotture, tempi e accortezze vengono <b>riconosciuti e messi nelle note</b> da soli; puoi anche dire «<b>Aggiungi alle note…</b>».<br>Le note compaiono qui sotto, una per riga, e ognuna si può togliere con la X.</div></div>${recNoteBox(d,true)}`)
    +`<div class="chat" id="rChat">${d.chat.map((m,i)=>m.role==='u'?`<div class="msg u">${esc(m.text)}</div>`:`<div class="msg a${m.err?' e':''}${m.show&&m.show.length?' rsumw':''}">${md(m.text)}${recShowHTML(m,d)}${m.prop&&!m.propDone?`<div class="row" style="margin:8px 0 2px"><button class="btn bdef new" data-rprop="${i}">Aggiungi alla<br>ricetta</button></div>`:m.prop&&m.propDone?'<p class="hm" style="margin:6px 0 0;font-size:13px">✓ Aggiunto alla ricetta</p>':''}${!m.err&&('speechSynthesis' in window)?ttsHTML(i):''}</div>`).join('')}${d.busy?'<div class="typing">Sto calcolando<i></i><i></i><i></i></div>':''}</div>`}
 function recEditor(r){RD=r?JSON.parse(JSON.stringify(r)):{id:null,nome:'',porzioni:1,items:[],note:'',chat:[]};RD.tmp='n'+Date.now();RD.porzioni=Math.min(99,Math.max(1,Math.round(+RD.porzioni||1)));
   if(!RD.items){/* ricette vecchie: ingredienti salvati per porzione → quantità dell'intera ricetta */RD.items=(RD.ingredienti||[]).map(i=>{const o={...i};KEYS.forEach(k=>{if(o[k]!=null)o[k]=o[k]*RD.porzioni});return o})}RD.chat=RD.chat||[];RD.busy=false;RD.base=JSON.stringify([RD.nome,RD.porzioni,RD.items,RD.note,RD.chat.length]);
   sheet(`<div class="rsh"><h3>${r?'Modifica Ricetta':'Aggiungi Ricetta'}</h3>
-    <div class="rtop"><input type="text" id="rName" class="rname" placeholder="Nome della ricetta" value="${esc(RD.nome)}">
-      <div class="rrow"><div class="rpor"><span>Porzioni</span><button class="rpm" id="rMinus" aria-label="Una porzione in meno">–</button><b id="rPor">${RD.porzioni}</b><button class="rpm" id="rPlus" aria-label="Una porzione in più">+</button></div>
-      <button class="rnbtn" id="rNoteBtn">Note<i class="rdot"${RD.note&&RD.note.trim()?'':' hidden'}></i></button></div></div></div>
+    <div class="rtop"><input type="text" id="rName" class="rname" placeholder="Nome della ricetta" value="${esc(RD.nome)}"></div></div>
     <div class="rnpanel" id="rNotes" hidden><h4>Note</h4><textarea id="rNoteTa" placeholder="Tempi e modi di cottura, accortezze, conservazione… Puoi scrivere qui o dettare con il microfono qui sotto.">${esc(RD.note||'')}</textarea><p class="hm" id="rNoteSt"></p></div>
     <div class="rbody" id="rBody">${recBodyHTML()}</div>
     <div class="jmp rjmp"><button id="rUp" aria-label="Vai in cima" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></button><button id="rDn" aria-label="Vai in fondo" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
     <div class="comp rcomp"><div class="in"><textarea id="rMsg" rows="1" placeholder="Ingredienti, quantità, porzioni…"></textarea><button class="ib mic" id="rMic" aria-label="Detta">${MIC_SVG}</button><button class="ib send" id="rSend" aria-label="Invia">${SEND_SVG}</button></div></div>
-    <div class="row between rbtns" id="rBtns"><button class="btn sm ghost std2" id="rCancel">Annulla</button><button class="btn std2" id="rrSave" disabled>Salva</button></div>
+    <div class="row between rbtns" id="rBtns"><button class="btn sm ghost std2" id="rCancel">Annulla</button><div class="rpor"><span>Porzioni</span><button class="rpm" id="rMinus" aria-label="Una porzione in meno">–</button><b id="rPor">${RD.porzioni}</b><button class="rpm" id="rPlus" aria-label="Una porzione in più">+</button></div><button class="btn std2" id="rrSave" disabled>Salva</button></div>
     <div class="row rbtns rclose" id="rCloseRow" hidden><button class="btn bdef new" id="rNoteClose">Chiudi note</button></div>`);
   $('#sheet').classList.add('recsheet');recWire();sheetGuard=recExit;requestAnimationFrame(recJmp)}
 function recRefresh(toEnd){if(!RD||!$('#rBody'))return;const b=$('#rBody'),st=b.scrollTop;b.innerHTML=recBodyHTML();b.scrollTop=toEnd?b.scrollHeight:st;$('#rPor').textContent=RD.porzioni;if($('#rName')&&document.activeElement!==$('#rName'))$('#rName').value=RD.nome;if($('#rSend'))$('#rSend').disabled=!!RD.busy;recWire(true);recCanSave();requestAnimationFrame(recJmp)}
@@ -1911,7 +1916,7 @@ function recWire(bodyOnly){
   const ta=$('#rMsg');ta.oninput=()=>{ta.style.height='auto';const cs=getComputedStyle(ta),lh=parseFloat(cs.lineHeight)||22,max=lh*3+parseFloat(cs.paddingTop)+parseFloat(cs.paddingBottom)+parseFloat(cs.borderTopWidth)+parseFloat(cs.borderBottomWidth);ta.style.height=Math.min(ta.scrollHeight+parseFloat(cs.borderTopWidth)+parseFloat(cs.borderBottomWidth),max)+'px'};
   dictate(ta,$('#rMic'));
   $('#rSend').onclick=()=>{stopDictation();RD.noteMode?recNoteSend():recSend()};
-  $('#rNoteBtn').onclick=()=>recNotes(true);$('#rNoteClose').onclick=()=>recNotes(false);$('#rNoteTa').oninput=e=>{RD.noteDraft=e.target.value};
+  if($('#rNoteBtn'))$('#rNoteBtn').onclick=()=>recNotes(true);$('#rNoteClose').onclick=()=>recNotes(false);$('#rNoteTa').oninput=e=>{RD.noteDraft=e.target.value};
   $('#rrSave').onclick=recSave;
   $('#rName').oninput=e=>{RD.nome=e.target.value;recCanSave();clearTimeout(RD.nt);RD.nt=setTimeout(()=>{if(RD)recRefresh()},300)};
   $('#rMinus').onclick=()=>{RD.porzioni=Math.max(1,RD.porzioni-1);recRefresh()};
@@ -1948,7 +1953,7 @@ const NOTE_CMD=/^\s*(per favore\s+)?((aggiungi|aggiungere|scrivi|scrivere|metti|
 async function recSend(){const ta=$('#rMsg'),text=(ta.value||'').trim();if(!text||!RD||RD.busy)return;autoPend=null;
   RD.chat.push({role:'u',text});ta.value='';ta.style.height='';RD.busy=true;recRefresh(true);const d=RD;
   if(NOTE_CMD.test(text)){try{const o=await geminiRicetta(SYS_RNOTE,[{role:'user',parts:[{text:`Note attuali:\n${d.note||'(nessuna)'}\n\nMessaggio dell'utente: ${text}`}]}],SCHEMA_RNOTE);
-      d.note=String(o.note||d.note||'');d.chat.push({role:'a',text:(o.reply||'Note aggiornate.')+'\n(Puoi vederle o cambiarle toccando «Note».)',show:['note']})}
+      d.note=String(o.note||d.note||'');d.chat.push({role:'a',text:(o.reply||'Note aggiornate.'),show:['note']})}
     catch(e){d.chat.push({role:'a',text:e.message,err:true})}
     d.busy=false;if(RD!==d)return;{const dot=$('#rNoteBtn .rdot');if(dot)dot.hidden=!(d.note&&d.note.trim())}recRefresh(true);const last=d.chat.length-1;if(!d.chat[last].err)autoSpeak('#rChat [data-say="'+last+'"]');return}
   const hist=histOf(d.chat.slice(0,-1));
@@ -1965,7 +1970,7 @@ async function recSend(){const ta=$('#rMsg'),text=(ta.value||'').trim();if(!text
       /* v296: se la lista degli ingredienti è cambiata, nella risposta compare sempre la tabella del totale della ricetta */
       if(JSON.stringify(d.items)!==before&&d.items.length&&!sh.includes('totale'))sh.unshift('totale');
       /* v284: se chiede tabelle che non possono esserci, risponde l'app (non dipende dall'IA) */
-      const vuoti=[];if((sh.includes('totale')||sh.includes('porzione'))&&!d.items.length)vuoti.push('Nella ricetta non ci sono ancora ingredienti: dimmeli con le quantità.');if(sh.includes('note')&&!(d.note||'').trim())vuoti.push('Non ci sono ancora note: toccando «Note» puoi scriverle o dettarle.');
+      const vuoti=[];if((sh.includes('totale')||sh.includes('porzione'))&&!d.items.length)vuoti.push('Nella ricetta non ci sono ancora ingredienti: dimmeli con le quantità.');if(sh.includes('note')&&!(d.note||'').trim())vuoti.push('Non ci sono ancora note: dimmi cotture, tempi o accortezze, oppure «Aggiungi alle note…».');
       if(vuoti.length&&!sh.some(x=>x==='totale'||x==='porzione'?d.items.length:(d.note||'').trim()))txt=vuoti.join('\n');else if(vuoti.length)txt+=(txt?'\n':'')+vuoti.join('\n');
       if(!sh.length&&!d.items.length&&/\b(lista|totale|elenco|ingredienti|calorie|kcal|macro|porzion)/i.test(text)&&/\?|dammi|mostra|fammi|dimmi|elenca|quant/i.test(text)&&out.domanda)txt='Nella ricetta non ci sono ancora ingredienti: dimmeli con le quantità.';
       const msg={role:'a',text:txt,show:sh};if(prop)msg.prop=prop;d.chat.push(msg)}
