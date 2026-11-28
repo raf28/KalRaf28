@@ -1025,8 +1025,8 @@ html:not(.lightmode) .scur{background:#fff}
 @media(max-width:600px){.scur{left:44px}}
 #foodQ:placeholder-shown:not(:focus)+.scur{display:block}
 #foodQ:focus::placeholder{color:transparent!important}
-/* v334: messaggi a comparsa neri con la scritta nel verde di «Nuova Giornata Alimentare» (#2f8f5c) */
-.toast{background:#000!important;background-image:none!important;color:#2f8f5c!important;box-shadow:0 4px 12px rgba(0,0,0,.45)}
+/* v336: solo in scuro: messaggi a comparsa neri; in chiaro tornano verdi con scritta bianca. v334: messaggi a comparsa neri con la scritta nel verde di «Nuova Giornata Alimentare» (#2f8f5c) */
+html:not(.lightmode) .toast{background:#000!important;background-image:none!important;color:#2f8f5c!important;box-shadow:0 4px 12px rgba(0,0,0,.45)}
 /* v311: in scuro i campi di scrittura (Diario, chat e nome delle ricette) hanno lo stesso nero-grigio di «Cerca un alimento» (--card #1c1c1e) con testo bianco; in chiaro invariato */
 html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,html:not(.lightmode) .comp textarea:focus-visible{background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(to bottom,#265e41,#1f4d35 50%,#183c29) border-box;color:#fff}
 html:not(.lightmode) .comp textarea::placeholder{color:#fff;opacity:1}
@@ -1173,7 +1173,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 335</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 336</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
