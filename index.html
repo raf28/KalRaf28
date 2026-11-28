@@ -1080,7 +1080,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 308</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 309</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1258,18 +1258,18 @@ function closeLb(silent){if(lbCW){const w=lbCW;lbCW=null;try{w.destroy()}catch(e
 /* v198: pagina informazioni (bozza delle spiegazioni, da rivedere con l'utente) */
 function showInfo(){sheet(`<div class="info"><h3>Come funziona Kcal</h3>
 <p class="hm">Un diario per contare kcal e Macro di quello che mangi, con l'aiuto dell'Intelligenza Artificiale.<br>(al momento Gemini)</p>
-<h4>Gesti utili e funzioni</h4><p class="hm">– <b>Trascina verso il basso</b> <b class="ig">per Aggiornare l'App</b>:<br>funziona in tutte le sezioni, ma nel Diario solo quando sei in cima alla pagina.<br>In alternativa usa il gesto qui sotto<br>
-– <b>Tieni Premuto per 1 Secondo</b> uno dei tasti della barra in basso <b class="ig">per Aggiornare l'App</b>:<br>Diario, Alimenti, Ricette, Storico o Impostazioni<br>
-– <b>Swipe a destra o a sinistra</b> <b class="ig">per cambiare sezione</b></p>
+<h4>Gesti utili e funzioni</h4><p class="hm">– <b>Trascina verso il basso</b> <b>per Aggiornare l'App</b>:<br>funziona in tutte le sezioni, ma nel Diario solo quando sei in cima alla pagina.<br>In alternativa usa il gesto qui sotto<br>
+– <b>Tieni Premuto per 1 Secondo</b> uno dei tasti della barra in basso <b>per Aggiornare l'App</b>:<br>Diario, Alimenti, Ricette, Storico o Impostazioni<br>
+– <b>Swipe a destra o a sinistra</b> <b>per cambiare sezione</b></p>
 <h5>Nella chat del Diario</h5><p class="hm">– <b>Chiedi il totale</b> all'Intelligenza Artificiale, scrivendo o parlando con il microfono<br>(per esempio <b class="ig">"Dammi il totale delle kcal"</b> o <b class="ig">"Dammi i Macro totali"</b>):<br>in chat compare la tabella di riepilogo <b>Lista alimenti – Totale kcal e Macro</b>, con la cornice, sempre aggiornata.</p>
 <p class="hm" style="margin-top:14px">– <span class="tts ichip"><span class="tb"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="0.5" y="0.5" width="15" height="15" rx="3.5" fill="#1f4d35"/><path d="M6 4.2v7.6l6-3.8z" fill="#fff"/></svg>Ascolta</span></span> legge ad alta voce la risposta dell'Intelligenza Artificiale<br>
 – <span class="tts ichip"><span class="tb"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="0.5" y="0.5" width="15" height="15" rx="3.5" fill="#1f4d35"/><rect x="5" y="4" width="2" height="8" rx=".6" fill="#fff"/><rect x="9" y="4" width="2" height="8" rx=".6" fill="#fff"/></svg>Pausa</span></span> ferma la lettura:<br>toccando di nuovo Ascolta riparte da dove avevi lasciato<br>
 – <b>Tieni premuto Ascolta per 1 secondo</b> per ripartire dall'inizio<br>
 – <span class="tts ichip"><span class="tb tbauto"><span class="auw"><svg viewBox="0 0 26 24" width="22" height="17" aria-hidden="true"><path d="M4 21v-3.2C2.8 16.7 2 15.2 2 13.5 2 10 4.9 7.2 8.4 7.2c3.1 0 5.6 2.1 6.1 5l1.4 2.6-1.4.6v2c0 1-.8 1.7-1.7 1.7H11.2V21z" fill="currentColor"/><path d="M16.8 11.6c.8.8.8 2.2 0 3M18.8 9.8c1.8 1.8 1.8 4.8 0 6.6M20.9 8c2.8 2.8 2.8 7.4 0 10.2" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg><span>AUTO</span></span></span></span> se è acceso, ogni nuova risposta dell'Intelligenza Artificiale viene letta da sola appena arriva, senza toccare Ascolta</p>
-<p class="hm" style="margin-top:14px">– <b>Le pause si ricordano</b>:<br>l'app tiene a mente il punto delle <b class="ig">ultime 3 risposte</b> messe in pausa, anche dopo aver chiuso l'app.<br>Alla quarta pausa si dimentica la più vecchia<br>
-– <b>Se tocchi il microfono mentre l'Intelligenza Artificiale sta parlando</b>, la lettura <b class="ig">si mette in pausa da sola</b>:<br>così puoi dettare senza che la voce finisca nel messaggio.<br>Quando invii, con AUTO acceso la nuova risposta viene letta appena arriva;<br>quella interrotta riparte da dove si era fermata toccando Ascolta.<br>Finché il microfono è acceso, AUTO aspetta e non parla sopra di te</p>
-<h5>Come vengono salvati gli orari</h5><p class="hm">– L'<b>ora del pasto</b> si salva da sola:<br>è l'ora dell'<b class="ig">ultima modifica agli alimenti</b> di quel pasto (quando aggiungi, correggi o togli qualcosa).<br>Le domande all'Intelligenza Artificiale non la cambiano<br>
-– Puoi <b class="ig">cambiarla in qualunque momento</b> dicendolo all'Intelligenza Artificiale nella chat del pasto, scrivendo o con il microfono<br>(per esempio <b class="ig">"Il pranzo l'ho finito alle 13:30"</b> o <b class="ig">"Lo spuntino l'ho fatto alle 16"</b>):<br>da quel momento quell'ora resta fissa, e vale sempre l'ultima che dici<br>
+<p class="hm" style="margin-top:14px">– <b>Le pause si ricordano</b>:<br>l'app tiene a mente il punto delle <b>ultime 3 risposte</b> messe in pausa, anche dopo aver chiuso l'app.<br>Alla quarta pausa si dimentica la più vecchia<br>
+– <b>Se tocchi il microfono mentre l'Intelligenza Artificiale sta parlando</b>, la lettura <b>si mette in pausa da sola</b>:<br>così puoi dettare senza che la voce finisca nel messaggio.<br>Quando invii, con AUTO acceso la nuova risposta viene letta appena arriva;<br>quella interrotta riparte da dove si era fermata toccando Ascolta.<br>Finché il microfono è acceso, AUTO aspetta e non parla sopra di te</p>
+<h5>Come vengono salvati gli orari</h5><p class="hm">– L'<b>ora del pasto</b> si salva da sola:<br>è l'ora dell'<b>ultima modifica agli alimenti</b> di quel pasto (quando aggiungi, correggi o togli qualcosa).<br>Le domande all'Intelligenza Artificiale non la cambiano<br>
+– Puoi <b>cambiarla in qualunque momento</b> dicendolo all'Intelligenza Artificiale nella chat del pasto, scrivendo o con il microfono<br>(per esempio <b class="ig">"Il pranzo l'ho finito alle 13:30"</b> o <b class="ig">"Lo spuntino l'ho fatto alle 16"</b>):<br>da quel momento quell'ora resta fissa, e vale sempre l'ultima che dici<br>
 – L'ora la trovi nella tabella <b>Lista alimenti</b> del pasto e nello <b>Storico</b><br>
 – I pasti sono in <b>ordine di ora</b> e gli spuntini vengono numerati in base all'ora:<br>Spuntino 1 è sempre il primo della giornata</p>
 <h4>Diario</h4><p class="hm"><b>Tocca il <span class="iplus" aria-label="+">+</span> per Aggiungere un Pasto</b>,<br>poi scrivi, detta o fotografa cosa hai mangiato:<br>l'Intelligenza Artificiale calcola kcal e Macro e il conteggio della giornata si aggiorna da solo.<br>Se un valore è sbagliato correggilo in chat:<br>vale sempre l'ultimo inserito.<br>A fine giornata tocca <b>Nuova Giornata Alimentare</b> per iniziare un nuovo conteggio.</p>
@@ -1283,16 +1283,16 @@ function showInfo(){sheet(`<div class="info"><h3>Come funziona Kcal</h3>
 <h4>Alimenti</h4><p class="hm">I tuoi prodotti di marca con i valori esatti e le foto.<br>Quando li nomini nel Diario, i valori vengono presi da qui.</p>
 <p class="hm">Per aggiungerne uno tocca <b>Aggiungi Alimento</b>.<br>Con <b>Compila scheda Automaticamente</b> basta fotografare la confezione e la tabella nutrizionale:<br>l'Intelligenza Artificiale compila la scheda da sola,<br>poi puoi aggiungere indicazioni o note scrivendo o parlando nella chat (per esempio "1 galletta = 8 g").<br>Con <b>Compila scheda Manualmente</b> inserisci tu tutti i valori.</p>
 <h4>Ricette</h4><p class="hm">Kcal e Macro della Ricetta intera e di una singola porzione.</p>
-<p class="hm">Per crearne una tocca <b>Aggiungi Ricetta</b>,<br>poi scrivi o detta nella chat il nome, gli ingredienti con le quantità e in quante porzioni si divide<br>(per esempio "vengono 6 panini").<br>L'Intelligenza Artificiale capisce da sola cosa vuoi fare:<br>
+<p class="hm">Per crearne una tocca <b>Aggiungi Ricetta</b>,<br>poi scrivi o detta nella chat il nome, gli ingredienti con le quantità e in quante porzioni si divide<br>(per esempio <b class="ig">"vengono 6 panini"</b>).<br>L'Intelligenza Artificiale capisce da sola cosa vuoi fare:<br>
 – Se dici di aggiungere, togliere o cambiare gli ingredienti, la Ricetta si aggiorna subito;<br>
-– Se chiedi un consiglio ("secondo te ci starebbe bene del limone?"), la Ricetta non cambia;<br>
+– Se chiedi un consiglio (<b class="ig">"secondo te ci starebbe bene del limone?"</b>), la Ricetta non cambia;<br>
 – Se l'IA ha un dubbio, compare il tasto <b>Aggiungi alla ricetta</b> di conferma;<br>
 – Cotture, Tempi e Accortezze finiscono da soli nelle Note.<br>Anche pronunciando, aggiungere Note o togliere Note, queste possono essere modificate.</p>
 <p class="hm">Con la <b>X</b> togli un Ingrediente o una Nota.<br>Il numero di porzioni si cambia in basso con <b>+</b> o <b>–</b>, oppure dicendolo direttamente all'Intelligenza Artificiale.</p>
 <p class="hm">Puoi chiedere di vedere il totale delle kcal e dei Macro di tutta la Ricetta, di una Porzione e le Note relative, per esempio:<br>
-– "Mi dai le kcal totali di una Porzione"<br>
-– "Mi fai rileggere le Note"<br>
-– "Mi dai la lista di tutti gli Ingredienti della Ricetta"<br>
+– <b class="ig">"Mi dai le kcal totali di una Porzione"</b><br>
+– <b class="ig">"Mi fai rileggere le Note"</b><br>
+– <b class="ig">"Mi dai la lista di tutti gli Ingredienti della Ricetta"</b><br>
 Le Tabelle Compaiono in chat, sempre aggiornate.</p>
 <p class="hm">Toccando una Ricetta Salvata la vedi completa, e con:<br>
 – <b>Condividi Ricetta</b> la mandi come testo (WhatsApp, Gmail, Keep…);<br>
