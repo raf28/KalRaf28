@@ -789,6 +789,9 @@ html.lightmode .comp textarea{border:4px solid #436955;box-shadow:0 2px 5px rgba
 html.lightmode .comp textarea:focus,html.lightmode .comp textarea:focus-visible{border-color:#436955;outline:none}
 /* v254: solo modalità chiara, bordo del campo di scrittura con sfumatura verticale delicata (luce in alto, scuro in basso) */
 html.lightmode .comp textarea,html.lightmode .comp textarea:focus,html.lightmode .comp textarea:focus-visible{border-color:transparent;background:linear-gradient(#f4f6f1,#f4f6f1) padding-box,linear-gradient(to bottom,#547f68,#436955 50%,#345243) border-box}
+/* v261: anche in modalità scura il campo di scrittura del Diario è identico a quello chiaro: bordo 4px sfumato (#547f68 → #436955 → #345243), ombra come i tasti, alto 44px */
+html:not(.lightmode) .comp textarea{border:4px solid #436955;box-shadow:0 2px 5px rgba(0,0,0,.28);padding-top:7px;padding-bottom:7px;min-height:44px;box-sizing:border-box;color:#17201a}
+html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,html:not(.lightmode) .comp textarea:focus-visible{outline:none;border-color:transparent;background:linear-gradient(#f4f6f1,#f4f6f1) padding-box,linear-gradient(to bottom,#547f68,#436955 50%,#345243) border-box}
 /* v255/v256: solo modalità chiara, pillole di Alimenti e Storico: rilievo medio con filo in basso sfocato e luce diagonale: bianco pieno fino al 20%, poi sfumatura lunga e morbida fino a #e4ebe6 sul bordo destro, senza ombra esterna */
 html.lightmode #v-alimenti details.food:not([open]),html.lightmode #v-storico details.hday:not([open]){background:linear-gradient(115deg,#fff 0,#fff 20%,#fcfdfc 29%,#f7f9f8 41%,#f2f6f3 52%,#edf2ef 63%,#e9efeb 75%,#e6ede8 86%,#e4ebe6 100%)!important;box-shadow:inset 0 -3px 3px -1px rgba(31,77,53,.14),inset 0 2px 2px rgba(255,255,255,.95)!important}
 </style>
@@ -914,7 +917,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 260</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 261</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
