@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 252 (28/11/2026).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 253 (28/11/2026).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **Kcal** (nome del repository e del progetto: **KalRaf28**; titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **252**.
+> Sto sviluppando **Kcal** (nome del repository e del progetto: **KalRaf28**; titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **253**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -411,10 +411,11 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **v250:** il campo di scrittura del Diario si allarga al massimo fino a **3 righe** (interlinea 22 px); oltre, il testo continua a capo e si scorre col dito. In chiaro e in scuro.
   - **v251:** in modalità scura il campo di scrittura del Diario ha lo stesso aspetto della versione chiara: sfondo chiaro (#f4f6f1) e testo scuro (#17201a); il bordo resta verde come i tasti microfono e invio.
   - **v252:** solo modalità chiara: i tre ovali delle testate (pillola della data nel Diario, "Cerca un alimento" negli Alimenti e legenda nello Storico) passano dal bianco puro `#fff` al bianco attenuato `#f4f6f1` (lo stesso dello sfondo `--bg` e del campo di scrittura).
+  - **v253:** solo modalità chiara: campo di scrittura del Diario con bordo raddoppiato a 4 px nel verde dei tasti cerchio (`#436955`), ombra morbida come i pulsanti e altezza ricalibrata a 44 px per un allineamento perfetto a filo superiore e inferiore con i tasti laterali.
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
-**Stato:** online, **collaudo in corso dal 25/11/2026**. Tra il 26/11 sera e il 27/11 mattina (v91–v252) è stata rifinita tutta la grafica di Diario, Alimenti, Storico e Impostazioni, in chiaro e in scuro, con le regole della sezione 3.16, e scritta la finestra "Come funziona Kcal": **la grafica è considerata definitiva dall'utente**. Resta da fare solo la sezione Ricette (e, quando si rigenera l'APK, lo sblocco della rotazione: vedi Note).
+**Stato:** online, **collaudo in corso dal 25/11/2026**. Tra il 26/11 sera e il 27/11 mattina (v91–v253) è stata rifinita tutta la grafica di Diario, Alimenti, Storico e Impostazioni, in chiaro e in scuro, con le regole della sezione 3.16, e scritta la finestra "Come funziona Kcal": **la grafica è considerata definitiva dall'utente**. Resta da fare solo la sezione Ricette (e, quando si rigenera l'APK, lo sblocco della rotazione: vedi Note).
 
 ---
 
