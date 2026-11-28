@@ -16,7 +16,9 @@
 >
 > Le **regole grafiche definitive** (colori chiaro/scuro, tasti, pillole, ovali, testate, sfumature, 3D e ombre) sono nella sezione **3.16**: ogni nuova schermata (per esempio le Ricette) va fatta seguendo quelle regole.
 >
-> Prima di tutto leggi il codice attuale dal repository (è pubblico: https://github.com/raf28/kalraf28) e questo documento di pianificazione. Poi riprendiamo dalla lista **"Cose da fare"** in fondo al documento: la prossima cosa da fare è la **sezione Ricette** (la grafica di tutto il resto è finita).
+> Prima di tutto leggi il codice attuale dal repository (è pubblico: https://github.com/raf28/kalraf28) e questo documento di pianificazione. Controlla anche gli ultimi commit (`git log`): a volte lavoro con altre chat o altri modelli, quindi la versione nel repository può essere più avanti di quella scritta qui. In quel caso riparti dall'ultima versione pubblicata e aggiorna questo documento.
+>
+> Poi riprendiamo dalla lista **"Cose da fare"** in fondo al documento. **Per prima cosa** ti dirò io **un paio di piccoli bug** da correggere e **2-3 ritocchi grafici** (non sono scritti qui); dopo si passa alla **sezione Ricette** (la grafica di tutto il resto è finita).
 >
 > Regole fisse:
 > - Non devo **mai** pagare l'API oltre al mio abbonamento Google AI Pro: si usano solo il livello gratuito e modelli Flash/Flash-Lite, e una chiave di un progetto senza fatturazione.
@@ -430,7 +432,10 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
 ## ✅ COSE DA FARE
 
 ### Da implementare
-**Restano solo due cose (27/11/2026):** la sezione Ricette (qui sotto) e la gestione verticale/orizzontale dell'app (vedi Note in fondo).
+**Situazione al 28/11/2026 (v253):**
+0. **Subito, nella prossima chat:** un paio di piccoli bug e 2-3 ritocchi grafici che l'utente spiegherà a voce (non sono descritti qui). Possibile ritocco già individuato: in modalità scura il campo di scrittura del Diario è alto 46 px con bordo 2 px, mentre in chiaro (v253) è alto 44 px come i tasti, con bordo 4 px.
+1. Poi la sezione Ricette (qui sotto).
+2. La gestione verticale/orizzontale dell'app (vedi Note in fondo).
 
 1. **Sezione Ricette, da ristrutturare** (è la prossima cosa da fare). Esistono già la testata verde e la barra in basso con i pulsanti segnaposto "Crea Nuova Ricetta" e "Ricettario" (v175): vanno collegati alle nuove schermate, seguendo le regole grafiche della sezione 3.16. Alla fine va scritto anche il paragrafo **Ricette** nella finestra "Come funziona Kcal" (oggi vuoto). Come dovrà funzionare:
    - **Chat per creare le ricette.** Si danno a Gemini gli ingredienti con le dosi e si indica in quante **porzioni** si divide la ricetta (es. un impasto da cui escono 4 piadine = 4 porzioni). A ogni ingrediente aggiunto o modificato si vede sempre, aggiornato:
