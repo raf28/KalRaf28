@@ -18,7 +18,7 @@
 >
 > Prima di tutto leggi il codice attuale dal repository (è pubblico: https://github.com/raf28/kalraf28) e questo documento di pianificazione. Controlla anche gli ultimi commit (`git log`): a volte lavoro con altre chat o altri modelli, quindi la versione nel repository può essere più avanti di quella scritta qui. In quel caso riparti dall'ultima versione pubblicata e aggiorna questo documento.
 >
-> Poi riprendiamo dalla lista **"Cose da fare"** in fondo al documento. Al 28/11/2026 (v309) la grafica di tutta l'app e la sezione **Ricette** sono fatte (editor con chat, note in chat, porzioni, condivisione come testo, «1 Porzione in Alimento»): ora si **prova tutto sul telefono** e si correggono i dettagli che ti dirò io. Il paragrafo Ricette della finestra "Come funziona Kcal" è scritto (v308, approvato nel testo dall'utente; da controllare sul telefono). Restano da fare l'eventuale **condivisione come immagine** e "Aggiungi una ricetta a un pasto" (se serve).
+> Poi riprendiamo dalla lista **"Cose da fare"** in fondo al documento. Al 28/11/2026 (v309) **l'app è finita e collaudata**: grafica, sezione Ricette (editor con chat, note, porzioni, condivisione come testo, «1 Porzione in Alimento») e finestra "Come funziona Kcal" sono completi. Resta soltanto da decidere/fare la **rotazione dell'app / blocco in verticale** (richiede di rigenerare l'APK). In fondo al documento, sotto la scritta **NOTE**, ci sono le cose da sapere se un'altra persona usa l'app.
 >
 > Ogni tanto ti scriverò "implementa", "applica" o "senza anteprima": vuol dire pubblicare subito. Quando chiedo solo un'anteprima, non pubblicare finché non dico "implementa".
 >
@@ -131,7 +131,7 @@ La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impos
 - Tolti la barra "Ricettario / Crea Ricetta" e la vecchia chat ricette: il codice vecchio (`renderRec`, `SYS_REC`, `SYS_IMP`, importa ricette, aggiungi a un pasto) resta nel file ma non è più visibile, pronto da riusare.
 
 ### 3.6 Preimpostati
-- Pulsante tolto dalla barra (v53). Nel codice resta solo il segnaposto "Sezione in arrivo." (vedi Stato delle sezioni).
+- **Abbandonata** (28/11/2026): pulsante tolto dalla barra dalla v53; nel codice resta solo il segnaposto "Sezione in arrivo.", inutilizzato.
 
 ### 3.7 Storico
 - Aprendo una giornata, sotto la data compare l'etichetta "Restano / Bonus di / Oltre di X kcal" come nel Diario (v221–v223).
@@ -507,57 +507,36 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
-**Stato:** online, **collaudo in corso dal 25/11/2026**. Tra il 26/11 sera e la mattina del 28/11 (v91–v305) è stata rifinita tutta la grafica di Diario, Alimenti, Storico, Ricette e Impostazioni, in chiaro e in scuro, con le regole della sezione 3.16, ed è stata fatta la sezione Ricette (editor con chat smart, note, porzioni, condivisione, 1 porzione in alimento). **La grafica è considerata definitiva dall'utente**; ora si prova tutto sul telefono.
+**Stato:** online, **app finita e collaudata (28/11/2026, v309)**. Dal 25/11 al 28/11/2026 (v1–v309) sono stati fatti Diario, Alimenti, Ricette, Storico e Impostazioni, con la grafica definitiva in chiaro e in scuro (regole in 3.16), la finestra "Come funziona Kcal" completa (Ricette comprese), l'APK e il backup su Drive. Resta solo, se si vorrà, la rotazione dell'app (vedi "Cose da fare").
 
 ---
 
-## 📋 STATO DELLE SEZIONI (25/11/2026, valutazione dell'utente)
-- ✅ **Già funzionanti e con grafica definitiva (27/11, v216):** Diario, Alimenti, Storico, Impostazioni.
-- ✅ **Ricette** fatta (v278–v305), in collaudo sul telefono.
-- 🔧 **Da decidere:** **Preimpostati** (oggi solo il segnaposto "Sezione in arrivo").
-- ❓ Preimpostati: **da decidere se resterà** nell'app oppure no.
-- **26/11 (v53):** tolto il pulsante **Preimpostati** dalla barra in basso, in attesa di capire se la sezione può essere utile. La barra ora ha 5 voci (Diario, Alimenti, Ricette, Storico, Impostazioni), più larghe e centrate. La sezione (oggi solo un segnaposto) e la fonte `preimpostato` restano nel codice: per rimetterla basta ripristinare il pulsante `data-v="pasti"` e tornare a 6 colonne.
+## 📋 STATO DELLE SEZIONI (28/11/2026)
+- ✅ **Diario, Alimenti, Ricette, Storico, Impostazioni:** fatti, con grafica definitiva e collaudati sul telefono (v309).
+- ❌ **Preimpostati:** abbandonata, non serve (decisione dell'utente del 28/11/2026). Il pulsante è fuori dalla barra dalla v53 e nel codice restano solo il segnaposto "Sezione in arrivo." e la fonte `preimpostato`, inutilizzati. La barra ha 5 voci (Diario, Alimenti, Ricette, Storico, Impostazioni).
 
 ## ✅ COSE DA FARE
 
 ### Da implementare
-**Situazione al 28/11/2026 (v309): tutte le funzioni sono concluse. Restano solo queste cose (pulizia del 28/11):**
-1. **Provare tutto sul telefono** (collaudo), soprattutto le Ricette con le 20 frasi di prova qui sotto, e correggere quello che l'utente segnala.
-2. **Condividi come immagine** (idea dell'utente, non ancora decisa): immagine della ricetta con la grafica dell'app, da offrire insieme al testo.
-3. Eventuale **"Aggiungi una ricetta a un pasto"** del Diario (il vecchio codice c'è ancora), solo se serve.
-4. Da valutare con l'uso: colore verde `#3e6651` della riga dell'ora del pasto in scuro (proposto `#6f9a83` solo per lo scuro, in attesa di risposta); posizione definitiva dell'ora nel Diario; che Gemini capisca bene l'ora detta a voce.
-5. **Rotazione dell'app / blocco in verticale** (vedi Note in fondo), da fare alla prossima rigenerazione dell'APK.
-6. **Preimpostati:** da decidere se la sezione resta nell'app (oggi tolta dalla barra, solo segnaposto).
-
-### Frasi di prova per la chat delle Ricette (v285)
-Da dire o scrivere in una ricetta nuova, in quest'ordine; tra parentesi cosa deve succedere.
-1. "Facciamo il panino palloncino, vengono 6 panini" (nome e porzioni, lista vuota)
-2. "Dammi la lista degli ingredienti" (risposta: non ci sono ancora ingredienti)
-3. "500 grammi di farina 0, 250 ml di latte parzialmente scremato e 12 grammi di lievito" (3 ingredienti aggiunti subito)
-4. "Aggiungi anche 20 grammi di olio e 8 di sale" (aggiunti subito, senza tasto)
-5. "Impasta per 10 minuti e lascia lievitare 2 ore" (va nelle note, la lista non cambia)
-6. "Metti 30 grammi di zucchero e poi inforna a 200 gradi per 15 minuti" (zucchero nella lista, forno nelle note)
-7. "Secondo te ci starebbe un po' di limone?" (solo consiglio, lista invariata)
-8. "Cosa mi consigli di aggiungere per dargli più sapore?" (consigli, lista invariata, di solito senza tasto)
-9. "E se aggiungo 2 grammi di origano e 10 grammi di farina?" (parere + tasto «Aggiungi alla ricetta»; toccarlo per aggiungerli)
-10. "Potrei sostituire il latte con l'acqua?" (parere, lista invariata)
-11. "Invece di 500 grammi di farina fanne 450" (correzione applicata subito)
-12. "Togli il sale" (tolto subito)
-13. "Aggiungi alle note che va coperto con un panno" (note aggiornate dall'app, tabella note in risposta)
-14. "Nelle note scrivi di spennellare con il latte prima di infornare" (note)
-15. "Togli dalle note la parte del panno" (note aggiornate)
-16. "Quante calorie ha un panino?" (solo tabella della porzione)
-17. "Dammi il totale della ricetta" (solo tabella del totale)
-18. "Fammi vedere tutto: totale, porzione e note" (tre tabelle)
-19. "A quanti gradi lo cuocio?" (risposta di cucina, lista invariata)
-20. "Grazie" (nessuna modifica)
+**Situazione al 28/11/2026 (v309): tutte le funzioni dell'app sono concluse e il collaudo sul telefono è fatto.** Resta una sola cosa:
+- **Rotazione dell'app e blocco in verticale** (non urgente, da fare alla prossima rigenerazione dell'APK): oggi l'app non ruota in orizzontale e non si può usare a schermo diviso. Soluzione: togliere `orientation` dal manifest e rigenerare l'APK con PWABuilder (stesso keystore, **version code 4**). Rimandato dall'utente il 26/11.
+  - **Idea dell'utente:** interruttore **"Blocca in verticale" sì/no** nelle Impostazioni, con `screen.orientation.lock()` / `unlock()`.
 
 ### Futuro
 1. Eventuale APK "autonoma" con tutto il codice dentro (Capacitor o simili): servirebbe solo per il Play Store o per non dipendere da GitHub. Richiede di rifare il login Google per Drive e la dettatura.
 2. Possibilità di agganciare altri "cervelli" AI usando gli abbonamenti Pro (ChatGPT, Gemini Pro, Claude Pro), quando renderanno disponibile questa funzione nelle app di terze parti.
 3. Possibilità di agganciare un'AI locale come "cervello" (per esempio Gemini Nano sul telefono), quando sarà possibile farlo.
 
-### Cose da vedere per far utilizzare l'applicazione ad altre persone
+
+---
+---
+
+# 📌 NOTE 📌
+
+---
+---
+
+## Cose da vedere per far utilizzare l'applicazione ad altre persone
 *Ipotesi del 26/11/2026: passare la stessa APK a un'amica, che usa una sua chiave API Gemini.*
 
 **Cosa resta separato (nessun conflitto):**
@@ -573,7 +552,3 @@ Da dire o scrivere in una ricetta nuova, in quest'ordine; tra parentesi cosa dev
 4. **APK:** si passa lo stesso file `KalRaf28.apk` e lo si installa dal file; funziona uguale, anche senza la barra in alto.
 
 **In sintesi:** l'uso da parte di un'altra persona è fattibile. Prima vanno sistemati il PIN (condividerlo o cambiare il sistema) e, se serve il backup su Drive, l'aggiunta del suo account agli utenti di prova su Google Cloud.
-
-### Note
-- 📌 **Ancora da fare.** **Blocco in verticale** (da sistemare alla prossima rigenerazione dell'APK, non urgente): l'app non ruota in orizzontale e non si può usare a schermo diviso. Soluzione: togliere `orientation` dal manifest e rigenerare l'APK (stesso keystore, **version code 4**). Rimandato dall'utente il 26/11.
-  - **Idea dell'utente:** interruttore **"Blocca in verticale" sì/no** nelle Impostazioni, con `screen.orientation.lock()` / `unlock()`.
