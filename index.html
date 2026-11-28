@@ -385,7 +385,7 @@ nav button.on{font-weight:700;color:light-dark(#1f4d35,#fff)}
 .foodsheet #fSt[hidden]{display:none}
 .foodsheet #fTxt{height:156px}
 .foodsheet h3{margin-bottom:14px}
-.foodsheet .row.modes{margin:24px 0 24px} /* v316: un po' più di spazio sotto il titolo */
+.foodsheet .row.modes{margin:34px 0 24px} /* v316: un po' più di spazio sotto il titolo */
 .foodsheet .card.chatblk{margin:0 0 12px}
 .foodsheet .ph3{margin:0}
 .foodsheet .card.fotoblk{margin:6px 0 24px}
@@ -952,6 +952,16 @@ html:not(.lightmode) .foodsheet .card{border-color:#fff}
 html:not(.lightmode) .foodsheet .sl3i{border-color:#fff}
 html:not(.lightmode) .foodsheet .sl3i span,html:not(.lightmode) .foodsheet .hm,html:not(.lightmode) .foodsheet small,html:not(.lightmode) .foodsheet label{color:#fff;opacity:1}
 html:not(.lightmode) .foodsheet textarea::placeholder,html:not(.lightmode) .foodsheet input::placeholder{color:#fff;opacity:1}
+/* v317: i due tasti «Compila scheda» come gli altri tasti (pillola, senza bordo), rilievo ridotto di un livello, in scuro senza verde attorno */
+#sheet .row.modes .btn.two,#sheet .row.modes .btn.two:not(:disabled){border:0!important;border-radius:99px!important;min-height:56px;padding:8px 12px 8px 30px;font-size:14px!important;background-image:linear-gradient(to bottom,rgba(255,255,255,.18),rgba(255,255,255,0) 55%,rgba(0,0,0,.08))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 -1px 0 rgba(0,0,0,.16),0 1px 3px rgba(0,0,0,.25)!important}
+#sheet .row.modes .btn.two:not(:disabled):active{box-shadow:inset 0 2px 4px rgba(0,0,0,.25)!important}
+#sheet .row.modes .btn.two:not(.sel){background-color:light-dark(#dcefe2,var(--soft));color:light-dark(#1f4d35,#fff)}
+#sheet .row.modes .btn.two:not(.sel) small{color:light-dark(#1f4d35,#fff)}
+#sheet .row.modes .chk{top:50%;transform:translateY(-50%);left:11px}
+/* v317: chat di Aggiungi Alimento: al tocco il campo si evidenzia con un bordo spesso e il testo d'esempio sparisce */
+.foodsheet #fTxt:focus,.foodsheet #fTxt:focus-visible{outline:none;border-color:#436955;box-shadow:0 0 0 3px rgba(67,105,85,.45)}
+html:not(.lightmode) .foodsheet #fTxt:focus,html:not(.lightmode) .foodsheet #fTxt:focus-visible{border-color:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.55)}
+.foodsheet #fTxt:focus::placeholder{color:transparent!important}
 /* v311: in scuro i campi di scrittura (Diario, chat e nome delle ricette) hanno lo stesso nero-grigio di «Cerca un alimento» (--card #1c1c1e) con testo bianco; in chiaro invariato */
 html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,html:not(.lightmode) .comp textarea:focus-visible{background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(to bottom,#265e41,#1f4d35 50%,#183c29) border-box;color:#fff}
 html:not(.lightmode) .comp textarea::placeholder{color:#fff;opacity:1}
@@ -1098,7 +1108,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 316</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 317</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
