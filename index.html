@@ -1015,7 +1015,8 @@ html:not(.lightmode) .hm,html:not(.lightmode) small,html:not(.lightmode) figcapt
 html:not(.lightmode) .btn.two small{opacity:1}
 html:not(.lightmode) .dayline,html:not(.lightmode) .kc .of,html:not(.lightmode) .kc .bon,html:not(.lightmode) .legend,html:not(.lightmode) .macros small,html:not(.lightmode) .mbar small,html:not(.lightmode) .row.modes .btn small,html:not(.lightmode) .lb .cap{opacity:1}
 /* v331: Aggiungi/Modifica Alimento in scuro: sfondo della finestra e dei blocchi nero assoluto; i campi (chat, nome, valori, note) restano nel nero un po' più chiaro (#1c1c1e) */
-html:not(.lightmode) #sheet.foodsheet,html:not(.lightmode) .foodsheet .card{background:#242426}
+html:not(.lightmode) #sheet.foodsheet{background:#000}
+html:not(.lightmode) .foodsheet .card{background:#121214} /* v335: soluzione 1 dello stacco: finestra #000, blocchi #121214, campi e riquadri foto #242426 */
 html:not(.lightmode) .foodsheet .card input,html:not(.lightmode) .foodsheet .card textarea{background:#242426!important} /* v332: tutto nel grigio scuro dei riquadri «Nessuna Foto» (#242426) */
 /* v333: barra «Cerca un alimento»: trattino lampeggiante + due spazi + scritta; al tocco la scritta sparisce e resta solo la lente */
 .ahead .sw{position:relative;display:flow-root}
@@ -1172,7 +1173,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 334</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 335</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
