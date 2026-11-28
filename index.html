@@ -787,6 +787,8 @@ html.lightmode .ahead input#foodQ{background-color:#f4f6f1}
 /* v253: solo modalità chiara, campo di scrittura con bordo 4px verde tasti #436955, ombra morbida e allineamento perfetto a 44px */
 html.lightmode .comp textarea{border:4px solid #436955;box-shadow:0 2px 5px rgba(0,0,0,.28);padding-top:7px;padding-bottom:7px;min-height:44px;box-sizing:border-box}
 html.lightmode .comp textarea:focus,html.lightmode .comp textarea:focus-visible{border-color:#436955;outline:none}
+/* v254: solo modalità chiara, bordo del campo di scrittura con sfumatura verticale delicata (luce in alto, scuro in basso) */
+html.lightmode .comp textarea,html.lightmode .comp textarea:focus,html.lightmode .comp textarea:focus-visible{border-color:transparent;background:linear-gradient(#f4f6f1,#f4f6f1) padding-box,linear-gradient(to bottom,#547f68,#436955 50%,#345243) border-box}
 </style>
 </head>
 <body>
@@ -910,7 +912,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 253</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 254</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
