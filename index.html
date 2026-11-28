@@ -1080,7 +1080,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 304</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 305</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1735,7 +1735,7 @@ document.addEventListener('click',e=>{
     let lim=0;try{const tn=[...b.childNodes].find(n=>n.nodeType===3),rg=document.createRange();rg.setStart(tn,0);rg.setEnd(tn,3);lim=rg.getBoundingClientRect().right+4}catch(_){}
     if(e.target.closest('.pl')||(lim&&e.clientX<=lim))return addRecipeStart();return}
   if(b.dataset.sharerecipe){const r=S.recipes.find(x=>x.id===b.dataset.sharerecipe);if(r)shareRecipe(r);return}
-  if(b.dataset.rec2food){toast('Trasforma in alimento: in arrivo');return}
+  if(b.dataset.rec2food){const r=S.recipes.find(x=>x.id===b.dataset.rec2food);if(r&&!recIsFood(r))rec2food(r);return}
   if(b.dataset.editrecipe){const r=S.recipes.find(x=>x.id===b.dataset.editrecipe);if(r)recEditor(r);return}
   if(b.dataset.delrecipe){const id=b.dataset.delrecipe,r=S.recipes.find(x=>x.id===id);sheet(`<h3>Eliminare «${esc(r?r.nome:'')}»?</h3><p class="hm">La ricetta verrà eliminata. Non si può annullare.</p><div class="row between"><button class="btn ghost std2" id="noSheet">Annulla</button><button class="btn bad std2" id="okDelR">Elimina</button></div>`);$('#okDelR').onclick=()=>{S.recipes=S.recipes.filter(x=>x.id!==id);save();closeSheet();render();toast('Ricetta eliminata')};return}
   if(b.id==='addFood'){/* v255: si apre toccando il cerchio + e la parte della scritta fino alla seconda «g» di «Aggiungi» (testo «Agg»); il resto della pillola non fa nulla */
@@ -1865,7 +1865,7 @@ function renderRecipes(){fdKill();
     h+=`<details class="card food" data-rid="${esc(r.id)}"><summary><span class="nm">${esc(r.nome)}</span><span class="kv"><b>${f0(t.kcal)} kcal</b><small>per porzione</small></span></summary>
     ${r.items?`<div class="mbox rview">${mealBoxHTML(r.items,'ricetta',false,null,null,null,{title:recTitle(r),sumLabel:'Totale kcal RICETTA'})}</div>${recNoteBox(r,false).replace('card mbox rnotebox','mbox rview rnotebox')}${(r.porzioni||1)>1?`<div class="mbox rview rpor1">${porzBox(r.items,r.porzioni||1,r)}</div>`:''}`
       :(ing.length?`<div class="hm" style="margin-top:8px">${ing.map(i=>`• ${esc(i.nome)} ${esc(i.quantita||'')} — ${f0(i.kcal)} kcal`).join('<br>')}</div>`:'')}
-    <div class="rshr"><div class="rsc"><button class="btn std2 rcirc" data-rec2food="${esc(r.id)}" aria-label="Trasforma una porzione in alimento"><span class="pa">+A</span></button><small>1 Porzione<br>in Alimento</small></div><div class="rsc"><button class="btn std2 rcirc" data-sharerecipe="${esc(r.id)}" aria-label="Condividi ricetta">${SHARE_SVG}</button><small>Condividi<br>Ricetta</small></div></div>
+    <div class="rshr"><div class="rsc"><button class="btn std2 rcirc" data-rec2food="${esc(r.id)}"${recIsFood(r)?' disabled':''} aria-label="Trasforma una porzione in alimento"><span class="pa">+A</span></button><small>1 Porzione<br>in Alimento</small></div><div class="rsc"><button class="btn std2 rcirc" data-sharerecipe="${esc(r.id)}" aria-label="Condividi ricetta">${SHARE_SVG}</button><small>Condividi<br>Ricetta</small></div></div>
     <div class="row between rbt3"><button class="btn sm ghost std2" data-collapse>Annulla</button><button class="btn sm ghost std2" data-editrecipe="${esc(r.id)}">Modifica</button><button class="btn sm ghost std2" data-delrecipe="${esc(r.id)}">Elimina</button></div></details>`});
   $('#recList').innerHTML=h;
   document.querySelectorAll('#recList details.food').forEach(d=>bindCloseDetails(d));
@@ -1946,6 +1946,12 @@ function recWire(bodyOnly){
 function addRecipeStart(){recEditor(null)}
 /* v302: condivisione della ricetta come testo (WhatsApp, Gmail, Keep…): menu di condivisione di Android; se non c'è o si chiude senza scegliere, il testo va negli appunti */
 const SHARE_SVG='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>';
+/* v305: «1 Porzione in Alimento»: apre Aggiungi Alimento (modalità manuale) con la scheda già compilata: nome della ricetta, «1 porzione», kcal e macro di una porzione, note vuote.
+   Il tasto è disattivato se negli Alimenti c'è già un alimento con lo stesso nome; se quell'alimento viene eliminato torna attivo. */
+const nmKey=t=>String(t||'').trim().toLowerCase().replace(/\s+/g,' ');
+const recIsFood=r=>!!(r&&nmKey(r.nome)&&S.foods.some(x=>nmKey(x.nome)===nmKey(r.nome)));
+function rec2food(r){const n=Math.max(1,+r.porzioni||1),it=r.items||r.ingredienti||[],t=sum(it),div=r.items?n:1,c={nome:(r.nome||'').trim(),riferimento:'1 porzione',note:''};
+  FKEYS.forEach(([k])=>{const v=t[k];c[k]=v==null?null:(k==='sale'?Math.round(v/div*100)/100:Math.round(v/div*10)/10)});c.kcal=t.kcal==null?null:Math.round(t.kcal/div);foodSheet(null,c)}
 function recShareText(r){const n=Math.max(1,+r.porzioni||1),it=r.items||[],t=sum(it),g=(k)=>t[k]==null?'—':fk(k,t[k])+' g',p=k=>t[k]==null?'—':fk(k,t[k]/n)+' g';
   const L=[`🍽️ *${titleCase(r.nome||'Ricetta')}*`,`${n} ${n===1?'porzione':'porzioni'}`,''];
   if(it.length){L.push('*Ingredienti (ricetta intera)*');it.forEach(i=>L.push(`• ${i.nome}${i.quantita?' – '+i.quantita:''} – ${f0(i.kcal)} kcal`));L.push('',`*Totale ricetta: ${f0(t.kcal)} kcal*`,
@@ -2015,11 +2021,11 @@ function recSave(){if(!recOk())return;const d=RD,n=d.porzioni;if(!d.nome.trim())
   const i=S.recipes.findIndex(x=>x.id===rec.id);if(i>=0)S.recipes[i]=rec;else S.recipes.push(rec);
   save();RD=null;closeSheet();go('ricette');toast(i>=0?'Ricetta aggiornata':'Ricetta salvata')}
 function foodForm(f){foodSheet(f)}
-async function foodSheet(f){
+async function foodSheet(f,pre){
   const ph={tabella:null,confezione:null,confezione2:null,confezione3:null};
   if(f&&f.foto){for(const k of PHK)if(f.foto[k])ph[k]=await IDB.get(f.foto[k])}
   /* v293: la scheda alimento c'è sempre, anche in modalità automatica (vuota finché l'IA non la compila): passando da Automaticamente a Manualmente la finestra non cambia */
-  let txt='',card=f?{...f}:{nome:'',riferimento:'100 g',note:''},busy=false,st='',stErr=false,auto=true,pend=false,tmr=null;
+  let txt='',card=f?{...f}:pre?{...pre}:{nome:'',riferimento:'100 g',note:''},busy=false,st='',stErr=false,auto=!pre,pend=false,tmr=null;
   const MIC='<div class="fside"><button class="ib mic" id="fMic" aria-label="Detta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg></button><button class="ib send" id="fSend" aria-label="Prepara la scheda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>';
   const grab=()=>{const t=$('#fTxt');if(t)txt=t.value;if(card&&$('#ffN')){card.nome=$('#ffN').value;card.riferimento=$('#ffR').value;card.note=$('#ffNote').value;FKEYS.forEach(([k])=>card[k]=$('#ff_'+k).value)}};
   const cardHtml=()=>!card?'':`<div class="card" style="margin-top:6px"><h3 style="font-size:16px">Scheda alimento</h3>

@@ -1,12 +1,12 @@
 # Pianificazione KalRaf28
 
-*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 304 (28/11/2026).*
+*Documento ricostruito il 25/11/2026 dal codice del repository e dalle decisioni prese durante lo sviluppo. Aggiornato alla versione 305 (28/11/2026).*
 
 ---
 
 ## 🔁 PROMPT DI RIPRESA (da incollare in una nuova chat)
 
-> Sto sviluppando **Kcal** (nome del repository e del progetto: **KalRaf28**; titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **304**.
+> Sto sviluppando **Kcal** (nome del repository e del progetto: **KalRaf28**; titolo interno "Diario Calorie"), una web app personale per contare kcal e macronutrienti usando l'API di Gemini. È online su **https://raf28.github.io/KalRaf28** ed è pubblicata dal repository GitHub **raf28/KalRaf28**: è tutta in un unico file `index.html` (HTML + CSS + JavaScript, nessun framework e nessun server), più `manifest.webmanifest`, `sw.js` (service worker), `privacy.html`, la cartella `icone/` e questo documento (`Pianificazione Kcal Raf28.md`). La versione attuale è la **305**.
 >
 > Gestisco il progetto **dallo smartphone** (Google Pixel 8, Chrome Android). Claude ha l'accesso in scrittura al repository (app GitHub "Claude" installata su KalRaf28) e può pubblicare direttamente le modifiche; in alternativa le carico io con "Add files via upload". In quel caso voglio sempre **il file `index.html` completo**, pronto da caricare, mai pezzi di codice da incollare a mano. A ogni modifica il numero di versione va aumentato di uno in fondo alla pagina Impostazioni ("Versione App: NN") e il commit si chiama "vNN: descrizione breve".
 >
@@ -53,7 +53,7 @@ KalRaf28 è un diario alimentare personale. Al posto di contare le calorie nelle
 - **Mai spese extra per l'API** oltre all'abbonamento.
 - In futuro forse un'APK.
 
-## 3. Come funziona oggi (v304): sezioni
+## 3. Come funziona oggi (v305): sezioni
 
 La barra in basso ha 5 voci: **Diario · Alimenti · Ricette · Storico · Impostazioni** (Preimpostati tolto nella v53). La voce attiva è evidenziata con una pillola verde `#2f8f5c`.
 
@@ -466,6 +466,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - **v276: data del pasto e ora nella barra.** Con l'ora si salva anche la data (`data`), e l'ordine dei pasti si calcola su data e ora (niente più dubbi dopo mezzanotte; le giornate vecchie senza data usano la regola delle 4:00). Un'ora detta all'IA prende la data di oggi, o di ieri se sarebbe più di un'ora nel futuro. La data compare sotto l'ora nella tabella "Lista alimenti" ("28/11/26", piccola e grigia) e tra parentesi accanto all'ora nello Storico. Nella barra del pasto (con "Elimina …") l'ora è piccola sotto il nome ("ore 20:45") e le kcal sono accanto, centrate tra le due righe, con 16 px di spazio (opzione C dell'anteprima, spazio raddoppiato).
   - **v277:** ordine dei pasti più sicuro per quelli salvati tra la v273 e la v275 (con l'ora ma senza data): il loro giorno è quello di apertura della giornata, o il successivo se l'ora viene prima dell'apertura, invece della regola fissa delle 4:00. Provato con l'orologio simulato alle 18:00: colazione 08:00, spuntino 10:30, spuntino 16:00 nell'ordine giusto.
   - **v278: sezione Ricette con la grafica degli Alimenti.** Testata con titolo e conteggio ("N salvate"), ricerca "Cerca una ricetta", elenco alfabetico con le lettere, pillole, frecce e pillola "Aggiungi Ricetta" con il +, identici agli Alimenti in chiaro e in scuro (62 regole CSS duplicate per `#v-ricette`; `alimSticky()` / `alimStuck()` valgono per entrambe le sezioni). Il + apre la finestra "Aggiungi Ricetta" con Annulla e Salva disattivato. Tolte la barra Ricettario / Crea Ricetta e la vecchia chat. Nella finestra degli Alimenti il titolo ora è "Aggiungi Alimento" (e "Modifica Alimento").
+  - **v305: «1 Porzione in Alimento» funziona.** Il tasto +A della ricetta aperta apre Aggiungi Alimento in modalità «Compila scheda Manualmente» con la scheda già compilata: nome della ricetta, «Valori riferiti a: 1 porzione», kcal e tutti i macro di una porzione (totale diviso per le porzioni, arrotondati come nella tabella), note vuote (le note restano della ricetta). Si controlla e si preme Salva. Il tasto è **disattivato** se negli Alimenti esiste già un alimento con lo stesso nome (uguale, senza badare a maiuscole e spazi); se quell'alimento viene eliminato, il tasto torna attivo (`recIsFood()`, `rec2food()`, `foodSheet(null, scheda)`).
   - **v304:** ricetta aperta: scritte sotto i due cerchi centrate rispetto all'icona, su due righe: «1 Porzione / in Alimento» (tasto +A, che per ora mostra solo "in arrivo") e «Condividi / Ricetta».
   - **v303:** (1) **Ricette da 1 porzione:** il riquadro «1 porzione» non compare più (editor, ricetta salvata aperta, testo condiviso), perché coincide con la ricetta; se in chat si chiede la porzione, compare la tabella del totale. Appena le porzioni diventano 2 o più il riquadro torna. (2) **Testo condiviso:** il blocco «1 porzione» ha tutti i valori come il totale, uno per riga: carboidrati (di cui zuccheri), proteine, grassi (di cui saturi), fibre, sale.
   - **v302:** (1) Messaggi a comparsa sempre 14 px sopra la barra più alta in basso (riga dei pasti con il +, «Aggiungi Alimento/Ricetta», «Applica e torna al Diario», campo e tasti dell'editor ricette), calcolato al momento (`toastBottom()`), così non si sovrappongono. (2) **Ricetta aperta nell'elenco:** sopra i tasti due cerchi verdi da 44 px con la scritta sotto: a sinistra **«+A» – Trasforma una porzione in alimento** (per ora solo il messaggio "in arrivo") e a destra **Condividi ricetta** (icona di condivisione di Android); sotto, Annulla · Modifica (al centro) · Elimina, larghi uguali. Grafica provvisoria, da rifinire. (3) **Condividi ricetta funziona:** apre il menu di condivisione di Android (WhatsApp, Gmail, Keep…) con il testo della ricetta: nome in grassetto, porzioni, ingredienti con quantità e kcal, totale e macro, una porzione (kcal, carboidrati, proteine, grassi), note a elenco, "— Condiviso da Kcal" (`recShareText()`, `shareRecipe()`); se il menu si chiude senza scegliere o non c'è, il testo viene copiato negli appunti.
@@ -495,7 +496,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
   - Altri ritocchi della giornata (v64–v79): icone del composer in cerchi verde scuro, voce attiva della barra in basso con pillola verde, pulsanti in modalità chiara nello stesso verde, testi di aiuto con le parti in grassetto, tolti i bordi rossi.
 
 
-**Stato:** online, **collaudo in corso dal 25/11/2026**. Tra il 26/11 sera e la mattina del 28/11 (v91–v304) è stata rifinita tutta la grafica di Diario, Alimenti, Storico e Impostazioni, in chiaro e in scuro, con le regole della sezione 3.16, e scritta la finestra "Come funziona Kcal": **la grafica è considerata definitiva dall'utente**. Resta da fare solo la sezione Ricette (e, quando si rigenera l'APK, lo sblocco della rotazione: vedi Note).
+**Stato:** online, **collaudo in corso dal 25/11/2026**. Tra il 26/11 sera e la mattina del 28/11 (v91–v305) è stata rifinita tutta la grafica di Diario, Alimenti, Storico e Impostazioni, in chiaro e in scuro, con le regole della sezione 3.16, e scritta la finestra "Come funziona Kcal": **la grafica è considerata definitiva dall'utente**. Resta da fare solo la sezione Ricette (e, quando si rigenera l'APK, lo sblocco della rotazione: vedi Note).
 
 ---
 
@@ -508,7 +509,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
 ## ✅ COSE DA FARE
 
 ### Da implementare
-**Situazione al 28/11/2026 (v304):**
+**Situazione al 28/11/2026 (v305):**
 0. **Subito, nella prossima chat:** un paio di piccoli bug e 2-3 ritocchi grafici che l'utente spiegherà a voce (non sono descritti qui). (Fatto nella v261: il campo di scrittura in scuro ora è uguale al chiaro.)
 1. Ricette (v280): provare l'editor sul telefono e fare le rifiniture (sfumature della parte che scorre, paragrafo Ricette nella finestra "Come funziona Kcal", "Aggiungi a un pasto" e "Salva come alimento").
 1. Da valutare con l'uso: posizione definitiva dell'ora del pasto nel Diario (per ora è la prima riga della tabella "Lista alimenti") e verifica che Gemini capisca bene l'ora detta a voce.
@@ -521,7 +522,7 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
      - sotto, la **singola porzione**: ingredienti con le quantità per porzione, kcal e macro di una porzione (totale diviso per il numero di porzioni).
    - **Domande di cucina nella chat.** La chat risponde anche a domande pratiche di cucina (es. "quanto olio mi consigli di mettere?", tempi, cotture, sostituzioni), se conosce la risposta. Queste risposte **non toccano** la lista degli ingredienti né il conteggio di kcal e macro: cambia qualcosa solo quando l'utente aggiunge o modifica davvero un ingrediente.
    - **Ricettario.** Quando la ricetta è nella versione finale, dalla chat la si salva nel Ricettario, cioè l'elenco di tutte le ricette salvate.
-   - **Salva come alimento** (dalla v302 c'è il tasto «+A – Trasforma una porzione in alimento» nella ricetta aperta, ancora da far funzionare). Sia nella chat sia nel Ricettario, il blocco della **singola porzione** (ingredienti, kcal e macro per porzione) si può salvare come **singolo alimento** nella sezione Alimenti (es. "1 piadina").
+   - **Salva come alimento** (✅ fatto nella v305: tasto «+A – 1 Porzione in Alimento» nella ricetta aperta). Sia nella chat sia nel Ricettario, il blocco della **singola porzione** (ingredienti, kcal e macro per porzione) si può salvare come **singolo alimento** nella sezione Alimenti (es. "1 piadina").
 
 ### Frasi di prova per la chat delle Ricette (v285)
 Da dire o scrivere in una ricetta nuova, in quest'ordine; tra parentesi cosa deve succedere.
