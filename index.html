@@ -989,6 +989,10 @@ textarea,.ta{border-radius:26px}
 .foodsheet input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=range]),.foodsheet select{padding-left:18px;padding-right:18px;min-height:44px}
 .foodsheet textarea,.foodsheet .ta{padding:14px 18px}
 .recsheet .rnote textarea,.recsheet .rnpanel textarea{border-radius:26px;padding-left:18px;padding-right:18px}
+/* v320: Compila scheda: il tasto selezionato (✓ bianca) nel verde di «Nuova Giornata Alimentare» (#2f8f5c); quello non selezionato nel verde che prima aveva il selezionato (chiaro #436955, scuro verde dei tasti) con scritte bianche */
+#sheet .row.modes .btn.two.sel{background-color:#2f8f5c!important;color:#fff!important}
+#sheet .row.modes .btn.two:not(.sel){background-color:light-dark(#436955,var(--brand))!important;color:#fff!important}
+#sheet .row.modes .btn.two:not(.sel) small,#sheet .row.modes .btn.two.sel small{color:#fff}
 /* v311: in scuro i campi di scrittura (Diario, chat e nome delle ricette) hanno lo stesso nero-grigio di «Cerca un alimento» (--card #1c1c1e) con testo bianco; in chiaro invariato */
 html:not(.lightmode) .comp textarea,html:not(.lightmode) .comp textarea:focus,html:not(.lightmode) .comp textarea:focus-visible{background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(to bottom,#265e41,#1f4d35 50%,#183c29) border-box;color:#fff}
 html:not(.lightmode) .comp textarea::placeholder{color:#fff;opacity:1}
@@ -1135,7 +1139,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 319</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 320</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
