@@ -557,3 +557,25 @@ Lo stato di Drive è a parte, in `localStorage` con chiave `kalraf28_drive`. I v
 4. **APK:** si passa lo stesso file `KalRaf28.apk` e lo si installa dal file; funziona uguale, anche senza la barra in alto.
 
 **In sintesi:** l'uso da parte di un'altra persona è fattibile. Prima vanno sistemati il PIN (condividerlo o cambiare il sistema) e, se serve il backup su Drive, l'aggiunta del suo account agli utenti di prova su Google Cloud.
+
+
+---
+
+## Interfaccia scura: le due versioni salvate (28/11/2026)
+*L'utente deve ancora fare la scelta finale. L'app (v313) usa oggi la versione **«Scura (attuale)»**. Per passare all'altra basta chiedere "rimetti Intermedia 1" (o "rimetti Attuale"). Il cambio tocca **solo** i grigi neutri della modalità scura: verdi, bianchi, ombre, tasti e tutta la modalità chiara restano uguali.*
+
+**Dove si cambiano i valori nel codice (`index.html`):** le variabili `--bg`, `--card`, `--line`, `--soft` in `:root` (righe 17–18, parte scura di `light-dark(...)`) e le due regole del rilievo 3D delle pillole di Alimenti e Storico scuri (v236: `html:not(.lightmode) #v-alimenti details.food:not([open])` e `#v-storico details.hday:not([open])`, e le regole precedenti con `#36363a`). Sostituzione 1 a 1 di questi 9 grigi:
+
+| Ruolo | **Scura (attuale)** | **Meno scura (Intermedia 1)** |
+|---|---|---|
+| Sfondo dell'app `--bg` | `#111112` | `#19191a` |
+| Schede, finestre, pillole, ovali, campi di scrittura `--card` | `#1c1c1e` | `#252526` |
+| Linee e bordi sottili `--line` | `#2c2c2e` | `#363637` |
+| Riquadri secondari `--soft` | `#242426` | `#2e2e2f` |
+| Rilievo pillole Alimenti/Storico, parte alta (luce) | `#3e3e42` | `#4a4a4b` |
+| Rilievo pillole, parte centrale (45%) | `#242427` | `#2e2e2f` |
+| Rilievo pillole, parte bassa (ombra) | `#0e0e10` | `#161617` |
+| Rilievo pillole (regole più vecchie), alto | `#36363a` | `#414142` |
+| Rilievo pillole (regole più vecchie), basso | `#121214` | `#1a1a1b` |
+
+Regola usata per calcolare la versione chiara: ogni grigio neutro viene spostato in proporzione con una mappa lineare in cui lo sfondo passa da 17 a 25 e le schede da 28 a 37 (su 255). Altre due varianti già provate e scartate dall'utente per ora, sempre con la stessa regola: **Intermedia 2** (sfondo `#20`, schede `#2d`) e **Grafite** (sfondo `#28`, schede `#35`). In versione Intermedia 1 il verde `#3e6651` della riga «ora del pasto» in scuro è un po' meno leggibile: si può schiarire a `#6f9a83` solo in scuro.
