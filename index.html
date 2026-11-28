@@ -369,7 +369,7 @@ nav button.on{font-weight:700;color:light-dark(#1f4d35,#fff)}
 .recsheet .rpor{display:flex;align-items:center;gap:12px;align-self:flex-start;background:var(--brand2);color:#fff;border-radius:99px;padding:5px 6px 5px 16px;font-weight:600;box-shadow:0 2px 5px rgba(0,0,0,.28);background-image:linear-gradient(to bottom,rgba(255,255,255,.22),rgba(255,255,255,0) 55%,rgba(0,0,0,.12))}
 .recsheet .rpor b{min-width:2ch;text-align:center;font-size:18px}
 .recsheet .rpm{width:34px;height:34px;border-radius:50%;border:0;background:radial-gradient(circle at 35% 30%,#fff 0,#f3f6f4 45%,#cfd9d3 100%);color:#1f4d35;font-size:22px;font-weight:700;line-height:1;display:grid;place-items:center;padding:0 0 2px;box-shadow:inset 0 -2px 0 rgba(0,0,0,.12),0 2px 5px rgba(0,0,0,.35)}
-.recsheet .rbody{flex:1 1 auto;overflow-y:auto;margin:0 -16px;padding:10px 16px 6px}
+.recsheet .rbody{flex:1 1 auto;overflow-y:auto;margin:0 -16px;padding:10px 16px 6px;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 var(--ft,0px),#000 calc(100% - var(--fb,0px)),transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 var(--ft,0px),#000 calc(100% - var(--fb,0px)),transparent 100%)}
 .recsheet .rbody .card{margin-bottom:10px}
 .recsheet .rpor1 .lt small{display:block;font-size:13px;font-weight:500;text-transform:none;letter-spacing:0;color:var(--mute)}
 .recsheet .rnote{margin:4px 0 10px}
@@ -1070,7 +1070,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 299</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 300</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1862,12 +1862,12 @@ let RD=null;
 const MIC_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg>',SEND_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 function porzBox(items,n,d){const t=sum(items),p={};KEYS.forEach(k=>p[k]=t[k]==null?null:t[k]/n);p.miss=t.miss;p.has=t.has;
   const row=(l,k,sub)=>`<div class="sr${sub?' sub':''}"><span>${l}</span><b>${fv(p,k,'g')}</b></div>`;
-  return`<div class="lt"><span class="rtn rp1">1 porzione</span><br>Totale kcal e macro${d?'<br>'+recNm(d):''}</div><div class="sumt">Totale kcal 1 PORZIONE: <b>${f0(p.kcal)} kcal</b></div><div class="sml">${row('Carboidrati','carboidrati')}${row('di cui zuccheri','zuccheri',1)}${row('Proteine','proteine')}${row('Grassi','grassi')}${row('di cui saturi','saturi',1)}${row('Fibre','fibre')}${row('Sale','sale')}</div>`}
+  return`<div class="lt"><span class="rtn rp1">1 porzione</span><br>Totale kcal e macro${d&&(d.nome||'').trim()?'<br>'+recNm(d,true):''}</div><div class="sumt">Totale kcal 1 PORZIONE: <b>${f0(p.kcal)} kcal</b></div><div class="sml">${row('Carboidrati','carboidrati')}${row('di cui zuccheri','zuccheri',1)}${row('Proteine','proteine')}${row('Grassi','grassi')}${row('di cui saturi','saturi',1)}${row('Fibre','fibre')}${row('Sale','sale')}</div>`}
 /* v289: titolo della tabella della ricetta: «Ricetta», poi in verde il nome e le porzioni, poi «Totale kcal e macro» */
 /* v290: iniziale maiuscola per ogni parola, tranne articoli, preposizioni e congiunzioni (es. «Fiocchi di Latte», «Panino Palloncino (6 Porzioni)») */
 const TC_MIN=new Set(['di','a','da','in','con','su','per','tra','fra','e','ed','o','al','allo','alla','ai','agli','alle','del','dello','della','dei','degli','delle','dal','dallo','dalla','dai','dagli','dalle','nel','nello','nella','nei','negli','nelle','sul','sullo','sulla','sui','sugli','sulle','col','coi','il','lo','la','i','gli','le','un','uno','una','d','l','all','dall','dell','nell','sull']);
 const titleCase=t=>String(t||'').toLowerCase().replace(/[\p{L}\p{N}]+/gu,(w,i)=>i>0&&TC_MIN.has(w)?w:w.charAt(0).toUpperCase()+w.slice(1));
-const recNm=d=>{const n=Math.max(1,+d.porzioni||1),nm=(d.nome||'').trim();return`<span class="rtn">${nm?esc(titleCase(nm))+' ':''}(${n} ${n===1?'Porzione':'Porzioni'})</span>`};
+const recNm=(d,noP)=>{const n=Math.max(1,+d.porzioni||1),nm=(d.nome||'').trim();if(noP)return nm?`<span class="rtn">${esc(titleCase(nm))}</span>`:'';return`<span class="rtn">${nm?esc(titleCase(nm))+' ':''}(${n} ${n===1?'Porzione':'Porzioni'})</span>`};
 const recTitle=d=>`Ricetta<br>${recNm(d)}<br>Totale kcal e macro`;
 /* v295: tre cornici distinte. Ricetta: com'era; Note: gialla (quella di «valore generico»), titolo «Note» + nome; 1 porzione: verde di «Nuova Giornata Alimentare», titolo «1 porzione» in verde, «Totale kcal e macro», nome in verde */
 /* v296: le note come elenco, una per riga, nello stile della tabella della ricetta; nell'editor e in chat ogni nota ha la X verde (con conferma) */
@@ -1898,7 +1898,9 @@ function recEditor(r){RD=r?JSON.parse(JSON.stringify(r)):{id:null,nome:'',porzio
   $('#sheet').classList.add('recsheet');recWire();sheetGuard=recExit;requestAnimationFrame(recJmp)}
 function recRefresh(toEnd){if(!RD||!$('#rBody'))return;const b=$('#rBody'),st=b.scrollTop;b.innerHTML=recBodyHTML();b.scrollTop=toEnd?b.scrollHeight:st;$('#rPor').textContent=RD.porzioni;if($('#rName')&&document.activeElement!==$('#rName'))$('#rName').value=RD.nome;if($('#rSend'))$('#rSend').disabled=!!RD.busy;recWire(true);recCanSave();requestAnimationFrame(recJmp)}
 function recBtnAlign(){const t=$('#rMsg'),r=$('#rBtns'),sh=$('#sheet');if(!t||!r||!sh)return;const R=sh.getBoundingClientRect().right-parseFloat(getComputedStyle(sh).paddingRight)-t.getBoundingClientRect().right;if(R>0)sh.style.setProperty('--rbtnR',R+'px')}
-function recJmp(){const b=$('#rBody'),U=$('#rUp'),D=$('#rDn');if(!b||!U)return;recBtnAlign();const can=b.scrollHeight-b.clientHeight>40;U.hidden=!can||b.scrollTop<30;D.hidden=!can||b.scrollHeight-b.scrollTop-b.clientHeight<30;
+function recJmp(){const b=$('#rBody'),U=$('#rUp'),D=$('#rDn');if(!b||!U)return;recBtnAlign();const can=b.scrollHeight-b.clientHeight>40;
+  /* v300: sfumature in alto e in basso della parte che scorre, solo quando c'è altro contenuto da quella parte */
+  b.style.setProperty('--ft',b.scrollTop>2?'21px':'0px');b.style.setProperty('--fb',b.scrollHeight-b.scrollTop-b.clientHeight>2?'21px':'0px');U.hidden=!can||b.scrollTop<30;D.hidden=!can||b.scrollHeight-b.scrollTop-b.clientHeight<30;
   const sh=$('#sheet').getBoundingClientRect(),br=b.getBoundingClientRect();$('.rjmp').style.bottom=(sh.bottom-br.bottom+12)+'px'}
 const recDirty=()=>RD&&JSON.stringify([RD.nome,RD.porzioni,RD.items,RD.note,RD.chat.length])!==RD.base;
 /* v282: Salva si attiva appena c'è almeno un ingrediente (il nome, se manca, lo propone l'IA o lo mette l'app) */
