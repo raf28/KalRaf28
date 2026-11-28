@@ -780,6 +780,9 @@ html:not(.lightmode) .dayline #dayLabel,html:not(.lightmode) .dayline #dayLabel 
 /* v250: interlinea fissa del campo di scrittura, per calcolare le 3 righe */
 .comp textarea{line-height:22px}
 html:not(.lightmode) .comp textarea{background:#f4f6f1;color:#17201a} /* v251: campo di scrittura chiaro anche in scuro */
+/* v252: solo modalità chiara, i tre ovali delle testate in bianco attenuato #f4f6f1 */
+html.lightmode .dayline,html.lightmode #v-storico .hlegp{background:#f4f6f1}
+html.lightmode .ahead input#foodQ{background-color:#f4f6f1}
 </style>
 </head>
 <body>
@@ -903,7 +906,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 251</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 252</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
