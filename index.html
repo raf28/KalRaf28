@@ -1080,7 +1080,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 302</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 303</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
@@ -1863,7 +1863,7 @@ function renderRecipes(){fdKill();
   let h='',cur='';
   list.forEach(r=>{const L=letterOf(r.nome||'?');if(L!==cur){cur=L;h+=`<div class="letter">${L}</div>`}const ing=r.items||r.ingredienti||[],n=r.items?(r.porzioni||1):1,t=sum(ing);t.kcal=t.kcal/n;
     h+=`<details class="card food" data-rid="${esc(r.id)}"><summary><span class="nm">${esc(r.nome)}</span><span class="kv"><b>${f0(t.kcal)} kcal</b><small>per porzione</small></span></summary>
-    ${r.items?`<div class="mbox rview">${mealBoxHTML(r.items,'ricetta',false,null,null,null,{title:recTitle(r),sumLabel:'Totale kcal RICETTA'})}</div>${recNoteBox(r,false).replace('card mbox rnotebox','mbox rview rnotebox')}<div class="mbox rview rpor1">${porzBox(r.items,r.porzioni||1,r)}</div>`
+    ${r.items?`<div class="mbox rview">${mealBoxHTML(r.items,'ricetta',false,null,null,null,{title:recTitle(r),sumLabel:'Totale kcal RICETTA'})}</div>${recNoteBox(r,false).replace('card mbox rnotebox','mbox rview rnotebox')}${(r.porzioni||1)>1?`<div class="mbox rview rpor1">${porzBox(r.items,r.porzioni||1,r)}</div>`:''}`
       :(ing.length?`<div class="hm" style="margin-top:8px">${ing.map(i=>`• ${esc(i.nome)} ${esc(i.quantita||'')} — ${f0(i.kcal)} kcal`).join('<br>')}</div>`:'')}
     <div class="rshr"><div class="rsc"><button class="btn std2 rcirc" data-rec2food="${esc(r.id)}" aria-label="Trasforma una porzione in alimento"><span class="pa">+A</span></button><small>Trasforma una porzione<br>in alimento</small></div><div class="rsc"><button class="btn std2 rcirc" data-sharerecipe="${esc(r.id)}" aria-label="Condividi ricetta">${SHARE_SVG}</button><small>Condividi<br>ricetta</small></div></div>
     <div class="row between rbt3"><button class="btn sm ghost std2" data-collapse>Annulla</button><button class="btn sm ghost std2" data-editrecipe="${esc(r.id)}">Modifica</button><button class="btn sm ghost std2" data-delrecipe="${esc(r.id)}">Elimina</button></div></details>`});
@@ -1890,14 +1890,16 @@ const recNoteLines=d=>String(d.note||'').split('\n').map(x=>x.trim()).filter(Boo
 const recNoteBox=(d,edit)=>{const L=recNoteLines(d);return L.length?`<div class="card mbox rnotebox"><div class="lt">Note<br>${recNm(d)}</div>${L.map((t,i)=>`<div class="it rnit${edit?'':' ro'}"><div class="n">${esc(t)}</div>${edit?`<button class="x" data-rndel="${i}" aria-label="Elimina nota">×</button>`:''}</div>`).join('')}</div>`:''};
 /* v284: tabelle in chat su richiesta (sempre aggiornate): «totale», «porzione», «note», una o più */
 function recShowHTML(m,d){if(!m.show||!m.show.length||m.err)return'';let h='';
+  /* v303: con 1 porzione la porzione coincide con la ricetta: al posto del riquadro «1 porzione» si mostra il totale */
+  const one=(+d.porzioni||1)<=1,sw=one&&m.show.includes('porzione')&&!m.show.includes('totale')?[...m.show,'totale']:m.show;m={...m,show:sw};
   if(m.show.includes('totale')&&d.items.length)h+=`<div class="card mbox">${mealBoxHTML(d.items,'ricetta',true,null,null,null,{title:recTitle(d),sumLabel:'Totale kcal RICETTA',delAttr:'data-rdel'})}</div>`;
   if(m.show.includes('note')&&(d.note||'').trim())h+=recNoteBox(d,true);
-  if(m.show.includes('porzione')&&d.items.length)h+=`<div class="card mbox rpor1">${porzBox(d.items,d.porzioni,d)}</div>`;
+  if(m.show.includes('porzione')&&d.items.length&&!one)h+=`<div class="card mbox rpor1">${porzBox(d.items,d.porzioni,d)}</div>`;
   return h}
 function recBodyHTML(){const d=RD;
   /* v284: in alto, una volta sola: totale della ricetta, poi le note (se ci sono), poi la singola porzione */
   return(d.items.length?`<div class="card mbox">${mealBoxHTML(d.items,'ricetta',true,null,null,null,{title:recTitle(d),sumLabel:'Totale kcal RICETTA',delAttr:'data-rdel'})}</div>
-    ${recNoteBox(d,true)}<div class="card mbox rpor1">${porzBox(d.items,d.porzioni,d)}</div>`
+    ${recNoteBox(d,true)}${d.porzioni>1?`<div class="card mbox rpor1">${porzBox(d.items,d.porzioni,d)}</div>`:''}`
     :`<div class="card"><div class="empty">Scrivi o detta gli <b>ingredienti con le quantità</b> e in quante <b>porzioni</b> si divide la ricetta: l'Intelligenza Artificiale calcola kcal e Macro del totale e di una porzione.<br><br>Puoi anche <b>chiedere consigli</b> all'Intelligenza Artificiale su ingredienti, quantità, abbinamenti e sostituzioni: le domande non cambiano la ricetta.<br><br>Cotture, tempi e accortezze vengono <b>riconosciuti e messi nelle note</b> da soli; puoi anche dire «<b>Aggiungi alle note…</b>».<br>Le note compaiono qui sotto, una per riga, e ognuna si può togliere con la X.</div></div>${recNoteBox(d,true)}`)
    +`<div class="chat" id="rChat">${d.chat.map((m,i)=>m.role==='u'?`<div class="msg u">${esc(m.text)}</div>`:`<div class="msg a${m.err?' e':''}${m.show&&m.show.length?' rsumw':''}">${md(m.text)}${recShowHTML(m,d)}${m.prop&&!m.propDone?`<div class="row" style="margin:8px 0 2px"><button class="btn bdef new" data-rprop="${i}">Aggiungi alla<br>ricetta</button></div>`:m.prop&&m.propDone?'<p class="hm" style="margin:6px 0 0;font-size:13px">✓ Aggiunto alla ricetta</p>':''}${!m.err&&('speechSynthesis' in window)?ttsHTML(i):''}</div>`).join('')}${d.busy?'<div class="typing">Sto calcolando<i></i><i></i><i></i></div>':''}</div>`}
 function recEditor(r){RD=r?JSON.parse(JSON.stringify(r)):{id:null,nome:'',porzioni:1,items:[],note:'',chat:[]};RD.tmp='n'+Date.now();RD.porzioni=Math.min(99,Math.max(1,Math.round(+RD.porzioni||1)));
@@ -1947,8 +1949,8 @@ const SHARE_SVG='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" str
 function recShareText(r){const n=Math.max(1,+r.porzioni||1),it=r.items||[],t=sum(it),g=(k)=>t[k]==null?'—':fk(k,t[k])+' g',p=k=>t[k]==null?'—':fk(k,t[k]/n)+' g';
   const L=[`🍽️ *${titleCase(r.nome||'Ricetta')}*`,`${n} ${n===1?'porzione':'porzioni'}`,''];
   if(it.length){L.push('*Ingredienti (ricetta intera)*');it.forEach(i=>L.push(`• ${i.nome}${i.quantita?' – '+i.quantita:''} – ${f0(i.kcal)} kcal`));L.push('',`*Totale ricetta: ${f0(t.kcal)} kcal*`,
-    `Carboidrati ${g('carboidrati')} (di cui zuccheri ${g('zuccheri')})`,`Proteine ${g('proteine')}`,`Grassi ${g('grassi')} (di cui saturi ${g('saturi')})`,`Fibre ${g('fibre')}`,`Sale ${g('sale')}`,'',
-    `*1 porzione: ${f0(t.kcal/n)} kcal*`,`Carboidrati ${p('carboidrati')} · Proteine ${p('proteine')} · Grassi ${p('grassi')}`)}
+    `Carboidrati ${g('carboidrati')} (di cui zuccheri ${g('zuccheri')})`,`Proteine ${g('proteine')}`,`Grassi ${g('grassi')} (di cui saturi ${g('saturi')})`,`Fibre ${g('fibre')}`,`Sale ${g('sale')}`,
+    ...(n>1?['',`*1 porzione: ${f0(t.kcal/n)} kcal*`,`Carboidrati ${p('carboidrati')} (di cui zuccheri ${p('zuccheri')})`,`Proteine ${p('proteine')}`,`Grassi ${p('grassi')} (di cui saturi ${p('saturi')})`,`Fibre ${p('fibre')}`,`Sale ${p('sale')}`]:[]))}
   const N=recNoteLines(r);if(N.length){L.push('','*Note*');N.forEach(x=>L.push('• '+x))}
   L.push('','— Condiviso da Kcal');return L.join('\n')}
 async function shareRecipe(r){const text=recShareText(r);
