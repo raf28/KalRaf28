@@ -964,7 +964,7 @@ html:not(.lightmode) .foodsheet textarea::placeholder,html:not(.lightmode) .food
 html:not(.lightmode) .foodsheet #fTxt:focus,html:not(.lightmode) .foodsheet #fTxt:focus-visible{border-color:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.55)}
 .foodsheet #fTxt:focus::placeholder{color:transparent!important}
 /* v318: cornici e bordini di Aggiungi Alimento nel verde dei tasti (in chiaro #436955, in scuro il verde dei tasti); foto delle schede più grandi su due righe; più aria attorno a Annulla/Modifica/Elimina */
-.foodsheet{--fr:var(--brand)} /* v327: verde della testata del Diario (#1f4d35) */
+.foodsheet{--fr:#2d5c43} /* v330: verde visibile di Annulla e Salva (base #1f4d35 con il loro rilievo), in prova */
 html:not(.lightmode) .foodsheet .card,html:not(.lightmode) .foodsheet .sl3i{border-color:var(--fr)}
 .foodsheet .card{border:2px solid var(--fr)}
 .foodsheet .card input,.foodsheet .card textarea,.foodsheet .card select{border:2px solid var(--fr)!important}
@@ -1160,7 +1160,7 @@ window.addEventListener('error',()=>hideSplash());</script>
           <button class="btn bad" id="resetApp">Reset App</button>
           <p class="hm" style="margin-bottom:0;text-align:center">(scollega l'account Google e cancella tutti i dati)<br>Cancella solo i dati su questo telefono:<br>i backup su Drive restano.</p>
         </div>
-        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 329</p>
+        <p class="hm"><span style="color:light-dark(#a8740a,#e2b43c)">* I Valori Nutrizionali Generici sono stime del modello</span><br>Versione App: 330</p>
       </div>
       <div class="applybar"><button class="btn" id="apply">Applica e torna al Diario</button></div>
     </section>
